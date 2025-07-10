@@ -1,3 +1,7 @@
+**1974 v1.0.0**
+
+***
+
 # 1974 – ASCII-Based Web UI Framework
 
 1974 is a lightweight, TypeScript-based ASCII UI rendering engine inspired by old-school terminal interfaces. The goal is to build a web-delivered, CLI-style visual interface using `<pre>` rendering and styled HTML spans — no external frameworks or virtual DOMs.
