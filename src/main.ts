@@ -78,25 +78,25 @@ screenContainer.add({
 // Bottom-Left: left/bottom aligned, multi-line content
 const bottomLeft = new Component({
   label: 'Bottom-Left',
-  width: 18,
-  height: 4,
+  width: 24,
+  height: 8,
   border: true,
-  content: 'Bottom\nLeft',
+  content: 'Bottom Left',
   contentAlign: { alignX: 'left', alignY: 'bottom' }
 });
 screenContainer.add({
   component: bottomLeft,
-  alignX: 0,
+  alignX: 'left',
   alignY: 'bottom'
 });
 
 // Bottom-Right: right/bottom aligned, no border
 const bottomRight = new Component({
   label: 'Bottom-Right',
-  width: 18,
-  height: 4,
+  width: 24,
+  height: 8,
   border: false,
-  content: 'PlainBox',
+  content: 'Right-Bottom',
   contentAlign: { alignX: 'right', alignY: 'bottom' }
 });
 screenContainer.add({
@@ -109,17 +109,16 @@ screenContainer.add({
 
 // Line: height = 1, centered horizontally
 const lineComp = new Component({
-  label: 'Line',
-  width: 20,
+  width: 24,
   height: 1,
   border: false,
-  content: '----',
+  content: 'Single line',
   contentAlign: 'center'
 });
 screenContainer.add({
   component: lineComp,
-  alignX: 'center',
-  alignY: 3
+  alignX: 'right',
+  alignY: 'center'
 });
 
 // ─── Nested Component ────────────────────
