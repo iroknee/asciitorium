@@ -46,24 +46,33 @@
    ```
 
 ### Running the Development Server
+
 Start the Vite development server:
+
 ```bash
 pnpm dev
 ```
+
 Open your browser and navigate to `http://localhost:3000`.
 
 ### Building the Project
+
 Generate a production build:
+
 ```bash
 pnpm build
 ```
+
 The build output will be located in the `dist/` directory.
 
 ### Generating Documentation
+
 Generate TypeScript documentation:
+
 ```bash
 pnpm doc
 ```
 
 ## License
+
 This project is licensed under the MIT License. See the `LICENSE` file for details.

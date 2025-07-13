@@ -1,51 +1,161 @@
-import { Component } from './components/Component';
+import { Component } from './components/Component2';
 
 const screen = document.getElementById('screen')!;
 
-// Create the first component with some size and border
-const h1 = new Component({
-  width: 30,
+// Root screen container
+const screenContainer = new Component({
+  label: 'Demo Screen',
+  width: 100,
+  height: 40,
+  border: true
+});
+
+// ─── Top Row ─────────────────────────────
+
+// Top-Left: left/top aligned, single-line string content
+const topLeft = new Component({
+  label: 'Top-Left Component',
+  width: 24,
+  height: 8,
+  content: 'Default Centered'
+});
+screenContainer.add({
+  component: topLeft,
+  alignX: 'left',
+  alignY: 'top'
+});
+
+// Top-Center: center/top aligned, multi-line string content
+const topCenter = new Component({
+  label: 'Top-Center Component',
+  width: 24,
+  height: 8,
+  border: false,
+  fill: '.',
+  content: ['No Border', 'Center-Bottom Aligned'],
+  contentAlign: { alignX: 'center', alignY: 'bottom' }
+});
+screenContainer.add({
+  component: topCenter,
+  alignX: 'center',
+  alignY: 0
+});
+
+// Top-Right: right/top aligned, string[] content
+const topRight = new Component({
+  label: 'Top-Right',
+  width: 24,
+  height: 8,
+  content: ['Right!', 'Aligned!'],
+  contentAlign: { alignX: 'right', alignY: 'top' }
+});
+screenContainer.add({
+  component: topRight,
+  alignX: 'right',
+  alignY: 'top'
+});
+
+// ─── Middle Center ───────────────────────
+
+// Centered: center/center aligned, function content, focused
+const centered = new Component({
+  label: 'Centered',
+  width: 24,
+  height: 8,
+  content: () => ['Center ', 'Centered', 'Content'],
+  contentAlign: 'center',
+  focusable: true
+});
+centered.hasFocus = true;
+screenContainer.add({
+  component: centered,
+  alignX: 'center',
+  alignY: 'center'
+});
+
+// ─── Bottom Row ──────────────────────────
+
+// Bottom-Left: left/bottom aligned, multi-line content
+const bottomLeft = new Component({
+  label: 'Bottom-Left',
+  width: 18,
+  height: 4,
+  border: true,
+  content: 'Bottom\nLeft',
+  contentAlign: { alignX: 'left', alignY: 'bottom' }
+});
+screenContainer.add({
+  component: bottomLeft,
+  alignX: 0,
+  alignY: 'bottom'
+});
+
+// Bottom-Right: right/bottom aligned, no border
+const bottomRight = new Component({
+  label: 'Bottom-Right',
+  width: 18,
+  height: 4,
+  border: false,
+  content: 'PlainBox',
+  contentAlign: { alignX: 'right', alignY: 'bottom' }
+});
+screenContainer.add({
+  component: bottomRight,
+  alignX: 'right',
+  alignY: 'bottom'
+});
+
+// ─── Single-Line Box ─────────────────────
+
+// Line: height = 1, centered horizontally
+const lineComp = new Component({
+  label: 'Line',
+  width: 20,
+  height: 1,
+  border: false,
+  content: '----',
+  contentAlign: 'center'
+});
+screenContainer.add({
+  component: lineComp,
+  alignX: 'center',
+  alignY: 3
+});
+
+// ─── Nested Component ────────────────────
+
+// Parent box
+const nestParent = new Component({
+  label: 'Nested',
+  width: 22,
   height: 7,
   border: true,
-  fill: '.'
+  content: 'Parent',
+  contentAlign: { alignX: 'center', alignY: 'top' }
 });
 
-// Add a centered string to the first component
-h1.add({
-  x: 'center',
-  y: 'top',
-  string: 'Hello World',
-  highlight: false,
-  color: 'red'
+// Child inside parent box
+const nestedChild = new Component({
+  label: 'Child',
+  width: 10,
+  height: 3,
+  border: true,
+  content: 'Nest',
+  contentAlign: 'center'
+});
+nestParent.add({
+  component: nestedChild,
+  alignX: 'center',
+  alignY: 'bottom'
 });
 
-// Create the second component with highlighted text
-const h2 = new Component({
-  width: 30,
-  height: 7,
-  border: true
+screenContainer.add({
+  component: nestParent,
+  alignX: 0,
+  alignY: 'center'
 });
 
-h2.add({ x: 'right', y: 'bottom', string: 'rb' });
-h2.add({ x: 'left', y: 'top', string: 'lt' });
-h2.add({ x: 'center', y: 'center', string: 'cc', highlight: true });
-h2.add({ x: 'center', y: 'top', string: 'ct' });
-h2.add({ x: 'center', y: 'bottom', string: 'cb' });
-h2.add({ x: 'right', y: 'top', string: 'rt' });
-h2.add({ x: 'left', y: 'bottom', string: 'lb' });
-h2.add({ x: 'right', y: 'center', string: 'rc' });
-h2.add({ x: 'left', y: 'center', string: 'lc' });
-
-// Create a larger canvas component
-const canvas = new Component({
-  width: 50,
-  height: 20,
-  border: true
-});
-
-// Add h1 and h2 to the canvas with some overlap
-canvas.add({ x: 4, y: 2, component: h1 });
-canvas.add({ x: 8, y: 4, component: h2 });
-
-// Render the canvas to the screen
-screen.innerHTML = canvas.draw();
+// ─── Render Everything ───────────────────
+const output = screenContainer.draw();
+console.log(output);
+screen.innerHTML = `<pre>${output}</pre>`;
