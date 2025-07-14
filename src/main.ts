@@ -6,7 +6,7 @@ const screen = document.getElementById('screen')!;
 // Root screen container
 const screenContainer = new Container({
   label: 'Demo Screen',
-  width: 100,
+  width: 80,
   height: 40,
   border: true
 });
