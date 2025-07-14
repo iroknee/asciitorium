@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>1974 ASCII UI</title>
+  <title>1984</title>
   <style>
+    @font-face {
+      font-family: 'PrintChar21';
+      src:
+        url('/fonts/PrintChar21.woff2') format('woff2'),
+        url('/fonts/PrintChar21.woff') format('woff'),
+        url('/fonts/PrintChar21.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     body {
       margin: 0;
       background: black;
       color: lime;
-      font-family: monospace;
       font-size: larger;
+      font-family: 'PrintChar21';
     }
-    #screen {
-      white-space: pre;
-      padding: 1rem;
-    }
+
     .inverted {
       background-color: lime;
       color: black;
@@ -23,6 +30,11 @@
 </head>
 <body>
   <pre id="screen">Loading...</pre>
+  <script type="text/javascript">
+    // Apply our custom font immediately
+    const screen = document.getElementById('screen');
+    screen.style.fontFamily = 'PrintChar21';
+  </script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

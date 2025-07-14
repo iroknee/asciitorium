@@ -1,16 +1,4 @@
 import { Cell } from './Cell';
-import figlet from 'figlet';
-
-figlet.defaults({ fontPath: 'figlet/fonts' });
-
-const fonts: figlet.Fonts[] = [
-  'Bloody', 'Crawford2', 'Elite', 'Graceful',
-  'Pagga', 'Slant', 'Small', 'Soft', 'Standard', 'Star Wars'
-];
-
-figlet.preloadFonts(fonts, () => {
-  console.log(`Figlet fonts loaded: ${fonts.length}`);
-});
 
 /**
  * Configuration for highlighting a specific range of characters.
@@ -341,34 +329,6 @@ export class Component {
         force
       });
     }
-  }
-
-  /**
-   * Adds a figlet graphic to the component.
-   * @private
-   * @param props - Configuration for the figlet graphic to add.
-   */
-  private _addFig(props: { fig: any }): void {
-    const { fig } = props;
-    const { text, font, horizontalLayout, verticalLayout, width } = fig;
-
-    const block = figlet.textSync(text, {
-      font: font || 'Crawford2',
-      horizontalLayout: horizontalLayout || 'default',
-      verticalLayout: verticalLayout || 'default',
-      width: width || undefined,
-      whitespaceBreak: true
-    }).split('\n');
-
-    this._addBlock({
-      x: 0,
-      y: 0,
-      block,
-      color: undefined,
-      highlight: undefined,
-      force: undefined,
-      backfill: undefined
-    });
   }
 
   /**

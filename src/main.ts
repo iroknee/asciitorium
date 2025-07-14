@@ -1,9 +1,10 @@
-import { Component } from './components/Component2';
+import { Component, Container, Button } from './components/Container';
 
 const screen = document.getElementById('screen')!;
 
+
 // Root screen container
-const screenContainer = new Component({
+const screenContainer = new Container({
   label: 'Demo Screen',
   width: 100,
   height: 40,
@@ -13,7 +14,7 @@ const screenContainer = new Component({
 // ─── Top Row ─────────────────────────────
 
 // Top-Left: left/top aligned, single-line string content
-const topLeft = new Component({
+const topLeft = new Container({
   label: 'Top-Left Component',
   width: 24,
   height: 8,
@@ -26,7 +27,7 @@ screenContainer.add({
 });
 
 // Top-Center: center/top aligned, multi-line string content
-const topCenter = new Component({
+const topCenter = new Container({
   label: 'Top-Center Component',
   width: 24,
   height: 8,
@@ -42,7 +43,7 @@ screenContainer.add({
 });
 
 // Top-Right: right/top aligned, string[] content
-const topRight = new Component({
+const topRight = new Container({
   label: 'Top-Right',
   width: 24,
   height: 8,
@@ -58,7 +59,7 @@ screenContainer.add({
 // ─── Middle Center ───────────────────────
 
 // Centered: center/center aligned, function content, focused
-const centered = new Component({
+const centered = new Container({
   label: 'Centered',
   width: 24,
   height: 8,
@@ -76,7 +77,7 @@ screenContainer.add({
 // ─── Bottom Row ──────────────────────────
 
 // Bottom-Left: left/bottom aligned, multi-line content
-const bottomLeft = new Component({
+const bottomLeft = new Container({
   label: 'Bottom-Left',
   width: 24,
   height: 8,
@@ -91,7 +92,7 @@ screenContainer.add({
 });
 
 // Bottom-Right: right/bottom aligned, no border
-const bottomRight = new Component({
+const bottomRight = new Container({
   label: 'Bottom-Right',
   width: 24,
   height: 8,
@@ -108,7 +109,7 @@ screenContainer.add({
 // ─── Single-Line Box ─────────────────────
 
 // Line: height = 1, centered horizontally
-const lineComp = new Component({
+const lineComp = new Container({
   width: 24,
   height: 1,
   border: false,
@@ -124,7 +125,7 @@ screenContainer.add({
 // ─── Nested Component ────────────────────
 
 // Parent box
-const nestParent = new Component({
+const nestParent = new Container({
   label: 'Nested',
   width: 22,
   height: 7,
@@ -134,7 +135,7 @@ const nestParent = new Component({
 });
 
 // Child inside parent box
-const nestedChild = new Component({
+const nestedChild = new Container({
   label: 'Child',
   width: 10,
   height: 3,
@@ -154,7 +155,14 @@ screenContainer.add({
   alignY: 'center'
 });
 
+// ─── Button ──────────────────────────────
+const button = new Button('Click Me');
+screenContainer.add({
+  component: button,
+  alignX: 'center',
+  alignY: 'bottom'
+});
+
 // ─── Render Everything ───────────────────
 const output = screenContainer.draw();
-console.log(output);
-screen.innerHTML = `<pre>${output}</pre>`;
+screen.textContent = output;

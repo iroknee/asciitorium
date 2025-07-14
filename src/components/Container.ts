@@ -1,17 +1,24 @@
-type ComponentContent = string | string[] | (() => string[]);
-type HorizontalAlign = 'left' | 'center' | 'right' | number;
-type VerticalAlign = 'top' | 'center' | 'bottom' | number;
-type ContentAlignment = HorizontalAlign | { alignX: HorizontalAlign; alignY: VerticalAlign };
+// Types for component layout and alignment
+export type Content = string | string[] | (() => string[]);
+export type HorizontalAlign = 'left' | 'center' | 'right' | number;
+export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
+export type ContentAlignment = HorizontalAlign | { alignX: HorizontalAlign; alignY: VerticalAlign };
 
-interface ComponentOptions {
+export interface ComponentOptions {
   label?: string;
   width: number;
   height: number;
   border?: boolean;
   fill?: string;
-  content?: ComponentContent;
+  content?: Content;
   contentAlign?: ContentAlignment;
   focusable?: boolean;
+}
+
+export abstract class Component {
+  abstract readonly width: number;
+  abstract readonly height: number;
+  abstract draw(): string;
 }
 
 interface AddComponentOptions {
@@ -26,14 +33,14 @@ interface PositionedComponent {
   y: number;
 }
 
-export class Component {
+export class Container extends Component {
   label?: string;
   readonly width: number;
   readonly height: number;
   readonly border: boolean;
   readonly fill: string;
   readonly focusable: boolean;
-  private content?: ComponentContent;
+  private content?: Content;
   readonly contentAlign: ContentAlignment;
 
   hasFocus = false;
@@ -49,6 +56,7 @@ export class Component {
     contentAlign = 'center',
     focusable = false
   }: ComponentOptions) {
+    super();
     this.label = label;
     this.width = width;
     this.height = height;
@@ -60,7 +68,7 @@ export class Component {
     if (this.focusable) this.hasFocus = true;
   }
 
-  setContent(content: ComponentContent): void {
+  setContent(content: Content): void {
     this.content = content;
   }
 
@@ -97,7 +105,7 @@ export class Component {
       component.width > this.width - 2 * borderPad ||
       component.height > this.height - 2 * borderPad
     ) {
-      throw new Error(`Component ${component.label} does not fit within parent ${this.label}`);
+      throw new Error(`Component ${'label' in component ? component['label'] : 'unknown'} does not fit within parent ${this.label}`);
     }
 
     this.children.push({ component, x, y });
@@ -218,5 +226,22 @@ export class Component {
     }
 
     return rows.map(row => row.join('')).join('\n');
+  }
+}
+
+export class Button extends Component {
+  constructor(
+    public readonly label: string,
+    public readonly width: number = label.length + 4,
+    public readonly height: number = 3
+  ) {
+    super();
+  }
+
+  draw(): string {
+    const top = '╭' + '─'.repeat(this.width - 2) + '╮';
+    const label = `│ ${this.label.padEnd(this.width - 4)} │`;
+    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
+    return [top, label, bottom].join('\n');
   }
 }
