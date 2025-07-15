@@ -38,8 +38,7 @@ export class Container extends Component {
   readonly focusable: boolean;
   private content?: Content;
   private contentAlign: ContentAlignment;
-
-  hasFocus = false;
+  private hasFocus = false;
   children: PositionedComponent[] = [];
 
   constructor({
@@ -61,7 +60,6 @@ export class Container extends Component {
     this.content = content;
     this.contentAlign = contentAlign;
     this.focusable = focusable;
-    if (this.focusable) this.hasFocus = true;
   }
 
 setContent(content: Content, alignX?: HorizontalAlign, alignY?: VerticalAlign): void {
@@ -132,33 +130,26 @@ setContent(content: Content, alignX?: HorizontalAlign, alignY?: VerticalAlign): 
       }
     }
 
-    // Border rendering
-    if (this.border) {
-      const isFocused = this.hasFocus;
-      const horizontal = isFocused ? '═' : '─';
-      const vertical = isFocused ? '║' : '│';
-      const tl = isFocused ? '╔' : '╭';
-      const tr = isFocused ? '╗' : '╮';
-      const bl = isFocused ? '╚' : '╰';
-      const br = isFocused ? '╝' : '╯';
+    // Draw label if present
+    if (this.label) {
+      const label = this.hasFocus
+        ? `[* ${this.label} *]`
+        : ` ${this.label} `;
 
-      for (let x = 0; x < this.width; x++) {
-        rows[0][x] = horizontal;
-        rows[this.height - 1][x] = horizontal;
+      const maxLabelWidth = this.width - 2;
+      const truncatedLabel = label.length > maxLabelWidth
+        ? label.slice(0, maxLabelWidth)
+        : label;
+
+      for (let i = 0; i < truncatedLabel.length; i++) {
+        rows[0][i + 1] = truncatedLabel[i];
       }
-      for (let y = 0; y < this.height; y++) {
-        rows[y][0] = vertical;
-        rows[y][this.width - 1] = vertical;
-      }
-      rows[0][0] = tl;
-      rows[0][this.width - 1] = tr;
-      rows[this.height - 1][0] = bl;
-      rows[this.height - 1][this.width - 1] = br;
     }
 
     // Draw label if present
     if (this.label) {
-      const label = ` ${this.label} `;
+      const isFocused = this.hasFocus;
+      const label = isFocused ? `< ${this.label} >` : ` ${this.label} `;
       for (let i = 0; i < label.length && i + 1 < this.width - 1; i++) {
         rows[0][i + 1] = label[i];
       }

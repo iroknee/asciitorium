@@ -14,6 +14,7 @@ export interface ListBoxOptions {
 export class ListBox extends Component {
   private items: string[];
   private selectedIndex: number;
+  private hasFocus = false;
   readonly width: number;
   readonly height: number;
   readonly border: boolean;
@@ -40,7 +41,6 @@ export class ListBox extends Component {
     this.fill = fill;
     this.focusable = focusable;
     this.label = label;
-    if (focusable) this.hasFocus = true;
   }
 
   setItems(items: string[], selectedIndex: number = 0): void {
@@ -51,6 +51,18 @@ export class ListBox extends Component {
   setSelectedIndex(index: number): void {
     this.selectedIndex = index;
   }
+
+    handleEvent(event: string): boolean {
+        if (event === 'ArrowUp' || event === 'w' && this.selectedIndex > 0) {
+            this.selectedIndex--;
+            return true;
+        }
+        if (event === 'ArrowDown' || event === 's' && this.selectedIndex < this.items.length - 1) {
+            this.selectedIndex++;
+            return true;
+        }
+        return false;
+    }
 
   draw(): string {
   const rows: string[][] = [];
@@ -63,42 +75,49 @@ export class ListBox extends Component {
     }
   }
 
-  // Border
-  if (this.border) {
-    const isFocused = this.hasFocus;
-    const horizontal = isFocused ? '═' : '─';
-    const vertical = isFocused ? '║' : '│';
-    const tl = isFocused ? '╔' : '╭';
-    const tr = isFocused ? '╗' : '╮';
-    const bl = isFocused ? '╚' : '╰';
-    const br = isFocused ? '╝' : '╯';
+// Border rendering
+if (this.border) {
+  const horizontal = '─';
+  const vertical = '│';
+  const tl = '╭';
+  const tr = '╮';
+  const bl = '╰';
+  const br = '╯';
 
-    for (let x = 0; x < this.width; x++) {
-      rows[0][x] = horizontal;
-      rows[this.height - 1][x] = horizontal;
-    }
-    for (let y = 0; y < this.height; y++) {
-      rows[y][0] = vertical;
-      rows[y][this.width - 1] = vertical;
-    }
-    rows[0][0] = tl;
-    rows[0][this.width - 1] = tr;
-    rows[this.height - 1][0] = bl;
-    rows[this.height - 1][this.width - 1] = br;
+  for (let x = 0; x < this.width; x++) {
+    rows[0][x] = horizontal;
+    rows[this.height - 1][x] = horizontal;
   }
+  for (let y = 0; y < this.height; y++) {
+    rows[y][0] = vertical;
+    rows[y][this.width - 1] = vertical;
+  }
+  rows[0][0] = tl;
+  rows[0][this.width - 1] = tr;
+  rows[this.height - 1][0] = bl;
+  rows[this.height - 1][this.width - 1] = br;
+}
 
-  // Label
-  if (this.label && this.label.length < this.width - 2) {
-    const labelStr = ` ${this.label} `;
-    for (let i = 0; i < labelStr.length; i++) {
-      rows[0][i + 1] = labelStr[i];
-    }
+// Draw label if present
+if (this.label) {
+  const label = this.hasFocus
+    ? ` ◆ ${this.label} `
+    : ` ◇ ${this.label} `;
+
+  const maxLabelWidth = this.width - 2;
+  const truncatedLabel = label.length > maxLabelWidth
+    ? label.slice(0, maxLabelWidth)
+    : label;
+
+  for (let i = 0; i < truncatedLabel.length; i++) {
+    rows[0][i + 1] = truncatedLabel[i];
   }
+}
 
   // Content rendering with spacing
-  const paddingTop = 1;
+  const paddingTop = 2;
   const borderPad = this.border ? 1 : 0;
-  const lineHeight = 2; // 1 line for item, 1 for spacing
+  const lineHeight = 2; // 1 line for item, 1 line blank
   const availableLines = this.height - 2 * borderPad - paddingTop;
   const maxVisibleItems = Math.floor(availableLines / lineHeight);
 
@@ -109,11 +128,18 @@ export class ListBox extends Component {
 
   const visibleItems = this.items.slice(startIdx, startIdx + maxVisibleItems);
 
+  // Draw scroll up indicator (if needed)
+  if (startIdx > 0) {
+    const rowIdx = borderPad;
+    const colIdx = Math.floor(this.width - 2);
+    if (rowIdx >= 0 && rowIdx < this.height) rows[rowIdx][colIdx] = '↑';
+  }
+
   visibleItems.forEach((item, i) => {
     const rowIdx = borderPad + paddingTop + i * lineHeight;
-    if (rowIdx >= this.height - borderPad) return; // skip if past vertical bounds
+    if (rowIdx >= this.height - borderPad) return;
 
-    const prefix = startIdx + i === this.selectedIndex ? '>' : ' ';
+    const prefix = startIdx + i === this.selectedIndex ? ' >' : '  ';
     const line = (prefix + ' ' + item).slice(0, this.width - 2 * borderPad).padEnd(this.width - 2 * borderPad, ' ');
 
     for (let j = 0; j < line.length; j++) {
@@ -123,6 +149,14 @@ export class ListBox extends Component {
     }
   });
 
+  // Draw scroll down indicator (if needed)
+  if (startIdx + maxVisibleItems < this.items.length) {
+    const rowIdx = this.height - 1 - borderPad;
+    const colIdx = Math.floor(this.width - 2);
+    if (rowIdx >= 0 && rowIdx < this.height) rows[rowIdx][colIdx] = '↓';
+  }
+
   return rows.map(row => row.join('')).join('\n');
 }
+  
 }
