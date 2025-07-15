@@ -12,9 +12,9 @@ export interface ListBoxOptions {
 }
 
 export class ListBox extends Component {
-  private items: string[];
-  private selectedIndex: number;
-  private hasFocus = false;
+  items: string[];
+  selectedIndex: number;
+  hasFocus = false;
   readonly width: number;
   readonly height: number;
   readonly border: boolean;
