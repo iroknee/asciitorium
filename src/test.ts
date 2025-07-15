@@ -1,4 +1,7 @@
-import { Component, Container, Button } from './components/Container';
+import { Container } from './components/Container';
+import { Button } from './components/Button';
+import BigFont from './fonts/Ogre.flf?raw';
+import { FIGfont } from './components/FIGfont';
 
 const screen = document.getElementById('screen')!;
 
@@ -59,20 +62,20 @@ screenContainer.add({
 // ─── Middle Center ───────────────────────
 
 // Centered: center/center aligned, function content, focused
-const centered = new Container({
-  label: 'Centered',
-  width: 24,
-  height: 8,
-  content: () => ['Center ', 'Centered', 'Content'],
-  contentAlign: 'center',
-  focusable: true
-});
-centered.hasFocus = true;
-screenContainer.add({
-  component: centered,
-  alignX: 'center',
-  alignY: 'center'
-});
+// const centered = new Container({
+//   label: 'Centered',
+//   width: 24,
+//   height: 8,
+//   content: () => ['Center ', 'Centered', 'Content'],
+//   contentAlign: 'center',
+//   focusable: true
+// });
+// centered.hasFocus = true;
+// screenContainer.add({
+//   component: centered,
+//   alignX: 'center',
+//   alignY: 'center'
+// });
 
 // ─── Bottom Row ──────────────────────────
 
@@ -163,6 +166,15 @@ screenContainer.add({
   alignY: 'bottom'
 });
 
-// ─── Render Everything ───────────────────
+
+const title = new FIGfont('1984', BigFont);
+console.log(title.draw());
+screenContainer.add({
+  component: title,
+  alignX: 'center',
+  alignY: 'center'
+})
+
+// render AFTER all components are added (including async)
 const output = screenContainer.draw();
 screen.textContent = output;

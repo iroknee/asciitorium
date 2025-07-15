@@ -1,3 +1,5 @@
+import { Component } from './Component';
+
 // Types for component layout and alignment
 export type Content = string | string[] | (() => string[]);
 export type HorizontalAlign = 'left' | 'center' | 'right' | number;
@@ -13,12 +15,6 @@ export interface ComponentOptions {
   content?: Content;
   contentAlign?: ContentAlignment;
   focusable?: boolean;
-}
-
-export abstract class Component {
-  abstract readonly width: number;
-  abstract readonly height: number;
-  abstract draw(): string;
 }
 
 interface AddComponentOptions {
@@ -41,7 +37,7 @@ export class Container extends Component {
   readonly fill: string;
   readonly focusable: boolean;
   private content?: Content;
-  readonly contentAlign: ContentAlignment;
+  private contentAlign: ContentAlignment;
 
   hasFocus = false;
   children: PositionedComponent[] = [];
@@ -68,10 +64,20 @@ export class Container extends Component {
     if (this.focusable) this.hasFocus = true;
   }
 
-  setContent(content: Content): void {
-    this.content = content;
-  }
+setContent(content: Content, alignX?: HorizontalAlign, alignY?: VerticalAlign): void {
+  this.content = content;
 
+  if (alignX !== undefined || alignY !== undefined) {
+    const currentAlign = typeof this.contentAlign === 'object'
+      ? { ...this.contentAlign }
+      : { alignX: this.contentAlign, alignY: 'center' as VerticalAlign };
+
+    if (alignX !== undefined) currentAlign.alignX = alignX;
+    if (alignY !== undefined) currentAlign.alignY = alignY;
+
+    this.contentAlign = currentAlign;
+  }
+}
   add({
     component,
     alignX,
@@ -226,22 +232,5 @@ export class Container extends Component {
     }
 
     return rows.map(row => row.join('')).join('\n');
-  }
-}
-
-export class Button extends Component {
-  constructor(
-    public readonly label: string,
-    public readonly width: number = label.length + 4,
-    public readonly height: number = 3
-  ) {
-    super();
-  }
-
-  draw(): string {
-    const top = '╭' + '─'.repeat(this.width - 2) + '╮';
-    const label = `│ ${this.label.padEnd(this.width - 4)} │`;
-    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
-    return [top, label, bottom].join('\n');
   }
 }
