@@ -1,13 +1,14 @@
-import { Container } from './components/Container';
+import { Layout } from './components/Layout';
 import OgreFont from './fonts/Ogre.flf?raw';
 import { FIGfont } from './components/FIGfont';
 import { Label } from './components/Label';
 import { ListBox } from './components/ListBox';
+import { Alert } from './components/Alert';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
 
-const screenContainer = new Container({
+const layout = new Layout({
   width: 80,
   height: 40,
   border: false,
@@ -16,8 +17,8 @@ const screenContainer = new Container({
 const title = new FIGfont('1984', OgreFont);
 const subTitle = new Label('an ASCII UI framework');
 
-screenContainer.add({ component: title, alignX: 'center', alignY: 'top' });
-screenContainer.add({ component: subTitle, alignX: 'center', alignY: title.height });
+layout.add({ component: title, alignX: 'center', alignY: 'top' });
+layout.add({ component: subTitle, alignX: 'center', alignY: title.height });
 
 const listBoxLeft = new ListBox({
   label: 'Components',
@@ -40,13 +41,13 @@ const listBoxRight = new ListBox({
 });
 
 // Add both list boxes to the screen
-screenContainer.add({
+layout.add({
   component: listBoxLeft,
   alignX: 'left',
   alignY: title.height + subTitle.height + 1,
 });
 
-screenContainer.add({
+layout.add({
   component: listBoxRight,
   alignX: 'right',
   alignY: title.height + subTitle.height + 1,
@@ -64,8 +65,18 @@ function setFocus(index: number) {
 }
 
 function render() {
-  screen.textContent = screenContainer.draw();
+  screen.textContent = layout.draw();
 }
+
+const alert = new Alert({
+  message: 'Alert!',
+  onDismiss: () => {
+    layout.remove(alert);
+    render(); // Your re-render call
+  }
+});
+
+layout.add({ component: alert, alignX: 'center', alignY: 10 });
 
 render();
 

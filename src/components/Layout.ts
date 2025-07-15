@@ -6,7 +6,7 @@ export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
 export type ContentAlignment = HorizontalAlign | { alignX: HorizontalAlign; alignY: VerticalAlign };
 
-export interface ComponentOptions {
+export interface LayoutOptions {
   label?: string;
   width: number;
   height: number;
@@ -29,7 +29,7 @@ interface PositionedComponent {
   y: number;
 }
 
-export class Container extends Component {
+export class Layout extends Component {
   label?: string;
   readonly width: number;
   readonly height: number;
@@ -50,7 +50,7 @@ export class Container extends Component {
     content,
     contentAlign = 'center',
     focusable = false
-  }: ComponentOptions) {
+  }: LayoutOptions) {
     super();
     this.label = label;
     this.width = width;

@@ -1,4 +1,4 @@
-import { Container } from './components/Container';
+import { Layout } from './components/Layout';
 import { Button } from './components/Button';
 import BigFont from './fonts/Ogre.flf?raw';
 import { FIGfont } from './components/FIGfont';
@@ -7,7 +7,7 @@ const screen = document.getElementById('screen')!;
 
 
 // Root screen container
-const screenContainer = new Container({
+const screenContainer = new Layout({
   label: 'Demo Screen',
   width: 80,
   height: 40,
@@ -17,7 +17,7 @@ const screenContainer = new Container({
 // ─── Top Row ─────────────────────────────
 
 // Top-Left: left/top aligned, single-line string content
-const topLeft = new Container({
+const topLeft = new Layout({
   label: 'Top-Left Component',
   width: 24,
   height: 8,
@@ -30,7 +30,7 @@ screenContainer.add({
 });
 
 // Top-Center: center/top aligned, multi-line string content
-const topCenter = new Container({
+const topCenter = new Layout({
   label: 'Top-Center Component',
   width: 24,
   height: 8,
@@ -46,7 +46,7 @@ screenContainer.add({
 });
 
 // Top-Right: right/top aligned, string[] content
-const topRight = new Container({
+const topRight = new Layout({
   label: 'Top-Right',
   width: 24,
   height: 8,
@@ -80,7 +80,7 @@ screenContainer.add({
 // ─── Bottom Row ──────────────────────────
 
 // Bottom-Left: left/bottom aligned, multi-line content
-const bottomLeft = new Container({
+const bottomLeft = new Layout({
   label: 'Bottom-Left',
   width: 24,
   height: 8,
@@ -95,7 +95,7 @@ screenContainer.add({
 });
 
 // Bottom-Right: right/bottom aligned, no border
-const bottomRight = new Container({
+const bottomRight = new Layout({
   label: 'Bottom-Right',
   width: 24,
   height: 8,
@@ -112,7 +112,7 @@ screenContainer.add({
 // ─── Single-Line Box ─────────────────────
 
 // Line: height = 1, centered horizontally
-const lineComp = new Container({
+const lineComp = new Layout({
   width: 24,
   height: 1,
   border: false,
@@ -128,7 +128,7 @@ screenContainer.add({
 // ─── Nested Component ────────────────────
 
 // Parent box
-const nestParent = new Container({
+const nestParent = new Layout({
   label: 'Nested',
   width: 22,
   height: 7,
@@ -138,7 +138,7 @@ const nestParent = new Container({
 });
 
 // Child inside parent box
-const nestedChild = new Container({
+const nestedChild = new Layout({
   label: 'Child',
   width: 10,
   height: 3,
