@@ -4,38 +4,38 @@ import { FIGfont } from './components/FIGfont';
 import { Label } from './components/Label';
 import { ListBox } from './components/ListBox';
 import { Alert } from './components/Alert';
+import { ProgressBar } from './components/ProgressBar';
+import { HorizontalLine } from './components/HorizonalLine';
+import { CelticBorder } from './components/CelticBorder';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
 
 const layout = new Layout({
-  width: 80,
+  width: 70,
   height: 40,
   border: false,
 });
 
+layout.add({ component: new CelticBorder('upperLeft'), alignX: 'left', alignY: 'top' });
+layout.add({ component: new CelticBorder('upperRight'), alignX: 'right', alignY: 'top' });
+layout.add({ component: new CelticBorder('lowerLeft'), alignX: 'left', alignY: 'bottom' });
+layout.add({ component: new CelticBorder('lowerRight'), alignX: 'right', alignY: 'bottom' });
+
 const title = new FIGfont('1984', OgreFont);
+const line = new HorizontalLine(27);
 const subTitle = new Label('an ASCII UI framework');
 
 layout.add({ component: title, alignX: 'center', alignY: 'top' });
-layout.add({ component: subTitle, alignX: 'center', alignY: title.height });
+layout.add({ component: line, alignX: 'center', alignY: title.height });
+layout.add({ component: subTitle, alignX: 'center', alignY: title.height + line.height });
 
 const listBoxLeft = new ListBox({
   label: 'Components',
   width: 20,
-  height: 14,
-  items: ['Container', 'Button', 'Label', 'ListBox', 'FIGfont', 'TextBox', 'ProgressBar', 'Markdown'],
+  height: 22,
+  items: ['Alert', 'Button', 'CelticBorder', 'FIGfont', 'HorizontalLine', 'Label', 'Layout', 'ListBox', 'ProgressBar'],
   selectedIndex: 3,
-  border: true,
-  focusable: true,
-});
-
-const listBoxRight = new ListBox({
-  label: 'Examples',
-  width: 20,
-  height: 14,
-  items: ['Hello World', 'Modal Demo', 'Text Entry', 'Theme Test'],
-  selectedIndex: 0,
   border: true,
   focusable: true,
 });
@@ -43,18 +43,12 @@ const listBoxRight = new ListBox({
 // Add both list boxes to the screen
 layout.add({
   component: listBoxLeft,
-  alignX: 'left',
-  alignY: title.height + subTitle.height + 1,
-});
-
-layout.add({
-  component: listBoxRight,
-  alignX: 'right',
-  alignY: title.height + subTitle.height + 1,
+  alignX: 2,
+  alignY: title.height + subTitle.height + 2,
 });
 
 // Track focusable components and current focus index
-const focusables = [listBoxLeft, listBoxRight];
+const focusables = [listBoxLeft];
 let focusedIndex = 0;
 focusables[focusedIndex].hasFocus = true;
 
@@ -77,6 +71,20 @@ const alert = new Alert({
 });
 
 layout.add({ component: alert, alignX: 'center', alignY: 10 });
+
+const progressBar = new ProgressBar({
+  label: 'Uploading',
+  width: 30,
+  progress: 0,
+  showPercent: true,
+  onUpdate: () => {
+    render();
+  }
+});
+
+layout.add({ component: progressBar, alignX: 'center', alignY: 'bottom' });
+
+progressBar.animateTo(1.0, 3000); // Animate to 100% over 3 seconds
 
 render();
 

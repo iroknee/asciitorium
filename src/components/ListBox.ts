@@ -53,11 +53,11 @@ export class ListBox extends Component {
   }
 
     handleEvent(event: string): boolean {
-        if (event === 'ArrowUp' || event === 'w' && this.selectedIndex > 0) {
+        if ( (event === 'ArrowUp' || event === 'w') && this.selectedIndex > 0) {
             this.selectedIndex--;
             return true;
         }
-        if (event === 'ArrowDown' || event === 's' && this.selectedIndex < this.items.length - 1) {
+        if ( (event === 'ArrowDown' || event === 's') && this.selectedIndex < this.items.length - 1) {
             this.selectedIndex++;
             return true;
         }

@@ -1,10 +1,8 @@
 import { Component } from './Component';
 
 // Types for component layout and alignment
-export type Content = string | string[] | (() => string[]);
 export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
-export type ContentAlignment = HorizontalAlign | { alignX: HorizontalAlign; alignY: VerticalAlign };
 
 export interface LayoutOptions {
   label?: string;
@@ -12,9 +10,6 @@ export interface LayoutOptions {
   height: number;
   border?: boolean;
   fill?: string;
-  content?: Content;
-  contentAlign?: ContentAlignment;
-  focusable?: boolean;
 }
 
 interface AddComponentOptions {
@@ -35,9 +30,6 @@ export class Layout extends Component {
   readonly height: number;
   readonly border: boolean;
   readonly fill: string;
-  readonly focusable: boolean;
-  private content?: Content;
-  private contentAlign: ContentAlignment;
   private hasFocus = false;
   children: PositionedComponent[] = [];
 
@@ -45,11 +37,8 @@ export class Layout extends Component {
     label,
     width,
     height,
-    border = true,
+    border = false,
     fill = ' ',
-    content,
-    contentAlign = 'center',
-    focusable = false
   }: LayoutOptions) {
     super();
     this.label = label;
@@ -57,25 +46,8 @@ export class Layout extends Component {
     this.height = height;
     this.border = border;
     this.fill = fill;
-    this.content = content;
-    this.contentAlign = contentAlign;
-    this.focusable = focusable;
   }
 
-setContent(content: Content, alignX?: HorizontalAlign, alignY?: VerticalAlign): void {
-  this.content = content;
-
-  if (alignX !== undefined || alignY !== undefined) {
-    const currentAlign = typeof this.contentAlign === 'object'
-      ? { ...this.contentAlign }
-      : { alignX: this.contentAlign, alignY: 'center' as VerticalAlign };
-
-    if (alignX !== undefined) currentAlign.alignX = alignX;
-    if (alignY !== undefined) currentAlign.alignY = alignY;
-
-    this.contentAlign = currentAlign;
-  }
-}
   add({
     component,
     alignX,
@@ -154,56 +126,6 @@ setContent(content: Content, alignX?: HorizontalAlign, alignY?: VerticalAlign): 
         rows[0][i + 1] = label[i];
       }
     }
-
-    // Render content
-    if (this.content) {
-      const lines = typeof this.content === 'function'
-        ? this.content()
-        : typeof this.content === 'string'
-          ? [this.content]
-          : this.content;
-
-      const borderPad = this.border ? 1 : 0;
-      const usableWidth = this.width - 2 * borderPad;
-
-      const alignX = typeof this.contentAlign === 'object' ? this.contentAlign.alignX : this.contentAlign;
-      const alignY = typeof this.contentAlign === 'object' ? this.contentAlign.alignY : 'center';
-
-      const resolveAlign = (
-        align: HorizontalAlign | VerticalAlign,
-        containerSize: number,
-        contentSize: number
-      ): number => {
-        if (typeof align === 'number') return borderPad + align;
-        switch (align) {
-          case 'left':
-          case 'top':
-            return borderPad;
-          case 'right':
-          case 'bottom':
-            return containerSize - contentSize - borderPad;
-          case 'center':
-          default:
-            return Math.floor((containerSize - contentSize) / 2);
-        }
-      };
-
-      const startY = resolveAlign(alignY, this.height, lines.length);
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].slice(0, usableWidth);
-        const rowIdx = startY + i;
-        if (rowIdx < 0 || rowIdx >= this.height) continue;
-
-        const startX = resolveAlign(alignX, this.width, line.length);
-        for (let j = 0; j < line.length && startX + j < this.width; j++) {
-          const colIdx = startX + j;
-          if (colIdx >= 0 && colIdx < this.width) {
-            rows[rowIdx][colIdx] = line[j];
-          }
-        }
-      }
-    }
-
     // Draw children
     for (const { component, x, y } of this.children) {
       const childLines = component.draw().split('\n');
