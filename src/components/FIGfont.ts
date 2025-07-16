@@ -55,7 +55,5 @@ function renderFigletLines(text: string, fontData: string): string[] {
     }
   }
 
-  console.log(output.join('\n'));
-
   return output;
 }

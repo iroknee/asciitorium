@@ -19,7 +19,7 @@ export class ListBox extends Component {
   readonly height: number;
   readonly border: boolean;
   readonly fill: string;
-  readonly focusable: boolean;
+  readonly focusable: boolean = true;
   readonly label?: string;
 
   constructor({
@@ -29,7 +29,6 @@ export class ListBox extends Component {
     height,
     border = true,
     fill = ' ',
-    focusable = false,
     label,
   }: ListBoxOptions) {
     super();
@@ -39,7 +38,6 @@ export class ListBox extends Component {
     this.height = height;
     this.border = border;
     this.fill = fill;
-    this.focusable = focusable;
     this.label = label;
   }
 
@@ -101,8 +99,8 @@ if (this.border) {
 // Draw label if present
 if (this.label) {
   const label = this.hasFocus
-    ? ` ◆ ${this.label} `
-    : ` ◇ ${this.label} `;
+    ? `◆─ ${this.label} `
+    : `◇─ ${this.label} `;
 
   const maxLabelWidth = this.width - 2;
   const truncatedLabel = label.length > maxLabelWidth

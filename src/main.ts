@@ -3,11 +3,12 @@ import OgreFont from './fonts/Ogre.flf?raw';
 import { FIGfont } from './components/FIGfont';
 import { Label } from './components/Label';
 import { ListBox } from './components/ListBox';
-import { Alert } from './components/Alert';
+import { Alert } from './components/Alert'; 
 import { ProgressBar } from './components/ProgressBar';
 import { HorizontalLine } from './components/HorizonalLine';
 import { CelticBorder } from './components/CelticBorder';
 import { Button } from './components/Button';
+import { FocusManager } from './utils/FocusManager';  
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -37,8 +38,7 @@ const componentList = new ListBox({
   height: 22,
   items: ['Alert', 'Button', 'CelticBorder', 'FIGfont', 'HorizontalLine', 'Label', 'Layout', 'ListBox', 'ProgressBar'],
   selectedIndex: 3,
-  border: true,
-  focusable: true,
+  border: true
 });
 
 // Add both list boxes to the screen
@@ -47,17 +47,6 @@ layout.add({
   alignX: 2,
   alignY: title.height + subTitle.height + 2,
 });
-
-// Track focusable components and current focus index
-const focusables = [componentList];
-let focusedIndex = 0;
-focusables[focusedIndex].hasFocus = true;
-
-function setFocus(index: number) {
-  focusables[focusedIndex].hasFocus = false;
-  focusedIndex = index;
-  focusables[focusedIndex].hasFocus = true;
-}
 
 function render() {
   screen.textContent = layout.draw();
@@ -76,7 +65,6 @@ const progressBar = new ProgressBar({
 layout.add({ component: progressBar, alignX: 'center', alignY: 'bottom' });
 
 progressBar.animateTo(1.0, 3000); // Animate to 100% over 3 seconds
-
 
 const button = new Button({
   label: 'Click Me',
@@ -99,22 +87,22 @@ layout.add({
   alignY: layout.height - 6 // Adjust position as needed
 });
 
-// Add the button to the focusables array
-focusables.push(button);
+// Register focusable components
+const focusManager = new FocusManager();
+focusManager.register(componentList);
+focusManager.register(button);
 
 render();
 
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Tab') {
     event.preventDefault(); // avoid browser focus shifting
-    const nextIndex = (focusedIndex + 1) % focusables.length;
-    setFocus(nextIndex);
+    focusManager.focusNext();
     render();
     return;
   }
-
-  const focused = focusables[focusedIndex];
-  const handled = focused.handleEvent?.(event.key);
+  // Forward all other keys to the focus manager
+  const handled = focusManager.handleKey(event.key);
   if (handled) {
     render();
     event.preventDefault();

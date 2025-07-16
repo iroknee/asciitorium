@@ -11,6 +11,7 @@ export class Button extends Component {
   public readonly label: string;
   public readonly width: number;
   public readonly height: number;
+  readonly focusable: boolean = true;
   public readonly onClick?: () => void;
   public hasFocus = false;
 
@@ -31,11 +32,10 @@ export class Button extends Component {
   }
 
   draw(): string {
-    const top = '┌' + '─'.repeat(this.width - 2) + '┐';
-    const labelLine = this.hasFocus
-      ? `│[${this.label.padEnd(this.width - 4)}]│`
-      : `│ ${this.label.padEnd(this.width - 4)} │`;
-    const bottom = '└' + '─'.repeat(this.width - 2) + '┘';
+    const upperLeft = this.hasFocus ? '◆' : '♢';
+    const top = '╭' +upperLeft  + '─'.repeat(this.width - 3) + '╮';
+    const labelLine =   `│ ${this.label.padEnd(this.width - 4)} │`;
+    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
     return [top, labelLine, bottom].join('\n');
   }
 }
