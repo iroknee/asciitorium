@@ -7,6 +7,7 @@ import { Alert } from './components/Alert';
 import { ProgressBar } from './components/ProgressBar';
 import { HorizontalLine } from './components/HorizonalLine';
 import { CelticBorder } from './components/CelticBorder';
+import { Button } from './components/Button';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -30,7 +31,7 @@ layout.add({ component: title, alignX: 'center', alignY: 'top' });
 layout.add({ component: line, alignX: 'center', alignY: title.height });
 layout.add({ component: subTitle, alignX: 'center', alignY: title.height + line.height });
 
-const listBoxLeft = new ListBox({
+const componentList = new ListBox({
   label: 'Components',
   width: 20,
   height: 22,
@@ -42,13 +43,13 @@ const listBoxLeft = new ListBox({
 
 // Add both list boxes to the screen
 layout.add({
-  component: listBoxLeft,
+  component: componentList,
   alignX: 2,
   alignY: title.height + subTitle.height + 2,
 });
 
 // Track focusable components and current focus index
-const focusables = [listBoxLeft];
+const focusables = [componentList];
 let focusedIndex = 0;
 focusables[focusedIndex].hasFocus = true;
 
@@ -61,16 +62,6 @@ function setFocus(index: number) {
 function render() {
   screen.textContent = layout.draw();
 }
-
-const alert = new Alert({
-  message: 'Alert!',
-  onDismiss: () => {
-    layout.remove(alert);
-    render(); // Your re-render call
-  }
-});
-
-layout.add({ component: alert, alignX: 'center', alignY: 10 });
 
 const progressBar = new ProgressBar({
   label: 'Uploading',
@@ -85,6 +76,31 @@ const progressBar = new ProgressBar({
 layout.add({ component: progressBar, alignX: 'center', alignY: 'bottom' });
 
 progressBar.animateTo(1.0, 3000); // Animate to 100% over 3 seconds
+
+
+const button = new Button({
+  label: 'Click Me',
+  onClick: () => {
+    const alert = new Alert({
+      message: 'You clicked the button!',
+      onDismiss: () => {
+        layout.remove(alert);
+        render(); // Your re-render call
+      }
+    });
+    layout.add({ component: alert, alignX: 'center', alignY: 10 });
+    render();
+  }
+});
+
+layout.add({
+  component: button,
+  alignX: 'center',
+  alignY: layout.height - 6 // Adjust position as needed
+});
+
+// Add the button to the focusables array
+focusables.push(button);
 
 render();
 
