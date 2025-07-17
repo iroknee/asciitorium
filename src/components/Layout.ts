@@ -146,4 +146,15 @@ export class Layout extends Component {
 
     return rows.map(row => row.join('')).join('\n');
   }
+ 
+  getFocusableDescendants(): Component[] {
+    const focusables: Component[] = [];
+    for (const { component } of this.children) {
+      if (component.focusable) {
+        focusables.push(component);
+      }
+      focusables.push(...component.getFocusableDescendants());
+    }
+    return focusables;
+  }
 }

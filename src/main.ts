@@ -26,7 +26,7 @@ layout.add({ component: new CelticBorder('lowerRight'), alignX: 'right', alignY:
 
 const title = new FIGfont('1984', OgreFont);
 const line = new HorizontalLine(27);
-const subTitle = new Label('an ASCII UI framework');
+const subTitle = new Label('an ASCII framework');
 
 layout.add({ component: title, alignX: 'center', alignY: 'top' });
 layout.add({ component: line, alignX: 'center', alignY: title.height });
@@ -87,23 +87,20 @@ layout.add({
   alignY: layout.height - 6 // Adjust position as needed
 });
 
-// Register focusable components
-const focusManager = new FocusManager();
-focusManager.register(componentList);
-focusManager.register(button);
-
 render();
+
+const focusManager = new FocusManager();
+focusManager.reset(layout); // derive from layout tree
 
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Tab') {
-    event.preventDefault(); // avoid browser focus shifting
+    event.preventDefault();
     focusManager.focusNext();
     render();
     return;
   }
-  // Forward all other keys to the focus manager
-  const handled = focusManager.handleKey(event.key);
-  if (handled) {
+
+  if (focusManager.handleKey(event.key)) {
     render();
     event.preventDefault();
   }

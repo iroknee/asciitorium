@@ -1,4 +1,5 @@
 import { Component } from './Component';
+import { Button } from './Button';
 
 export interface AlertOptions {
   message: string;
@@ -10,31 +11,50 @@ export interface AlertOptions {
 export class Alert extends Component {
   readonly message: string;
   readonly width: number;
-  readonly height: number = 4;
+  readonly height: number = 6;
   private timerId?: ReturnType<typeof setTimeout>;
   private dismissed = false;
   private onDismiss?: () => void;
 
-  constructor({ message, width = message.length + 4, durationMs = 3000, onDismiss }: AlertOptions) {
+  private okButton: Button;
+
+  constructor({ message, width = message.length + 6, durationMs, onDismiss }: AlertOptions) {
     super();
     this.message = message;
     this.width = width;
     this.onDismiss = onDismiss;
 
-    this.timerId = setTimeout(() => this.dismiss(), durationMs);
+    // Create dismissible OK button
+    this.okButton = new Button({
+      label: ' OK ',
+      onClick: () => this.dismiss()
+    });
+
+    this.addChild(this.okButton);
+
+    // Auto-dismiss timer (optional)
+    if (durationMs !== undefined) {
+      this.timerId = setTimeout(() => this.dismiss(), durationMs);
+    }
   }
 
   dismiss(): void {
     if (this.dismissed) return;
     this.dismissed = true;
-    if (this.onDismiss) this.onDismiss();
+    if (this.timerId) clearTimeout(this.timerId);
+    this.onDismiss?.();
+  }
+
+  getFocusableDescendants(): Component[] {
+    return [this.okButton];
   }
 
   draw(): string {
     const top = '╭' + '─'.repeat(this.width - 2) + '╮';
-    const content = `│ ${this.message.padEnd(this.width - 4)} │\``;
-    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯`';
-    const shadow = ' `' + '`'.repeat(this.width - 2) + '`';
-    return [top, content, bottom, shadow].join('\n');
+    const msgLine = `│ ${this.message.padEnd(this.width - 4)} │`;
+    const spacer = `│${' '.repeat(this.width - 2)}│`;
+    const buttonLine = `│${' '.repeat(Math.floor((this.width - this.okButton.width) / 2) - 1)}${this.okButton.draw()}${' '.repeat(Math.ceil((this.width - this.okButton.width) / 2) - 1)}│`;
+    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
+    return [top, msgLine, spacer, buttonLine, bottom].join('\n');
   }
 }
