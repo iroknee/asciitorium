@@ -1,4 +1,5 @@
 import { Component } from '../components/Component';
+import { Container } from '../components/Container';
 
 export class FocusManager {
   private contextStack: Component[][] = [];
@@ -46,10 +47,21 @@ export class FocusManager {
     return handled ?? false;
   }
 
-  reset(layoutRoot: Component) {
-    const focusables = layoutRoot.getFocusableDescendants?.() ?? [];
-    this.contextStack = [focusables];
+  reset(layoutRoot: Container) {
+    this.contextStack = [this.getFocusableDescendants(layoutRoot)];
     this.index = 0;
     this.setFocus(0);
+  }
+
+  getFocusableDescendants(layoutRoot: Container): Component[] {
+    const focusables: Component[] = [];
+    for (const child of layoutRoot.children) {
+      if (child.component.focusable) focusables.push(child.component);
+      // Recursively check if the child is a Container
+      if (child.component instanceof Container) {
+        focusables.push(...this.getFocusableDescendants(child.component));
+      }
+    }
+    return focusables;
   }
 }

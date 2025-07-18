@@ -24,7 +24,7 @@ export class Alert extends Container {
     durationMs,
     onDismiss,
   }: AlertOptions) {
-    super({ width, height: 6, border: true });
+    super({ width, height: 9, border: true });
     this.message = message;
     this.onDismiss = onDismiss;
 
@@ -35,7 +35,7 @@ export class Alert extends Container {
     });
 
     this.add({ component: new Label(message), alignX: 'center', alignY: 1 });
-    this.add({ component: this.okButton, alignX: 'right', alignY: 'bottom' });
+    this.add({ component: this.okButton, alignX: 'center', alignY: 'bottom' });
 
     // Auto-dismiss timer (optional)
     if (durationMs !== undefined) {
@@ -54,12 +54,4 @@ export class Alert extends Container {
     return [this.okButton];
   }
 
-  draw(): string[][] {
-    const top = '╭' + '─'.repeat(this.width - 2) + '╮';
-    const msgLine = `│ ${this.message.padEnd(this.width - 4)} │`;
-    const spacer = `│${' '.repeat(this.width - 2)}│`;
-    const buttonLine = `│${' '.repeat(Math.floor((this.width - this.okButton.width) / 2) - 1)}${this.okButton.draw()}${' '.repeat(Math.ceil((this.width - this.okButton.width) / 2) - 1)}│`;
-    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
-    return [[...top], [...msgLine], [...spacer], [...buttonLine], [...bottom]];
-  }
 }
