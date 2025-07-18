@@ -1,5 +1,7 @@
 import { Component } from './Component';
 import { Button } from './Button';
+import { Container } from './Container';
+import { Label } from './Label';
 
 export interface AlertOptions {
   message: string;
@@ -8,29 +10,32 @@ export interface AlertOptions {
   onDismiss?: () => void;
 }
 
-export class Alert extends Component {
+export class Alert extends Container {
   readonly message: string;
-  readonly width: number;
-  readonly height: number = 6;
   private timerId?: ReturnType<typeof setTimeout>;
   private dismissed = false;
   private onDismiss?: () => void;
 
   private okButton: Button;
 
-  constructor({ message, width = message.length + 6, durationMs, onDismiss }: AlertOptions) {
-    super();
+  constructor({
+    message,
+    width = message.length + 6,
+    durationMs,
+    onDismiss,
+  }: AlertOptions) {
+    super({ width, height: 6, border: true });
     this.message = message;
-    this.width = width;
     this.onDismiss = onDismiss;
 
     // Create dismissible OK button
     this.okButton = new Button({
       label: ' OK ',
-      onClick: () => this.dismiss()
+      onClick: () => this.dismiss(),
     });
 
-    this.addChild(this.okButton);
+    this.add({ component: new Label(message), alignX: 'center', alignY: 1 });
+    this.add({ component: this.okButton, alignX: 'right', alignY: 'bottom' });
 
     // Auto-dismiss timer (optional)
     if (durationMs !== undefined) {
@@ -49,12 +54,12 @@ export class Alert extends Component {
     return [this.okButton];
   }
 
-  draw(): string {
+  draw(): string[][] {
     const top = '╭' + '─'.repeat(this.width - 2) + '╮';
     const msgLine = `│ ${this.message.padEnd(this.width - 4)} │`;
     const spacer = `│${' '.repeat(this.width - 2)}│`;
     const buttonLine = `│${' '.repeat(Math.floor((this.width - this.okButton.width) / 2) - 1)}${this.okButton.draw()}${' '.repeat(Math.ceil((this.width - this.okButton.width) / 2) - 1)}│`;
     const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
-    return [top, msgLine, spacer, buttonLine, bottom].join('\n');
+    return [[...top], [...msgLine], [...spacer], [...buttonLine], [...bottom]];
   }
 }

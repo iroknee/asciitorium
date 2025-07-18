@@ -9,7 +9,7 @@ export class HorizontalLine extends Component {
     this.width = width;
   }
 
-  draw(): string {
-    return '⎺'.repeat(this.width);
+  draw(): string[][] {
+    return [Array.from('⎺'.repeat(this.width))];
   }
 }

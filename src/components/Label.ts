@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from './Component';
 
 export class Label extends Component {
   constructor(
@@ -9,7 +9,7 @@ export class Label extends Component {
     super();
   }
 
-  draw(): string {
-    return this.label;
+  draw(): string[][] {
+    return [[...this.label]];
   }
 }

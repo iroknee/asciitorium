@@ -7,14 +7,13 @@ export class FIGfont extends Component {
 
   constructor(text: string, fontData: string) {
     super();
-
     this.lines = renderFigletLines(text, fontData);
     this.height = this.lines.length;
-    this.width = Math.max(...this.lines.map(line => line.length));
+    this.width = Math.max(...this.lines.map((line) => line.length));
   }
 
-  draw(): string {
-    return this.lines.join('\n');
+  draw(): string[][] {
+    return this.lines.map((line) => Array.from(line));
   }
 }
 
@@ -34,11 +33,12 @@ function renderFigletLines(text: string, fontData: string): string[] {
   const glyphMap = new Map<number, string[]>();
   let i = 0;
   for (let ascii = 32; i < glyphLines.length; ascii++) {
-    const glyph = glyphLines.slice(i, i + height).map(line =>
-      line
-        .replace(new RegExp(`\\${hardblank}`, 'g'), ' ') // hardblank -> space
-        .replace(/\r/g, '')                               // remove carriage return
-        .replace(/@+$/, '')                               // strip trailing @s
+    const glyph = glyphLines.slice(i, i + height).map(
+      (line) =>
+        line
+          .replace(new RegExp(`\\${hardblank}`, 'g'), ' ') // hardblank -> space
+          .replace(/\r/g, '') // remove carriage return
+          .replace(/@+$/, '') // strip trailing @s
     );
     glyphMap.set(ascii, glyph);
     i += height;

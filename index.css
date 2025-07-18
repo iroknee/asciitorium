@@ -1,27 +1,27 @@
 @font-face {
-    font-family: 'PrintChar21';
-    src:
+  font-family: 'PrintChar21';
+  src:
     url('/fonts/PrintChar21.woff2') format('woff2'),
     url('/fonts/PrintChar21.woff') format('woff'),
     url('/fonts/PrintChar21.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
-    margin: 0;
-    background: black;
-    color: #3FFF00;
-    font-size: larger;
-    font-family: 'PrintChar21';
+  margin: 0;
+  background: black;
+  color: #3fff00;
+  font-size: larger;
+  font-family: 'PrintChar21';
 
-    /* Center the screen horizontally */
-    display: flex;
-    justify-content: center;
-    height: 100vh; /* Full viewport height */
+  /* Center the screen horizontally */
+  display: flex;
+  justify-content: center;
+  height: 100vh; /* Full viewport height */
 }
 
 .inverted {
-    background-color: white;
-    color: black;
+  background-color: white;
+  color: black;
 }

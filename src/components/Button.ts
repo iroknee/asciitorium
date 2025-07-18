@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from './Component';
 
 export interface ButtonOptions {
   label: string;
@@ -31,11 +31,11 @@ export class Button extends Component {
     return false;
   }
 
-  draw(): string {
+  draw(): string[][] {
     const upperLeft = this.hasFocus ? '◆' : '♢';
-    const top = '╭' +upperLeft  + '─'.repeat(this.width - 3) + '╮';
-    const labelLine =   `│ ${this.label.padEnd(this.width - 4)} │`;
+    const top = '╭' + upperLeft + '─'.repeat(this.width - 3) + '╮';
+    const labelLine = `│ ${this.label.padEnd(this.width - 4)} │`;
     const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
-    return [top, labelLine, bottom].join('\n');
+    return [[...top], [...labelLine], [...bottom]];
   }
 }

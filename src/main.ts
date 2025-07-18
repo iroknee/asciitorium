@@ -1,28 +1,44 @@
-import { Layout } from './components/Layout';
+import { Container } from './components/Container';
 import OgreFont from './fonts/Ogre.flf?raw';
 import { FIGfont } from './components/FIGfont';
 import { Label } from './components/Label';
 import { ListBox } from './components/ListBox';
-import { Alert } from './components/Alert'; 
+import { Alert } from './components/Alert';
 import { ProgressBar } from './components/ProgressBar';
 import { HorizontalLine } from './components/HorizonalLine';
 import { CelticBorder } from './components/CelticBorder';
 import { Button } from './components/Button';
-import { FocusManager } from './utils/FocusManager';  
+import { FocusManager } from './utils/FocusManager';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
 
-const layout = new Layout({
+const layout = new Container({
   width: 70,
   height: 40,
   border: false,
 });
 
-layout.add({ component: new CelticBorder('upperLeft'), alignX: 'left', alignY: 'top' });
-layout.add({ component: new CelticBorder('upperRight'), alignX: 'right', alignY: 'top' });
-layout.add({ component: new CelticBorder('lowerLeft'), alignX: 'left', alignY: 'bottom' });
-layout.add({ component: new CelticBorder('lowerRight'), alignX: 'right', alignY: 'bottom' });
+layout.add({
+  component: new CelticBorder('upperLeft'),
+  alignX: 'left',
+  alignY: 'top',
+});
+layout.add({
+  component: new CelticBorder('upperRight'),
+  alignX: 'right',
+  alignY: 'top',
+});
+layout.add({
+  component: new CelticBorder('lowerLeft'),
+  alignX: 'left',
+  alignY: 'bottom',
+});
+layout.add({
+  component: new CelticBorder('lowerRight'),
+  alignX: 'right',
+  alignY: 'bottom',
+});
 
 const title = new FIGfont('1984', OgreFont);
 const line = new HorizontalLine(27);
@@ -30,15 +46,29 @@ const subTitle = new Label('an ASCII framework');
 
 layout.add({ component: title, alignX: 'center', alignY: 'top' });
 layout.add({ component: line, alignX: 'center', alignY: title.height });
-layout.add({ component: subTitle, alignX: 'center', alignY: title.height + line.height });
+layout.add({
+  component: subTitle,
+  alignX: 'center',
+  alignY: title.height + line.height,
+});
 
 const componentList = new ListBox({
   label: 'Components',
   width: 20,
   height: 22,
-  items: ['Alert', 'Button', 'CelticBorder', 'FIGfont', 'HorizontalLine', 'Label', 'Layout', 'ListBox', 'ProgressBar'],
+  items: [
+    'Alert',
+    'Button',
+    'CelticBorder',
+    'FIGfont',
+    'HorizontalLine',
+    'Label',
+    'Layout',
+    'ListBox',
+    'ProgressBar',
+  ],
   selectedIndex: 3,
-  border: true
+  border: true,
 });
 
 // Add both list boxes to the screen
@@ -49,7 +79,9 @@ layout.add({
 });
 
 function render() {
-  screen.textContent = layout.draw();
+  const screenBuffer = layout.draw();
+  console.log(screenBuffer.map((row) => row.join('')).join('\n'));
+  screen.textContent = screenBuffer.map((row) => row.join('')).join('\n');
 }
 
 const progressBar = new ProgressBar({
@@ -59,7 +91,7 @@ const progressBar = new ProgressBar({
   showPercent: true,
   onUpdate: () => {
     render();
-  }
+  },
 });
 
 layout.add({ component: progressBar, alignX: 'center', alignY: 'bottom' });
@@ -70,21 +102,23 @@ const button = new Button({
   label: 'Click Me',
   onClick: () => {
     const alert = new Alert({
-      message: 'You clicked the button!',
+      message: 'Something happened!',
       onDismiss: () => {
+        focusManager.popContext();
         layout.remove(alert);
-        render(); // Your re-render call
-      }
+        render();
+      },
     });
     layout.add({ component: alert, alignX: 'center', alignY: 10 });
+    focusManager.pushContext(alert.getFocusableDescendants());
     render();
-  }
+  },
 });
 
 layout.add({
   component: button,
   alignX: 'center',
-  alignY: layout.height - 6 // Adjust position as needed
+  alignY: layout.height - 6, // Adjust position as needed
 });
 
 render();

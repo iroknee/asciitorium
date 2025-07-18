@@ -18,7 +18,13 @@ export class ProgressBar extends Component {
   private onUpdate?: () => void;
   private animationInterval?: ReturnType<typeof setInterval>;
 
-  constructor({ label, width, progress, showPercent = false, onUpdate }: ProgressBarOptions) {
+  constructor({
+    label,
+    width,
+    progress,
+    showPercent = false,
+    onUpdate,
+  }: ProgressBarOptions) {
     super();
     this.label = label;
     this.width = width;
@@ -56,7 +62,7 @@ export class ProgressBar extends Component {
     }, delay);
   }
 
-  draw(): string {
+  draw(): string[][] {
     const innerWidth = this.width - 2;
     const filledLength = Math.round(this.progress * innerWidth);
     const emptyLength = innerWidth - filledLength;
@@ -74,10 +80,13 @@ export class ProgressBar extends Component {
       barContent = padded.slice(0, innerWidth);
     }
 
-    const top = ' ⎽' + this.label + '⎽'.repeat(Math.max(0, this.width - 3 - this.label.length));
+    const top =
+      ' ⎽' +
+      this.label +
+      '⎽'.repeat(Math.max(0, this.width - 3 - this.label.length));
     const bar = `⎹${barContent}⎸`;
-    const bottom = ' '+ '⎺'.repeat(this.width - 2);
+    const bottom = ' ' + '⎺'.repeat(this.width - 2);
 
-    return [top, bar, bottom].join('\n');
+    return [top, bar, bottom].map((line) => Array.from(line));
   }
 }

@@ -1,19 +1,13 @@
+import { Component } from './Component';
 
-import { Component } from "./Component";
-
-export type CelticCorner = 'upperLeft' | 'upperRight' | 'lowerLeft' | 'lowerRight';
+export type CelticCorner =
+  | 'upperLeft'
+  | 'upperRight'
+  | 'lowerLeft'
+  | 'lowerRight';
 
 const borderPatterns: Record<CelticCorner, string[]> = {
-  upperLeft: [
-    '╭⎯╮╭⎯⎯⎯⎯⎯',
-    '⏐╭⎯⎯⎯⎯',
-    '╰⎯⏐╯',
-    '╭⏐╯',
-    '⏐⏐',
-    '⏐⏐',
-    '⏐',
-    '⏐'
-  ],
+  upperLeft: ['╭⎯╮╭⎯⎯⎯⎯⎯', '⏐╭⎯⎯⎯⎯', '╰⎯⏐╯', '╭⏐╯', '⏐⏐', '⏐⏐', '⏐', '⏐'],
   upperRight: [
     '⎯⎯⎯⎯╮╭⎯╮',
     ' ⎯⎯⎯⎯⎯╮⏐',
@@ -22,18 +16,9 @@ const borderPatterns: Record<CelticCorner, string[]> = {
     '      ⏐⏐',
     '      ⏐⏐',
     '       ⏐',
-    '       ⏐'
+    '       ⏐',
   ],
-  lowerLeft: [
-    '⏐',
-    '⏐',
-    '⏐⏐',
-    '⏐⏐',
-    '╰⏐╮',
-    '╭⎯⏐╮',
-    '⏐╰⎯⎯⎯⎯⎯',
-    '╰⎯╯╰⎯⎯⎯⎯⎯'
-  ],
+  lowerLeft: ['⏐', '⏐', '⏐⏐', '⏐⏐', '╰⏐╮', '╭⎯⏐╮', '⏐╰⎯⎯⎯⎯⎯', '╰⎯╯╰⎯⎯⎯⎯⎯'],
   lowerRight: [
     '       ⏐',
     '       ⏐',
@@ -42,8 +27,8 @@ const borderPatterns: Record<CelticCorner, string[]> = {
     '     ╭⏐╯',
     '    ╭⏐⎯╮',
     '  ⎯⎯⎯⎯╯⏐',
-    '⎯⎯⎯⎯╯╰⎯╯'
-  ]
+    '⎯⎯⎯⎯╯╰⎯╯',
+  ],
 };
 
 export class CelticBorder extends Component {
@@ -58,8 +43,7 @@ export class CelticBorder extends Component {
     }
   }
 
-  draw(): string {
-    return borderPatterns[this.corner].join('\n');
+  draw(): string[][] {
+    return borderPatterns[this.corner].map((line) => Array.from(line));
   }
 }
-
