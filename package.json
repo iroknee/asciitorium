@@ -8,14 +8,18 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "docs": "npx typedoc --options typedoc.json"
+    "docs": "npx typedoc --options typedoc.json",
+    "art": "node scripts/generate-art.js",
+    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/figlet": "^1.7.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.12",
+    "fs-extra": "^11.3.0",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typedoc": "^0.28.7",

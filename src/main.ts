@@ -1,6 +1,5 @@
 import { Container } from './core/Container';
-import OgreFont from './fonts/Ogre.flf?raw';
-import { FIGfont } from './components/FIGfont';
+import { Art } from './components/Art';
 import { Label } from './components/Label';
 import { ListBox } from './components/ListBox';
 import { Alert } from './components/Alert';
@@ -10,7 +9,8 @@ import { CelticBorder } from './components/CelticBorder';
 import { Button } from './components/Button';
 import { FocusManager } from './core/FocusManager';
 import { MarkdownViewer } from './components/MarkdownViewer';
-import readmeContent from '../README.md?raw'; // or './README.md?raw' if in root
+import readmeContent from '../README.md?raw';
+import a1982 from './1982.txt?raw';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -20,6 +20,7 @@ const layout = new Container({
   height: 40,
   border: true,
 });
+
 
 layout.add({
   component: new CelticBorder('upperLeft'),
@@ -42,7 +43,7 @@ layout.add({
   alignY: 'bottom',
 });
 
-const title = new FIGfont('1982', OgreFont);
+const title = new Art(a1982);
 const line = new HorizontalLine(27);
 const subTitle = new Label('an ASCII GUI framework');
 
