@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from '../core/Component';
 
 export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;

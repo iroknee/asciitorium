@@ -1,6 +1,6 @@
-# 1984 – ASCII-Based Web UI Framework
+# 1982 – ASCII-Based Web GUI Framework
 
-1984 is a lightweight, TypeScript-based ASCII UI rendering engine inspired by old-school terminal interfaces. The goal is to build a web-delivered, CLI-style visual interface using `<pre>` rendering and styled HTML spans — no external frameworks or virtual DOMs.
+1982 is a lightweight, TypeScript-based ASCII UI rendering engine inspired by old-school terminal interfaces. The goal is to build a web-delivered, CLI-style visual interface using `<pre>` rendering and styled HTML spans — no external frameworks or virtual DOMs.
 
 ## Features
 
@@ -11,7 +11,7 @@
 ## Directory Structure
 
 ```bash
-1984/
+1982/
 ├── src/                  # Source code
 │   ├── components/       # UI components
 │   └── main.ts           # Demo entry point
@@ -36,7 +36,7 @@
 
    ```bash
    git clone <repository-url>
-   cd 1984
+   cd 1982
    ```
 
 2. Install dependencies:

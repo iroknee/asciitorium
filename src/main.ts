@@ -1,4 +1,4 @@
-import { Container } from './components/Container';
+import { Container } from './core/Container';
 import OgreFont from './fonts/Ogre.flf?raw';
 import { FIGfont } from './components/FIGfont';
 import { Label } from './components/Label';
@@ -8,7 +8,9 @@ import { ProgressBar } from './components/ProgressBar';
 import { HorizontalLine } from './components/HorizonalLine';
 import { CelticBorder } from './components/CelticBorder';
 import { Button } from './components/Button';
-import { FocusManager } from './utils/FocusManager';
+import { FocusManager } from './core/FocusManager';
+import { MarkdownViewer } from './components/MarkdownViewer';
+import readmeContent from '../README.md?raw'; // or './README.md?raw' if in root
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -16,7 +18,7 @@ screen.style.fontFamily = 'PrintChar21';
 const layout = new Container({
   width: 70,
   height: 40,
-  border: false,
+  border: true,
 });
 
 layout.add({
@@ -40,9 +42,9 @@ layout.add({
   alignY: 'bottom',
 });
 
-const title = new FIGfont('1984', OgreFont);
+const title = new FIGfont('1982', OgreFont);
 const line = new HorizontalLine(27);
-const subTitle = new Label('an ASCII framework');
+const subTitle = new Label('an ASCII GUI framework');
 
 layout.add({ component: title, alignX: 'center', alignY: 'top' });
 layout.add({ component: line, alignX: 'center', alignY: title.height });
@@ -54,7 +56,7 @@ layout.add({
 
 const componentList = new ListBox({
   label: 'Components',
-  width: 20,
+  width: 22,
   height: 22,
   items: [
     'Alert',
@@ -71,21 +73,32 @@ const componentList = new ListBox({
   border: true,
 });
 
-// Add both list boxes to the screen
 layout.add({
   component: componentList,
-  alignX: 2,
+  alignX: 'left',
+  alignY: title.height + subTitle.height + 2,
+});
+
+const markdownPreview = new MarkdownViewer({
+  label: 'Docs',
+  markdown: readmeContent,
+  width: 46,
+  height: 22,
+});
+
+layout.add({
+  component: markdownPreview,
+  alignX: 'right',
   alignY: title.height + subTitle.height + 2,
 });
 
 function render() {
   const screenBuffer = layout.draw();
-  console.log(screenBuffer.map((row) => row.join('')).join('\n'));
   screen.textContent = screenBuffer.map((row) => row.join('')).join('\n');
 }
 
 const progressBar = new ProgressBar({
-  label: 'Uploading',
+  label: '',
   width: 30,
   progress: 0,
   showPercent: true,
@@ -102,7 +115,7 @@ const button = new Button({
   label: 'Click Me',
   onClick: () => {
     const alert = new Alert({
-      message: 'Something happened!',
+      message: 'You clicked me!!!',
       onDismiss: () => {
         focusManager.popContext();
         layout.remove(alert);
@@ -117,8 +130,8 @@ const button = new Button({
 
 layout.add({
   component: button,
-  alignX: 'center',
-  alignY: layout.height - 6, // Adjust position as needed
+  alignX: layout.width - 20,
+  alignY: 3,
 });
 
 render();

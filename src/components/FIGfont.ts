@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from '../core/Component';
 
 export class FIGfont extends Component {
   public readonly width: number;

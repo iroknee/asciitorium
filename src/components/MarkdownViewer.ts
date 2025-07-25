@@ -1,19 +1,18 @@
 import { Component } from '../core/Component';
 
-export interface ListBoxOptions {
-  items: string[];
-  selectedIndex: number;
+export interface MarkdownViewerOptions {
+  markdown: string;
+  visibleIndex?: number;
   width: number;
   height: number;
   border?: boolean;
   fill?: string;
-  focusable?: boolean;
   label?: string;
 }
 
-export class ListBox extends Component {
-  items: string[];
-  selectedIndex: number;
+export class MarkdownViewer extends Component {
+  markdown: string[];
+  visibleIndex: number = 0;
   hasFocus = false;
   readonly width: number;
   readonly height: number;
@@ -23,49 +22,84 @@ export class ListBox extends Component {
   readonly label?: string;
 
   constructor({
-    items,
-    selectedIndex,
+    markdown,
     width,
     height,
     border = true,
     fill = ' ',
     label,
-  }: ListBoxOptions) {
+  }: MarkdownViewerOptions) {
     super();
-    this.items = items;
-    this.selectedIndex = selectedIndex;
     this.width = width;
     this.height = height;
     this.border = border;
     this.fill = fill;
     this.label = label;
+
+    // temp, need to change this later...
+    // let lines = wrapText(markdown, this.width - 4)
+    let md = [];
+    let lines = markdown.split(/\r?\n/);
+    for (let i = 0; i < lines.length; i++) {
+      let underline = false;
+      let line = lines[i];
+      // if (line.trim() === '') {
+      //   md.push('');
+      //   continue;
+      // }
+      if (line.startsWith('# ')) {
+        line = line.substring(2, lines[i].length);
+        line = line.toUpperCase();
+        underline = true;
+      } else if (line.startsWith('## ')) {
+        md.push('');
+        line = line.substring(3, lines[i].length);
+        underline = true;
+      } else if (line.startsWith('### ')) {
+        md.push('');
+        line = line.substring(4, lines[i].length);
+        underline = true;
+      } else if (line.startsWith('* ') || line.startsWith('- ')) {
+        line = ' ◊ ' + line.substring(2, line.length);
+      } else if (line.trim().startsWith('```')) {
+        continue;
+      } else if (line === '---' || line === '===') {
+        md.push('―'.repeat(width - 6));
+      }
+      const wrappedLines = wrapText(line, this.width - 4);
+      for (let j = 0; j < wrappedLines.length; j++) {
+        md.push(wrappedLines[j]);
+      }
+      if (underline) {
+        md.push('⎺'.repeat(width - 6));
+      }
+    }
+
+    this.markdown = md;
   }
 
-  setItems(items: string[], selectedIndex: number = 0): void {
-    this.items = items;
-    this.selectedIndex = selectedIndex;
-  }
-
-  setSelectedIndex(index: number): void {
-    this.selectedIndex = index;
+  setMarkdown(markdown: string, visibleIndex: number = 0): void {
+    this.markdown = markdown.split(/\r?\n/);
+    this.visibleIndex = visibleIndex;
   }
 
   handleEvent(event: string): boolean {
-    if ((event === 'ArrowUp' || event === 'w') && this.selectedIndex > 0) {
-      this.selectedIndex--;
+    if ((event === 'ArrowUp' || event === 'w') && this.visibleIndex > 0) {
+      this.visibleIndex--;
       return true;
     }
     if (
       (event === 'ArrowDown' || event === 's') &&
-      this.selectedIndex < this.items.length - 1
+      this.visibleIndex < this.markdown.length - 1
     ) {
-      this.selectedIndex++;
+      this.visibleIndex++;
       return true;
     }
     return false;
   }
 
   draw(): string[][] {
+    console.log(this.focusable);
     const rows: string[][] = [];
 
     // Fill background
@@ -122,12 +156,15 @@ export class ListBox extends Component {
     const startIdx = Math.max(
       0,
       Math.min(
-        this.selectedIndex - Math.floor(maxVisibleItems / 2),
-        this.items.length - maxVisibleItems
+        this.visibleIndex - Math.floor(maxVisibleItems / 2),
+        this.markdown.length - maxVisibleItems
       )
     );
 
-    const visibleItems = this.items.slice(startIdx, startIdx + maxVisibleItems);
+    const visibleItems = this.markdown.slice(
+      startIdx,
+      startIdx + maxVisibleItems
+    );
 
     // Draw scroll up indicator (if needed)
     if (startIdx > 0) {
@@ -140,7 +177,7 @@ export class ListBox extends Component {
       const rowIdx = borderPad + paddingTop + i * lineHeight;
       if (rowIdx >= this.height - borderPad) return;
 
-      let prefix = startIdx + i === this.selectedIndex ? ' ◇' : '  ';
+      let prefix = startIdx + i === this.visibleIndex ? ' ◇' : '  ';
       if (prefix === ' ◇' && this.hasFocus) prefix = ' ◆';
       const line = (prefix + ' ' + item)
         .slice(0, this.width - 2 * borderPad)
@@ -154,7 +191,7 @@ export class ListBox extends Component {
     });
 
     // Draw scroll down indicator (if needed)
-    if (startIdx + maxVisibleItems < this.items.length) {
+    if (startIdx + maxVisibleItems < this.markdown.length) {
       const rowIdx = this.height - 1 - borderPad;
       const colIdx = Math.floor(this.width - 2);
       if (rowIdx >= 0 && rowIdx < this.height) rows[rowIdx][colIdx] = '↓';
@@ -162,4 +199,26 @@ export class ListBox extends Component {
 
     return rows;
   }
+}
+
+// this should account for splitting on \r and \n as well.
+function wrapText(text: string, width: number): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let current: string = '';
+  let len = 0;
+
+  for (const word of words) {
+    if (len + word.length + (current.length ? 1 : 0) > width) {
+      lines.push(current);
+      current = word;
+      len = word.length;
+    } else {
+      if (current.length) current = current + ' ';
+      current = current + word;
+      len += word.length + (current.length ? 1 : 0);
+    }
+  }
+  if (current.length) lines.push(current);
+  return lines;
 }

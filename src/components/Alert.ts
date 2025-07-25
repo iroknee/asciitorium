@@ -1,6 +1,6 @@
-import { Component } from './Component';
+import { Component } from '../core/Component';
 import { Button } from './Button';
-import { Container } from './Container';
+import { Container } from '../core/Container';
 import { Label } from './Label';
 
 export interface AlertOptions {
@@ -53,5 +53,4 @@ export class Alert extends Container {
   getFocusableDescendants(): Component[] {
     return [this.okButton];
   }
-
 }

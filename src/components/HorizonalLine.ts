@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from '../core/Component';
 
 export class HorizontalLine extends Component {
   readonly width: number;

@@ -1,5 +1,5 @@
-import { Component } from '../components/Component';
-import { Container } from '../components/Container';
+import { Component } from '../core/Component';
+import { Container } from './Container';
 
 export class FocusManager {
   private contextStack: Component[][] = [];

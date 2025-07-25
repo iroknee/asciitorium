@@ -4,7 +4,7 @@ import {
   AddComponentLayout,
   HorizontalAlign,
   VerticalAlign,
-} from './types';
+} from '../components/types';
 
 export interface ContainerOptions {
   label?: string;
