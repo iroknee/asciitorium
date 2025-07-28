@@ -9,11 +9,10 @@
 }
 
 body {
+  font-family:'Courier New', Courier, monospace;
   margin: 0;
   background: black;
   color: #3fff00;
-  font-size: larger;
-  font-family: 'PrintChar21';
 
   /* Center the screen horizontally */
   display: flex;
@@ -22,6 +21,6 @@ body {
 }
 
 .inverted {
-  background-color: white;
+  background-color: #3fff00;
   color: black;
 }

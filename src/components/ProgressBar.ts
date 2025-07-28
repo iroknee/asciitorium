@@ -1,36 +1,29 @@
-import { Component } from '../core/Component';
+import { Component, ComponentOptions } from '../core/Component';
 
-export interface ProgressBarOptions {
-  label: string;
-  width: number;
+export interface ProgressBarOptions extends Omit<ComponentOptions, 'height' > {
   progress: number; // 0 to 1
   showPercent?: boolean;
   onUpdate?: () => void; // <-- to trigger render
+  height?: number; // allow setting height for internal use
 }
 
 export class ProgressBar extends Component {
-  label: string;
-  width: number;
-  height: number = 3;
+  readonly label: string;
+  readonly height: number = 3;
   private progress: number;
   private targetProgress: number | null = null;
-  showPercent: boolean;
-  private onUpdate?: () => void;
+  private readonly showPercent: boolean;
+  private readonly onUpdate?: () => void;
   private animationInterval?: ReturnType<typeof setInterval>;
 
-  constructor({
-    label,
-    width,
-    progress,
-    showPercent = false,
-    onUpdate,
-  }: ProgressBarOptions) {
-    super();
-    this.label = label;
-    this.width = width;
-    this.progress = Math.max(0, Math.min(1, progress));
-    this.showPercent = showPercent;
-    this.onUpdate = onUpdate;
+  constructor(options: ProgressBarOptions) {
+    options.height = 3; // Progress bar is always 3 lines tall
+    options.border = false; // Default to having a border
+    super(options as ComponentOptions);
+    this.label = options.label ?? '';
+    this.progress = Math.max(0, Math.min(1, options.progress));
+    this.showPercent = options.showPercent ?? false;
+    this.onUpdate = options.onUpdate;
   }
 
   setProgress(value: number): void {
@@ -63,7 +56,9 @@ export class ProgressBar extends Component {
   }
 
   draw(): string[][] {
-    const innerWidth = this.width - 2;
+    const width = this.width ?? 10;
+    const innerWidth = width - 2;
+
     const filledLength = Math.round(this.progress * innerWidth);
     const emptyLength = innerWidth - filledLength;
 
@@ -72,21 +67,15 @@ export class ProgressBar extends Component {
     if (this.showPercent) {
       const percentStr = `${Math.round(this.progress * 100)}%`;
       const start = Math.floor((innerWidth - percentStr.length) / 2);
-      const padded =
-        barContent.slice(0, start) +
-        percentStr +
-        barContent.slice(start + percentStr.length);
-
-      barContent = padded.slice(0, innerWidth);
+      const before = barContent.slice(0, start);
+      const after = barContent.slice(start + percentStr.length);
+      barContent = (before + percentStr + after).slice(0, innerWidth);
     }
 
-    const top =
-      ' ⎽' +
-      this.label +
-      '⎽'.repeat(Math.max(0, this.width - 3 - this.label.length));
-    const bar = `⎹${barContent}⎸`;
-    const bottom = ' ' + '⎺'.repeat(this.width - 2);
+    const top = ' ⎽' + this.label + '⎽'.repeat(Math.max(0, width - 3 - this.label.length));
+    const mid = `⎹${barContent}⎸`;
+    const bot = ' ' + '⎺'.repeat(width - 2);
 
-    return [top, bar, bottom].map((line) => Array.from(line));
+    return [top, mid, bot].map((line) => Array.from(line));
   }
 }

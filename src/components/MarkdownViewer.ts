@@ -1,45 +1,20 @@
-import { Component } from '../core/Component';
+import { Component, ComponentOptions } from '../core/Component';
 
-export interface MarkdownViewerOptions {
+export interface MarkdownViewerOptions extends ComponentOptions {
   markdown: string;
-  visibleIndex?: number;
-  width: number;
-  height: number;
-  border?: boolean;
-  fill?: string;
-  label?: string;
 }
 
 export class MarkdownViewer extends Component {
   markdown: string[];
   visibleIndex: number = 0;
-  hasFocus = false;
-  readonly width: number;
-  readonly height: number;
-  readonly border: boolean;
-  readonly fill: string;
-  readonly focusable: boolean = true;
-  readonly label?: string;
 
-  constructor({
-    markdown,
-    width,
-    height,
-    border = true,
-    fill = ' ',
-    label,
-  }: MarkdownViewerOptions) {
-    super();
-    this.width = width;
-    this.height = height;
-    this.border = border;
-    this.fill = fill;
-    this.label = label;
-
+  constructor(options: MarkdownViewerOptions) {
+    super(options);
+    this.focusable = true;
     // temp, need to change this later...
     // let lines = wrapText(markdown, this.width - 4)
     let md = [];
-    let lines = markdown.split(/\r?\n/);
+    let lines = options.markdown.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
       let underline = false;
       let line = lines[i];
@@ -64,14 +39,14 @@ export class MarkdownViewer extends Component {
       } else if (line.trim().startsWith('```')) {
         continue;
       } else if (line === '---' || line === '===') {
-        md.push('―'.repeat(width - 6));
+        md.push('―'.repeat(this.width - 6));
       }
       const wrappedLines = wrapText(line, this.width - 4);
       for (let j = 0; j < wrappedLines.length; j++) {
         md.push(wrappedLines[j]);
       }
       if (underline) {
-        md.push('⎺'.repeat(width - 6));
+        md.push('⎺'.repeat(this.width - 6));
       }
     }
 
@@ -86,6 +61,7 @@ export class MarkdownViewer extends Component {
   handleEvent(event: string): boolean {
     if ((event === 'ArrowUp' || event === 'w') && this.visibleIndex > 0) {
       this.visibleIndex--;
+      this.dirty = true;
       return true;
     }
     if (
@@ -93,111 +69,71 @@ export class MarkdownViewer extends Component {
       this.visibleIndex < this.markdown.length - 1
     ) {
       this.visibleIndex++;
+      this.dirty = true;
       return true;
     }
     return false;
   }
 
   draw(): string[][] {
-    console.log(this.focusable);
-    const rows: string[][] = [];
+    if (this.dirty) {
+      super.draw(); // fill, border, label
 
-    // Fill background
-    for (let y = 0; y < this.height; y++) {
-      rows[y] = [];
-      for (let x = 0; x < this.width; x++) {
-        rows[y][x] = this.fill;
+      const borderPad = this.border ? 1 : 0;
+      const paddingTop = 2;
+      const lineHeight = 2;
+      const availableLines = this.height - 2 * borderPad - paddingTop;
+      const maxVisibleItems = Math.floor(availableLines / lineHeight);
+
+      const startIdx = Math.max(
+        0,
+        Math.min(
+          this.visibleIndex - Math.floor(maxVisibleItems / 2),
+          Math.max(0, this.markdown.length - maxVisibleItems)
+        )
+      );
+
+      const visibleItems = this.markdown.slice(
+        startIdx,
+        startIdx + maxVisibleItems
+      );
+
+      // Scroll up indicator
+      if (startIdx > 0) {
+        const rowIdx = borderPad;
+        const colIdx = this.width - 2;
+        this.buffer[rowIdx][colIdx] = '↑';
       }
+
+      visibleItems.forEach((item, i) => {
+        const rowIdx = borderPad + paddingTop + i * lineHeight;
+        if (rowIdx >= this.height - borderPad) return;
+
+        let prefix = startIdx + i === this.visibleIndex ? '◇' : ' ';
+        if (prefix === '◇' && this.hasFocus) prefix = '◆';
+
+        const line = ` ${prefix} ${item}`
+          .slice(0, this.width - 2 * borderPad)
+          .padEnd(this.width - 2 * borderPad, ' ');
+
+        for (let j = 0; j < line.length; j++) {
+          const colIdx = j + borderPad;
+          if (colIdx >= this.width - borderPad) break;
+          this.buffer[rowIdx][colIdx] = line[j];
+        }
+      });
+
+      // Scroll down indicator
+      if (startIdx + maxVisibleItems < this.markdown.length) {
+        const rowIdx = this.height - 1 - borderPad;
+        const colIdx = this.width - 2;
+        this.buffer[rowIdx][colIdx] = '↓';
+      }
+
+      this.dirty = false;
     }
 
-    // Border rendering
-    if (this.border) {
-      const horizontal = '─';
-      const vertical = '│';
-      const tl = '╭';
-      const tr = '╮';
-      const bl = '╰';
-      const br = '╯';
-
-      for (let x = 0; x < this.width; x++) {
-        rows[0][x] = horizontal;
-        rows[this.height - 1][x] = horizontal;
-      }
-      for (let y = 0; y < this.height; y++) {
-        rows[y][0] = vertical;
-        rows[y][this.width - 1] = vertical;
-      }
-      rows[0][0] = tl;
-      rows[0][this.width - 1] = tr;
-      rows[this.height - 1][0] = bl;
-      rows[this.height - 1][this.width - 1] = br;
-    }
-
-    // Draw label if present
-    if (this.label) {
-      const label = this.hasFocus ? `◆─ ${this.label} ` : `◇─ ${this.label} `;
-
-      const maxLabelWidth = this.width - 2;
-      const truncatedLabel =
-        label.length > maxLabelWidth ? label.slice(0, maxLabelWidth) : label;
-
-      for (let i = 0; i < truncatedLabel.length; i++) {
-        rows[0][i + 1] = truncatedLabel[i];
-      }
-    }
-
-    // Content rendering with spacing
-    const paddingTop = 2;
-    const borderPad = this.border ? 1 : 0;
-    const lineHeight = 2; // 1 line for item, 1 line blank
-    const availableLines = this.height - 2 * borderPad - paddingTop;
-    const maxVisibleItems = Math.floor(availableLines / lineHeight);
-
-    const startIdx = Math.max(
-      0,
-      Math.min(
-        this.visibleIndex - Math.floor(maxVisibleItems / 2),
-        this.markdown.length - maxVisibleItems
-      )
-    );
-
-    const visibleItems = this.markdown.slice(
-      startIdx,
-      startIdx + maxVisibleItems
-    );
-
-    // Draw scroll up indicator (if needed)
-    if (startIdx > 0) {
-      const rowIdx = borderPad;
-      const colIdx = Math.floor(this.width - 2);
-      if (rowIdx >= 0 && rowIdx < this.height) rows[rowIdx][colIdx] = '↑';
-    }
-
-    visibleItems.forEach((item, i) => {
-      const rowIdx = borderPad + paddingTop + i * lineHeight;
-      if (rowIdx >= this.height - borderPad) return;
-
-      let prefix = startIdx + i === this.visibleIndex ? ' ◇' : '  ';
-      if (prefix === ' ◇' && this.hasFocus) prefix = ' ◆';
-      const line = (prefix + ' ' + item)
-        .slice(0, this.width - 2 * borderPad)
-        .padEnd(this.width - 2 * borderPad, ' ');
-
-      for (let j = 0; j < line.length; j++) {
-        const colIdx = j + borderPad;
-        if (colIdx >= this.width - borderPad) break;
-        rows[rowIdx][colIdx] = line[j];
-      }
-    });
-
-    // Draw scroll down indicator (if needed)
-    if (startIdx + maxVisibleItems < this.markdown.length) {
-      const rowIdx = this.height - 1 - borderPad;
-      const colIdx = Math.floor(this.width - 2);
-      if (rowIdx >= 0 && rowIdx < this.height) rows[rowIdx][colIdx] = '↓';
-    }
-
-    return rows;
+    return this.buffer;
   }
 }
 

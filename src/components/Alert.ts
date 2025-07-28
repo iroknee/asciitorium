@@ -1,7 +1,7 @@
 import { Component } from '../core/Component';
 import { Button } from './Button';
 import { Container } from '../core/Container';
-import { Label } from './Label';
+import { Text } from './Text';
 
 export interface AlertOptions {
   message: string;
@@ -34,7 +34,7 @@ export class Alert extends Container {
       onClick: () => this.dismiss(),
     });
 
-    this.add({ component: new Label(message), alignX: 'center', alignY: 1 });
+    this.add({ component: new Text(message), alignX: 'center', alignY: 1 });
     this.add({ component: this.okButton, alignX: 'center', alignY: 'bottom' });
 
     // Auto-dismiss timer (optional)

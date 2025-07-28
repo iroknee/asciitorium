@@ -15,26 +15,10 @@ export interface ContainerOptions {
 }
 
 export class Container extends Component {
-  label?: string;
-  readonly width: number;
-  readonly height: number;
-  readonly border: boolean;
-  readonly fill: string;
   children: FixedPositionComponent[] = [];
 
-  constructor({
-    label,
-    width,
-    height,
-    border = false,
-    fill = ' ',
-  }: ContainerOptions) {
-    super();
-    this.label = label;
-    this.width = width;
-    this.height = height;
-    this.border = border;
-    this.fill = fill;
+  constructor(options: ContainerOptions) {
+    super(options);
   }
 
   add({
@@ -75,69 +59,54 @@ export class Container extends Component {
     }
 
     this.children.push({ component, x, y, z: alignZ });
+    this.dirty = true;
   }
 
   remove(component: Component): void {
+    const originalLength = this.children.length;
     this.children = this.children.filter(
       (child) => child.component !== component
     );
+    if (this.children.length !== originalLength) {
+      this.dirty = true;
+    }
   }
 
   draw(): string[][] {
-    const buffer: string[][] = Array.from({ length: this.height }, () =>
-      Array(this.width).fill(this.fill)
-    );
-
-    const drawChar = (x: number, y: number, char: string) => {
-      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-        buffer[y][x] = char;
-      }
-    };
-
-    // 1. Draw border if enabled
-    if (this.border) {
-      const w = this.width;
-      const h = this.height;
-
-      drawChar(0, 0, '╭');
-      drawChar(w - 1, 0, '╮');
-      drawChar(0, h - 1, '╰');
-      drawChar(w - 1, h - 1, '╯');
-
-      for (let x = 1; x < w - 1; x++) {
-        drawChar(x, 0, '─');
-        drawChar(x, h - 1, '─');
-      }
-      for (let y = 1; y < h - 1; y++) {
-        drawChar(0, y, '│');
-        drawChar(w - 1, y, '│');
+    // Check if any child is dirty
+    let anyChildDirty = false;
+    for (const { component } of this.children) {
+      if (component.dirty) {
+        anyChildDirty = true;
+        break;
       }
     }
-
-    // 2. Draw label (overrides border top row if needed)
-    if (this.label) {
-      const label = this.hasFocus ? `< ${this.label} >` : ` ${this.label} `;
-      const start = 1;
-      for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
-        drawChar(i + start, 0, label[i]);
-      }
+    if (anyChildDirty) {
+      this.dirty = true;
     }
 
-    // 3. Draw children (sorted by z-index)
-    const sortedChildren = [...this.children].sort((a, b) => a.z - b.z);
-    const offset = this.border ? 1 : 0;
+    if (this.dirty) {
+      // Base rendering: fill, border, label
+      super.draw();
 
-    for (const { component, x, y } of sortedChildren) {
-      const childBuffer = component.draw();
-      for (let j = 0; j < childBuffer.length; j++) {
-        for (let i = 0; i < childBuffer[j].length; i++) {
-          const px = x + i;
-          const py = y + j;
-          drawChar(px, py, childBuffer[j][i]);
+      // Draw children
+      const sortedChildren = [...this.children].sort((a, b) => a.z - b.z);
+
+      for (const { component, x, y } of sortedChildren) {
+        const childBuffer = component.draw();
+        for (let j = 0; j < childBuffer.length; j++) {
+          for (let i = 0; i < childBuffer[j].length; i++) {
+            const px = x + i;
+            const py = y + j;
+            if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
+              this.buffer[py][px] = childBuffer[j][i];
+            }
+          }
         }
-      }
-    }
 
-    return buffer;
+        this.dirty = false;
+      }
+      return this.buffer;
+    }
   }
 }

@@ -1,15 +1,36 @@
-import { Component } from '../core/Component';
+import { Component, ComponentOptions } from '../core/Component';
+
+export interface HorizontalLineOptions extends Omit<ComponentOptions, 'width' | 'height'> {
+  length?: number;
+}
 
 export class HorizontalLine extends Component {
-  readonly width: number;
-  readonly height: number = 1;
 
-  constructor(width: number) {
-    super();
-    this.width = width;
+  constructor(options: HorizontalLineOptions) {
+    const resolvedOptions: ComponentOptions = {
+      ...options,
+      width: options.length ?? 12,
+      height: 1
+    };
+
+    super(resolvedOptions);
   }
 
   draw(): string[][] {
-    return [Array.from('⎺'.repeat(this.width))];
+    if (this.dirty) {
+      super.draw(); // builds buffer and handles border/label/fill
+
+      // Draw line inside buffer (not overriding border if present)
+      const xOffset = this.border ? 1 : 0;
+      const maxX = this.width - (this.border ? 1 : 0);
+
+      for (let x = xOffset; x < maxX; x++) {
+        this.buffer[0][x] = '⎺';
+      }
+
+      this.dirty = false;
+    }
+
+    return this.buffer;
   }
 }
