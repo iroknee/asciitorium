@@ -81,7 +81,6 @@ app.add({
 
 // Update markdown when a new component is selected
 componentSignal.subscribe(async (componentName) => {
-  console.log(`Loading docs for ${componentName}...`);
   const path = `./docs/${componentName}.md`;
   let markdown = `# ${componentName}\n\nNo documentation found.`;
 
