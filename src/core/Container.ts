@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component, ComponentOptions } from './Component';
 import {
   FixedPositionComponent,
   AddComponentLayout,
@@ -6,18 +6,10 @@ import {
   VerticalAlign,
 } from './types';
 
-export interface ContainerOptions {
-  label?: string;
-  width: number;
-  height: number;
-  border?: boolean;
-  fill?: string;
-}
-
 export class Container extends Component {
   children: FixedPositionComponent[] = [];
 
-  constructor(options: ContainerOptions) {
+  constructor(options: ComponentOptions) {
     super(options);
   }
 

@@ -1,7 +1,7 @@
 import { Component, ComponentOptions } from '../core/Component';
 
 export interface MarkdownViewerOptions extends ComponentOptions {
-  markdown: string;
+  markdown?: string;
 }
 
 export class MarkdownViewer extends Component {
@@ -11,17 +11,19 @@ export class MarkdownViewer extends Component {
   constructor(options: MarkdownViewerOptions) {
     super(options);
     this.focusable = true;
-    // temp, need to change this later...
-    // let lines = wrapText(markdown, this.width - 4)
+    if (options.markdown) {
+      this.setMarkdown(options.markdown);
+    } else {
+      this.markdown = [];
+    }
+  }
+
+  setMarkdown(markdown: string): void {
     let md = [];
-    let lines = options.markdown.split(/\r?\n/);
+    let lines = markdown.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
       let underline = false;
       let line = lines[i];
-      // if (line.trim() === '') {
-      //   md.push('');
-      //   continue;
-      // }
       if (line.startsWith('# ')) {
         line = line.substring(2, lines[i].length);
         line = line.toUpperCase();
@@ -51,11 +53,8 @@ export class MarkdownViewer extends Component {
     }
 
     this.markdown = md;
-  }
-
-  setMarkdown(markdown: string, visibleIndex: number = 0): void {
-    this.markdown = markdown.split(/\r?\n/);
-    this.visibleIndex = visibleIndex;
+    this.visibleIndex = 0;
+    this.dirty = true;
   }
 
   handleEvent(event: string): boolean {

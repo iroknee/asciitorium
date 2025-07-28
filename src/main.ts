@@ -4,10 +4,12 @@ import { ListBox } from './components/ListBox';
 import { HorizontalLine } from './components/HorizonalLine';
 import { MarkdownViewer } from './components/MarkdownViewer';
 import { ProgressBar } from './components/ProgressBar';
-import readmeContent from '../README.md?raw';
 import a1982 from './1982.txt?raw';
 import App from './core/App';
 import { Signal } from './core/Signal';
+
+// Load all markdown files in ./docs/ at build time
+const markdownFiles = import.meta.glob('./docs/*.md', { as: 'raw' });
 
 const app = new App({
   width: 72,
@@ -44,12 +46,15 @@ const componentList = new ListBox({
   selectedItem: componentSignal
 });
 
-app.add({ component: componentList, alignX: 2,alignY: title.height + subTitle.height + 2 });
+app.add({
+  component: componentList,
+  alignX: 2,
+  alignY: title.height + subTitle.height + 2
+});
 
 const markdownPreview = new MarkdownViewer({
   label: 'Docs',
   border: true,
-  markdown: readmeContent,
   width: 46,
   height: 22,
 });
@@ -60,7 +65,6 @@ app.add({
   alignY: title.height + subTitle.height + 2
 });
 
-// Create the progress bar
 const progressBar = new ProgressBar({
   label: 'Loading',
   width: 46,
@@ -69,14 +73,29 @@ const progressBar = new ProgressBar({
   onUpdate: () => app.render(),
 });
 
-// Add to app layout, under the markdownPreview
 app.add({
   component: progressBar,
   alignX: 'center',
   alignY: title.height + subTitle.height + 2 + markdownPreview.height + 1,
 });
 
-// Animate after a short delay (e.g. to simulate loading)
-setTimeout(() => {
-  progressBar.animateTo(1.0, 3000); // fill over 3 seconds
-}, 500);
+// Update markdown when a new component is selected
+componentSignal.subscribe(async (componentName) => {
+  console.log(`Loading docs for ${componentName}...`);
+  const path = `./docs/${componentName}.md`;
+  let markdown = `# ${componentName}\n\nNo documentation found.`;
+
+  if (markdownFiles[path]) {
+    try {
+      markdown = await markdownFiles[path]() as string;
+    } catch (e) {
+      console.error(`Error loading ${path}:`, e);
+    }
+  }
+
+  markdownPreview.setMarkdown(markdown);
+  app.render();
+});
+
+// Animate loading bar
+progressBar.animateTo(0.6);
