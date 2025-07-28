@@ -2,32 +2,32 @@ import { Component, ComponentOptions } from '../core/Component';
 
 export interface TextOptions
   extends Omit<ComponentOptions, 'height' | 'width'> {
-  text: string;
+  value: string;
 }
 
 export class Text extends Component {
-  public text: string;
+  public value: string;
 
   constructor(options: TextOptions) {
-    const textString = options.text;
+    const textString = options.value;
     const width = textString.length;
 
     super({
       ...options,
       width,
-      height: 1
+      height: 1,
     });
 
-    this.text = textString;
+    this.value = textString;
   }
 
   draw(): string[][] {
     if (this.dirty) {
       super.draw(); // handles fill/border/etc.
 
-      const text = this.text;
-      for (let i = 0; i < text.length && i < this.width; i++) {
-        this.buffer[0][i] = text[i];
+      const value = this.value;
+      for (let i = 0; i < value.length && i < this.width; i++) {
+        this.buffer[0][i] = value[i];
       }
 
       this.dirty = false;

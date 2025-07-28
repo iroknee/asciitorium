@@ -6,51 +6,60 @@ import { MarkdownViewer } from './components/MarkdownViewer';
 import { ProgressBar } from './components/ProgressBar';
 import a1982 from './1982.txt?raw';
 import App from './core/App';
-import { Signal } from './core/Signal';
+import { State } from './core/State';
+import { TextInput } from './components/TextInput';
+import { Button } from './components/Button';
+import { CelticBorder } from './components/CelticBorder';
+
+// Vite-specific: augment ImportMeta interface for TypeScript
+declare global {
+  interface ImportMeta {
+    glob: (pattern: string, options?: { as?: string }) => Record<string, () => Promise<unknown>>;
+  }
+}
 
 // Load all markdown files in ./docs/ at build time
 const markdownFiles = import.meta.glob('./docs/*.md', { as: 'raw' });
 
 const app = new App({
   width: 72,
-  height: 35,
+  height: 45,
   fontFamily: 'PrintChar21',
 });
 
-const title = new AsciiArt({ art: a1982 });
-const line = new HorizontalLine({ length: 70 });
-const subTitle = new Text({ text: 'an ASCII GUI framework' });
+// Add corner components
+app.add({ component: new CelticBorder('upperLeft'), alignX: 'left', alignY: 'top' });
+app.add({ component: new CelticBorder('upperRight'), alignX: 'right', alignY: 'top' });
+app.add({ component: new CelticBorder('lowerLeft'), alignX: 'left', alignY: 'bottom' });
+app.add({ component: new CelticBorder('lowerRight'), alignX: 'right', alignY: 'bottom' });
 
+app.add({
+  component: new CelticBorder('lowerRight'),
+  alignX: 'right',
+  alignY: 'bottom',
+});
+
+const title = new AsciiArt({ content: a1982 });
 app.add({ component: title, alignX: 'center', alignY: 'top' });
+
+const line = new HorizontalLine({ length: 64 });
 app.add({ component: line, alignX: 'center', alignY: title.height });
+
+const subTitle = new Text({ value: 'an ASCII GUI framework' });
 app.add({ component: subTitle, alignX: 'center', alignY: title.height + line.height });
 
-const componentSignal = new Signal('Button');
+
+const selectedComponent = new State('Text');
 
 const componentList = new ListBox({
   label: 'Components',
   width: 22,
   height: 22,
   border: true,
-  items: [
-    'Alert',
-    'Button',
-    'CelticBorder',
-    'FIGfont',
-    'HorizontalLine',
-    'Label',
-    'Layout',
-    'ListBox',
-    'ProgressBar',
-  ],
-  selectedItem: componentSignal
+  items: ['Text', 'ListBox', 'ProgressBar'],
+  selectedItem: selectedComponent,
 });
-
-app.add({
-  component: componentList,
-  alignX: 2,
-  alignY: title.height + subTitle.height + 2
-});
+app.add({ component: componentList, alignX: 2, alignY: title.height + subTitle.height + 3 });
 
 const markdownPreview = new MarkdownViewer({
   label: 'Docs',
@@ -58,12 +67,7 @@ const markdownPreview = new MarkdownViewer({
   width: 46,
   height: 22,
 });
-
-app.add({
-  component: markdownPreview,
-  alignX: 24,
-  alignY: title.height + subTitle.height + 2
-});
+app.add({ component: markdownPreview, alignX: 24, alignY: title.height + subTitle.height + 3 });
 
 const progressBar = new ProgressBar({
   label: 'Loading',
@@ -72,21 +76,17 @@ const progressBar = new ProgressBar({
   showPercent: true,
   onUpdate: () => app.render(),
 });
-
-app.add({
-  component: progressBar,
-  alignX: 'center',
-  alignY: title.height + subTitle.height + 2 + markdownPreview.height + 1,
-});
+app.add({ component: progressBar, alignX: 'center', alignY: 'bottom' });
+progressBar.animateTo(1);
 
 // Update markdown when a new component is selected
-componentSignal.subscribe(async (componentName) => {
+selectedComponent.subscribe(async (componentName) => {
   const path = `./docs/${componentName}.md`;
   let markdown = `# ${componentName}\n\nNo documentation found.`;
 
   if (markdownFiles[path]) {
     try {
-      markdown = await markdownFiles[path]() as string;
+      markdown = (await markdownFiles[path]()) as string;
     } catch (e) {
       console.error(`Error loading ${path}:`, e);
     }
@@ -96,5 +96,23 @@ componentSignal.subscribe(async (componentName) => {
   app.render();
 });
 
-// Animate loading bar
-progressBar.animateTo(0.6);
+const name = new State('');
+
+const input = new TextInput({
+  width: 22,
+  height: 3,
+  border: true,
+  label: 'Name',
+  state: name,
+  placeholder: 'enter your name...',
+});
+app.add({ component: input, alignX: 2, alignY: title.height + subTitle.height + markdownPreview.height + 5 });
+
+const btn = new Button({
+  name: 'OK',
+  border: true,
+  onClick: () => {
+    console.log('Button clicked!');
+  },
+});
+app.add({ component: btn, alignX: 24, alignY: title.height + subTitle.height + markdownPreview.height + 5 });

@@ -1,14 +1,14 @@
 import { Component, ComponentOptions } from '../core/Component';
-import { Signal } from '../core/Signal';
+import { State } from '../core/State';
 
 export interface ListBoxOptions extends ComponentOptions {
   items: string[];
-  selectedItem: Signal<string>;
+  selectedItem: State<string>;
 }
 
 export class ListBox extends Component {
   public items: string[];
-  public selectedItem: Signal<string>;
+  public selectedItem: State<string>;
   private selectedIndex: number = 0;
 
   constructor(options: ListBoxOptions) {
@@ -27,7 +27,7 @@ export class ListBox extends Component {
   handleEvent(event: string): boolean {
     if ((event === 'ArrowUp' || event === 'w') && this.selectedIndex > 0) {
       this.selectedIndex--;
-      this.selectedItem.value = this.items[this.selectedIndex]
+      this.selectedItem.value = this.items[this.selectedIndex];
       this.dirty = true;
       return true;
     }
@@ -36,7 +36,7 @@ export class ListBox extends Component {
       this.selectedIndex < this.items.length - 1
     ) {
       this.selectedIndex++;
-      this.selectedItem.value = this.items[this.selectedIndex]
+      this.selectedItem.value = this.items[this.selectedIndex];
       this.dirty = true;
       return true;
     }
@@ -61,7 +61,10 @@ export class ListBox extends Component {
         )
       );
 
-      const visibleItems = this.items.slice(startIdx, startIdx + maxVisibleItems);
+      const visibleItems = this.items.slice(
+        startIdx,
+        startIdx + maxVisibleItems
+      );
 
       // Scroll up indicator
       if (startIdx > 0) {
@@ -75,10 +78,9 @@ export class ListBox extends Component {
         const rowIdx = borderPad + paddingTop + i * lineHeight;
         if (rowIdx >= this.height - borderPad) return;
 
-        let prefix = startIdx + i === this.selectedIndex ? '◇' : ' ';
-        if (prefix === '◇' && this.hasFocus) prefix = '◆';
+        let prefix = startIdx + i === this.selectedIndex ? '>' : ' ';
 
-        const line = (` ${prefix} ${item}`)
+        const line = ` ${prefix} ${item}`
           .slice(0, this.width - 2 * borderPad)
           .padEnd(this.width - 2 * borderPad, ' ');
 

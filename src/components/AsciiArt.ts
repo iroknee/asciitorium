@@ -3,14 +3,14 @@ import { Component, ComponentOptions } from '../core/Component';
 export interface ArtOptions extends Omit<ComponentOptions, 'width' | 'height'> {
   width?: number;
   height?: number;
-  art: string;
+  content: string;
 }
 
 export class AsciiArt extends Component {
   private content: string[][];
 
   constructor(options: ArtOptions) {
-    const lines = options.art.split('\n');
+    const lines = options.content.split('\n');
     const artWidth = Math.max(...lines.map((line) => line.length));
     const artHeight = lines.length;
 
@@ -28,7 +28,7 @@ export class AsciiArt extends Component {
     this.content = lines.map((line) => [...line.padEnd(artWidth)]);
   }
 
-  setArt(newArt: string): void {
+  setContent(newArt: string): void {
     const lines = newArt.split('\n');
     const artWidth = Math.max(...lines.map((line) => line.length));
     const artHeight = lines.length;

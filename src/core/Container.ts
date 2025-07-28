@@ -100,5 +100,6 @@ export class Container extends Component {
       }
       return this.buffer;
     }
+    return this.buffer;
   }
 }

@@ -54,7 +54,11 @@ export abstract class Component {
         const w = this.width;
         const h = this.height;
 
-        drawChar(0, 0, '╭');
+        if (this.hasFocus) {
+          drawChar(0, 0, '◆');
+        } else {
+          drawChar(0, 0, '╭');
+        } 
         drawChar(w - 1, 0, '╮');
         drawChar(0, h - 1, '╰');
         drawChar(w - 1, h - 1, '╯');
@@ -71,7 +75,7 @@ export abstract class Component {
 
       // 2. Draw label (overrides border top row if needed)
       if (this.label) {
-        const label = this.hasFocus ? `◆ ${this.label} ` : `◇ ${this.label} `;
+        const label = this.hasFocus ? ` ${this.label} ` : ` ${this.label} `;
         const start = 2;
         for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
           drawChar(i + start, 0, label[i]);

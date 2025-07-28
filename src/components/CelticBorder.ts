@@ -1,4 +1,4 @@
-import { Component } from '../core/Component';
+import { Component, ComponentOptions } from '../core/Component';
 
 export type CelticCorner =
   | 'upperLeft'
@@ -32,18 +32,29 @@ const borderPatterns: Record<CelticCorner, string[]> = {
 };
 
 export class CelticBorder extends Component {
-  constructor(
-    public readonly corner: CelticCorner,
-    public readonly width: number = 8,
-    public readonly height: number = 8
-  ) {
-    super();
-    if (!(corner in borderPatterns)) {
-      throw new Error(`Invalid corner: ${corner}`);
-    }
+  private lines: string[][];
+
+  constructor(corner: CelticCorner, options?: Partial<ComponentOptions>) {
+    const pattern = borderPatterns[corner];
+    const width = Math.max(...pattern.map((line) => line.length));
+    const height = pattern.length;
+
+    super({
+      width,
+      height,
+      border: false,
+      fill: ' ',
+      ...options,
+    });
+
+    this.lines = pattern.map((line) => Array.from(line));
   }
 
   draw(): string[][] {
-    return borderPatterns[this.corner].map((line) => Array.from(line));
+    this.buffer = Array.from({ length: this.height }, (_, y) =>
+      Array.from({ length: this.width }, (_, x) => this.lines[y]?.[x] ?? ' ')
+    );
+    this.dirty = false;
+    return this.buffer;
   }
 }

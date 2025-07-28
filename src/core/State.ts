@@ -1,6 +1,6 @@
 type Listener<T> = (value: T) => void;
 
-export class Signal<T> {
+export class State<T> {
   private listeners: Listener<T>[] = [];
   private _value: T;
 
@@ -15,7 +15,7 @@ export class Signal<T> {
   set value(newValue: T) {
     if (this._value !== newValue) {
       this._value = newValue;
-      this.listeners.forEach(listener => listener(newValue));
+      this.listeners.forEach((listener) => listener(newValue));
     }
   }
 
@@ -26,6 +26,6 @@ export class Signal<T> {
   }
 
   unsubscribe(fn: Listener<T>) {
-    this.listeners = this.listeners.filter(l => l !== fn);
+    this.listeners = this.listeners.filter((l) => l !== fn);
   }
 }

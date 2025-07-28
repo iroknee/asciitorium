@@ -1,30 +1,29 @@
-import { Component } from '../core/Component';
+import { Component, ComponentOptions } from '../core/Component';
 
-export interface ButtonOptions {
-  label: string;
+export interface ButtonOptions extends Omit<ComponentOptions, 'width' | 'height'> {
+  name: string;
+  onClick?: () => void;
   width?: number;
   height?: number;
-  onClick?: () => void;
 }
 
 export class Button extends Component {
-  public readonly label: string;
-  public readonly width: number;
-  public readonly height: number;
-  readonly focusable: boolean = true;
+  public readonly name: string;
   public readonly onClick?: () => void;
-  public hasFocus = false;
 
-  constructor({ label, width, height, onClick }: ButtonOptions) {
-    super();
-    this.label = label;
-    this.width = width ?? label.length + 4;
-    this.height = height ?? 3;
+  focusable = true;
+  hasFocus = false;
+
+  constructor({ name, onClick, ...options }: ButtonOptions) {
+    const width = options.width ?? name.length + 4; // padding
+    const height = options.height ?? 3;
+    super({ ...options, width, height });
+    this.name = name;
     this.onClick = onClick;
   }
 
   handleEvent(event: string): boolean {
-    if ((event === 'Enter' || event === ' ') && this.hasFocus) {
+    if (event === 'Enter' || event === ' ') {
       if (this.onClick) this.onClick();
       return true;
     }
@@ -32,10 +31,25 @@ export class Button extends Component {
   }
 
   draw(): string[][] {
-    const upperLeft = this.hasFocus ? '◆' : '♢';
-    const top = '╭' + upperLeft + '─'.repeat(this.width - 3) + '╮';
-    const labelLine = `│ ${this.label.padEnd(this.width - 4)} │`;
-    const bottom = '╰' + '─'.repeat(this.width - 2) + '╯';
-    return [[...top], [...labelLine], [...bottom]];
+    const buffer = super.draw();
+    const xOffset = this.border ? 1 : 0;
+    const yOffset = this.border ? 1 : 0;
+    
+    const name = this.hasFocus
+      ? `[${this.name}]`
+      : ` ${this.name} `;
+
+    const centeredX = Math.max(
+      xOffset,
+      Math.floor((this.width - name.length) / 2)
+    );
+
+    for (let i = 0; i < name.length && i + centeredX < this.width - xOffset; i++) {
+      buffer[yOffset][centeredX + i] = name[i];
+    }
+
+    this.buffer = buffer;
+    this.dirty = false;
+    return buffer;
   }
 }

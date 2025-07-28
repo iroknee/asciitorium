@@ -5,7 +5,7 @@ export interface MarkdownViewerOptions extends ComponentOptions {
 }
 
 export class MarkdownViewer extends Component {
-  markdown: string[];
+  markdown!: string[];
   visibleIndex: number = 0;
 
   constructor(options: MarkdownViewerOptions) {
@@ -108,8 +108,7 @@ export class MarkdownViewer extends Component {
         const rowIdx = borderPad + paddingTop + i * lineHeight;
         if (rowIdx >= this.height - borderPad) return;
 
-        let prefix = startIdx + i === this.visibleIndex ? '◇' : ' ';
-        if (prefix === '◇' && this.hasFocus) prefix = '◆';
+        let prefix = startIdx + i === this.visibleIndex ? '>' : ' ';
 
         const line = ` ${prefix} ${item}`
           .slice(0, this.width - 2 * borderPad)
