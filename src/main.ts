@@ -106,7 +106,7 @@ const input = new TextInput({
   state: name,
   placeholder: 'enter your name...',
 });
-app.add({ component: input, alignX: 2, alignY: title.height + subTitle.height + markdownPreview.height + 5 });
+app.add({ component: input, alignX: 38, alignY: title.height + subTitle.height + markdownPreview.height + 5 });
 
 const btn = new Button({
   name: 'OK',
@@ -115,4 +115,4 @@ const btn = new Button({
     console.log('Button clicked!');
   },
 });
-app.add({ component: btn, alignX: 24, alignY: title.height + subTitle.height + markdownPreview.height + 5 });
+app.add({ component: btn, alignX: 60, alignY: title.height + subTitle.height + markdownPreview.height + 5 });

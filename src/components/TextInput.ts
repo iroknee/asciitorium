@@ -70,11 +70,20 @@ export class TextInput extends Component {
   draw(): string[][] {
     const buffer = super.draw(); // creates fill, border, label if needed
     const innerWidth = this.border ? this.width - 2 : this.width;
-    const xOffset = this.border ? 1 : 0;
+    const xOffset = this.border ? 3 : 2;
     const yOffset = this.border ? 1 : 0;
 
     const content = this.internalState.value || this.placeholder;
     const visible = content.slice(0, innerWidth);
+
+    // draw > to indicate input field
+    if (this.border) {
+      buffer[yOffset][1] = '>';
+      buffer[yOffset][2] = ' ';
+    } else {
+      buffer[yOffset][0] = '>';
+      buffer[yOffset][1] = ' ';
+    }
 
     // Draw input characters
     for (let i = 0; i < visible.length && i < innerWidth; i++) {
@@ -84,7 +93,7 @@ export class TextInput extends Component {
     // Draw cursor if focused and within bounds
     const cursorPos = Math.min(this.cursorIndex, innerWidth - 1);
     if (this.hasFocus) {
-      buffer[yOffset][xOffset + cursorPos] = '_';
+      buffer[yOffset][xOffset + cursorPos] = '▉';
     }
 
     this.buffer = buffer;
