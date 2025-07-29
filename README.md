@@ -50,10 +50,16 @@
 Start the Vite development server:
 
 ```bash
-pnpm dev
+pnpm start:web
 ```
 
-Open your browser and navigate to `http://localhost:3000`.
+Open your browser and navigate to `http://localhost:5173`.
+
+OR, run from the CLI:
+
+```bash
+pnpm start:cli
+```
 
 ### Building the Project
 

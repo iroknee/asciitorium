@@ -10,6 +10,7 @@ import { State } from './core/State';
 import { TextInput } from './components/TextInput';
 import { Button } from './components/Button';
 import { CelticBorder } from './components/CelticBorder';
+import { DomRenderer } from './core/DomRenderer';
 
 // Vite-specific: augment ImportMeta interface for TypeScript
 declare global {
@@ -21,10 +22,18 @@ declare global {
 // Load all markdown files in ./docs/ at build time
 const markdownFiles = import.meta.glob('./docs/*.md', { as: 'raw' });
 
+const screen = document.getElementById('screen')!;
+
 const app = new App({
-  width: 72,
+  width: 80,
   height: 45,
+  renderer: new DomRenderer(screen),
   fontFamily: 'PrintChar21',
+});
+
+// Add components, attach key events
+window.addEventListener('keydown', (event) => {
+  app.handleKey(event.key);
 });
 
 // Add corner components

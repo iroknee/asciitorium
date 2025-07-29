@@ -1,8 +1,0 @@
-{
-  "entryPoints": ["src/components/Cell.ts", "src/components/Component.ts"],
-  "plugin": ["typedoc-plugin-markdown"],
-  "out": "docs/components",
-  "excludePrivate": true,
-  "excludeProtected": true,
-  "includeVersion": true
-}

@@ -1,16 +1,17 @@
 {
   "name": "1982",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An ASCII-based UI framework",
+  "main": "main.js",
+  "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start:web": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "docs": "npx typedoc --options typedoc.json",
     "art": "node scripts/generate-art.js",
-    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
+    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
+    "start:cli": "tsx src/main.cli.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,7 @@
     "@types/node": "^24.0.12",
     "fs-extra": "^11.3.0",
     "prettier": "^3.6.2",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vite": "^7.0.3"
   },
