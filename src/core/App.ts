@@ -5,12 +5,13 @@ import { FocusManager } from './FocusManager';
 import { AddComponentLayout } from './types';
 import type { Renderer } from './Renderer';
 
-export interface AppOptions {
+export interface AppProps {
   width: number;
   height: number;
   border?: boolean;
   fontFamily?: string;
   renderer: Renderer;
+  children?: Component | Component[];
 }
 
 export default class App {
@@ -19,14 +20,31 @@ export default class App {
   readonly fontFamily: string;
   private readonly renderer: Renderer;
 
-  constructor(options: AppOptions) {
-    const { width, height, border = false, fontFamily = 'monospace', renderer } = options;
+  constructor(props: AppProps) {
+    const {
+      width,
+      height,
+      border = false,
+      fontFamily = 'monospace',
+      renderer,
+      children,
+    } = props;
 
     this.fontFamily = fontFamily;
     this.renderer = renderer;
     this.canvas = new Container({ width, height, border });
     this.focus = new FocusManager();
-    this.focus.getFocusableDescendants(this.canvas);
+
+    // Normalize and add children
+    if (children) {
+      const list = Array.isArray(children) ? children : [children];
+      for (const child of list) {
+        this.canvas.add({ component: child });
+      }
+    }
+
+    this.focus.reset(this.canvas);
+    this.render();
   }
 
   render() {

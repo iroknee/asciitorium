@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
     "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
-    "start:cli": "tsx src/main.cli.ts"
+    "start:cli": "tsx src/main.cli.tsx"
   },
   "keywords": [],
   "author": "",
