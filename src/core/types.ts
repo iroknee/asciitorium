@@ -3,6 +3,13 @@ import { Component } from './Component';
 export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
 
+export type AlignmentKeyword =
+  | 'top-left' | 'top-center' | 'top-right'
+  | 'middle-left' | 'middle-center' | 'middle-right'
+  | 'bottom-left' | 'bottom-center' | 'bottom-right';
+
+export type Alignment = AlignmentKeyword | { x: 'left' | 'center' | 'right' | number, y: 'top' | 'middle' | 'bottom' | number };
+
 export interface AddComponentLayout {
   component: Component;
   alignX?: HorizontalAlign;

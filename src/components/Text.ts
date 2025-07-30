@@ -1,8 +1,12 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
+import { Alignment } from 'core/types';
+import { resolveAlignment } from '../core/layoutUtils';
 
-export interface TextOptions
-  extends Omit<ComponentOptions, 'height' | 'width'> {
+export interface TextOptions extends Omit<ComponentProps, 'height' | 'width'> {
   value: string;
+  height?: number;
+  width?: number;
+  align?: Alignment;
 }
 
 export class Text extends Component {
@@ -10,12 +14,11 @@ export class Text extends Component {
 
   constructor(options: TextOptions) {
     const textString = options.value;
-    const width = textString.length;
 
     super({
       ...options,
-      width,
-      height: 1,
+      width: options.width || textString.length + (options.border ? 2 : 0),
+      height: options.height || 1 + (options.border ? 2 : 0),
     });
 
     this.value = textString;
@@ -23,11 +26,24 @@ export class Text extends Component {
 
   draw(): string[][] {
     if (this.dirty) {
-      super.draw(); // handles fill/border/etc.
+      super.draw(); // fills buffer, draws borders, etc.
 
-      const value = this.value;
-      for (let i = 0; i < value.length && i < this.width; i++) {
-        this.buffer[0][i] = value[i];
+      const innerWidth = this.width - (this.border ? 2 : 0);
+      const innerHeight = this.height - (this.border ? 2 : 0);
+
+      const { x, y } = resolveAlignment(
+        this.align,
+        innerWidth,
+        innerHeight,
+        Math.min(this.value.length, innerWidth),
+        1 // text is single line
+      );
+
+      const drawX = this.border ? x + 1 : x;
+      const drawY = this.border ? y + 1 : y;
+
+      for (let i = 0; i < this.value.length && i + drawX < this.width; i++) {
+        this.buffer[drawY][drawX + i] = this.value[i];
       }
 
       this.dirty = false;

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
   root: './',
@@ -9,4 +10,9 @@ export default defineConfig({
   },
   plugins: [],
   assetsInclude: ['**/*.md'],
+  resolve: {
+    alias: {
+      '@jsx': path.resolve(__dirname, 'src/core/jsx'),
+    },
+  },
 });

@@ -1,6 +1,7 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 
-export interface ButtonOptions extends Omit<ComponentOptions, 'width' | 'height'> {
+export interface ButtonOptions
+  extends Omit<ComponentProps, 'width' | 'height'> {
   name: string;
   onClick?: () => void;
   width?: number;
@@ -34,17 +35,19 @@ export class Button extends Component {
     const buffer = super.draw();
     const xOffset = this.border ? 1 : 0;
     const yOffset = this.border ? 1 : 0;
-    
-    const name = this.hasFocus
-      ? `[${this.name}]`
-      : ` ${this.name} `;
+
+    const name = this.hasFocus ? `[${this.name}]` : ` ${this.name} `;
 
     const centeredX = Math.max(
       xOffset,
       Math.floor((this.width - name.length) / 2)
     );
 
-    for (let i = 0; i < name.length && i + centeredX < this.width - xOffset; i++) {
+    for (
+      let i = 0;
+      i < name.length && i + centeredX < this.width - xOffset;
+      i++
+    ) {
       buffer[yOffset][centeredX + i] = name[i];
     }
 

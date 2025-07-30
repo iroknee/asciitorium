@@ -6,7 +6,6 @@ import { Renderer } from './Renderer';
 export class DomRenderer implements Renderer {
   constructor(private screen: HTMLElement) {
     this.screen.style.whiteSpace = 'pre';
-    this.screen.style.fontFamily = 'monospace';
   }
 
   render(buffer: string[][]): void {

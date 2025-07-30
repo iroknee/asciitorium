@@ -1,7 +1,7 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface TextInputOptions extends ComponentOptions {
+export interface TextInputOptions extends ComponentProps {
   state?: State<string>;
   placeholder?: string;
 }
@@ -52,7 +52,10 @@ export class TextInput extends Component {
       this.cursorIndex = Math.max(0, this.cursorIndex - 1);
       updated = true;
     } else if (event === 'ArrowRight') {
-      this.cursorIndex = Math.min(this.internalState.value.length, this.cursorIndex + 1);
+      this.cursorIndex = Math.min(
+        this.internalState.value.length,
+        this.cursorIndex + 1
+      );
       updated = true;
     }
 

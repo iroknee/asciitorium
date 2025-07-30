@@ -1,6 +1,6 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 
-export interface MarkdownViewerOptions extends ComponentOptions {
+export interface MarkdownViewerOptions extends ComponentProps {
   markdown?: string;
 }
 

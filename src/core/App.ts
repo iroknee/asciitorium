@@ -1,45 +1,40 @@
 // core/App.ts
 import { Component } from './Component';
-import { Container } from './Container';
 import { FocusManager } from './FocusManager';
-import { AddComponentLayout } from './types';
 import type { Renderer } from './Renderer';
+import { VerticalLayout } from './VerticalLayout';
 
 export interface AppProps {
   width: number;
   height: number;
   border?: boolean;
-  fontFamily?: string;
+  fit?: boolean;
   renderer: Renderer;
   children?: Component | Component[];
 }
 
 export default class App {
-  readonly canvas: Container;
+  readonly canvas: VerticalLayout;
   readonly focus: FocusManager;
-  readonly fontFamily: string;
   private readonly renderer: Renderer;
 
   constructor(props: AppProps) {
-    const {
+    const { width, height, border = false, fit = true, renderer, children } = props;
+
+    this.renderer = renderer;
+    this.canvas = new VerticalLayout({
       width,
       height,
-      border = false,
-      fontFamily = 'monospace',
-      renderer,
-      children,
-    } = props;
-
-    this.fontFamily = fontFamily;
-    this.renderer = renderer;
-    this.canvas = new Container({ width, height, border });
+      border,
+      fit,
+    });
     this.focus = new FocusManager();
 
     // Normalize and add children
     if (children) {
       const list = Array.isArray(children) ? children : [children];
       for (const child of list) {
-        this.canvas.add({ component: child });
+        this.canvas.addChild(child);
       }
     }
 
@@ -52,14 +47,14 @@ export default class App {
     this.renderer.render(screenBuffer);
   }
 
-  add(componentLayout: AddComponentLayout): void {
-    this.canvas.add(componentLayout);
+  addChild(component: Component): void {
+    this.canvas.addChild(component);
     this.focus.reset(this.canvas);
     this.render();
   }
 
-  remove(component: Component): void {
-    this.canvas.remove(component);
+  removeChild(component: Component): void {
+    this.canvas.removeChild(component);
     this.focus.reset(this.canvas);
     this.render();
   }

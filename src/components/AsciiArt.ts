@@ -1,6 +1,6 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 
-export interface ArtOptions extends Omit<ComponentOptions, 'width' | 'height'> {
+export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
   width?: number;
   height?: number;
   content: string;

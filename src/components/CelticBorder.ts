@@ -1,4 +1,4 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 
 export type CelticCorner =
   | 'upperLeft'
@@ -34,7 +34,7 @@ const borderPatterns: Record<CelticCorner, string[]> = {
 export class CelticBorder extends Component {
   private lines: string[][];
 
-  constructor(corner: CelticCorner, options?: Partial<ComponentOptions>) {
+  constructor(corner: CelticCorner, options?: Partial<ComponentProps>) {
     const pattern = borderPatterns[corner];
     const width = Math.max(...pattern.map((line) => line.length));
     const height = pattern.length;

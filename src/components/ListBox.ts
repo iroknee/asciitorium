@@ -1,7 +1,7 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface ListBoxOptions extends ComponentOptions {
+export interface ListBoxOptions extends ComponentProps {
   items: string[];
   selectedItem: State<string>;
 }

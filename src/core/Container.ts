@@ -1,4 +1,4 @@
-import { Component, ComponentOptions } from './Component';
+import { Component, ComponentProps } from './Component';
 import {
   FixedPositionComponent,
   AddComponentLayout,
@@ -9,8 +9,8 @@ import {
 export class Container extends Component {
   children: FixedPositionComponent[] = [];
 
-  constructor(options: ComponentOptions) {
-    super(options);
+  constructor(props: ComponentProps) {
+    super(props);
   }
 
   add({

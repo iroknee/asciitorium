@@ -1,10 +1,12 @@
+import { Alignment } from "./types";
 
-export interface ComponentOptions {
-  label?: string,
-  width: number,
-  height: number,
-  border?: boolean,
-  fill?: string
+export interface ComponentProps {
+  label?: string;
+  width: number;
+  height: number;
+  border?: boolean;
+  fill?: string;
+  align?: Alignment;
 }
 
 export abstract class Component {
@@ -15,30 +17,36 @@ export abstract class Component {
   public fill: string;
   protected buffer: string[][];
   public dirty: boolean;
+  public align?: Alignment;
 
-  focusable: boolean = false;
-  hasFocus: boolean = false;
+  focusable = false;
+  hasFocus = false;
 
-  constructor(options: ComponentOptions) {
-    if (options.width < 1) throw new Error('Component width must be greater than zero.');
-    if (options.height < 1) throw new Error('Component height must be greater than zero.');
-    this.width = options.width;
-    this.height = options.height;
-    this.label = options.label;
-    this.border = options.border || false;
-    this.fill = options.fill || ' ';
-    this.buffer = new Array();
+  constructor(props: ComponentProps) {
+    if (props.width < 1)
+      throw new Error('Component width must be greater than zero.');
+    if (props.height < 1)
+      throw new Error('Component height must be greater than zero.');
+
+    this.width = props.width;
+    this.height = props.height;
+    this.label = props.label;
+    this.border = props.border || false;
+    this.fill = props.fill || ' ';
+    this.align = props.align;
+    this.buffer = [];
     this.dirty = true;
   }
+
+  // later consumers can call:
+  // const { x, y } = resolveAlignment(child.align, containerWidth, containerHeight, child.width, child.height)
 
   handleEvent(event: string): boolean {
     return false;
   }
 
   draw(): string[][] {
-
     if (this.dirty) {
-      // 0. Build 2d array with fill char
       this.buffer = Array.from({ length: this.height }, () =>
         Array(this.width).fill(this.fill)
       );
@@ -49,16 +57,11 @@ export abstract class Component {
         }
       };
 
-      // 1. Draw border if enabled
       if (this.border) {
         const w = this.width;
         const h = this.height;
 
-        if (this.hasFocus) {
-          drawChar(0, 0, '◆');
-        } else {
-          drawChar(0, 0, '╭');
-        } 
+        drawChar(0, 0, this.hasFocus ? '◆' : '╭');
         drawChar(w - 1, 0, '╮');
         drawChar(0, h - 1, '╰');
         drawChar(w - 1, h - 1, '╯');
@@ -73,19 +76,17 @@ export abstract class Component {
         }
       }
 
-      // 2. Draw label (overrides border top row if needed)
       if (this.label) {
-        const label = this.hasFocus ? ` ${this.label} ` : ` ${this.label} `;
+        const label = ` ${this.label} `;
         const start = 2;
         for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
           drawChar(i + start, 0, label[i]);
         }
       }
+
       this.dirty = false;
     }
 
     return this.buffer;
   }
-
-
 }

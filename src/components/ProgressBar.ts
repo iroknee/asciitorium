@@ -1,6 +1,6 @@
-import { Component, ComponentOptions } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component';
 
-export interface ProgressBarOptions extends Omit<ComponentOptions, 'height' > {
+export interface ProgressBarOptions extends Omit<ComponentProps, 'height'> {
   progress: number; // 0 to 1
   showPercent?: boolean;
   onUpdate?: () => void; // <-- to trigger render
@@ -19,7 +19,7 @@ export class ProgressBar extends Component {
   constructor(options: ProgressBarOptions) {
     options.height = 3; // Progress bar is always 3 lines tall
     options.border = false; // Default to having a border
-    super(options as ComponentOptions);
+    super(options as ComponentProps);
     this.label = options.label ?? '';
     this.progress = Math.max(0, Math.min(1, options.progress));
     this.showPercent = options.showPercent ?? false;
@@ -72,7 +72,10 @@ export class ProgressBar extends Component {
       barContent = (before + percentStr + after).slice(0, innerWidth);
     }
 
-    const top = ' ⎽' + this.label + '⎽'.repeat(Math.max(0, width - 3 - this.label.length));
+    const top =
+      ' ⎽' +
+      this.label +
+      '⎽'.repeat(Math.max(0, width - 3 - this.label.length));
     const mid = `⎹${barContent}⎸`;
     const bot = ' ' + '⎺'.repeat(width - 2);
 
