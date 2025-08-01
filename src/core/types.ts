@@ -4,9 +4,9 @@ export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
 
 export type AlignmentKeyword =
-  | 'top-left' | 'top-center' | 'top-right'
-  | 'middle-left' | 'middle-center' | 'middle-right'
-  | 'bottom-left' | 'bottom-center' | 'bottom-right';
+  | 'top-left' | 'top' | 'top-right'
+  | 'left' | 'center' | 'right'
+  | 'bottom-left' | 'bottom' | 'bottom-right';
 
 export type Alignment = AlignmentKeyword | { x: 'left' | 'center' | 'right' | number, y: 'top' | 'middle' | 'bottom' | number };
 

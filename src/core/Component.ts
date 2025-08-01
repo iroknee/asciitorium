@@ -1,4 +1,6 @@
-import { Alignment } from "./types";
+import { Alignment } from './types';
+import type { State } from './State';
+import type App from './App';
 
 export interface ComponentProps {
   label?: string;
@@ -7,6 +9,7 @@ export interface ComponentProps {
   border?: boolean;
   fill?: string;
   align?: Alignment;
+  bind?: State<any> | ((state: State<any>) => void);
 }
 
 export abstract class Component {
@@ -35,6 +38,33 @@ export abstract class Component {
     this.fill = props.fill || ' ';
     this.align = props.align;
     this.buffer = [];
+    this.dirty = true;
+  }
+
+  private unbindFns: (() => void)[] = [];
+  protected app?: App;
+
+  setApp(app: App) {
+    this.app = app;
+  }
+
+  bind<T>(state: State<T>, apply: (val: T) => void): void {
+    const listener = (val: T) => {
+      apply(val);
+      this.markDirty();
+      this.app?.render();
+    };
+
+    state.subscribe(listener);
+    this.unbindFns.push(() => state.unsubscribe(listener));
+  }
+
+  destroy(): void {
+    for (const unbind of this.unbindFns) unbind();
+    this.unbindFns = [];
+  }
+
+  markDirty(): void {
     this.dirty = true;
   }
 

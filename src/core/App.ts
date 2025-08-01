@@ -1,8 +1,8 @@
 // core/App.ts
-import { Component } from './Component';
+import { VerticalLayout } from './VerticalLayout';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './Renderer';
-import { VerticalLayout } from './VerticalLayout';
+import { Component } from './Component';
 
 export interface AppProps {
   width: number;
@@ -13,54 +13,61 @@ export interface AppProps {
   children?: Component | Component[];
 }
 
-export default class App {
-  readonly canvas: VerticalLayout;
+export default class App extends VerticalLayout {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
 
   constructor(props: AppProps) {
-    const { width, height, border = false, fit = true, renderer, children } = props;
-
-    this.renderer = renderer;
-    this.canvas = new VerticalLayout({
-      width,
-      height,
-      border,
-      fit,
+    super({
+      width: props.width,
+      height: props.height,
+      border: props.border,
+      fit: props.fit ?? true,
     });
+
+    this.renderer = props.renderer;
     this.focus = new FocusManager();
 
-    // Normalize and add children
-    if (children) {
-      const list = Array.isArray(children) ? children : [children];
+    // Add children
+    if (props.children) {
+      const list = Array.isArray(props.children)
+        ? props.children
+        : [props.children];
       for (const child of list) {
-        this.canvas.addChild(child);
+        this._registerAndAdd(child);
       }
     }
 
-    this.focus.reset(this.canvas);
+    this.focus.reset(this);
     this.render();
+
+    // Global key listener
+    window.addEventListener('keydown', (event) => {
+      this.handleKey(event.key);
+    });
   }
 
-  render() {
-    const screenBuffer = this.canvas.draw();
+  render(): void {
+    const screenBuffer = this.draw();
     this.renderer.render(screenBuffer);
   }
 
   addChild(component: Component): void {
-    this.canvas.addChild(component);
-    this.focus.reset(this.canvas);
+    this._registerAndAdd(component);
+    this.focus.reset(this);
     this.render();
   }
 
   removeChild(component: Component): void {
-    this.canvas.removeChild(component);
-    this.focus.reset(this.canvas);
+    super.removeChild(component);
+    this.focus.reset(this);
     this.render();
   }
 
   handleKey(key: string): void {
+    console.log(`App handling key: ${key}`);
     if (key === 'Tab') {
+      event?.preventDefault();
       this.focus.focusNext();
       this.render();
       return;
@@ -69,5 +76,10 @@ export default class App {
     if (this.focus.handleKey(key)) {
       this.render();
     }
+  }
+
+  private _registerAndAdd(component: Component) {
+    component.setApp?.(this); // Inject app reference for reactivity
+    super.addChild(component);
   }
 }

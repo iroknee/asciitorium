@@ -1,27 +1,43 @@
 import { Component, ComponentProps } from '../core/Component';
+import type { State } from '../core/State';
+import { isState, resolveAlignment } from '../core/utils';
 import { Alignment } from 'core/types';
-import { resolveAlignment } from '../core/layoutUtils';
 
 export interface TextOptions extends Omit<ComponentProps, 'height' | 'width'> {
-  value: string;
+  value: string | State<string>;
   height?: number;
   width?: number;
   align?: Alignment;
 }
 
 export class Text extends Component {
-  public value: string;
+  private source: string | State<string>;
 
   constructor(options: TextOptions) {
-    const textString = options.value;
+    const initialValue = isState(options.value)
+      ? (options.value as State<string>).value
+      : options.value;
 
     super({
       ...options,
-      width: options.width || textString.length + (options.border ? 2 : 0),
+      width: options.width || (typeof initialValue === 'string' ? initialValue.length : String(initialValue).length) + (options.border ? 2 : 0),
       height: options.height || 1 + (options.border ? 2 : 0),
     });
 
-    this.value = textString;
+    this.source = options.value;
+
+    // If reactive, subscribe to changes
+    if (isState(this.source)) {
+      (this.source as State<string>).subscribe(() => {
+        this.markDirty();
+      });
+    }
+  }
+
+  get value(): string {
+    return isState(this.source)
+      ? String((this.source as State<string>).value)
+      : String(this.source);
   }
 
   draw(): string[][] {
@@ -36,7 +52,7 @@ export class Text extends Component {
         innerWidth,
         innerHeight,
         Math.min(this.value.length, innerWidth),
-        1 // text is single line
+        1
       );
 
       const drawX = this.border ? x + 1 : x;

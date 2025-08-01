@@ -1,6 +1,6 @@
 import { Component, ComponentProps } from './Component';
 import { FixedPositionComponent } from './types';
-import { resolveAlignment } from './layoutUtils';
+import { resolveAlignment } from './utils';
 
 export interface VerticalLayoutProps extends ComponentProps {
   fit?: boolean;
@@ -16,7 +16,9 @@ export class VerticalLayout extends Component {
     this.fit = props.fit;
 
     if (props.children) {
-      const list = Array.isArray(props.children) ? props.children : [props.children];
+      const list = Array.isArray(props.children)
+        ? props.children
+        : [props.children];
       for (const child of list) {
         this.addChild(child);
       }
@@ -68,7 +70,13 @@ export class VerticalLayout extends Component {
       }
 
       // Resolve alignment (x is aligned horizontally within innerWidth)
-      const { x } = resolveAlignment(child.align, innerWidth, child.height, child.width, child.height);
+      const { x } = resolveAlignment(
+        child.align,
+        innerWidth,
+        child.height,
+        child.width,
+        child.height
+      );
 
       entry.x = borderPad + x;
       entry.y = currentY;
