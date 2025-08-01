@@ -10,7 +10,7 @@ export class VerticalLayout extends Layout {
 
   constructor(props: VerticalLayoutProps) {
     super(props);
-    this.fit = props.fit;
+    this.fit = props.fit ?? false;
   }
 
   protected override recalculateLayout(): void {

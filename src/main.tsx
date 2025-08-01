@@ -18,7 +18,7 @@ screen.style.fontFamily = 'PrintChar21';
 const message = new State("Click a button!");
 
 const app = (
-  <App width={64} height={32} border={true} fit={false} renderer={new DomRenderer(screen)}>
+  <App width={64} height={32} border renderer={new DomRenderer(screen)}>
     <AsciiArt content={a1982} align="center" />
     <HorizontalLine length={42} align="center"/>
     <Text value="An ASCII GUI Framework" align="center"/>

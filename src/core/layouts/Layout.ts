@@ -9,16 +9,6 @@ export abstract class Layout extends Component {
 
   constructor(props: LayoutProps) {
     super(props);
-
-    const list = Array.isArray(props.children)
-      ? props.children
-      : props.children
-        ? [props.children]
-        : [];
-
-    for (const child of list) {
-      this.addChild(child);
-    }
   }
 
   public addChild(child: Component): void {

@@ -1,16 +1,11 @@
 // core/App.ts
-import { VerticalLayout } from './layouts/VerticalLayout';
+import { VerticalLayout, VerticalLayoutProps } from './layouts/VerticalLayout';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './Renderer';
 import { Component } from './Component';
 
-export interface AppProps {
-  width: number;
-  height: number;
-  border?: boolean;
-  fit?: boolean;
+export interface AppProps extends VerticalLayoutProps {
   renderer: Renderer;
-  children?: Component | Component[];
 }
 
 export default class App extends VerticalLayout {
@@ -18,24 +13,19 @@ export default class App extends VerticalLayout {
   private readonly renderer: Renderer;
 
   constructor(props: AppProps) {
-    super({
-      width: props.width,
-      height: props.height,
-      border: props.border,
-      fit: props.fit ?? true,
-    });
+    super(props);
 
     this.renderer = props.renderer;
     this.focus = new FocusManager();
 
-    // Add children
-    if (props.children) {
-      const list = Array.isArray(props.children)
-        ? props.children
-        : [props.children];
-      for (const child of list) {
-        this._registerAndAdd(child);
-      }
+    const list = Array.isArray(props.children)
+      ? props.children
+      : props.children
+        ? [props.children]
+        : [];
+
+    for (const child of list) {
+      this._registerAndAdd(child);
     }
 
     this.focus.reset(this);
@@ -54,7 +44,7 @@ export default class App extends VerticalLayout {
 
   addChild(component: Component): void {
     this._registerAndAdd(component);
-    this.focus.reset(this);
+    this.focus?.reset(this); // avoid crashing
     this.render();
   }
 
