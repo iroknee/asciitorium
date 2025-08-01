@@ -30,11 +30,6 @@ export default class App extends VerticalLayout {
 
     this.focus.reset(this);
     this.render();
-
-    // Global key listener
-    window.addEventListener('keydown', (event) => {
-      this.handleKey(event.key);
-    });
   }
 
   render(): void {
@@ -55,7 +50,7 @@ export default class App extends VerticalLayout {
   }
 
   handleKey(key: string): void {
-    console.log(`App handling key: ${key}`);
+    // need to handle Tab key on CLI
     if (key === 'Tab') {
       event?.preventDefault();
       this.focus.focusNext();

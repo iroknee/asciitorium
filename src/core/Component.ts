@@ -10,6 +10,7 @@ export interface ComponentProps {
   fill?: string;
   align?: Alignment;
   bind?: State<any> | ((state: State<any>) => void);
+  fixed?: boolean;
   x?: number;
   y?: number;
   z?: number;
@@ -26,6 +27,7 @@ export abstract class Component {
   public align?: Alignment;
   public hasFocus: boolean = false;
   public focusable: boolean = false;
+  public fixed: boolean = false;
   public x = 0;
   public y = 0;
   public z = 0;
@@ -38,9 +40,10 @@ export abstract class Component {
     this.width = props.width;
     this.height = props.height;
     this.label = props.label;
-    this.border = props.border || false;
-    this.fill = props.fill || ' ';
+    this.border = props.border ?? false;
+    this.fill = props.fill ?? ' ';
     this.align = props.align;
+    this.fixed = props.fixed ?? false;
     this.x = props.x ?? 0;
     this.y = props.y ?? 0;
     this.z = props.z ?? 0;

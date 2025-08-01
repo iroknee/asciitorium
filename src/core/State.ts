@@ -14,7 +14,6 @@ export class State<T> {
 
   set value(newValue: T) {
     if (this._value !== newValue) {
-      console.log(`State changed from`, this._value, 'to', newValue);
       this._value = newValue;
       this.listeners.forEach((listener) => listener(newValue));
     }

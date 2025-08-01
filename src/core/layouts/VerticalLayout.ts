@@ -22,6 +22,10 @@ export class VerticalLayout extends Layout {
     let currentY = borderPad;
 
     for (const child of this.children) {
+      if (child.fixed) {
+        continue; // skip positioning if component is fixed
+      }
+
       if (this.fit && count > 0) {
         child.height = Math.floor(innerHeight / count);
       }

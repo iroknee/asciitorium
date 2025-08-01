@@ -31,7 +31,6 @@ export class Button extends Component {
   }
 
   handleEvent(event: string): boolean {
-    console.log(`Button handling event: ${event}`);
     if (event === 'Enter' || event === ' ') {
       this.onClick?.();
       return true;
