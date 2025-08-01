@@ -10,6 +10,9 @@ export interface ComponentProps {
   fill?: string;
   align?: Alignment;
   bind?: State<any> | ((state: State<any>) => void);
+  x?: number;
+  y?: number;
+  z?: number;
 }
 
 export abstract class Component {
@@ -21,15 +24,16 @@ export abstract class Component {
   protected buffer: string[][];
   public dirty: boolean;
   public align?: Alignment;
+  public hasFocus: boolean = false;
+  public focusable: boolean = false;
+  public x = 0;
+  public y = 0;
+  public z = 0;
 
-  focusable = false;
-  hasFocus = false;
-
+  // ... constructor ...
   constructor(props: ComponentProps) {
-    if (props.width < 1)
-      throw new Error('Component width must be greater than zero.');
-    if (props.height < 1)
-      throw new Error('Component height must be greater than zero.');
+    if (props.width < 1) throw new Error('Component width must be > 0');
+    if (props.height < 1) throw new Error('Component height must be > 0');
 
     this.width = props.width;
     this.height = props.height;
@@ -37,6 +41,9 @@ export abstract class Component {
     this.border = props.border || false;
     this.fill = props.fill || ' ';
     this.align = props.align;
+    this.x = props.x ?? 0;
+    this.y = props.y ?? 0;
+    this.z = props.z ?? 0;
     this.buffer = [];
     this.dirty = true;
   }

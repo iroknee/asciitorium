@@ -1,5 +1,5 @@
 // core/App.ts
-import { VerticalLayout } from './VerticalLayout';
+import { VerticalLayout } from './layouts/VerticalLayout';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './Renderer';
 import { Component } from './Component';

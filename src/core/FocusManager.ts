@@ -61,11 +61,11 @@ export class FocusManager {
 
   getFocusableDescendants(layoutRoot: App): Component[] {
     const focusables: Component[] = [];
-    for (const child of layoutRoot.children) {
-      if (child.component.focusable) focusables.push(child.component);
+    for (const child of layoutRoot.getChildren()) {
+      if (child.focusable) focusables.push(child);
       // Recursively check if the child is a Container
-      if (child.component instanceof App) {
-        focusables.push(...this.getFocusableDescendants(child.component));
+      if (child instanceof App) {
+        focusables.push(...this.getFocusableDescendants(child));
       }
     }
     return focusables;
