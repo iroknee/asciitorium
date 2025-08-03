@@ -101,7 +101,8 @@ export abstract class Component {
         const w = this.width;
         const h = this.height;
 
-        drawChar(0, 0, this.hasFocus ? '◆' : '╭');
+        // drawChar(0, 0, this.hasFocus ? '◆' : '╭');
+        drawChar(0, 0, '╭');
         drawChar(w - 1, 0, '╮');
         drawChar(0, h - 1, '╰');
         drawChar(w - 1, h - 1, '╯');

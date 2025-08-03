@@ -50,11 +50,17 @@ export default class App extends VerticalLayout {
   }
 
   handleKey(key: string): void {
-    // need to handle Tab key on CLI
     if (key === 'Tab') {
-      event?.preventDefault();
       this.focus.focusNext();
       this.render();
+      event?.preventDefault();
+      return;
+    }
+
+    if (key === 'Shift+Tab') {
+      this.focus.focusPrevious();
+      this.render();
+      event?.preventDefault();
       return;
     }
 

@@ -1,38 +1,34 @@
 import { Component, ComponentProps } from '../core/Component';
+import type { State } from '../core/State';
 
 export interface ProgressBarOptions extends Omit<ComponentProps, 'height'> {
-  progress: number; // 0 to 1
-  showPercent?: boolean;
-  onUpdate?: () => void; // <-- to trigger render
-  height?: number; // allow setting height for internal use
+  progress: State<number>;
+  percentage?: boolean;
+  durationMs?: number; // Optional: customize animation duration
+  height?: number; // Fixed height of 3
 }
 
 export class ProgressBar extends Component {
-  readonly label: string;
-  readonly height: number = 3;
-  private progress: number;
-  private targetProgress: number | null = null;
-  private readonly showPercent: boolean;
-  private readonly onUpdate?: () => void;
+  private progress = 0;
+  private readonly percentage: boolean;
   private animationInterval?: ReturnType<typeof setInterval>;
+  private readonly durationMs: number;
 
   constructor(options: ProgressBarOptions) {
-    options.height = 3; // Progress bar is always 3 lines tall
-    options.border = false; // Default to having a border
+    options.height = 3;
+    options.border = false;
     super(options as ComponentProps);
-    this.label = options.label ?? '';
-    this.progress = Math.max(0, Math.min(1, options.progress));
-    this.showPercent = options.showPercent ?? false;
-    this.onUpdate = options.onUpdate;
+
+    this.percentage = options.percentage ?? false;
+    this.durationMs = options.durationMs ?? 500;
+
+    // Bind to the progress State
+    this.bind(options.progress, (newValue) => {
+      this.animateTo(newValue, this.durationMs);
+    });
   }
 
-  setProgress(value: number): void {
-    this.progress = Math.max(0, Math.min(1, value));
-    this.targetProgress = null;
-    this.onUpdate?.();
-  }
-
-  animateTo(value: number, durationMs = 1000): void {
+  private animateTo(value: number, durationMs: number = 500): void {
     const clamped = Math.max(0, Math.min(1, value));
     if (this.animationInterval) clearInterval(this.animationInterval);
 
@@ -45,40 +41,44 @@ export class ProgressBar extends Component {
       currentStep++;
       const t = currentStep / steps;
       this.progress = start + (clamped - start) * t;
-      this.onUpdate?.();
+      this.markDirty();
+      this.app?.render();
 
       if (currentStep >= steps) {
         clearInterval(this.animationInterval);
         this.progress = clamped;
-        this.onUpdate?.();
+        this.markDirty();
+        this.app?.render();
       }
     }, delay);
   }
 
-  draw(): string[][] {
-    const width = this.width ?? 10;
-    const innerWidth = width - 2;
+  override draw(): string[][] {
+    if (this.dirty) {
+      const width = this.width ?? 10;
+      const innerWidth = width - 2;
 
-    const filledLength = Math.round(this.progress * innerWidth);
-    const emptyLength = innerWidth - filledLength;
+      const filledLength = Math.round(this.progress * innerWidth);
+      const emptyLength = innerWidth - filledLength;
 
-    let barContent = '█'.repeat(filledLength) + ' '.repeat(emptyLength);
+      let barContent = '█'.repeat(filledLength) + ' '.repeat(emptyLength);
 
-    if (this.showPercent) {
-      const percentStr = `${Math.round(this.progress * 100)}%`;
-      const start = Math.floor((innerWidth - percentStr.length) / 2);
-      const before = barContent.slice(0, start);
-      const after = barContent.slice(start + percentStr.length);
-      barContent = (before + percentStr + after).slice(0, innerWidth);
+      if (this.percentage) {
+        const percentStr = `${Math.round(this.progress * 100)}%`;
+        const start = Math.floor((innerWidth - percentStr.length) / 2);
+        const before = barContent.slice(0, start);
+        const after = barContent.slice(start + percentStr.length);
+        barContent = (before + percentStr + after).slice(0, innerWidth);
+      }
+
+      const top = ' ⎽' + '⎽'.repeat(Math.max(0, width - 3));
+      const mid = `⎹${barContent}⎸`;
+      const bot = ' ' + '⎺'.repeat(width - 2);
+
+      this.buffer = [top, mid, bot].map((line) => Array.from(line));
+      this.dirty = false;
     }
 
-    const top =
-      ' ⎽' +
-      this.label +
-      '⎽'.repeat(Math.max(0, width - 3 - this.label.length));
-    const mid = `⎹${barContent}⎸`;
-    const bot = ' ' + '⎺'.repeat(width - 2);
-
-    return [top, mid, bot].map((line) => Array.from(line));
+    return this.buffer;
   }
 }

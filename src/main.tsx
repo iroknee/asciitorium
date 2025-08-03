@@ -16,25 +16,39 @@ screen.style.fontFamily = 'PrintChar21';
 
 // Create a stateful label to update when button is clicked
 const message = new State('Click a button!');
+const loading = new State(0);
 
 const app = (
-  <App width={64} height={32} border renderer={new DomRenderer(screen)}>
+  <App width={64} height={34} border renderer={new DomRenderer(screen)}>
     <AsciiArt content={a1982} align="center" />
     <HorizontalLine length={42} align="center" />
-    <Text value="an ASCII-based UI framework" align="center" />
+    <Text value="an ASCII-based UI framework" align="center" height={5} />
     <Button
-      name="Button A"
+      name="A"
+      align="center"
+      width={14}
       onClick={() => (message.value = 'A Clicked!')}
+    />
+    <Button
+      name="Btn B"
+      onClick={() => (message.value = 'B Clicked!')}
+      width={14}
       align="center"
     />
     <Button
-      name="Button B"
-      onClick={() => (message.value = 'B Clicked!')}
+      name="Button C"
+      onClick={() => (message.value = 'C Clicked!')}
       align="center"
     />
-    <Text value="Fixed Position" fixed x={2} y={0} />
-    <Text border={true} value={message} align="bottom-left" />
-    <Text value="© 1982" align="bottom-right" />
+    <Button
+      name="Button D"
+      onClick={() => (message.value = 'D Clicked!')}
+      align="center"
+    />
+    <Text value=" Project 1982 " fixed x={2} y={0} />
+    <Text value={message} height={5} align="center" />
+    <Text value="©1982" fixed x={58} y={30} />
+    <ProgressBar label="Loading..." progress={loading} width={32} />
   </App>
 );
 
@@ -42,3 +56,11 @@ const app = (
 window.addEventListener('keydown', (event) => {
   app.handleKey(event.key);
 });
+
+// Simulate loading progress
+setTimeout(() => {
+  loading.value = 0.56;
+}, 1000);
+setTimeout(() => {
+  loading.value = 0.23;
+}, 2000);

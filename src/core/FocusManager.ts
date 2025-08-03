@@ -1,5 +1,5 @@
 import { Component } from './Component';
-import App from './App';
+import { Layout } from './layouts/Layout';
 
 export class FocusManager {
   private contextStack: Component[][] = [];
@@ -7,7 +7,8 @@ export class FocusManager {
 
   pushContext(components: Component[]) {
     this.clearFocus();
-    this.contextStack.push(components);
+    const focusables = components.filter((c) => c.focusable);
+    this.contextStack.push(focusables);
     this.index = 0;
     this.setFocus(0);
   }
@@ -47,27 +48,44 @@ export class FocusManager {
     this.setFocus(this.index);
   }
 
+  // TODO: this doesn't work, still goes forward
+  focusPrevious() {
+    if (this.currentContext.length === 0) return;
+    this.clearFocus();
+    this.index =
+      (this.index - 1 + this.currentContext.length) %
+      this.currentContext.length;
+    this.setFocus(this.index);
+  }
+
   handleKey(key: string): boolean {
     const current = this.currentContext[this.index];
     const handled = current?.handleEvent?.(key);
     return handled ?? false;
   }
 
-  reset(layoutRoot: App) {
-    this.contextStack = [this.getFocusableDescendants(layoutRoot)];
+  reset(layout: Layout) {
+    const focusables = this.getFocusableDescendants(layout).filter(
+      (c) => c.focusable
+    );
+    this.contextStack = [focusables];
     this.index = 0;
     this.setFocus(0);
   }
 
-  getFocusableDescendants(layoutRoot: App): Component[] {
+  getFocusableDescendants(parent: Layout): Component[] {
     const focusables: Component[] = [];
-    for (const child of layoutRoot.getChildren()) {
-      if (child.focusable) focusables.push(child);
-      // Recursively check if the child is a Container
-      if (child instanceof App) {
+
+    for (const child of parent.getChildren()) {
+      if (child.focusable) {
+        focusables.push(child);
+      }
+
+      if (child instanceof Layout) {
         focusables.push(...this.getFocusableDescendants(child));
       }
     }
+
     return focusables;
   }
 }
