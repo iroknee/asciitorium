@@ -16,6 +16,7 @@ screen.style.fontFamily = 'PrintChar21';
 
 // Create a stateful label to update when button is clicked
 const message = new State('');
+const selected = new State('Item 1');
 const loading = new State(0);
 const appWidth = 64;
 const appHeight = 44;
@@ -25,7 +26,7 @@ const app = (
     <CelticBorder corner="topLeft" fixed x={0} y={0} />
     <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
     <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
-    <CelticBorder 
+    <CelticBorder
       corner="bottomRight"
       fixed
       x={appWidth - 8}
@@ -35,29 +36,22 @@ const app = (
     <HorizontalLine length={42} align="center" />
     <Text value="an ASCII-based UI framework" align="center" height={5} />
     <Button
-      name="A"
+      name="Button A"
       align="center"
       width={14}
       onClick={() => (message.value = 'A Clicked!')}
     />
-    <Button
-      name="Btn B"
-      onClick={() => (message.value = 'B Clicked!')}
-      width={14}
-      align="center"
-    />
-    <Button
-      name="Button C"
-      onClick={() => (message.value = 'C Clicked!')}
-      align="center"
-    />
-    <Button
-      name="Button D"
-      onClick={() => (message.value = 'D Clicked!')}
-      align="center"
-    />
-    <TextInput width={32} align="center" text={message} />
+    <TextInput label="Input" width={16} align="center" text={message} />
     <Text value={message} width={15} align="center" />
+    <ListBox
+      label="List Box"
+      items={['Item 1', 'Item 2', 'Item 3', 'Iteddm 4', 'em 5', 'Item 6', 'Item 7']}
+      selectedItem={selected}
+      width={20}
+      height={8}
+      align="center"
+    />
+
     <ProgressBar
       label="Loading..."
       progress={loading}
