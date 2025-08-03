@@ -1,5 +1,5 @@
 import readline from 'readline';
-import App from './core/App.js';
+import { App } from './core/App.js';
 import { TerminalRenderer } from './core/TerminalRenderer.js';
 import { Text } from './components/Text.js';
 import { ProgressBar } from './components/ProgressBar.js';
@@ -11,31 +11,7 @@ import { Button } from 'components/Button.js';
 const message = new State('Click a button!');
 
 const app = (
-  <App width={64} height={32} border renderer={new TerminalRenderer()}>
-    <HorizontalLine length={42} align="center" />
-    <Text value="an ASCII-based UI framework" align="center" height={5} />
-    <Button
-      name="A"
-      align="center"
-      width={16}
-      onClick={() => (message.value = 'A Clicked!')}
-    />
-    <Button
-      name="Button B"
-      onClick={() => (message.value = 'B Clicked!')}
-      align="center"
-    />
-    <Button
-      name="Button C"
-      onClick={() => (message.value = 'C Clicked!')}
-      align="center"
-      height={5}
-    />
-    <Text value=" Project 1982 " fixed x={2} y={0} />
-    <Text value={message} height={5} align="center" />
-    <Text value="©1982" fixed x={58} y={30} />
-    <ProgressBar label="Loading..." progress={0.54} width={60} />
-  </App>
+  
 );
 
 // --- Terminal Input Setup ---

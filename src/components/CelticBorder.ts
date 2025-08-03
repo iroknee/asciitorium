@@ -1,14 +1,14 @@
 import { Component, ComponentProps } from '../core/Component';
 
 export type CelticCorner =
-  | 'upperLeft'
-  | 'upperRight'
-  | 'lowerLeft'
-  | 'lowerRight';
+  | 'topLeft'
+  | 'topRight'
+  | 'bottomLeft'
+  | 'bottomRight';
 
 const borderPatterns: Record<CelticCorner, string[]> = {
-  upperLeft: ['╭⎯╮╭⎯⎯⎯⎯⎯', '⏐╭⎯⎯⎯⎯', '╰⎯⏐╯', '╭⏐╯', '⏐⏐', '⏐⏐', '⏐', '⏐'],
-  upperRight: [
+  topLeft: ['╭⎯╮╭⎯⎯⎯⎯⎯', '⏐╭⎯⎯⎯⎯', '╰⎯⏐╯', '╭⏐╯', '⏐⏐', '⏐⏐', '⏐', '⏐'],
+  topRight: [
     '⎯⎯⎯⎯╮╭⎯╮',
     ' ⎯⎯⎯⎯⎯╮⏐',
     '    ╰⏐⎯╯',
@@ -18,8 +18,8 @@ const borderPatterns: Record<CelticCorner, string[]> = {
     '       ⏐',
     '       ⏐',
   ],
-  lowerLeft: ['⏐', '⏐', '⏐⏐', '⏐⏐', '╰⏐╮', '╭⎯⏐╮', '⏐╰⎯⎯⎯⎯⎯', '╰⎯╯╰⎯⎯⎯⎯⎯'],
-  lowerRight: [
+  bottomLeft: ['⏐', '⏐', '⏐⏐', '⏐⏐', '╰⏐╮', '╭⎯⏐╮', '⏐╰⎯⎯⎯⎯⎯', '╰⎯╯╰⎯⎯⎯⎯⎯'],
+  bottomRight: [
     '       ⏐',
     '       ⏐',
     '      ⏐⏐',
@@ -31,10 +31,14 @@ const borderPatterns: Record<CelticCorner, string[]> = {
   ],
 };
 
+export interface CelticBorderOptions extends Partial<ComponentProps> {
+  corner: CelticCorner;
+}
+
 export class CelticBorder extends Component {
   private lines: string[][];
 
-  constructor(corner: CelticCorner, options?: Partial<ComponentProps>) {
+  constructor({ corner, ...options }: CelticBorderOptions) {
     const pattern = borderPatterns[corner];
     const width = Math.max(...pattern.map((line) => line.length));
     const height = pattern.length;
@@ -42,15 +46,15 @@ export class CelticBorder extends Component {
     super({
       width,
       height,
-      border: false,
       fill: ' ',
+      border: false,
       ...options,
     });
 
     this.lines = pattern.map((line) => Array.from(line));
   }
 
-  draw(): string[][] {
+  override draw(): string[][] {
     this.buffer = Array.from({ length: this.height }, (_, y) =>
       Array.from({ length: this.width }, (_, x) => this.lines[y]?.[x] ?? ' ')
     );

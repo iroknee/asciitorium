@@ -1,6 +1,6 @@
 import { Alignment } from './types';
 import type { State } from './State';
-import type App from './App';
+import type { App } from './App';
 
 export interface ComponentProps {
   label?: string;

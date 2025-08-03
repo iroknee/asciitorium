@@ -4,7 +4,7 @@ import { ListBox } from './components/ListBox';
 import { HorizontalLine } from './components/HorizonalLine';
 import { ProgressBar } from './components/ProgressBar';
 import a1982 from './1982.txt?raw';
-import App from './core/App';
+import { App } from './core/App';
 import { State } from './core/State';
 import { TextInput } from './components/TextInput';
 import { Button } from './components/Button';
@@ -15,11 +15,22 @@ const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
 
 // Create a stateful label to update when button is clicked
-const message = new State('Click a button!');
+const message = new State('');
 const loading = new State(0);
+const appWidth = 64;
+const appHeight = 44;
 
 const app = (
-  <App width={64} height={34} border renderer={new DomRenderer(screen)}>
+  <App width={appWidth} height={appHeight} renderer={new DomRenderer(screen)}>
+    <CelticBorder corner="topLeft" fixed x={0} y={0} />
+    <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
+    <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
+    <CelticBorder 
+      corner="bottomRight"
+      fixed
+      x={appWidth - 8}
+      y={appHeight - 8}
+    />
     <AsciiArt content={a1982} align="center" />
     <HorizontalLine length={42} align="center" />
     <Text value="an ASCII-based UI framework" align="center" height={5} />
@@ -45,10 +56,14 @@ const app = (
       onClick={() => (message.value = 'D Clicked!')}
       align="center"
     />
-    <Text value=" Project 1982 " fixed x={2} y={0} />
-    <Text value={message} height={5} align="center" />
-    <Text value="©1982" fixed x={58} y={30} />
-    <ProgressBar label="Loading..." progress={loading} width={32} />
+    <TextInput width={32} align="center" text={message} />
+    <Text value={message} width={15} align="center" />
+    <ProgressBar
+      label="Loading..."
+      progress={loading}
+      width={32}
+      align="center"
+    />
   </App>
 );
 

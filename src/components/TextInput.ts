@@ -1,50 +1,56 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface TextInputOptions extends ComponentProps {
-  state?: State<string>;
+export interface TextInputOptions extends Omit<ComponentProps, 'height'> {
+  text?: State<string>;
   placeholder?: string;
+  height?: number; // Fixed height of 3 or more
 }
 
 export class TextInput extends Component {
-  private internalState = new State('');
-  private externalState?: State<string>;
-  private placeholder: string;
-  private cursorIndex: number = 0;
+  private readonly text: State<string>;
+  private readonly placeholder: string;
+  private cursorIndex = 0;
+  private suppressCursorSync = false;
 
   focusable = true;
   hasFocus = false;
 
   constructor(options: TextInputOptions) {
-    super(options);
-    this.externalState = options.state;
+    const height = options.height ?? 3;
+    const border = options.border ?? true;
+    super({ ...options, height, border });
+
+    this.text = options.text ?? new State('');
     this.placeholder = options.placeholder ?? '';
 
-    if (this.externalState) {
-      this.externalState.subscribe((value) => {
-        this.internalState.value = value;
+    this.bind(this.text, (value) => {
+      if (!this.suppressCursorSync) {
         this.cursorIndex = value.length;
-        this.dirty = true;
-      });
-    }
+      }
+      this.markDirty();
+    });
   }
 
-  handleEvent(event: string): boolean {
+  override handleEvent(event: string): boolean {
     let updated = false;
+    const val = this.text.value;
 
     if (event.length === 1 && event >= ' ') {
-      const val = this.internalState.value;
       const left = val.slice(0, this.cursorIndex);
       const right = val.slice(this.cursorIndex);
-      this.internalState.value = left + event + right;
+      this.suppressCursorSync = true;
+      this.text.value = left + event + right;
+      this.suppressCursorSync = false;
       this.cursorIndex++;
       updated = true;
     } else if (event === 'Backspace') {
       if (this.cursorIndex > 0) {
-        const val = this.internalState.value;
         const left = val.slice(0, this.cursorIndex - 1);
         const right = val.slice(this.cursorIndex);
-        this.internalState.value = left + right;
+        this.suppressCursorSync = true;
+        this.text.value = left + right;
+        this.suppressCursorSync = false;
         this.cursorIndex--;
         updated = true;
       }
@@ -52,54 +58,51 @@ export class TextInput extends Component {
       this.cursorIndex = Math.max(0, this.cursorIndex - 1);
       updated = true;
     } else if (event === 'ArrowRight') {
-      this.cursorIndex = Math.min(
-        this.internalState.value.length,
-        this.cursorIndex + 1
-      );
+      this.cursorIndex = Math.min(val.length, this.cursorIndex + 1);
       updated = true;
     }
 
     if (updated) {
-      if (this.externalState) {
-        this.externalState.value = this.internalState.value;
-      }
-      this.dirty = true;
+      this.markDirty();
       return true;
     }
 
     return false;
   }
 
-  draw(): string[][] {
-    const buffer = super.draw(); // creates fill, border, label if needed
-    const innerWidth = this.border ? this.width - 2 : this.width;
-    const xOffset = this.border ? 3 : 2;
-    const yOffset = this.border ? 1 : 0;
+  override draw(): string[][] {
+    const buffer = super.draw();
 
-    const content = this.internalState.value || this.placeholder;
-    const visible = content.slice(0, innerWidth);
+    const prefix = this.hasFocus ? '> ' : '  ';
+    const prefixLength = prefix.length;
+    const y = this.border ? 1 : 0;
+    const x = this.border ? 1 : 0;
+    const innerWidth = this.width - (this.border ? 2 : 0);
+    const usableWidth = innerWidth - prefixLength;
 
-    // draw > to indicate input field
-    if (this.border) {
-      buffer[yOffset][1] = '>';
-      buffer[yOffset][2] = ' ';
-    } else {
-      buffer[yOffset][0] = '>';
-      buffer[yOffset][1] = ' ';
+    const raw = this.text.value || this.placeholder;
+    const visible = raw.slice(0, usableWidth);
+
+    // Draw prefix
+    for (let i = 0; i < prefixLength; i++) {
+      buffer[y][x + i] = prefix[i];
     }
 
-    // Draw input characters
-    for (let i = 0; i < visible.length && i < innerWidth; i++) {
-      buffer[yOffset][xOffset + i] = visible[i];
+    // Draw text
+    for (let i = 0; i < visible.length && i < usableWidth; i++) {
+      buffer[y][x + prefixLength + i] = visible[i];
     }
 
-    // Draw cursor if focused and within bounds
-    const cursorPos = Math.min(this.cursorIndex, innerWidth - 1);
+    // Draw cursor if focused
     if (this.hasFocus) {
-      buffer[yOffset][xOffset + cursorPos] = '▉';
+      const safeCursor = Math.min(
+        this.cursorIndex,
+        visible.length,
+        usableWidth - 1
+      );
+      buffer[y][x + prefixLength + safeCursor] = '▉';
     }
 
-    this.buffer = buffer;
     this.dirty = false;
     return buffer;
   }

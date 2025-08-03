@@ -8,7 +8,7 @@ export interface AppProps extends VerticalLayoutProps {
   renderer: Renderer;
 }
 
-export default class App extends VerticalLayout {
+export class App extends VerticalLayout {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
 

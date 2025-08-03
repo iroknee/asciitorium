@@ -14,14 +14,17 @@ export class Text extends Component {
   private source: string | State<string>;
 
   constructor(options: TextOptions) {
-    const initialValue = isState(options.value)
+    const rawValue = isState(options.value)
       ? (options.value as State<string>).value
       : options.value;
 
+    const contentLength = Math.max(1, String(rawValue).length); // <- enforce min width
+    const borderPadding = options.border ? 2 : 0;
+
     super({
       ...options,
-      width: options.width || (typeof initialValue === 'string' ? initialValue.length : String(initialValue).length) + (options.border ? 2 : 0),
-      height: options.height || 1 + (options.border ? 2 : 0),
+      width: options.width ?? contentLength + borderPadding,
+      height: options.height ?? 1 + (options.border ? 2 : 0),
     });
 
     this.source = options.value;
