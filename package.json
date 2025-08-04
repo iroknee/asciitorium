@@ -13,12 +13,12 @@
   "type": "module",
   "scripts": {
     "start:web": "vite",
+    "start:cli": "tsx src/demo/main.tsx",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
-    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
-    "start:cli": "tsx src/main.cli.tsx"
+    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
   },
   "author": "Trevor Gruby <trevor.gruby@outlook.com>",
   "keywords": [

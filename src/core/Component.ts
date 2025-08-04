@@ -1,6 +1,6 @@
 import { Alignment } from './types';
 import type { State } from './State';
-import type { App } from './App';
+import type { Asciitorium } from './Asciitorium';
 
 export interface ComponentProps {
   label?: string;
@@ -35,7 +35,7 @@ export abstract class Component {
 
   protected buffer: string[][];
   private unbindFns: (() => void)[] = [];
-  protected app?: App;
+  protected app?: Asciitorium;
 
   constructor(props: ComponentProps) {
     if (props.width < 1) throw new Error('Component width must be > 0');
@@ -54,7 +54,7 @@ export abstract class Component {
     this.buffer = [];
   }
 
-  setApp(app: App) {
+  setApp(app: Asciitorium) {
     this.app = app;
   }
 

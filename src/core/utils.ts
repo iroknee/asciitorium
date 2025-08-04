@@ -85,3 +85,20 @@ export function resolveAlignment(
 export function isState<T>(v: any): v is State<T> {
   return typeof v === 'object' && typeof v.subscribe === 'function';
 }
+
+export async function loadAsciiAsset(relativePath: string): Promise<string> {
+  if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+    // Web: use fetch from public path
+    return fetch(relativePath).then((res) => {
+      if (!res.ok) throw new Error(`Failed to load ${relativePath}`);
+      return res.text();
+    });
+  } else {
+    // Node: load from file system relative to the process CWD
+    const { readFile } = await import('fs/promises');
+    const { resolve } = await import('path');
+
+    const fullPath = resolve(process.cwd(), relativePath);
+    return readFile(fullPath, 'utf-8');
+  }
+}
