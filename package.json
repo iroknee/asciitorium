@@ -1,8 +1,15 @@
 {
-  "name": "p1982",
-  "version": "1.0.0",
+  "name": "asciitorium",
+  "version": "0.1.0",
   "description": "An ASCII-based UI framework",
-  "main": "main.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "type": "module",
   "scripts": {
     "start:web": "vite",
@@ -13,9 +20,15 @@
     "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
     "start:cli": "tsx src/main.cli.tsx"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Trevor Gruby <trevor.gruby@outlook.com>",
+  "keywords": [
+    "ascii",
+    "ui",
+    "framework",
+    "terminal",
+    "typescript"
+  ],
+  "license": "MIT",
   "devDependencies": {
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",

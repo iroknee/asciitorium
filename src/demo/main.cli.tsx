@@ -1,10 +1,10 @@
 import readline from 'readline';
-import { App } from './core/App.js';
-import { TerminalRenderer } from './core/renderers/TerminalRenderer.js';
-import { Text } from './components/Text.js';
-import { ProgressBar } from './components/ProgressBar.js';
+import { App } from '../core/App.js';
+import { TerminalRenderer } from '../core/renderers/TerminalRenderer.js';
+import { Text } from '../components/Text.js';
+import { ProgressBar } from '../components/ProgressBar.js';
 import { State } from 'core/State.js';
-import { HorizontalLine } from 'components/HorizonalLine.js';
+import { HorizontalLine } from 'components/HorizontalLine.js';
 import { Button } from 'components/Button.js';
 import { CelticBorder } from 'components/CelticBorder.js';
 import { AsciiArt } from 'components/AsciiArt.js';
@@ -22,10 +22,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load ASCII art files
-const a1982 = fs.readFileSync(
-  path.join(__dirname, '../art/1982.txt'),
-  'utf-8'
-);
+const a1982 = fs.readFileSync(path.join(__dirname, '../art/1982.txt'), 'utf-8');
 const owl = fs.readFileSync(path.join(__dirname, '../art/owl.txt'), 'utf-8');
 
 const message = new State('');

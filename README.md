@@ -1,84 +1,134 @@
-# 1982 – ASCII-Based Web GUI Framework
+# asciitorium
 
-1982 is a lightweight, TypeScript-based ASCII UI rendering engine inspired by old-school terminal interfaces. The goal is to build a web-delivered, CLI-style visual interface using `<pre>` rendering and styled HTML spans — no external frameworks or virtual DOMs.
+### An ASCII-Based UI Framework for Web & CLI
 
-## Features
+**asciitorium** is a lightweight UI framework built with TypeScript that lets you build retro-style terminal interfaces for the web or command line. Inspired by old-school green terminals and BBS UIs, it uses raw `<pre>` blocks and styled HTML spans — no virtual DOM, no frameworks, just characters.
 
-- ASCII-based UI rendering
-- Lightweight and framework-free
-- Customizable components
+You can use asciitorium to create:
 
-## Directory Structure
+- ASCII games
+- Text-based dashboards
+- Terminal-style apps in the browser
+- Retro-styled experiments
+
+---
+
+## ✨ Features
+
+- Pure TypeScript – no framework dependencies
+- Lightweight `<pre>`-based rendering
+- Web or CLI rendering (DOM + Terminal)
+- Built-in components: `Text`, `Button`, `ListBox`, `ProgressBar`, `AsciiArt`, `Tabs`, and more
+- Stateful rendering with reactive `State<T>`
+- Custom JSX runtime support for declarative UI
+
+---
+
+## 🚀 Installation
 
 ```bash
-1982/
-├── src/                  # Source code
-│   ├── components/       # UI components
-│   └── main.ts           # Demo entry point
-├── index.html            # Demo and Examples
-├── dist/                 # Build output
-├── tsconfig.json         # TypeScript configuration
-├── vite.config.ts        # Vite configuration
-├── package.json          # Project metadata and dependencies
-└── README.md             # Project documentation
+npm install asciitorium
 ```
 
-## Getting Started
+or with pnpm:
 
-### Prerequisites
+```bash
+pnpm install asciitorium
+```
 
-- Node.js (v16 or later)
-- pnpm (preferred package manager)
+---
 
-### Installation
+## Minimal Example
 
-1. Clone the repository:
+Here’s a quick web example that mounts a small ASCII UI into a browser page:
 
-   ```bash
-   git clone <repository-url>
-   cd 1982
-   ```
+```ts
+import {
+  App,
+  Text,
+  Button,
+  TextInput,
+  State,
+  DomRenderer
+} from 'asciitorium';
 
-2. Install dependencies:
+const screen = document.getElementById('screen')!;
+screen.style.fontFamily = 'monospace';
 
-   ```bash
-   pnpm install
-   ```
+const message = new State("Hello world!");
 
-### Running the Development Server
+const app = (
+  <App width={50} height={10} renderer={new DomRenderer(screen)}>
+    <Text value="What's your name?" align="top" />
+    <TextInput text={message} align="center" />
+    <Button name="Greet" align="bottom" onClick={() => alert(`Hi ${message.value}`)} />
+  </App>
+);
 
-Start the Vite development server:
+window.addEventListener('keydown', (e) => app.handleKey(e.key));
+```
+
+And in your index.html:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>asciitorium</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <pre id="screen">Loading...</pre>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
+```
+
+---
+
+## Development Setup (For Contributors / Demos)
+
+Clone & Install
+
+```bash
+git clone https://github.com/tgruby/asciitorium
+cd asciitorium
+pnpm install
+```
+
+Run Web Demo
 
 ```bash
 pnpm start:web
 ```
 
-Open your browser and navigate to `http://localhost:5173`.
-
-OR, run from the CLI:
+Run CLI Demo
 
 ```bash
 pnpm start:cli
 ```
 
-### Building the Project
-
-Generate a production build:
+Build code
 
 ```bash
 pnpm build
 ```
 
-The build output will be located in the `dist/` directory.
-
-### Generating Documentation
-
-Generate TypeScript documentation:
+Prettier Format Code
 
 ```bash
-pnpm doc
+pnpm format
 ```
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+MIT — free to use, build, and share.
+
+---
+
+## 🤖 Inspired By
+
+- my 1982 Apple ][ computer
+- Wizardy I
+- FIGlet
