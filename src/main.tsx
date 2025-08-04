@@ -3,8 +3,8 @@ import { Text } from './components/Text';
 import { ListBox } from './components/ListBox';
 import { HorizontalLine } from './components/HorizonalLine';
 import { ProgressBar } from './components/ProgressBar';
-import a1982 from './1982.txt?raw';
-import owl from './owl.txt?raw';
+import a1982 from './art/1982.txt?raw';
+import owl from './art/owl.txt?raw';
 import { App } from './core/App';
 import { State } from './core/State';
 import { TextInput } from './components/TextInput';
@@ -101,10 +101,4 @@ window.addEventListener('keydown', (event) => {
   app.handleKey(event.key);
 });
 
-// Simulate loading progress
-setTimeout(() => {
-  loading.value = 0.56;
-}, 1000);
-setTimeout(() => {
-  loading.value = 0.23;
-}, 2000);
+app.reportFPS(); // Start reporting FPS

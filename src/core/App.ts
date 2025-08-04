@@ -11,6 +11,7 @@ export interface AppProps extends VerticalLayoutProps {
 export class App extends VerticalLayout {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
+  private fpsCounter: number = 0;
 
   constructor(props: AppProps) {
     super(props);
@@ -63,6 +64,7 @@ render(): void {
     }
   }
 
+  this.fpsCounter++;
   this.renderer.render(screenBuffer);
 }
 
@@ -101,5 +103,18 @@ render(): void {
   private _registerAndAdd(component: Component) {
     component.setApp?.(this); // Inject app reference for reactivity
     super.addChild(component);
+  }
+
+  // report FPS
+  private _reportFPS() {
+    const count = this.fpsCounter;
+    this.fpsCounter = 0;
+    console.log(`FPS: ${count}`);
+  }
+
+  // Call this method periodically to report FPS
+  reportFPS(): void {
+    this._reportFPS();
+    setTimeout(() => this.reportFPS(), 1000);
   }
 }
