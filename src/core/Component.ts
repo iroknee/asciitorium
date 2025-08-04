@@ -124,7 +124,7 @@ export abstract class Component {
 
     if (this.label) {
       const label = ` ${this.label} `;
-      const start = 2;
+      const start = 1;
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
         drawChar(i + start, 0, label[i]);
       }

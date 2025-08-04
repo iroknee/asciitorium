@@ -1,6 +1,6 @@
 import readline from 'readline';
 import { App } from './core/App.js';
-import { TerminalRenderer } from './core/TerminalRenderer.js';
+import { TerminalRenderer } from './core/renderers/TerminalRenderer.js';
 import { Text } from './components/Text.js';
 import { ProgressBar } from './components/ProgressBar.js';
 import { State } from 'core/State.js';
