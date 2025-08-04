@@ -9,6 +9,6 @@ export class DomRenderer implements Renderer {
   }
 
   render(buffer: string[][]): void {
-    this.screen.textContent = buffer.map(row => row.join('')).join('\n');
+    this.screen.textContent = buffer.map((row) => row.join('')).join('\n');
   }
 }

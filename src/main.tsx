@@ -4,12 +4,13 @@ import { ListBox } from './components/ListBox';
 import { HorizontalLine } from './components/HorizonalLine';
 import { ProgressBar } from './components/ProgressBar';
 import a1982 from './1982.txt?raw';
+import owl from './owl.txt?raw';
 import { App } from './core/App';
 import { State } from './core/State';
 import { TextInput } from './components/TextInput';
 import { Button } from './components/Button';
 import { CelticBorder } from './components/CelticBorder';
-import { DomRenderer } from './core/DomRenderer';
+import { DomRenderer } from './core/renderers/DomRenderer';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -33,8 +34,12 @@ const app = (
       y={appHeight - 8}
     />
     <AsciiArt content={a1982} align="center" />
+
     <HorizontalLine length={42} align="center" />
     <Text value="an ASCII-based UI framework" align="center" height={5} />
+
+    <AsciiArt content={owl} frameDurationMs={1000} align="center" loop />
+
     <Button
       name="Button A"
       align="center"
@@ -45,7 +50,15 @@ const app = (
     <Text value={message} width={15} align="center" />
     <ListBox
       label="List Box"
-      items={['Item 1', 'Item 2', 'Item 3', 'Iteddm 4', 'em 5', 'Item 6', 'Item 7']}
+      items={[
+        'Item 1',
+        'Item 2',
+        'Item 3',
+        'Iteddm 4',
+        'em 5',
+        'Item 6',
+        'Item 7',
+      ]}
       selectedItem={selected}
       width={20}
       height={8}

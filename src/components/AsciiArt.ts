@@ -1,70 +1,95 @@
 import { Component, ComponentProps } from '../core/Component';
 
 export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
-  width?: number;
-  height?: number;
-  content: string;
+  content: string; // raw text loaded from .txt
+  frameDurationMs?: number; // delay between frames
+  loop?: boolean; // should animation loop
+  width?: number; // optional fixed width
+  height?: number; // optional fixed height
 }
 
 export class AsciiArt extends Component {
-  private content: string[][];
+  private readonly rawContent: string;
+  private frames: string[][][] = [];
+  private frameIndex = 0;
+  private animationInterval?: ReturnType<typeof setInterval>;
+  private loop: boolean = true;
 
   constructor(options: ArtOptions) {
-    const lines = options.content.split('\n');
-    const artWidth = Math.max(...lines.map((line) => line.length));
-    const artHeight = lines.length;
+    const parsedFrames = parseSpriteSheet(options.content);
+    const firstFrame = parsedFrames[0] ?? [[' ']];
 
-    // Add border padding if needed
+    const artWidth = Math.max(1, ...firstFrame.map((line) => line.length));
+    const artHeight = Math.max(1, firstFrame.length);
     const borderPadding = options.border ? 2 : 0;
 
-    const resolvedOptions = {
+    super({
       ...options,
       width: options.width ?? artWidth + borderPadding,
       height: options.height ?? artHeight + borderPadding,
-    };
+    });
 
-    super(resolvedOptions);
+    this.rawContent = options.content;
+    this.frames = parsedFrames;
+    this.loop = options.loop ?? true;
 
-    this.content = lines.map((line) => [...line.padEnd(artWidth)]);
+    if (this.frames.length > 1) {
+      const duration = options.frameDurationMs ?? 250;
+      this.animationInterval = setInterval(() => {
+        this.frameIndex++;
+        if (this.frameIndex >= this.frames.length) {
+          if (this.loop) {
+            this.frameIndex = 0;
+          } else {
+            this.frameIndex = this.frames.length - 1;
+            clearInterval(this.animationInterval);
+          }
+        }
+        this.markDirty();
+        this.app?.render();
+      }, duration);
+    }
   }
 
-  setContent(newArt: string): void {
-    const lines = newArt.split('\n');
-    const artWidth = Math.max(...lines.map((line) => line.length));
-    const artHeight = lines.length;
+  override destroy(): void {
+    super.destroy();
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+    }
+  }
 
-    this.content = lines.map((line) => [...line.padEnd(artWidth)]);
+  override draw(): string[][] {
+    if (!this.dirty) return this.buffer;
 
-    // Update dimensions only if art is bigger than current content area
+    const buffer = super.draw();
+    const xOffset = this.border ? 1 : 0;
+    const yOffset = this.border ? 1 : 0;
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
 
-    if (artWidth > innerWidth || artHeight > innerHeight) {
-      this.width = artWidth + (this.border ? 2 : 0);
-      this.height = artHeight + (this.border ? 2 : 0);
-    }
+    const frame = this.frames[this.frameIndex];
 
-    this.dirty = true;
-  }
-
-  draw(): string[][] {
-    if (this.dirty) {
-      super.draw(); // builds the base buffer with fill/border/label
-
-      const xOffset = this.border ? 1 : 0;
-      const yOffset = this.border ? 1 : 0;
-
-      for (let y = 0; y < this.content.length; y++) {
-        if (y + yOffset >= this.height - (this.border ? 1 : 0)) break;
-        for (let x = 0; x < this.content[y].length; x++) {
-          if (x + xOffset >= this.width - (this.border ? 1 : 0)) break;
-          this.buffer[y + yOffset][x + xOffset] = this.content[y][x];
-        }
+    for (let y = 0; y < Math.min(frame.length, innerHeight); y++) {
+      const line = frame[y];
+      for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
+        buffer[y + yOffset][x + xOffset] = line[x];
       }
-
-      this.dirty = false;
     }
 
-    return this.buffer;
+    this.dirty = false;
+    return buffer;
   }
 }
+
+// Utility to parse sprite sheets with ↲ delimiter
+function parseSpriteSheet(input: string, delimiter = '↲'): string[][][] {
+  const parts = input.includes(delimiter) ? input.split(delimiter) : [input];
+
+  return parts.map((block) => {
+    const lines = block.split('\n').map((line) => [...line.replace(/\r$/, '')]);
+    // if the first line is empty, remove it
+    if (lines[0].length === 0) lines.shift();
+    return lines;
+  });
+}
+

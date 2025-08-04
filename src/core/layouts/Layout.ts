@@ -59,4 +59,18 @@ export abstract class Layout extends Component {
 
     return this.buffer;
   }
+
+  public getAllDescendants(): Component[] {
+    const result: Component[] = [];
+
+    for (const child of this.children) {
+      result.push(child);
+      if (typeof (child as any).getAllDescendants === 'function') {
+        const grandChildren = (child as any).getAllDescendants();
+        result.push(...grandChildren);
+      }
+    }
+
+    return result;
+  }
 }
