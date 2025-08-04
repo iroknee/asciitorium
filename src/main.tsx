@@ -12,6 +12,7 @@ import { Button } from './components/Button';
 import { CelticBorder } from './components/CelticBorder';
 import { DomRenderer } from './core/renderers/DomRenderer';
 import { HorizontalLayout } from './core/layouts/HorizontalLayout';
+import { Tabs } from './components/Tabs';
 
 const screen = document.getElementById('screen')!;
 screen.style.fontFamily = 'PrintChar21';
@@ -24,7 +25,12 @@ const appWidth = 64;
 const appHeight = 44;
 
 const app = (
-  <App width={appWidth} height={appHeight} border renderer={new DomRenderer(screen)}>
+  <App
+    width={appWidth}
+    height={appHeight}
+    border
+    renderer={new DomRenderer(screen)}
+  >
     <CelticBorder corner="topLeft" fixed x={0} y={0} />
     <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
     <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
@@ -37,11 +43,17 @@ const app = (
     <AsciiArt content={a1982} align="center" />
     <HorizontalLine length={42} align="center" />
     <Text value="an ASCII-based UI framework" align="center" />
-    <HorizontalLayout width={appWidth-2} border height={5}>
+    <HorizontalLayout width={appWidth - 2} border height={5}>
       <TextInput label="Input" width={16} text={message} align="center" />
       <Text value="Label:" align="center" />
       <Text value={message} width={15} align="center" />
     </HorizontalLayout>
+
+    <Tabs
+      tabs={['Overview', 'Details', 'Settings','Help']}
+      selectedTab={new State('Overview')}
+      align="center"
+    />
 
     <AsciiArt content={owl} frameDurationMs={1000} align="center" loop />
 
@@ -59,6 +71,19 @@ const app = (
       selectedItem={selected}
       width={20}
       height={8}
+      align="center"
+    />
+
+    <Button
+      name="A"
+      align="center"
+      width={14}
+      onClick={() => (message.value = 'A Clicked!')}
+    />
+    <Button
+      name="Btn B"
+      onClick={() => (message.value = 'B Clicked!')}
+      width={14}
       align="center"
     />
 

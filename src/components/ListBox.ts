@@ -92,13 +92,13 @@ export class ListBox extends Component {
       const y = borderPad + paddingTop + i * lineHeight;
       const x = borderPad;
 
-      const isSelected = startIdx + i === this.selectedIndex;
+      const isSelected = (startIdx + i === this.selectedIndex && this.hasFocus);
       const prefix = isSelected ? '>' : ' ';
       const line = `${prefix} ${item}`
         .slice(0, this.width - 2 * borderPad)
         .padEnd(this.width - 2 * borderPad, ' ');
 
-      for (let j = 0; j < line.length; j++) {
+      for (let j = 0; j < line.length; j++) { 
         buffer[y][x + j] = line[j];
       }
     });
