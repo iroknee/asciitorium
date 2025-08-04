@@ -1,6 +1,7 @@
-const figlet = require('figlet');
-const fs = require('fs-extra');
-const path = require('path');
+import figlet from 'figlet';
+import fs from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // ─── Parse CLI Arguments ──────────────────────────────────────────
 const [font, ...phraseParts] = process.argv.slice(2);
@@ -26,3 +27,5 @@ figlet.text(phrase, { font }, (err, data) => {
 
   console.log(`✅ Generated: art/${safeFilename}.txt`);
 });
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
