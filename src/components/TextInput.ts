@@ -28,14 +28,12 @@ export class TextInput extends Component {
       if (!this.suppressCursorSync) {
         this.cursorIndex = value.length;
       }
-      this.markDirty();
     });
   }
 
   override handleEvent(event: string): boolean {
     let updated = false;
     const val = this.text.value;
-
     if (event.length === 1 && event >= ' ') {
       const left = val.slice(0, this.cursorIndex);
       const right = val.slice(this.cursorIndex);
@@ -63,7 +61,6 @@ export class TextInput extends Component {
     }
 
     if (updated) {
-      this.markDirty();
       return true;
     }
 
@@ -102,8 +99,7 @@ export class TextInput extends Component {
       );
       buffer[y][x + prefixLength + safeCursor] = '▉';
     }
-
-    this.dirty = false;
+    this.buffer = buffer;
     return buffer;
   }
 }

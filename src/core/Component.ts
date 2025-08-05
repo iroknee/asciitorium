@@ -1,9 +1,9 @@
 import { Alignment } from './types';
 import type { State } from './State';
-import type { Asciitorium } from './Asciitorium';
 
 export interface ComponentProps {
   label?: string;
+  showLabel?: boolean;
   width: number;
   height: number;
   border?: boolean;
@@ -18,6 +18,7 @@ export interface ComponentProps {
 
 export abstract class Component {
   public label: string | undefined;
+  public showLabel: boolean = true;
   public width: number;
   public height: number;
   public border: boolean;
@@ -30,12 +31,11 @@ export abstract class Component {
 
   public focusable: boolean = false;
   public hasFocus: boolean = false;
-  public dirty: boolean = true;
   public transparentChar = '‽'; // ‽ = transparent character
 
   protected buffer: string[][];
   private unbindFns: (() => void)[] = [];
-  protected app?: Asciitorium;
+  public parent?: Component;
 
   constructor(props: ComponentProps) {
     if (props.width < 1) throw new Error('Component width must be > 0');
@@ -44,6 +44,7 @@ export abstract class Component {
     this.width = props.width;
     this.height = props.height;
     this.label = props.label;
+    this.showLabel = props.showLabel ?? true;
     this.border = props.border ?? false;
     this.fill = props.fill ?? ' ';
     this.align = props.align;
@@ -54,15 +55,13 @@ export abstract class Component {
     this.buffer = [];
   }
 
-  setApp(app: Asciitorium) {
-    this.app = app;
+  setParent(parent: Component) {
+    this.parent = parent;
   }
 
   bind<T>(state: State<T>, apply: (val: T) => void): void {
     const listener = (val: T) => {
       apply(val);
-      this.markDirty();
-      this.app?.render();
     };
 
     state.subscribe(listener);
@@ -74,22 +73,11 @@ export abstract class Component {
     this.unbindFns = [];
   }
 
-  markDirty(): void {
-    this.dirty = true;
-
-    // Bubble up to parent app/layout if available
-    if (this.app && typeof this.app.markDirty === 'function') {
-      this.app.markDirty();
-    }
-  }
-
   handleEvent(event: string): boolean {
     return false;
   }
 
   draw(): string[][] {
-    if (!this.dirty) return this.buffer;
-
     // Create buffer and fill only if not transparent
     this.buffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () =>
@@ -122,7 +110,7 @@ export abstract class Component {
       }
     }
 
-    if (this.label) {
+    if (this.label && this.showLabel) {
       const label = ` ${this.label} `;
       const start = 1;
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
@@ -130,7 +118,6 @@ export abstract class Component {
       }
     }
 
-    this.dirty = false;
     return this.buffer;
   }
 }

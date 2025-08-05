@@ -58,7 +58,6 @@ export class CelticBorder extends Component {
     this.buffer = Array.from({ length: this.height }, (_, y) =>
       Array.from({ length: this.width }, (_, x) => this.lines[y]?.[x] ?? ' ')
     );
-    this.dirty = false;
     return this.buffer;
   }
 }

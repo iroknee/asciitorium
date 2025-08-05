@@ -40,7 +40,6 @@ export class Tabs extends Component {
       const index = this.tabs.indexOf(value);
       if (index !== -1 && index !== this.selectedIndex) {
         this.selectedIndex = index;
-        this.markDirty();
       }
     });
   }
@@ -59,7 +58,6 @@ export class Tabs extends Component {
 
     if (this.selectedIndex !== prevIndex) {
       this.selectedTab.value = this.tabs[this.selectedIndex];
-      this.markDirty();
       return true;
     }
 
@@ -67,11 +65,9 @@ export class Tabs extends Component {
   }
 
   override draw(): string[][] {
-    if (!this.dirty) return this.buffer;
-
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
-    const y = Math.floor(this.height / 2);  
+    const y = Math.floor(this.height / 2);
 
     let x = borderPad;
     for (let i = 0; i < this.tabs.length; i++) {
@@ -91,8 +87,7 @@ export class Tabs extends Component {
         x += 1;
       }
     }
-
-    this.dirty = false;
+    this.buffer = buffer;
     return buffer;
   }
 }

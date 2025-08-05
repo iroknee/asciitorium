@@ -29,7 +29,6 @@ export class FocusManager {
     const current = this.currentContext[this.index];
     if (current) {
       current.hasFocus = true;
-      current.dirty = true;
     }
   }
 
@@ -37,7 +36,6 @@ export class FocusManager {
     const current = this.currentContext[this.index];
     if (current) {
       current.hasFocus = false;
-      current.dirty = true;
     }
   }
 

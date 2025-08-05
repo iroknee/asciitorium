@@ -32,7 +32,7 @@ export class Text extends Component {
     // If reactive, subscribe to changes
     if (isState(this.source)) {
       (this.source as State<string>).subscribe(() => {
-        this.markDirty();
+        //this.markDirty();
       });
     }
   }
@@ -44,28 +44,24 @@ export class Text extends Component {
   }
 
   draw(): string[][] {
-    if (this.dirty) {
-      super.draw(); // fills buffer, draws borders, etc.
+    super.draw(); // fills buffer, draws borders, etc.
 
-      const innerWidth = this.width - (this.border ? 2 : 0);
-      const innerHeight = this.height - (this.border ? 2 : 0);
+    const innerWidth = this.width - (this.border ? 2 : 0);
+    const innerHeight = this.height - (this.border ? 2 : 0);
 
-      const { x, y } = resolveAlignment(
-        this.align,
-        innerWidth,
-        innerHeight,
-        Math.min(this.value.length, innerWidth),
-        1
-      );
+    const { x, y } = resolveAlignment(
+      this.align,
+      innerWidth,
+      innerHeight,
+      Math.min(this.value.length, innerWidth),
+      1
+    );
 
-      const drawX = this.border ? x + 1 : x;
-      const drawY = this.border ? y + 1 : y;
+    const drawX = this.border ? x + 1 : x;
+    const drawY = this.border ? y + 1 : y;
 
-      for (let i = 0; i < this.value.length && i + drawX < this.width; i++) {
-        this.buffer[drawY][drawX + i] = this.value[i];
-      }
-
-      this.dirty = false;
+    for (let i = 0; i < this.value.length && i + drawX < this.width; i++) {
+      this.buffer[drawY][drawX + i] = this.value[i];
     }
 
     return this.buffer;

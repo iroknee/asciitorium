@@ -3,7 +3,6 @@ export * from './core/bootstrap';
 export * from './core/Asciitorium';
 export * from './core/Component';
 export * from './core/State';
-export * from './core/layouts/Layout';
 export * from './core/layouts/HorizontalLayout';
 export * from './core/layouts/VerticalLayout';
 export * from './components/AsciiArt';

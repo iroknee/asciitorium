@@ -1,6 +1,6 @@
 // core/bootstrap.ts
 import type { Asciitorium } from './Asciitorium';
-import { DomRenderer } from './renderers/DomRenderer';
+import { setRenderCallback } from './RenderScheduler';
 
 export async function bootstrap(app: Asciitorium): Promise<void> {
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
@@ -9,7 +9,6 @@ export async function bootstrap(app: Asciitorium): Promise<void> {
     if (!screen) throw new Error('Missing #screen element for DOM renderer');
 
     screen.style.fontFamily = 'PrintChar21';
-    app.setRenderer(new DomRenderer(screen));
 
     window.addEventListener('keydown', (event) => {
       app.handleKey(event.key);
@@ -17,12 +16,6 @@ export async function bootstrap(app: Asciitorium): Promise<void> {
   } else {
     // Terminal environment
     const { default: readline } = await import('readline');
-    const { TerminalRenderer } = await import(
-      './renderers/TerminalRenderer.js'
-    );
-
-    const renderer = new TerminalRenderer();
-    app.setRenderer(renderer);
 
     readline.emitKeypressEvents(process.stdin);
     if (process.stdin.isTTY) {
@@ -34,6 +27,7 @@ export async function bootstrap(app: Asciitorium): Promise<void> {
       app.handleKey(k);
     });
   }
+  setRenderCallback(() => app.render());
 }
 
 function normalizeKey(key: {

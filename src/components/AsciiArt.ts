@@ -1,4 +1,6 @@
+import { parse } from 'path';
 import { Component, ComponentProps } from '../core/Component';
+import { requestRender } from '../core/RenderScheduler';
 
 export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
   content: string; // raw text loaded from .txt
@@ -17,6 +19,8 @@ export class AsciiArt extends Component {
 
   constructor(options: ArtOptions) {
     const parsedFrames = parseSpriteSheet(options.content);
+    console.log(`Parsed ${parsedFrames.length} frames from ASCII art.`);
+    console.log(parsedFrames);
     const firstFrame = parsedFrames[0] ?? [[' ']];
 
     const artWidth = Math.max(1, ...firstFrame.map((line) => line.length));
@@ -45,8 +49,7 @@ export class AsciiArt extends Component {
             clearInterval(this.animationInterval);
           }
         }
-        this.markDirty();
-        this.app?.render();
+        requestRender();
       }, duration);
     }
   }
@@ -59,8 +62,6 @@ export class AsciiArt extends Component {
   }
 
   override draw(): string[][] {
-    if (!this.dirty) return this.buffer;
-
     const buffer = super.draw();
     const xOffset = this.border ? 1 : 0;
     const yOffset = this.border ? 1 : 0;
@@ -68,6 +69,7 @@ export class AsciiArt extends Component {
     const innerHeight = this.height - (this.border ? 2 : 0);
 
     const frame = this.frames[this.frameIndex];
+    if (!frame) return buffer; // no frames to draw
 
     for (let y = 0; y < Math.min(frame.length, innerHeight); y++) {
       const line = frame[y];
@@ -75,8 +77,7 @@ export class AsciiArt extends Component {
         buffer[y + yOffset][x + xOffset] = line[x];
       }
     }
-
-    this.dirty = false;
+    this.buffer = buffer;
     return buffer;
   }
 }

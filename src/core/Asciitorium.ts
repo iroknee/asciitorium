@@ -1,4 +1,3 @@
-// core/App.ts
 import { VerticalLayout, VerticalLayoutProps } from './layouts/VerticalLayout';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './renderers/Renderer';
@@ -6,19 +5,16 @@ import { Component } from './Component';
 import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
 
-export interface AsciitoriumProps extends VerticalLayoutProps {
-  renderer?: Renderer;
-}
-
 export class Asciitorium extends VerticalLayout {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
   private fpsCounter: number = 0;
+  private totalRenderTime: number = 0;
 
-  constructor(props: AsciitoriumProps) {
+  constructor(props: VerticalLayoutProps) {
     super(props);
 
-    this.renderer = props.renderer ?? getDefaultRenderer();
+    this.renderer = getDefaultRenderer();
     this.focus = new FocusManager();
 
     const list = Array.isArray(props.children)
@@ -28,19 +24,30 @@ export class Asciitorium extends VerticalLayout {
         : [];
 
     for (const child of list) {
-      this._registerAndAdd(child);
+      super.addChild(child);
     }
 
     this.focus.reset(this);
     this.render();
-  }
 
-  setRenderer(renderer: any): void {
-    // Implement renderer assignment logic here
-    (this as any).renderer = renderer;
+    // Start FPS and render time reporting
+    setInterval(() => {
+      if (this.fpsCounter > 0 && this.renderer instanceof DomRenderer) {
+        console.log(
+          `FPS: ${this.fpsCounter}, total render time: ${this.totalRenderTime.toFixed(2)} ms`
+        );
+      }
+      this.fpsCounter = 0;
+      this.totalRenderTime = 0;
+    }, 1000);
   }
 
   render(): void {
+    const start =
+      typeof performance !== 'undefined' && performance.now
+        ? performance.now()
+        : Date.now();
+    this.fpsCounter++;
     const screenBuffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () => ' ')
     );
@@ -71,12 +78,16 @@ export class Asciitorium extends VerticalLayout {
       }
     }
 
-    this.fpsCounter++;
     this.renderer.render(screenBuffer);
+    const end =
+      typeof performance !== 'undefined' && performance.now
+        ? performance.now()
+        : Date.now();
+    this.totalRenderTime += end - start;
   }
 
   addChild(component: Component): void {
-    this._registerAndAdd(component);
+    super.addChild(component);
     this.focus?.reset(this); // avoid crashing
     this.render();
   }
@@ -95,7 +106,7 @@ export class Asciitorium extends VerticalLayout {
       return;
     }
 
-    if (key === 'Shift+Tab') {
+    if (key === 'Shift') {
       this.focus.focusPrevious();
       this.render();
       event?.preventDefault();
@@ -105,24 +116,6 @@ export class Asciitorium extends VerticalLayout {
     if (this.focus.handleKey(key)) {
       this.render();
     }
-  }
-
-  private _registerAndAdd(component: Component) {
-    component.setApp?.(this); // Inject app reference for reactivity
-    super.addChild(component);
-  }
-
-  // report FPS
-  private _reportFPS() {
-    const count = this.fpsCounter;
-    this.fpsCounter = 0;
-    console.log(`FPS: ${count}`);
-  }
-
-  // Call this method periodically to report FPS
-  reportFPS(): void {
-    this._reportFPS();
-    setTimeout(() => this.reportFPS(), 1000);
   }
 }
 

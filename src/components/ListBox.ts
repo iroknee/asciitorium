@@ -33,7 +33,6 @@ export class ListBox extends Component {
       const index = this.items.indexOf(value);
       if (index !== -1 && index !== this.selectedIndex) {
         this.selectedIndex = index;
-        this.markDirty();
       }
     });
   }
@@ -52,7 +51,6 @@ export class ListBox extends Component {
 
     if (this.selectedIndex !== prevIndex) {
       this.selectedItem.value = this.items[this.selectedIndex];
-      this.markDirty();
       return true;
     }
 
@@ -60,8 +58,6 @@ export class ListBox extends Component {
   }
 
   override draw(): string[][] {
-    if (!this.dirty) return this.buffer;
-
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
     const paddingTop = 1;
@@ -109,8 +105,7 @@ export class ListBox extends Component {
       const x = this.width - 2;
       buffer[y][x] = '↓';
     }
-
-    this.dirty = false;
+    this.buffer = buffer;
     return buffer;
   }
 }
