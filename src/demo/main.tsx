@@ -64,7 +64,7 @@ const app = (
       />
     </HorizontalLayout>
     <Text value={selectedComponent} width={appWidth} align="center" border />
-    <Text value={randomSlogan} border width={appWidth} />
+    <Text value={randomSlogan} border width={appWidth} align="center" />
   </Asciitorium>
 );
 

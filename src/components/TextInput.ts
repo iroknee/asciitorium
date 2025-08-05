@@ -2,13 +2,13 @@ import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
 export interface TextInputOptions extends Omit<ComponentProps, 'height'> {
-  text?: State<string>;
+  value?: State<string>;
   placeholder?: string;
   height?: number; // Fixed height of 3 or more
 }
 
 export class TextInput extends Component {
-  private readonly text: State<string>;
+  private readonly value: State<string>;
   private readonly placeholder: string;
   private cursorIndex = 0;
   private suppressCursorSync = false;
@@ -21,10 +21,10 @@ export class TextInput extends Component {
     const border = options.border ?? true;
     super({ ...options, height, border });
 
-    this.text = options.text ?? new State('');
+    this.value = options.value ?? new State('');
     this.placeholder = options.placeholder ?? '';
 
-    this.bind(this.text, (value) => {
+    this.bind(this.value, (value) => {
       if (!this.suppressCursorSync) {
         this.cursorIndex = value.length;
       }
@@ -33,12 +33,12 @@ export class TextInput extends Component {
 
   override handleEvent(event: string): boolean {
     let updated = false;
-    const val = this.text.value;
+    const val = this.value.value;
     if (event.length === 1 && event >= ' ') {
       const left = val.slice(0, this.cursorIndex);
       const right = val.slice(this.cursorIndex);
       this.suppressCursorSync = true;
-      this.text.value = left + event + right;
+      this.value.value = left + event + right;
       this.suppressCursorSync = false;
       this.cursorIndex++;
       updated = true;
@@ -47,7 +47,7 @@ export class TextInput extends Component {
         const left = val.slice(0, this.cursorIndex - 1);
         const right = val.slice(this.cursorIndex);
         this.suppressCursorSync = true;
-        this.text.value = left + right;
+        this.value.value = left + right;
         this.suppressCursorSync = false;
         this.cursorIndex--;
         updated = true;
@@ -77,7 +77,7 @@ export class TextInput extends Component {
     const innerWidth = this.width - (this.border ? 2 : 0);
     const usableWidth = innerWidth - prefixLength;
 
-    const raw = this.text.value || this.placeholder;
+    const raw = this.value.value || this.placeholder;
     const visible = raw.slice(0, usableWidth);
 
     // Draw prefix
