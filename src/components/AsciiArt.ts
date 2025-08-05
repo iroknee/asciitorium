@@ -19,8 +19,6 @@ export class AsciiArt extends Component {
 
   constructor(options: ArtOptions) {
     const parsedFrames = parseSpriteSheet(options.content);
-    console.log(`Parsed ${parsedFrames.length} frames from ASCII art.`);
-    console.log(parsedFrames);
     const firstFrame = parsedFrames[0] ?? [[' ']];
 
     const artWidth = Math.max(1, ...firstFrame.map((line) => line.length));
@@ -93,4 +91,3 @@ function parseSpriteSheet(input: string, delimiter = '↲'): string[][][] {
     return lines;
   });
 }
-

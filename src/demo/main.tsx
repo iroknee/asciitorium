@@ -7,7 +7,6 @@ import { HorizontalLayout } from '../core/layouts/HorizontalLayout';
 import { bootstrap } from '../core/bootstrap';
 import { loadAsciiAsset } from '../core/utils';
 import { ListBox } from '../components/ListBox';
-import type { Component } from '../core/Component';
 
 const slogans = [
   'A storefront for the command-line connoisseur.',
