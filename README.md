@@ -1,22 +1,23 @@
-# ASCIITORIUM
+```text
+                _ _ _             _
+  __ _ ___  ___(_|_) |_ ___  _ __(_)_   _ _ __ ___
+ / _` / __|/ __| | | __/ _ \| '__| | | | | '_ ` _ \
+| (_| \__ \ (__| | | || (_) | |  | | |_| | | | | | |
+ \__,_|___/\___|_|_|\__\___/|_|  |_|\__,_|_| |_| |_|
+```
 
-**asciitorium** is a ui framework for building retro interfaces — in the browser and terminal.
+**asciitorium** is a ui framework for building retro terminal interfaces that fully function in the browser as well as the terminal. Why? I am still not sure :). But it started with wanting to create a text based game reminisent of Wizardy I, Zork or Bards Tale that I played in the 80s as a kid. I put loads of hours into those games, enjoying their storyline, puzzles, and challenges, and very few games I play these days are similar. I started developing it, and I realized it would be fun to create a ui framework while I was at it. Given my experience with React, I felt I could further explore what a 1982 ascii interface could have been like had we had more modern design principles. So here is that first pass.
 
-## What is this?
-
-**asciitorium** is a TypeScript-based, ASCII-first UI framework that brings old-school charm.
+### So what can it be used for?
 
 - Terminal-style web apps
 - ASCII dashboards
 - Text-driven games
 - BBS-inspired experiments
-- And other projects that deserve to glow green
 
-Built with no virtual DOM, no fluff, just raw characters and structured rendering — the way nature intended.
+## Features
 
-## ✨ Features
-
-- Pure TypeScript — no frameworks, just components
+- Support for TypeScript
 - Works in both **Web** and **CLI** (DOM or stdout)
 - Built-in components
 - Reactive `State<T>` system for live updates
@@ -39,7 +40,14 @@ pnpm install asciitorium
 main.tsx
 
 ```tsx
-import { Asciitorium, HorizontalLine, Text, TextInput, State, bootstrap } from 'asciitorium';
+import {
+  Asciitorium,
+  HorizontalLine,
+  Text,
+  TextInput,
+  State,
+  bootstrap,
+} from 'asciitorium';
 
 const reactiveState = new State('Say Hello!');
 
@@ -53,7 +61,6 @@ const app = (
 );
 
 await bootstrap(app);
-
 ```
 
 index.html
@@ -108,30 +115,6 @@ pnpm build
 pnpm format
 ```
 
-## Components in the Emporium
-
-- **AsciiArt** – render figlet-style banners
-- **TextInput** – editable single-line fields
-- **Button** – clickable or enterable UI actions
-- **ListBox** – vertically scrollable list with selection
-- **Tabs** – horizontal tabbed navs
-- **ProgressBar** – animated status indicators
-- **Text** – styled text blocks
-- **HorizontalLine** – just what it sounds like
-
-## Philosophy
-
-No pixels.  
-No distractions.  
-Just terminal-flavored components you can compose and style like you're building a spaceship dashboard in 1982.
-
 ## License
 
-MIT — fork it, break it, remake it, just leave the logo glowing green.
-
-## Homages & Inspirations
-
-- The Apple ][ I learned to code on
-- **Wizardry I** and its dungeon of doom
-- **FIGlet**, the original big text machine
-- The green glow of a forgotten CRT monitor
+MIT
