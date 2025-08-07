@@ -21,3 +21,8 @@ export function jsx(type: any, props: any, _key?: string): any {
 
 export const jsxs = jsx;
 export const jsxDEV = jsx;
+
+// Required by JSX spec, even if unsupported
+export const Fragment = () => {
+  throw new Error('Fragment syntax (<></>) is not supported in asciitorium.');
+};

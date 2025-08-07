@@ -1,20 +1,37 @@
 {
   "name": "asciitorium",
-  "version": "0.1.0",
-  "description": "An ASCII-based UI framework",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "0.1",
+  "description": "An ASCII-based UI framework for web and terminal UIs",
+  "main": "./dist/asciitorium.umd.js",
+  "module": "./dist/asciitorium.es.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/asciitorium.es.js",
+      "require": "./dist/asciitorium.umd.js"
+    },
+    "./bootstrap": {
+      "import": "./src/core/bootstrap.ts",
+      "types": "./src/core/bootstrap.ts"
+    },
+    "./jsx": {
+      "import": "./src/core/jsx/index.ts",
+      "types": "./src/core/jsx/index.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./src/core/jsx/jsx-dev-runtime.ts",
+      "types": "./src/core/jsx/jsx-dev-runtime.ts"
+    },
+    "./jsx-runtime": {
+      "import": "./src/core/jsx/jsx-runtime.ts",
+      "types": "./dist/types/core/jsx/jsx-runtime.d.ts"
     }
   },
   "type": "module",
   "scripts": {
     "start:web": "vite",
     "start:cli": "tsx src/demo/main.tsx",
-    "build": "vite build",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "preview": "vite preview",
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
@@ -26,10 +43,14 @@
     "ui",
     "framework",
     "terminal",
-    "typescript"
+    "typescript",
+    "text-ui",
+    "cli-ui",
+    "retro"
   ],
   "license": "MIT",
   "devDependencies": {
+    "figlet": "^1.8.1",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.12",
@@ -39,7 +60,5 @@
     "typescript": "^5.8.3",
     "vite": "^7.0.3"
   },
-  "dependencies": {
-    "figlet": "^1.8.1"
-  }
+  "dependencies": {}
 }

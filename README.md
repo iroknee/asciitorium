@@ -39,7 +39,7 @@ pnpm install asciitorium
 main.tsx
 
 ```tsx
-import { Asciitorium, HorizontalLine, Text, TextInput State, bootstrap } from 'asciitorium';
+import { Asciitorium, HorizontalLine, Text, TextInput, State, bootstrap } from 'asciitorium';
 
 const reactiveState = new State('Say Hello!');
 
