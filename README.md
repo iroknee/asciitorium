@@ -40,8 +40,8 @@ npm install --save-dev @vitejs/plugin-vue-jsx
 Update tsconfig, add:
 
 ```json
-    add --> "jsx": "preserve",
-    remove --> "erasableSyntaxOnly": true,
+    "jsx": "preserve",  // <-- add
+    "erasableSyntaxOnly": true, // <-- remove
 ```
 
 * update index.html to point to main.tsx instead of main.ts.
