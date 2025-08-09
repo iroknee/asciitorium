@@ -1,12 +1,6 @@
-```text
-                _ _ _             _
-  __ _ ___  ___(_|_) |_ ___  _ __(_)_   _ _ __ ___
- / _` / __|/ __| | | __/ _ \| '__| | | | | '_ ` _ \
-| (_| \__ \ (__| | | || (_) | |  | | |_| | | | | | |
- \__,_|___/\___|_|_|\__\___/|_|  |_|\__,_|_| |_| |_|
-```
+# asciitorium
 
-**asciitorium** is a ui framework for building retro terminal interfaces that fully function in the browser as well as the terminal. Why? I am still not sure :). But it started with wanting to create a text based game reminisent of Wizardy I, Zork or Bards Tale that I played in the 80s as a kid. I put loads of hours into those games, enjoying their storyline, puzzles, and challenges, and very few games I play these days are similar. I started developing it, and I realized it would be fun to create a ui framework while I was at it. Given my experience with React, I felt I could further explore what a 1982 ascii interface could have been like had we had more modern design principles. So here is that first pass.
+**asciitorium** is a ui framework for building retro terminal interfaces that fully function in the browser as well as the terminal. Why? I am still not sure :). But it started with wanting to create a text based game reminisent of Wizardy I, Zork or Bards Tale from the 80s. I realized it would be fun to create a ui framework while I was at it. Given my experience with React. Here is that first pass.
 
 ### So what can it be used for?
 
@@ -23,23 +17,40 @@
 - Reactive `State<T>` system for live updates
 - Custom JSX runtime (like React, minus baggage)
 
-## Installation
+## Creating an asciitorium app
+
+## Setup
 
 ```bash
+npm create vite@latest
+```
+
+supply:
+ * prject-name
+ * vanilla
+ * Typescript
+
+```bash
+cd <project_name>
 npm install asciitorium
+npm install --save-dev prettier
+npm install --save-dev @vitejs/plugin-vue-jsx
 ```
 
-or if you prefer `pnpm`:
+Update tsconfig, add:
 
-```bash
-pnpm install asciitorium
+```json
+    add --> "jsx": "preserve",
+    remove --> "erasableSyntaxOnly": true,
 ```
 
-## Hello World (Web Demo)
+* update index.html to point to main.tsx instead of main.ts.
 
-main.tsx
+* Rename main.ts to main.tsx.
 
-```tsx
+Replace main.ts contents with:
+
+```jsx
 import {
   Asciitorium,
   HorizontalLine,
@@ -63,57 +74,18 @@ const app = (
 await bootstrap(app);
 ```
 
-index.html
+### run 
 
-```html
-<!-- index.html -->
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>asciitorium</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <pre id="screen">Loading...</pre>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-```
-
----
-
-## Local Development
-
+on web:
 ```bash
-git clone https://github.com/tgruby/asciitorium
-cd asciitorium
-pnpm install
+npm run dev
 ```
 
-### Run web demo
-
+on cli:
 ```bash
-pnpm start:web
+tsx src/main.tsx
 ```
 
-### Run terminal demo
-
-```bash
-pnpm start:cli
-```
-
-### Build it all
-
-```bash
-pnpm build
-```
-
-### Format with Prettier
-
-```bash
-pnpm format
-```
 
 ## License
 

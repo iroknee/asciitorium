@@ -4,40 +4,37 @@
   "description": "An ASCII-based UI framework for web and terminal UIs",
   "main": "./dist/asciitorium.umd.js",
   "module": "./dist/asciitorium.es.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/asciitorium.es.js",
       "require": "./dist/asciitorium.umd.js"
     },
-    "./bootstrap": {
-      "import": "./src/core/bootstrap.ts",
-      "types": "./src/core/bootstrap.ts"
-    },
     "./jsx": {
-      "import": "./src/core/jsx/index.ts",
-      "types": "./src/core/jsx/index.ts"
+      "types": "./dist/jsx/index.d.ts",
+      "import": "./dist/jsx/index.js"
     },
-    "./jsx-dev-runtime": {
-      "import": "./src/core/jsx/jsx-dev-runtime.ts",
-      "types": "./src/core/jsx/jsx-dev-runtime.ts"
+    "./jsx/jsx-dev-runtime": {
+      "types": "./dist/jsx/jsx-dev-runtime.d.ts",
+      "import": "./dist/jsx/jsx-dev-runtime.js"
     },
-    "./jsx-runtime": {
-      "import": "./src/core/jsx/jsx-runtime.ts",
-      "types": "./dist/types/core/jsx/jsx-runtime.d.ts"
+    "./jsx/jsx-runtime": {
+      "types": "./dist/jsx/jsx-runtime.d.ts",
+      "import": "./dist/jsx/jsx-runtime.js"
     }
   },
   "type": "module",
   "scripts": {
     "start:web": "vite",
     "start:cli": "tsx src/demo/main.tsx",
-    "build": "vite build && tsc --emitDeclarationOnly",
+  "build": "vite build && tsc",
     "preview": "vite preview",
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
     "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
   },
-  "author": "Trevor Gruby <trevor.gruby@outlook.com>",
+  "author": "Iroknee <tiroknee@gmail.com>",
   "keywords": [
     "ascii",
     "ui",

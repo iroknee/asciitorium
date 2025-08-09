@@ -23,4 +23,8 @@ export default defineConfig({
       '@jsx': path.resolve(__dirname, 'src/core/jsx'),
     },
   },
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'asciitorium/jsx',
+  },
 });
