@@ -6,6 +6,12 @@ import { Renderer } from './Renderer';
 export class DomRenderer implements Renderer {
   constructor(private screen: HTMLElement) {
     this.screen.style.whiteSpace = 'pre';
+
+    if (document.fonts.check('1em PrintChar21')) {
+      this.screen.style.fontFamily = 'PrintChar21';
+    } else {
+      this.screen.style.fontFamily = 'monospace';
+    }
   }
 
   render(buffer: string[][]): void {

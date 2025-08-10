@@ -8,8 +8,6 @@ export async function bootstrap(app: Asciitorium): Promise<void> {
     const screen = document.getElementById('screen');
     if (!screen) throw new Error('Missing #screen element for DOM renderer');
 
-    screen.style.fontFamily = 'PrintChar21';
-
     window.addEventListener('keydown', (event) => {
       app.handleKey(event.key);
     });

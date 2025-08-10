@@ -26,9 +26,10 @@ npm create vite@latest
 ```
 
 supply:
- * prject-name
- * vanilla
- * Typescript
+
+- prject-name
+- vanilla
+- Typescript
 
 ```bash
 cd <project_name>
@@ -37,18 +38,53 @@ npm install --save-dev prettier
 npm install --save-dev @vitejs/plugin-vue-jsx
 ```
 
+create a vite.config.ts:
+
+```js
+export default {
+  // ...existing config...
+  esbuild: {
+    jsxImportSource: 'asciitorium',
+  },
+};
+```
+
 Update tsconfig, add:
 
 ```json
-    "jsx": "preserve",  // <-- add
+    "jsx": "react-jsx",  // <-- add
     "erasableSyntaxOnly": true, // <-- remove
 ```
 
-* update index.html to point to main.tsx instead of main.ts.
+- update index.html:
 
-* Rename main.ts to main.tsx.
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>asciitorium</title>
+    <style>
+      body {
+        margin: 0;
+        background: black;
+        color: #3fff00;
 
-Replace main.ts contents with:
+        /* Center the screen horizontally */
+        display: flex;
+        justify-content: center;
+        height: 100vh; /* Full viewport height */
+      }
+    </style>
+  </head>
+  <body>
+    <pre id="screen">Loading...</pre>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+create a new main.tsx with:
 
 ```jsx
 import {
@@ -74,18 +110,19 @@ const app = (
 await bootstrap(app);
 ```
 
-### run 
+### run
 
 on web:
+
 ```bash
 npm run dev
 ```
 
 on cli:
+
 ```bash
 tsx src/main.tsx
 ```
-
 
 ## License
 
