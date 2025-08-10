@@ -1,6 +1,6 @@
 {
   "name": "asciitorium",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An ASCII-based UI framework for web and terminal UIs",
   "main": "./dist/asciitorium.umd.js",
   "module": "./dist/asciitorium.es.js",

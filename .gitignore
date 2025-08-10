@@ -2,11 +2,6 @@
 node_modules/
 pnpm-lock.yaml
 
-# Build output
-dist/
-build/
-out/
-
 # TypeScript
 *.tsbuildinfo
 
