@@ -2,7 +2,7 @@
 
 **asciitorium** is a ui framework for building retro terminal interfaces that fully function in the browser as well as the terminal. Why? I am still not sure :). But it started with wanting to create a text based game reminisent of Wizardy I, Zork or Bards Tale from the 80s. I realized it would be fun to create a ui framework while I was at it. Given my experience with React. Here is that first pass.
 
-### So what can it be used for?
+## So what can it be used for?
 
 - Terminal-style web apps
 - ASCII dashboards
