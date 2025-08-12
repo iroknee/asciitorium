@@ -20,7 +20,7 @@ figlet.text(phrase, { font }, (err, data) => {
   }
 
   const safeFilename = phrase.replace(/[^a-z0-9_-]+/gi, '_');
-  const outputPath = path.join(__dirname, '../art', `${safeFilename}.txt`);
+  const outputPath = path.join(__dirname, '../public/art', `${safeFilename}.txt`);
 
   fs.ensureDirSync(path.dirname(outputPath));
   fs.writeFileSync(outputPath, data);

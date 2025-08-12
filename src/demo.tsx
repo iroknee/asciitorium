@@ -1,12 +1,12 @@
-import { AsciiArt } from '../components/AsciiArt';
-import { Text } from '../components/Text';
-import { HorizontalLine } from '../components/HorizontalLine';
-import { Asciitorium } from '../core/Asciitorium';
-import { State } from '../core/State';
-import { HorizontalLayout } from '../core/layouts/HorizontalLayout';
-import { bootstrap } from '../core/bootstrap';
-import { loadAsciiAsset } from '../core/utils';
-import { ListBox } from '../components/ListBox';
+import { AsciiArt } from './components/AsciiArt';
+import { Text } from './components/Text';
+import { HorizontalLine } from './components/HorizontalLine';
+import { Asciitorium } from './core/Asciitorium';
+import { State } from './core/State';
+import { HorizontalLayout } from './core/layouts/HorizontalLayout';
+import { bootstrap } from './core/bootstrap';
+import { loadAsciiAsset } from './core/utils';
+import { ListBox } from './components/ListBox';
 
 const slogans = [
   'A storefront for the command-line connoisseur.',

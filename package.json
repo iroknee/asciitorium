@@ -1,33 +1,11 @@
 {
   "name": "asciitorium",
-  "version": "0.1.4",
-  "description": "An ASCII-based UI framework for web and terminal UIs",
-  "main": "./dist/asciitorium.umd.js",
-  "module": "./dist/asciitorium.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/asciitorium.es.js",
-      "require": "./dist/asciitorium.umd.js"
-    },
-    "./jsx": {
-      "types": "./dist/jsx/index.d.ts",
-      "import": "./dist/jsx/index.js"
-    },
-    "./jsx-dev-runtime": {
-      "types": "./dist/jsx/jsx-dev-runtime.d.ts",
-      "import": "./dist/jsx/jsx-dev-runtime.js"
-    },
-    "./jsx-runtime": {
-      "types": "./dist/jsx/jsx-runtime.d.ts",
-      "import": "./dist/jsx/jsx-runtime.js"
-    }
-  },
+  "version": "0.1.5",
+  "description": "An ASCII-based UI framework for web and cli",
   "type": "module",
   "scripts": {
     "start:web": "vite",
-    "start:cli": "tsx src/demo/main.tsx",
+    "start:cli": "tsx src/demo.tsx",
     "build": "vite build && tsc",
     "preview": "vite preview",
     "format": "prettier --write .",

@@ -98,7 +98,7 @@ export async function loadAsciiAsset(relativePath: string): Promise<string> {
     const { readFile } = await import('fs/promises');
     const { resolve } = await import('path');
 
-    const fullPath = resolve(process.cwd(), relativePath);
+    const fullPath = resolve(process.cwd(), 'public', relativePath);
     return readFile(fullPath, 'utf-8');
   }
 }

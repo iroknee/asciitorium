@@ -1,6 +1,9 @@
 # asciitorium
 
-**asciitorium** is a ui framework for building retro terminal interfaces that fully function in the browser as well as the terminal. Why? I am still not sure :). But it started with wanting to create a text based game reminisent of Wizardy I, Zork or Bards Tale from the 80s. I realized it would be fun to create a ui framework while I was at it. Given my experience with React. Here is that first pass.
+**asciitorium** is a UI framework for building retro terminal interfaces that fully function in the browser as well as the terminal.  
+Why? I am still not sure 🙂. But it started with wanting to create a text-based game reminiscent of _Wizardry I_, _Zork_, or _Bard's Tale_ from the 80s. I realized it would be fun to create a UI framework while I was at it — given my experience with React, here is that first pass.
+
+![example](public/images/asciitorium.png)
 
 ## So what can it be used for?
 
@@ -15,115 +18,90 @@
 - Works in both **Web** and **CLI** (DOM or stdout)
 - Built-in components
 - Reactive `State<T>` system for live updates
-- Custom JSX runtime (like React, minus baggage)
+- Custom JSX runtime (like React, minus the baggage)
 
-## Creating an asciitorium app
+---
 
-## Setup
+## 🚀 Developing
 
-```bash
-npm create vite@latest
-```
-
-supply:
-
-- prject-name
-- vanilla
-- Typescript
+### 1️⃣ Install dependencies
 
 ```bash
-cd <project_name>
-npm install asciitorium
-npm install --save-dev prettier
-npm install --save-dev @vitejs/plugin-vue-jsx
+pnpm install
 ```
 
-create a vite.config.ts:
-
-```js
-export default {
-  // ...existing config...
-  esbuild: {
-    jsxImportSource: 'asciitorium',
-  },
-};
-```
-
-Update tsconfig, add:
-
-```json
-    "jsx": "react-jsx",  // <-- add
-    "erasableSyntaxOnly": true, // <-- remove
-```
-
-- update index.html:
-
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>asciitorium</title>
-    <style>
-      body {
-        margin: 0;
-        background: black;
-        color: #3fff00;
-
-        /* Center the screen horizontally */
-        display: flex;
-        justify-content: center;
-        height: 100vh; /* Full viewport height */
-      }
-    </style>
-  </head>
-  <body>
-    <pre id="screen">Loading...</pre>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-```
-
-create a new main.tsx with:
-
-```jsx
-import {
-  Asciitorium,
-  HorizontalLine,
-  Text,
-  TextInput,
-  State,
-  bootstrap,
-} from 'asciitorium';
-
-const reactiveState = new State('Say Hello!');
-
-const app = (
-  <Asciitorium width={64} height={16}>
-    <Text value="a ui for cli" align="center" />
-    <HorizontalLine align="center" />
-    <TextInput value={reactiveState} width={32} align="center" border />
-    <Text value={reactiveState} border width={32} align="center" />
-  </Asciitorium>
-);
-
-await bootstrap(app);
-```
-
-### run
-
-on web:
+### 2️⃣ Run in the browser (Web mode)
 
 ```bash
-npm run dev
+pnpm start:web
 ```
 
-on cli:
+- Starts the Vite dev server
+- Open your browser at **http://localhost:5173** (or the port Vite displays)
+- Uses the `DomRenderer` to draw into a `<pre>` block
+
+### 3️⃣ Run in the terminal (CLI mode)
 
 ```bash
-tsx src/main.tsx
+pnpm start:cli
 ```
 
-## License
+- Renders directly to stdout
+- Uses the `TerminalRenderer` for an interactive terminal UI
+
+### 4️⃣ Build for production
+
+```bash
+pnpm build
+```
+
+- Builds both the browser bundle and TypeScript definitions
+
+### 5️⃣ Preview the production build
+
+```bash
+pnpm preview
+```
+
+- Serves the `dist/` output locally using Vite
+
+### 6️⃣ Format the code
+
+```bash
+pnpm format
+```
+
+- Runs Prettier across the entire project
+
+### 7️⃣ Generate FIGlet ASCII art assets
+
+```bash
+pnpm art FIGlet-font-name "phrase" 
+```
+
+- Runs the `scripts/generate-art.js` tool to build `.txt` ASCII art files
+
+To list available FIGlet fonts:
+
+```bash
+pnpm art:fonts
+```
+
+---
+
+## 📂 Project Structure
+
+```txt
+asciitorium/
+├── src/              # Core source code
+├── public/           # Static assets (images, favicon, ascii art)
+├── scripts/          # Helper scripts (e.g., ASCII art generator)
+├── package.json
+└── README.md
+```
+
+---
+
+## 📜 License
 
 MIT
