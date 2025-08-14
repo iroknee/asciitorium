@@ -16,6 +16,6 @@
     "tsx": "^4.19.0"
   },
   "dependencies": {
-    "asciitorium": "^0.0.0"
+    "asciitorium": "^0.1.6"
   }
 }
