@@ -1,4 +1,3 @@
-import { parse } from 'path';
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 

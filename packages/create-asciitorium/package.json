@@ -1,0 +1,41 @@
+{
+  "name": "create-asciitorium",
+  "version": "0.1.5",
+  "description": "Scaffold a Vite + TypeScript project prewired for asciitorium (web + cli).",
+  "bin": {
+    "create-asciitorium": "dist/index.js"
+  },
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "cp -r templates dist/",
+    "dev": "tsx watch src/index.ts",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "asciitorium": "__ASCIITORIUM_VERSION__",
+    "execa": "^9.3.0",
+    "kolorist": "^1.8.0",
+    "minimist": "^1.2.8",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^24.0.12",
+    "@types/prompts": "^2.4.9",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

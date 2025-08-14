@@ -1,14 +1,17 @@
-import { AsciiArt } from './components/AsciiArt';
-import { Text } from './components/Text';
-import { HorizontalLine } from './components/HorizontalLine';
-import { Asciitorium } from './core/Asciitorium';
-import { State } from './core/State';
-import { HorizontalLayout } from './core/layouts/HorizontalLayout';
-import { bootstrap } from './core/bootstrap';
-import { loadAsciiAsset } from './core/utils';
-import { ProgressBar } from './components/ProgressBar';
-import { TextInput } from './components/TextInput';
-import { CelticBorder } from './components/CelticBorder';
+/** Single entry that runs on Web (DOM) and CLI (Terminal) */
+import {
+  Text,
+  State,
+  AsciiArt,
+  TextInput,
+  Asciitorium,
+  ProgressBar,
+  CelticBorder,
+  HorizontalLine,
+  HorizontalLayout,
+  loadAsciiAsset,
+  bootstrap,
+} from 'asciitorium';
 
 const appWidth = 64;
 const appHeight = 26;

@@ -1,21 +1,46 @@
 {
   "name": "asciitorium",
   "version": "0.1.5",
-  "description": "An ASCII-based UI framework for web and cli",
+  "private": false,
+  "description": "An ASCII UI framework for web and CLI",
   "type": "module",
+  "main": "dist/asciitorium.umd.js",
+  "module": "dist/asciitorium.es.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/",
     "README.md",
     "LICENSE"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/asciitorium.es.js",
+      "default": "./dist/asciitorium.es.js"
+    },
+    "./jsx": {
+      "types": "./dist/jsx/index.d.ts",
+      "import": "./dist/jsx/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/jsx/jsx-runtime.d.ts",
+      "import": "./dist/jsx/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./dist/jsx/jsx-dev-runtime.d.ts",
+      "import": "./dist/jsx/jsx-dev-runtime.js"
+    }
+  },
+  "sideEffects": false,
   "scripts": {
     "start:web": "vite",
     "start:cli": "tsx src/demo.tsx",
-    "build": "vite build && tsc",
+    "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview",
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
-    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
+    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Iroknee <tiroknee@gmail.com>",
   "keywords": [
@@ -30,10 +55,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "figlet": "^1.8.1",
     "@types/figlet": "^1.7.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.12",
+    "figlet": "^1.8.1",
     "fs-extra": "^11.3.0",
     "prettier": "^3.6.2",
     "tsx": "^4.20.3",

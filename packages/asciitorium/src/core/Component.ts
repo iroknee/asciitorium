@@ -3,12 +3,13 @@ import type { State } from './State';
 
 export interface ComponentProps {
   label?: string;
-  showLabel?: boolean;
-  width: number;
-  height: number;
-  border?: boolean;
-  fill?: string;
-  align?: Alignment;
+  comment?: string;        // Comment to describe the component's purpose.  This isn't used for anything yet.
+  showLabel?: boolean;     // Whether to show the label or not
+  width: number;           // Width of the component
+  height: number;          // Height of the component
+  border?: boolean;        // Whether to show a border around the component
+  fill?: string;           // Fill character for the component
+  align?: Alignment;       // Alignment of the component
   bind?: State<any> | ((state: State<any>) => void);
   fixed?: boolean;
   x?: number;
@@ -18,6 +19,7 @@ export interface ComponentProps {
 
 export abstract class Component {
   public label: string | undefined;
+  public comment: string | undefined;
   public showLabel: boolean = true;
   public width: number;
   public height: number;
@@ -44,6 +46,7 @@ export abstract class Component {
     this.width = props.width;
     this.height = props.height;
     this.label = props.label;
+    this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
     this.border = props.border ?? false;
     this.fill = props.fill ?? ' ';

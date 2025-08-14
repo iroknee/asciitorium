@@ -1,11 +1,17 @@
 {
-  "name": "asciitorium-workspace",
+  "name": "asciitorium-monorepo",
   "private": true,
   "version": "0.1.0",
-  "description": "Monorepo for asciitorium and related packages",
+  "packageManager": "pnpm",
+  "description": "Monorepo for asciitorium and create-asciitorium",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "release": "pnpm -r publish --access public",
+    "test:pack": "scripts/pack-lib-test.sh",
+    "test:create": "scripts/create-asciitorium-test.sh"
+  },
   "workspaces": [
-    "packages/asciitorium",
-    "packages/create-asciitorium",
-    "packages/template-vite-ts"
+    "packages/*"
   ]
 }

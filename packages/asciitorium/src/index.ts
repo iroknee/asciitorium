@@ -1,4 +1,6 @@
+#!/usr/bin/env node
 export * from './core/types';
+export * from './core/utils';
 export * from './core/bootstrap';
 export * from './core/Asciitorium';
 export * from './core/Component';

@@ -15,7 +15,7 @@ yarn-error.log*
 .vscode/
 
 # Build 
-/dist
+dist
 
 # System files
 .DS_Store
@@ -23,3 +23,6 @@ Thumbs.db
 
 # Archives
 *.tgz
+
+# Test app
+tmp/
