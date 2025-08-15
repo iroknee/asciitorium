@@ -43,7 +43,7 @@ cd my-app
 npm install
 
 # Start the dev server (web)
-npm run dev
+npm run web
 
 # Run in the terminal (CLI)
 npm run cli

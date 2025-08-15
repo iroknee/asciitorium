@@ -73,7 +73,7 @@ async function main() {
     }
   }
 
-  const runDev = pm === 'npm' ? 'npm run web' : `${pm} dev`;
+  const runDev = pm === 'npm' ? 'npm run web' : `${pm} web`;
   console.log(`\n${green('Done!')} Next steps:\n`);
   console.log(`  cd ${target}`);
   console.log(`  ${runDev}\n`);
