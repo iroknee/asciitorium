@@ -87,8 +87,7 @@ npm --filter asciitorium dev
 packages/
 ├──asciitorium/        # The core UI framework
 └──create-asciitorium/ # CLI to scaffold new projects
-pnpm-workspace.yaml    # Workspace configuration
-package.json           # Root scripts and settings
+package.json           # Root scripts and workspace configuration
 ```
 
 ---

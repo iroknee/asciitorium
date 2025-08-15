@@ -25,13 +25,13 @@ Why? I am still not sure 🙂. But it started with wanting to create a text-base
 ### 1️⃣ Install dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 ### 2️⃣ Run in the browser (Web mode)
 
 ```bash
-pnpm start:web
+npm run web
 ```
 
 - Starts the Vite dev server
@@ -41,7 +41,7 @@ pnpm start:web
 ### 3️⃣ Run in the terminal (CLI mode)
 
 ```bash
-pnpm start:cli
+npm run cli
 ```
 
 - Renders directly to stdout
@@ -50,7 +50,7 @@ pnpm start:cli
 ### 4️⃣ Build for production
 
 ```bash
-pnpm build
+npm run build
 ```
 
 - Builds both the browser bundle and TypeScript definitions
@@ -58,7 +58,7 @@ pnpm build
 ### 5️⃣ Preview the production build
 
 ```bash
-pnpm preview
+npm run preview
 ```
 
 - Serves the `dist/` output locally using Vite
@@ -66,7 +66,7 @@ pnpm preview
 ### 6️⃣ Format the code
 
 ```bash
-pnpm format
+npm run format
 ```
 
 - Runs Prettier across the entire project
@@ -74,7 +74,7 @@ pnpm format
 ### 7️⃣ Generate FIGlet ASCII art assets
 
 ```bash
-pnpm art FIGlet-font-name "phrase" 
+npm run art FIGlet-font-name "phrase" 
 ```
 
 - Runs the `scripts/generate-art.js` tool to build `.txt` ASCII art files
@@ -82,7 +82,7 @@ pnpm art FIGlet-font-name "phrase"
 To list available FIGlet fonts:
 
 ```bash
-pnpm art:fonts
+npm run art:fonts
 ```
 
 ---

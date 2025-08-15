@@ -4,7 +4,7 @@ set -euo pipefail
 
 # --- Config (can be overridden via env) ---
 PKG_DIR_DEFAULT="packages/asciitorium"
-OUT_DIR_DEFAULT="tmp"
+OUT_DIR_DEFAULT="./tmp"
 PKG_NAME_DEFAULT="asciitorium"
 
 PKG_DIR="${PKG_DIR:-$PKG_DIR_DEFAULT}"
@@ -26,7 +26,7 @@ rm -rf "$OUT_ABS"
 mkdir -p "$OUT_ABS"
 
 # Pack the package to a tarball in OUT_ABS (absolute path!)
-pnpm --dir "$PKG_DIR" pack --pack-destination "$OUT_ABS"
+npm pack --pack-destination="$OUT_ABS" --prefix="$PKG_DIR"
 
 # Find newest tarball (handles version changes)
 TARBALL_PATH="$(ls -t "$OUT_ABS"/"$PKG_NAME"-*.tgz | head -n 1)"
@@ -37,13 +37,13 @@ fi
 echo "Tarball: $TARBALL_PATH"
 
 # Make a scratch app
-SCRATCH_DIR="$(mktemp -d /tmp/${PKG_NAME}-test-XXXXXX)"
+SCRATCH_DIR="$(mktemp -d ./tmp/${PKG_NAME}-test-XXXXXX)"
 echo "Scratch dir: $SCRATCH_DIR"
 cd "$SCRATCH_DIR"
 
 # Init and install tarball (npm to avoid SIGPIPE)
 npm init -y >/dev/null
-pnpm add "$TARBALL_PATH"
+npm install "$TARBALL_PATH"
 
 # Smoke test: import the package and list exported keys
 node -e "import('$PKG_NAME').then(m => console.log('Exports:', Object.keys(m)))"

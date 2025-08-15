@@ -38,7 +38,7 @@
     "format": "prettier --write .",
     "art": "node scripts/generate-art.js",
     "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "npm run build"
   },
   "author": "Iroknee <tiroknee@gmail.com>",
   "keywords": [

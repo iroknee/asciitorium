@@ -38,7 +38,7 @@ async function main() {
   }
 
   const pm =
-    argv.pm ?? process.env.npm_config_user_agent?.split('/')[0] ?? 'pnpm';
+    argv.pm ?? process.env.npm_config_user_agent?.split('/')[0] ?? 'npm';
   const template = argv.template ?? 'base';
   const useGit = Boolean(argv.git);
   const doInstall = Boolean(argv.install);

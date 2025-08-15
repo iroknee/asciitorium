@@ -11,7 +11,7 @@ export interface ScaffoldOptions {
   template: string; // e.g. "base"
   install?: boolean; // default: true
   initGit?: boolean; // default: true
-  packageManager?: 'pnpm' | 'npm' | 'yarn'; // default: "pnpm" (install step uses this)
+  packageManager?: 'pnpm' | 'npm' | 'yarn'; // default: "npm" (install step uses this)
 }
 
 /**
@@ -28,7 +28,7 @@ export async function scaffold(opts: ScaffoldOptions) {
     template,
     install = true,
     initGit = true,
-    packageManager = 'pnpm',
+    packageManager = 'npm',
   } = opts;
 
   const templateDir = path.join(__dirname, 'templates', template);
@@ -42,7 +42,7 @@ export async function scaffold(opts: ScaffoldOptions) {
   // 3) Pin latest asciitorium into the generated package.json
   await pinLatestAsciitorium(projectDir);
 
-  // 4) Install dependencies (default: pnpm)
+  // 4) Install dependencies (default: npm)
   if (install) {
     await runInstall(projectDir, packageManager);
   }
@@ -80,9 +80,9 @@ async function renameGitignore(projectDir: string) {
 }
 
 async function getLatestVersion(pkg: string): Promise<string> {
-  // Try pnpm first
+  // Try npm first
   try {
-    const { stdout } = await execa('pnpm', ['view', pkg, 'version']);
+    const { stdout } = await execa('npm', ['view', pkg, 'version']);
     return stdout.trim();
   } catch {
     // Fallback to npm

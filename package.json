@@ -4,13 +4,13 @@
   "version": "0.1.0",
   "description": "Monorepo for asciitorium and create-asciitorium",
   "scripts": {
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
-    "release": "pnpm -r publish",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "release": "npm run publish --workspaces",
     "test:lib": "scripts/pack-lib-test.sh",
     "test:create": "scripts/create-asciitorium-test.sh",
-    "publish:lib": "pnpm --filter asciitorium build && cd packages/asciitorium && pnpm publish",
-    "publish:create": "pnpm --filter create-asciitorium build && cd packages/create-asciitorium && pnpm publish"
+    "publish:lib": "npm run build --workspace=asciitorium && cd packages/asciitorium && npm publish",
+    "publish:create": "npm run build --workspace=create-asciitorium && cd packages/create-asciitorium && npm publish"
 
   },
   "workspaces": [
