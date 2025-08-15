@@ -2,7 +2,6 @@
   "name": "asciitorium-monorepo",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm",
   "description": "Monorepo for asciitorium and create-asciitorium",
   "scripts": {
     "build": "pnpm -r build",
