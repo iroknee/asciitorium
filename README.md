@@ -1,6 +1,6 @@
 # asciitorium
 
-This repository contains the source code for **asciitorium**, an ASCII-based UI framework that runs in both the browser and the terminal, along with related tooling such as the `create-asciitorium` project scaffolder.
+This mono-repo contains the source code for **asciitorium**, an ASCII-based ui framework that runs in both the web and cli, along with related tooling such as the `create-asciitorium` project scaffolder.
 
 ![example](asciitorium.png)
 
@@ -11,7 +11,7 @@ This repository contains the source code for **asciitorium**, an ASCII-based UI 
 ### [`asciitorium`](packages/asciitorium)
 
 A TypeScript-based UI framework for building retro-style terminal interfaces.  
-It uses `<pre>` blocks and styled spans in the browser, and a terminal renderer for CLI apps.  
+It uses `<pre>` blocks and styled spans in the browser, and a terminal renderer for cli apps.  
 Includes a custom JSX runtime so you can write components similar to React.
 
 Key features:
@@ -89,33 +89,6 @@ packages/
 └──create-asciitorium/ # CLI to scaffold new projects
 pnpm-workspace.yaml    # Workspace configuration
 package.json           # Root scripts and settings
-```
-
----
-
-## 🚀 Quick Start (from this repo)
-
-If you want to try asciitorium locally:
-
-```bash
-# Install dependencies
-npm install
-
-# Build the core library
-npm --filter asciitorium build
-
-# Link the create-asciitorium CLI globally
-npm --filter create-asciitorium link --global
-
-# Scaffold a new app
-create-asciitorium my-app
-cd my-app
-
-# Run in browser
-npm start:web
-
-# Run in terminal
-npm start:cli
 ```
 
 ---

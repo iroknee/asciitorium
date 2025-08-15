@@ -1,6 +1,6 @@
 {
   "name": "create-asciitorium",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Scaffold a Vite + TypeScript project prewired for asciitorium (web + cli).",
   "bin": {
     "create-asciitorium": "dist/index.js"
@@ -19,7 +19,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "asciitorium": "__ASCIITORIUM_VERSION__",
+    "asciitorium": "^0.1.5",
     "execa": "^9.3.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
