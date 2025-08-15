@@ -3,7 +3,9 @@ import type { Asciitorium } from './Asciitorium';
 import { setRenderCallback } from './RenderScheduler';
 
 export async function bootstrap(app: Asciitorium): Promise<void> {
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  const isWeb = typeof window !== 'undefined' && typeof document !== 'undefined';
+
+  if (isWeb) {
     // Web environment
     const screen = document.getElementById('screen');
     if (!screen) throw new Error('Missing #screen element for DOM renderer');

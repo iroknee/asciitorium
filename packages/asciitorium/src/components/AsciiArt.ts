@@ -2,60 +2,126 @@ import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
 export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
-  content: string; // raw text loaded from .txt
-  frameDurationMs?: number; // delay between frames
-  loop?: boolean; // should animation loop
-  width?: number; // optional fixed width
-  height?: number; // optional fixed height
+  content: string;           // raw text loaded from .txt (UTF-8)
+  frameDurationMs?: number;  // default delay between frames (fallback if no § defaults)
+  loop?: boolean;            // fallback if no § defaults
+  width?: number;            // optional fixed width
+  height?: number;           // optional fixed height
+  playSound?: (id: string) => void; // optional sound handler for frame.meta.sound
 }
 
+/** Parsed per-frame metadata (keep minimal per your spec) */
+type FrameMeta = {
+  duration?: number;  // ms
+  sound?: string;     // id or URL
+};
+
+/** Internal frame shape */
+type SpriteFrame = {
+  lines: string[][];  // 2D char grid
+  meta: FrameMeta;    // already merged with defaults
+};
+
+/** Top-of-file defaults */
+type SpriteDefaults = {
+  duration?: number;  // ms
+  loop?: boolean;
+};
+
 export class AsciiArt extends Component {
-  private readonly rawContent: string;
-  private frames: string[][][] = [];
+  private readonly frames: SpriteFrame[] = [];
   private frameIndex = 0;
-  private animationInterval?: ReturnType<typeof setInterval>;
-  private loop: boolean = true;
+  private loop = true;
+  private timer: ReturnType<typeof setTimeout> | null = null;
+  private readonly playSound?: (id: string) => void;
 
   constructor(options: ArtOptions) {
-    const parsedFrames = parseSpriteSheet(options.content);
-    const firstFrame = parsedFrames[0] ?? [[' ']];
+    // Parse content (supports §/¶ JSON; falls back to single still)
+    const parsed = parseSprite(options.content, {
+      fallbackDuration: options.frameDurationMs ?? 250,
+      fallbackLoop: options.loop ?? true,
+    });
 
-    const artWidth = Math.max(1, ...firstFrame.map((line) => line.length));
-    const artHeight = Math.max(1, firstFrame.length);
+    // Compute width/height from max of all frames (unless provided)
+    const { maxW, maxH } = measureFrames(parsed.frames);
     const borderPadding = options.border ? 2 : 0;
 
     super({
       ...options,
-      width: options.width ?? artWidth + borderPadding,
-      height: options.height ?? artHeight + borderPadding,
+      width: options.width ?? Math.max(1, maxW + borderPadding),
+      height: options.height ?? Math.max(1, maxH + borderPadding),
     });
 
-    this.rawContent = options.content;
-    this.frames = parsedFrames;
-    this.loop = options.loop ?? true;
+    this.frames = parsed.frames;
+    this.loop = parsed.defaults.loop ?? (options.loop ?? true);
+    this.playSound = options.playSound;
 
+    // If we have animation (2+ frames), start it
     if (this.frames.length > 1) {
-      const duration = options.frameDurationMs ?? 250;
-      this.animationInterval = setInterval(() => {
-        this.frameIndex++;
-        if (this.frameIndex >= this.frames.length) {
-          if (this.loop) {
-            this.frameIndex = 0;
-          } else {
-            this.frameIndex = this.frames.length - 1;
-            clearInterval(this.animationInterval);
-          }
-        }
+      this.startAnimation();
+    }
+  }
+
+  private startAnimation() {
+    // Kick the very first frame sound (if any)
+    this.maybePlaySound(this.frames[this.frameIndex]?.meta.sound);
+    this.scheduleNext();
+  }
+
+  private scheduleNext() {
+    const current = this.frames[this.frameIndex];
+    const dur = Math.max(0, current?.meta.duration ?? 0);
+
+    // Safety: if duration is 0 or missing, render next microtask to avoid tight loops
+    const delay = Number.isFinite(dur) && dur > 0 ? dur : 0;
+
+    this.clearTimer();
+    this.timer = setTimeout(() => {
+      this.advanceFrame();
+    }, delay);
+  }
+
+  private advanceFrame() {
+    if (this.frames.length <= 1) return;
+
+    this.frameIndex++;
+    if (this.frameIndex >= this.frames.length) {
+      if (this.loop) {
+        this.frameIndex = 0;
+      } else {
+        this.frameIndex = this.frames.length - 1; // stick on last
+        this.clearTimer();
         requestRender();
-      }, duration);
+        return;
+      }
+    }
+
+    // Sound for the new frame
+    this.maybePlaySound(this.frames[this.frameIndex]?.meta.sound);
+
+    requestRender();
+    this.scheduleNext();
+  }
+
+  private maybePlaySound(id?: string) {
+    if (!id) return;
+    try {
+      this.playSound?.(id);
+    } catch {
+      // Swallow sound errors to avoid breaking animation
+    }
+  }
+
+  private clearTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
     }
   }
 
   override destroy(): void {
     super.destroy();
-    if (this.animationInterval) {
-      clearInterval(this.animationInterval);
-    }
+    this.clearTimer();
   }
 
   override draw(): string[][] {
@@ -66,10 +132,11 @@ export class AsciiArt extends Component {
     const innerHeight = this.height - (this.border ? 2 : 0);
 
     const frame = this.frames[this.frameIndex];
-    if (!frame) return buffer; // no frames to draw
+    if (!frame) return buffer;
 
-    for (let y = 0; y < Math.min(frame.length, innerHeight); y++) {
-      const line = frame[y];
+    const lines = frame.lines;
+    for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
+      const line = lines[y];
       for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
         buffer[y + yOffset][x + xOffset] = line[x];
       }
@@ -79,14 +146,157 @@ export class AsciiArt extends Component {
   }
 }
 
-// Utility to parse sprite sheets with ↲ delimiter
-function parseSpriteSheet(input: string, delimiter = '↲'): string[][][] {
-  const parts = input.includes(delimiter) ? input.split(delimiter) : [input];
+/* =========================
+   Parsing & utilities
+   ========================= */
 
-  return parts.map((block) => {
-    const lines = block.split('\n').map((line) => [...line.replace(/\r$/, '')]);
-    // if the first line is empty, remove it
-    if (lines[0].length === 0) lines.shift();
-    return lines;
+/**
+ * parseSprite — supports:
+ *  - Defaults: first non-empty line starting with § {json}
+ *  - Frames: blocks terminated by ¶ {json} (meta for previous block)
+ *  - Stills: if no §/¶ present, entire input is a single frame using fallbacks
+ *  - Graceful JSON error handling (collects errors; uses fallbacks)
+ *  - Trims CRLF; preserves leading/trailing spaces inside art lines
+ */
+function parseSprite(
+  text: string,
+  opts: { fallbackDuration: number; fallbackLoop: boolean }
+): { defaults: SpriteDefaults; frames: SpriteFrame[]; errors: string[] } {
+  const errors: string[] = [];
+  const lines = text.replace(/\r\n?/g, '\n').split('\n');
+
+  let defaults: SpriteDefaults = {};
+  let sawAnyArt = false;
+  let firstNonEmptySeen = false;
+
+  // Buffers
+  let currentBlock: string[] = [];
+  const rawFrames: { art: string[]; meta?: FrameMeta }[] = [];
+
+  const flush = (meta?: FrameMeta) => {
+    // Allow empty frames (rare), but usually there is content
+    rawFrames.push({ art: currentBlock.slice(), meta });
+    currentBlock = [];
+  };
+
+  const tryParseJSON = (s: string, where: string): any => {
+    try {
+      return JSON.parse(s);
+    } catch (e: any) {
+      errors.push(`JSON parse error ${where}: ${e?.message ?? String(e)}`);
+      return {};
+    }
+  };
+
+  // Scan lines
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i]!;
+    const trimmedStart = raw.trimStart();
+
+    // First non-empty line special-cases defaults
+    if (!firstNonEmptySeen && trimmedStart.length > 0) {
+      firstNonEmptySeen = true;
+      if (trimmedStart.startsWith('§')) {
+        const payload = raw.slice(raw.indexOf('§') + 1).trim();
+        if (payload) {
+          const d = tryParseJSON(payload, `in defaults at line ${i + 1}`);
+          // Only pick the keys we support for now
+          defaults = {
+            duration: asNum(d?.duration),
+            loop: asBool(d?.loop, opts.fallbackLoop),
+          };
+        }
+        // continue to next line; defaults line itself is not art
+        continue;
+      }
+    }
+
+    // Frame separator
+    if (trimmedStart.startsWith('¶')) {
+      const payload = raw.slice(raw.indexOf('¶') + 1).trim();
+      const metaRaw = payload ? tryParseJSON(payload, `in frame meta at line ${i + 1}`) : {};
+      const meta: FrameMeta = {
+        duration: asNum(metaRaw?.duration),
+        sound: typeof metaRaw?.sound === 'string' ? metaRaw.sound : undefined,
+      };
+      flush(meta);
+      sawAnyArt = true;
+      continue;
+    }
+
+    // Otherwise, this is art content (preserve exactly; only strip trailing \r earlier)
+    currentBlock.push(raw);
+    if (raw.length > 0) sawAnyArt = true;
+  }
+
+  // If file didn't end with a separator, flush the trailing block
+  if (currentBlock.length) {
+    flush({});
+  }
+
+  // If we never saw § or ¶ and we have art, treat entire input as a still
+  const usedSpriteFormat = lines.some(l => l.trimStart().startsWith('§') || l.trimStart().startsWith('¶'));
+  if (!usedSpriteFormat && sawAnyArt) {
+    const still: SpriteFrame = {
+      lines: normalizeBlock(lines),
+      meta: { duration: opts.fallbackDuration }, // irrelevant; there’s only one frame
+    };
+    return {
+      defaults: { duration: opts.fallbackDuration, loop: false },
+      frames: [still],
+      errors,
+    };
+  }
+
+  // Build frames (merge defaults & per-frame meta; normalize art into char grids)
+  const finalDefaults: SpriteDefaults = {
+    duration: defaults.duration ?? opts.fallbackDuration,
+    loop: defaults.loop ?? opts.fallbackLoop,
+  };
+
+  const frames: SpriteFrame[] = rawFrames.map(({ art, meta }) => {
+    const merged: FrameMeta = {
+      duration: (meta?.duration ?? finalDefaults.duration) ?? opts.fallbackDuration,
+      sound: meta?.sound,
+    };
+    return { lines: normalizeBlock(art), meta: merged };
   });
+
+  // Edge case: if no frames collected (e.g., empty file), produce a single blank frame
+  if (frames.length === 0) {
+    frames.push({ lines: [[]], meta: { duration: finalDefaults.duration } });
+  }
+
+  return { defaults: finalDefaults, frames, errors };
+}
+
+/** Normalize a block of lines into a 2D char array (ragged-right preserved) */
+function normalizeBlock(blockLines: string[]): string[][] {
+  // Drop a single leading empty line if present (authoring convenience)
+  const lines = blockLines.slice();
+  if (lines.length && lines[0] === '') lines.shift();
+
+  // Turn each line into an array of chars (no trimming)
+  return lines.map(line => [...line]);
+}
+
+/** Measure max width/height across frames to size component surface */
+function measureFrames(frames: SpriteFrame[]): { maxW: number; maxH: number } {
+  let maxW = 1;
+  let maxH = 1;
+  for (const f of frames) {
+    maxH = Math.max(maxH, f.lines.length || 1);
+    for (const ln of f.lines) {
+      maxW = Math.max(maxW, ln.length || 0);
+    }
+  }
+  return { maxW, maxH };
+}
+
+/* Small helpers */
+function asNum(v: any): number | undefined {
+  return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
+}
+function asBool(v: any, fallback: boolean): boolean {
+  return typeof v === 'boolean' ? v : fallback;
 }
