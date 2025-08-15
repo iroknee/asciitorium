@@ -32,7 +32,6 @@ export class ProgressBar extends Component {
 
   private animateTo(value: number, durationMs: number = 1000): void {
     // Clamp to 0–100
-    console.log('Animating to', value);
     const target = Math.max(0, Math.min(100, value));
 
     if (this.animationInterval) clearInterval(this.animationInterval);

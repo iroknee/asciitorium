@@ -1,8 +1,8 @@
 {
   "name": "asciitorium",
-  "version": "0.1.7",
+  "version": "0.1.11",
   "private": false,
-  "description": "An ASCII UI framework for web and CLI",
+  "description": "an ASCII ui framework for web + cli",
   "type": "module",
   "types": "dist/index.d.ts",
   "files": [
@@ -31,8 +31,8 @@
   },
   "sideEffects": false,
   "scripts": {
-    "start:web": "vite",
-    "start:cli": "tsx src/demo.tsx",
+    "web": "vite",
+    "cli": "tsx src/demo.tsx",
     "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview",
     "format": "prettier --write .",

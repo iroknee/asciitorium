@@ -3,11 +3,8 @@ import { requestRender } from '../core/RenderScheduler';
 
 export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
   content: string;           // raw text loaded from .txt (UTF-8)
-  frameDurationMs?: number;  // default delay between frames (fallback if no § defaults)
-  loop?: boolean;            // fallback if no § defaults
   width?: number;            // optional fixed width
   height?: number;           // optional fixed height
-  playSound?: (id: string) => void; // optional sound handler for frame.meta.sound
 }
 
 /** Parsed per-frame metadata (keep minimal per your spec) */
@@ -31,16 +28,12 @@ type SpriteDefaults = {
 export class AsciiArt extends Component {
   private readonly frames: SpriteFrame[] = [];
   private frameIndex = 0;
-  private loop = true;
+  private loop = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
-  private readonly playSound?: (id: string) => void;
 
   constructor(options: ArtOptions) {
     // Parse content (supports §/¶ JSON; falls back to single still)
-    const parsed = parseSprite(options.content, {
-      fallbackDuration: options.frameDurationMs ?? 250,
-      fallbackLoop: options.loop ?? true,
-    });
+    const parsed = parseSprite(options.content);
 
     // Compute width/height from max of all frames (unless provided)
     const { maxW, maxH } = measureFrames(parsed.frames);
@@ -53,8 +46,7 @@ export class AsciiArt extends Component {
     });
 
     this.frames = parsed.frames;
-    this.loop = parsed.defaults.loop ?? (options.loop ?? true);
-    this.playSound = options.playSound;
+    this.loop = parsed.defaults.loop || false;
 
     // If we have animation (2+ frames), start it
     if (this.frames.length > 1) {
@@ -105,11 +97,7 @@ export class AsciiArt extends Component {
 
   private maybePlaySound(id?: string) {
     if (!id) return;
-    try {
-      this.playSound?.(id);
-    } catch {
-      // Swallow sound errors to avoid breaking animation
-    }
+    // Sound system not implemented yet - just log for now
   }
 
   private clearTimer() {
@@ -158,10 +146,7 @@ export class AsciiArt extends Component {
  *  - Graceful JSON error handling (collects errors; uses fallbacks)
  *  - Trims CRLF; preserves leading/trailing spaces inside art lines
  */
-function parseSprite(
-  text: string,
-  opts: { fallbackDuration: number; fallbackLoop: boolean }
-): { defaults: SpriteDefaults; frames: SpriteFrame[]; errors: string[] } {
+function parseSprite (text: string): { defaults: SpriteDefaults; frames: SpriteFrame[]; errors: string[] } {
   const errors: string[] = [];
   const lines = text.replace(/\r\n?/g, '\n').split('\n');
 
@@ -203,7 +188,7 @@ function parseSprite(
           // Only pick the keys we support for now
           defaults = {
             duration: asNum(d?.duration),
-            loop: asBool(d?.loop, opts.fallbackLoop),
+            loop: asBool(d?.loop),
           };
         }
         // continue to next line; defaults line itself is not art
@@ -239,24 +224,18 @@ function parseSprite(
   if (!usedSpriteFormat && sawAnyArt) {
     const still: SpriteFrame = {
       lines: normalizeBlock(lines),
-      meta: { duration: opts.fallbackDuration }, // irrelevant; there’s only one frame
+      meta: { duration: 0 }, // irrelevant; there’s only one frame
     };
     return {
-      defaults: { duration: opts.fallbackDuration, loop: false },
+      defaults: { duration: 0, loop: false },
       frames: [still],
       errors,
     };
   }
 
-  // Build frames (merge defaults & per-frame meta; normalize art into char grids)
-  const finalDefaults: SpriteDefaults = {
-    duration: defaults.duration ?? opts.fallbackDuration,
-    loop: defaults.loop ?? opts.fallbackLoop,
-  };
-
   const frames: SpriteFrame[] = rawFrames.map(({ art, meta }) => {
     const merged: FrameMeta = {
-      duration: (meta?.duration ?? finalDefaults.duration) ?? opts.fallbackDuration,
+      duration: meta?.duration ?? defaults.duration ?? 100,
       sound: meta?.sound,
     };
     return { lines: normalizeBlock(art), meta: merged };
@@ -264,20 +243,23 @@ function parseSprite(
 
   // Edge case: if no frames collected (e.g., empty file), produce a single blank frame
   if (frames.length === 0) {
-    frames.push({ lines: [[]], meta: { duration: finalDefaults.duration } });
+    frames.push({ lines: [[]], meta: { duration: defaults.duration ?? 100 } });
   }
 
-  return { defaults: finalDefaults, frames, errors };
+  return { defaults, frames, errors };
 }
 
 /** Normalize a block of lines into a 2D char array (ragged-right preserved) */
 function normalizeBlock(blockLines: string[]): string[][] {
   // Drop a single leading empty line if present (authoring convenience)
   const lines = blockLines.slice();
-  if (lines.length && lines[0] === '') lines.shift();
+  
+  if (lines.length && lines[0] === '') {
+    lines.shift();
+  }
 
-  // Turn each line into an array of chars (no trimming)
-  return lines.map(line => [...line]);
+  const result = lines.map(line => [...line]);
+  return result;
 }
 
 /** Measure max width/height across frames to size component surface */
@@ -297,6 +279,6 @@ function measureFrames(frames: SpriteFrame[]): { maxW: number; maxH: number } {
 function asNum(v: any): number | undefined {
   return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
 }
-function asBool(v: any, fallback: boolean): boolean {
-  return typeof v === 'boolean' ? v : fallback;
+function asBool(v: any): boolean {
+  return typeof v === 'boolean' ? v : false;
 }

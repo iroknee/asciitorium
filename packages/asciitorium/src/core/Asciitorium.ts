@@ -33,9 +33,7 @@ export class Asciitorium extends VerticalLayout {
     // Start FPS and render time reporting
     setInterval(() => {
       if (this.fpsCounter > 0 && this.renderer instanceof DomRenderer) {
-        console.log(
-          `FPS: ${this.fpsCounter}, total render time: ${this.totalRenderTime.toFixed(2)} ms`
-        );
+        //
       }
       this.fpsCounter = 0;
       this.totalRenderTime = 0;

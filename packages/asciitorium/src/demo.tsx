@@ -34,7 +34,7 @@ const app = (
 
     <Text value="" align="center" height={2} comment="vertical spacing" />
     <AsciiArt content={titleArt} align="center" />
-    <HorizontalLine length={36} align="center" />
+    <HorizontalLine length={48} align="center" />
     <Text value="a ui framework for cli and web" align="top" height={5} />
 
     <HorizontalLayout width={appWidth - 22} height={3} align="center">
@@ -59,6 +59,5 @@ const randInt = (min: number, max: number) =>
 
 setInterval(() => {
   const newLoadingvalue = randInt(0, 100);
-  console.log(`Loading... ${newLoadingvalue}%`);
   loading.value = newLoadingvalue;
 }, 5_000);

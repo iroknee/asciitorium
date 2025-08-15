@@ -19,7 +19,7 @@ export class HorizontalLine extends Component {
   draw(): string[][] {
     super.draw(); // Prepares buffer, border, label, etc.
 
-    const lineChar = '⎺';
+    const lineChar = '―';
     const y = 0;
     const xStart = this.border ? 1 : 0;
     const xEnd = this.border ? this.width - 1 : this.width;
