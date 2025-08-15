@@ -79,25 +79,27 @@ async function renameGitignore(projectDir: string) {
   }
 }
 
-async function pinLatestAsciitorium(appDir: string) {
-  const pkgPath = path.join(appDir, 'package.json');
-  let pkg: any;
-
+async function getLatestVersion(pkg: string): Promise<string> {
+  // Try pnpm first
   try {
-    const raw = await fs.readFile(pkgPath, 'utf8');
-    pkg = JSON.parse(raw);
-  } catch (err) {
-    throw new Error(
-      `package.json not found or unreadable at ${pkgPath}. Did the template include it?`
-    );
+    const { stdout } = await execa('pnpm', ['view', pkg, 'version']);
+    return stdout.trim();
+  } catch {
+    // Fallback to npm
+    const { stdout } = await execa('npm', ['view', pkg, 'version']);
+    return stdout.trim();
   }
+}
 
-  // Fetch the latest published version from the registry
-  const { stdout } = await execa('pnpm', ['view', 'asciitorium', 'version']);
-  const latest = stdout.trim();
+export async function pinLatestAsciitorium(appDir: string) {
+  const pkgPath = path.join(appDir, 'package.json');
+  const raw = await fs.readFile(pkgPath, 'utf8');
+  const pkg = JSON.parse(raw);
 
-  if (!pkg.dependencies) pkg.dependencies = {};
-  pkg.dependencies['asciitorium'] = `^${latest}`;
+  const latest = await getLatestVersion('asciitorium');
+
+  pkg.dependencies ??= {};
+  pkg.dependencies.asciitorium = `^${latest}`;
 
   await fs.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
 }

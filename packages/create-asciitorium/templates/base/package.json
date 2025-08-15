@@ -16,6 +16,6 @@
     "tsx": "^4.19.0"
   },
   "dependencies": {
-    "asciitorium": "^0.1.6"
+    "asciitorium": "__PIN_AT_SCAFFOLD__"
   }
 }
