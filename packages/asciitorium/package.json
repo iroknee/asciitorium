@@ -1,11 +1,9 @@
 {
   "name": "asciitorium",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": false,
   "description": "An ASCII UI framework for web and CLI",
   "type": "module",
-  "main": "dist/asciitorium.umd.js",
-  "module": "dist/asciitorium.es.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/",

@@ -19,7 +19,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "asciitorium": "^0.1.5",
+    "asciitorium": "",
     "execa": "^9.3.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
