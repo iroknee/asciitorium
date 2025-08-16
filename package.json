@@ -8,6 +8,7 @@
     "lint": "npm run lint --workspaces",
     "release": "npm run publish --workspaces",
     "demo": "cd packages/asciitorium && npm run web",
+    "demo:cli": "cd packages/asciitorium && npm run cli",
     "test:pack": "scripts/pack-lib-test.sh",
     "test:create": "scripts/create-asciitorium-test.sh",
     "publish:lib": "npm run build --workspace=asciitorium && cd packages/asciitorium && npm publish",

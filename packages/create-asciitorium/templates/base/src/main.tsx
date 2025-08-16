@@ -10,7 +10,7 @@ import {
   HorizontalLine,
   HorizontalLayout,
   loadAsciiAsset,
-  bootstrap,
+  start,
 } from 'asciitorium';
 
 const appWidth = 64;
@@ -54,7 +54,7 @@ const app = (
   </Asciitorium>
 );
 
-await bootstrap(app);
+await start(app);
 
 // --- Demo: Set progress to a random value every 10s ---
 const randInt = (min: number, max: number) =>

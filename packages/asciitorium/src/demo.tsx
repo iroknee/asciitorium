@@ -3,18 +3,16 @@ import { Box } from './components/Box';
 import { PerfMonitor } from './components/PerfMonitor';
 import { Text } from './components/Text';
 import { HorizontalLine } from './components/HorizontalLine';
-import { Asciitorium } from './core/Asciitorium';
+import { App } from './core/App';
 import { State } from './core/State';
-import { bootstrap } from './core/bootstrap';
+import { start } from './core/bootstrap';
 import { loadAsciiAsset } from './core/utils';
-import { ProgressBar } from './components/ProgressBar';
 import { TextInput } from './components/TextInput';
 import { CelticBorder } from './components/CelticBorder';
 
 const appWidth = 64;
 const appHeight = 30;
 
-const loading = new State(0);
 const helloWorld = new State('Hello, World!');
 
 // Load the title ASCII art
@@ -22,10 +20,11 @@ const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 
 // Construct the app
 const app = (
-  <Asciitorium width={appWidth} height={appHeight}>
+  <App width={appWidth} height={appHeight}>
     <CelticBorder corner="topLeft" fixed x={0} y={0} />
     <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
     <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
+    <CelticBorder corner="bottomRight" fixed x={appWidth - 8} y={appHeight - 8} />
 
     <Text value="" align="center" height={2} comment="vertical spacing" />
     <AsciiArt content={titleArt} align="center" />
@@ -37,18 +36,15 @@ const app = (
       <TextInput width={30} value={helloWorld} />
     </Box>
 
-    <Text value={helloWorld} width={appWidth - 24} align="center" height={4} />
+    <Text value="" align="top" height={3} comment="vertical spacing" />
+    <Text value={helloWorld} width={appWidth - 24} align="center" />
+    <Text value="" align="top" height={3} comment="vertical spacing" />
 
-    <Box width={appWidth - 24} height={4} align="center" layout="horizontal">
-      <Text value="loading:" align="center" />
-      <ProgressBar width={30} percent={loading} align="center" showPercentage />
-    </Box>
-
-    <PerfMonitor align="right" time memory fps cpu />
-  </Asciitorium>
+    <PerfMonitor align="center" time memory fps cpu />
+  </App>
 );
 
-await bootstrap(app);
+await start(app);
 
 // --- Demo: Set progress to a random value every 10s ---
 const randInt = (min: number, max: number) =>

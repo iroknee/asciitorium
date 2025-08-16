@@ -4,11 +4,11 @@ import type { Renderer } from './renderers/Renderer';
 import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
 
-export interface AsciitoriumProps extends ComponentProps {
-  fit?: boolean; // For backwards compatibility with VerticalLayoutProps
+export interface AppProps extends ComponentProps {
+  fit?: boolean; 
 }
 
-export class Asciitorium extends Component {
+export class App extends Component {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
   private fpsCounter: number = 0;
@@ -18,7 +18,7 @@ export class Asciitorium extends Component {
   private currentMemory: number = 0;
   private lastCPUUsage?: any;
 
-  constructor(props: AsciitoriumProps) {
+  constructor(props: AppProps) {
     // Set vertical layout as default for Asciitorium, pass through fit option
     const asciitoriumProps = {
       ...props,

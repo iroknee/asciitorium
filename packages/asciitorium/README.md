@@ -14,20 +14,19 @@ npm install asciitorium
 ### Basic Example
 
 ```tsx
-import { Asciitorium, Text, TextInput, State } from 'asciitorium';
-import { bootstrap } from 'asciitorium/bootstrap';
+import { App, Text, TextInput, State, start } from 'asciitorium';
 
 const message = new State('Hello, World!');
 
 const app = (
-  <Asciitorium width={50} height={10}>
+  <App width={50} height={10}>
     <Text value="Enter your message:" />
     <TextInput value={message} width={40} />
     <Text value={message} />
-  </Asciitorium>
+  </App>
 );
 
-await bootstrap(app);
+await start(app);
 ```
 
 ### JSX Configuration

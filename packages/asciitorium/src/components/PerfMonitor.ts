@@ -1,5 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
-import { Asciitorium } from '../core/Asciitorium';
+import { App } from '../core/App';
+import { isCPUSupported, isMemorySupported } from '../core/utils';
 
 export interface PerfMonitorOptions extends Omit<ComponentProps, 'height' | 'width'> {
   width?: number;
@@ -45,16 +46,17 @@ export class PerfMonitor extends Component {
     this.showFPS = showFPS;
   }
 
-  private getAsciitoriumRoot(): Asciitorium | null {
+  private getAsciitoriumRoot(): App | null {
     let current: Component | undefined = this.parent;
     while (current) {
-      if (current instanceof Asciitorium) {
+      if (current instanceof App) {
         return current;
       }
       current = current.parent;
     }
     return null;
   }
+
 
   draw(): string[][] {
     super.draw();
@@ -84,9 +86,14 @@ export class PerfMonitor extends Component {
 
     // CPU Usage
     if (this.showCPU) {
-      const cpuUsage = root.getCPUUsage();
-      const cpuStr = cpuUsage.toFixed(1).padStart(5, ' ');
-      const text = `cpu  ${cpuStr}%`;
+      let text: string;
+      if (isCPUSupported()) {
+        const cpuUsage = root.getCPUUsage();
+        const cpuStr = cpuUsage.toFixed(1).padStart(5, ' ');
+        text = `cpu  ${cpuStr}%`;
+      } else {
+        text = `cpu    N/A`;
+      }
       
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
@@ -98,9 +105,14 @@ export class PerfMonitor extends Component {
 
     // Memory Usage
     if (this.showMemory) {
-      const memUsage = root.getMemoryUsage();
-      const memStr = memUsage.toFixed(1).padStart(5, ' ');
-      const text = `mem  ${memStr}mb`;
+      let text: string;
+      if (isMemorySupported()) {
+        const memUsage = root.getMemoryUsage();
+        const memStr = memUsage.toFixed(1).padStart(5, ' ');
+        text = `mem  ${memStr}mb`;
+      } else {
+        text = `mem    N/A`;
+      }
       
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
