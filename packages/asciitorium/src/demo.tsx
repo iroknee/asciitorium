@@ -26,19 +26,16 @@ const app = (
     <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
     <CelticBorder corner="bottomRight" fixed x={appWidth - 8} y={appHeight - 8} />
 
-    <Text value="" align="center" height={2} comment="vertical spacing" />
-    <AsciiArt content={titleArt} align="center" />
+    <AsciiArt content={titleArt} align="center" gap={2} />
     <HorizontalLine length={48} align="center" />
     <Text value="a ui framework for cli and web" align="top" height={5} />
 
-    <Box width={appWidth - 21} height={3} align="center" layout="horizontal">
+    <Box align="center" layout="horizontal" gap={3}>
       <Text value="Text Input:" align="center" />
       <TextInput width={30} value={helloWorld} />
     </Box>
 
-    <Text value="" align="top" height={3} comment="vertical spacing" />
-    <Text value={helloWorld} width={appWidth - 24} align="center" />
-    <Text value="" align="top" height={3} comment="vertical spacing" />
+    <Text value={helloWorld} width={appWidth - 24} align="center" gap={3} />
 
     <PerfMonitor align="center" time memory fps cpu />
   </App>

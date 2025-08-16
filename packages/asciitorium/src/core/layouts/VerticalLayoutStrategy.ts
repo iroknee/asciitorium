@@ -41,7 +41,7 @@ export class VerticalLayoutStrategy implements LayoutStrategy {
       child.x = borderPad + x;
       child.y = currentY;
 
-      currentY += child.height;
+      currentY += child.height + child.gap;
     }
   }
 }

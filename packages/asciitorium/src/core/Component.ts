@@ -7,8 +7,8 @@ export interface ComponentProps {
   label?: string;
   comment?: string;        // Comment to describe the component's purpose.  This isn't used for anything yet.
   showLabel?: boolean;     // Whether to show the label or not
-  width: number;           // Width of the component
-  height: number;          // Height of the component
+  width?: number;          // Width of the component
+  height?: number;         // Height of the component
   border?: boolean;        // Whether to show a border around the component
   fill?: string;           // Fill character for the component
   align?: Alignment;       // Alignment of the component
@@ -17,6 +17,7 @@ export interface ComponentProps {
   x?: number;
   y?: number;
   z?: number;
+  gap?: number;            // Space after this component in layout
   children?: Component[];  // Child components
   layout?: LayoutType;     // Layout strategy to use for children
   layoutOptions?: LayoutOptions; // Configuration for the layout strategy
@@ -35,6 +36,7 @@ export abstract class Component {
   public x = 0;
   public y = 0;
   public z = 0;
+  public gap: number = 0;
 
   public focusable: boolean = false;
   public hasFocus: boolean = false;
@@ -51,11 +53,12 @@ export abstract class Component {
   private layoutStrategy?: any;
 
   constructor(props: ComponentProps) {
-    if (props.width < 1) throw new Error('Component width must be > 0');
-    if (props.height < 1) throw new Error('Component height must be > 0');
+    // Default dimensions if not provided
+    this.width = props.width ?? 1;
+    this.height = props.height ?? 1;
 
-    this.width = props.width;
-    this.height = props.height;
+    if (this.width < 1) throw new Error('Component width must be > 0');
+    if (this.height < 1) throw new Error('Component height must be > 0');
     this.label = props.label;
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
@@ -66,6 +69,7 @@ export abstract class Component {
     this.x = props.x ?? 0;
     this.y = props.y ?? 0;
     this.z = props.z ?? 0;
+    this.gap = props.gap ?? 0;
     this.buffer = [];
 
     // Setup children and layout

@@ -39,7 +39,7 @@ export class HorizontalLayoutStrategy implements LayoutStrategy {
       child.x = currentX;
       child.y = borderPad + y;
 
-      currentX += child.width;
+      currentX += child.width + child.gap;
     }
   }
 }
