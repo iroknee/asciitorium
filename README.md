@@ -14,6 +14,11 @@ A TypeScript-based UI framework for building retro-style terminal interfaces.
 It uses `<pre>` blocks and styled spans in the browser, and a terminal renderer for cli apps.  
 Includes a custom JSX runtime so you can write components similar to React.
 
+**Installation:**
+```bash
+npm install asciitorium
+```
+
 Key features:
 
 - Works in both Web (DOM) and CLI (Terminal)
@@ -64,19 +69,20 @@ npm install
 ### Build all packages
 
 ```bash
-npm -r build
+npm run build --workspaces
 ```
 
-### Run a package in dev mode
+### Work on a specific package
 
 ```bash
-npm --filter <package-name> dev
-```
+# Build only the core library
+npm run build --workspace=asciitorium
 
-Example:
+# Run the asciitorium demo in web mode
+cd packages/asciitorium && npm run web
 
-```bash
-npm --filter asciitorium dev
+# Run the asciitorium demo in CLI mode
+cd packages/asciitorium && npm run cli
 ```
 
 ---

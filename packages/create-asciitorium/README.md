@@ -1,6 +1,6 @@
 # create-asciitorium
 
-`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](https://github.com/iroknee/asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building ASCII art-based web applications with minimal setup.
+`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](../asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building ASCII art-based web applications with minimal setup.
 
 ## Features
 
@@ -23,18 +23,39 @@ npm create asciitorium@latest my-app
 
 This will create a new directory with the specified project name, scaffold the project, and install dependencies.
 
-## Project Structure
+### Next Steps
+
+After creating your project:
+
+```bash
+cd my-app
+
+# Start development server (web mode)
+npm run web
+
+# Run in terminal mode
+npm run cli
+
+# Build for production
+npm run build
+```
+
+## Generated Project Structure
 
 A typical generated project will look like:
 
 ```
 my-asciitorium-app/
   ├── public/
+  │   ├── art/              # ASCII art assets
+  │   └── fonts/            # Custom fonts
   ├── src/
-  ├── index.html
-  ├── package.json
-  ├── tsconfig.json
-  └── vite.config.ts
+  │   ├── main.tsx          # Main application entry
+  │   └── vite-env.d.ts     # TypeScript definitions
+  ├── index.html            # HTML template
+  ├── package.json          # Dependencies and scripts
+  ├── tsconfig.json         # TypeScript configuration
+  └── vite.config.ts        # Vite build configuration
 ```
 
 ## Requirements
@@ -44,7 +65,7 @@ my-asciitorium-app/
 
 ## Learn More
 
-- [Asciitorium Documentation](https://github.com/iroknee/asciitorium)
+- [Asciitorium Documentation](../asciitorium)
 
 ## License
 

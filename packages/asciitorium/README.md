@@ -3,20 +3,78 @@
 **asciitorium** is a UI framework for building retro terminal interfaces that fully function in the browser as well as the terminal.  
 Why? I am still not sure 🙂. But it started with wanting to create a text-based game reminiscent of **Wizardry I**, **Zork**, and **Bard's Tale** from the 80s. I realized it would be fun to create a UI framework while I was at it — given my experience with React, here is that first pass.
 
-## So what can it be used for?
+## Installation
+
+```bash
+npm install asciitorium
+```
+
+## Quick Start
+
+### Basic Example
+
+```tsx
+import { Asciitorium, Text, TextInput, State } from 'asciitorium';
+import { bootstrap } from 'asciitorium/bootstrap';
+
+const message = new State('Hello, World!');
+
+const app = (
+  <Asciitorium width={50} height={10}>
+    <Text value="Enter your message:" />
+    <TextInput value={message} width={40} />
+    <Text value={message} />
+  </Asciitorium>
+);
+
+await bootstrap(app);
+```
+
+### JSX Configuration
+
+Add to your `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "asciitorium/jsx"
+  }
+}
+```
+
+## Use Cases
 
 - Terminal-style web apps
 - ASCII dashboards
 - Text-driven games
 - BBS-inspired experiments
+- Developer tools with retro aesthetics
 
 ## Features
 
 - Support for TypeScript
 - Works in both **Web** and **CLI** (DOM or stdout)
-- Built-in components
+- Built-in components (`Text`, `Button`, `ListBox`, `ProgressBar`, etc.)
 - Reactive `State<T>` system for live updates
 - Custom JSX runtime (like React, minus the baggage)
+
+## Built-in Components
+
+- **`Text`** - Display static or dynamic text
+- **`Button`** - Interactive buttons with click handlers
+- **`TextInput`** - Text input fields
+- **`ListBox`** - Selectable lists with keyboard navigation
+- **`ProgressBar`** - Visual progress indicators
+- **`Tabs`** - Tabbed interface containers
+- **`HorizontalLine`** - Decorative dividers
+- **`AsciiArt`** - Display ASCII art from files
+- **`CelticBorder`** - Decorative borders
+
+### Layout Components
+
+- **`HorizontalLayout`** - Arrange components horizontally
+- **`VerticalLayout`** - Arrange components vertically (default)
 
 ---
 
@@ -91,9 +149,22 @@ npm run art:fonts
 
 ```txt
 asciitorium/
-├── src/              # Core source code
-├── public/           # Static assets (images, favicon, ascii art)
-├── scripts/          # Helper scripts (e.g., ASCII art generator)
+├── src/                    # Core source code
+│   ├── components/         # UI components (Text, Button, etc.)
+│   ├── core/              # Core framework code
+│   │   ├── layouts/       # Layout components
+│   │   └── renderers/     # DOM and Terminal renderers
+│   ├── jsx/               # Custom JSX runtime
+│   └── demo.tsx           # Demo application
+├── public/                # Static assets
+│   ├── art/               # ASCII art files (.txt)
+│   │   └── asciitorium.txt
+│   ├── fonts/             # Custom fonts (.ttf, .woff, .woff2)
+│   │   ├── PRNumber3.*    # Monospace font files
+│   │   └── PrintChar21.*  # Pixel-style font files
+│   └── images/            # Image assets
+├── scripts/               # Helper scripts
+│   └── generate-art.js    # ASCII art generator
 ├── package.json
 └── README.md
 ```
