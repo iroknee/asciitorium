@@ -1,42 +1,48 @@
-import { VerticalLayout, VerticalLayoutProps } from './layouts/VerticalLayout';
+import { Component, ComponentProps } from './Component';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './renderers/Renderer';
-import { Component } from './Component';
 import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
 
-export class Asciitorium extends VerticalLayout {
+export interface AsciitoriumProps extends ComponentProps {
+  fit?: boolean; // For backwards compatibility with VerticalLayoutProps
+}
+
+export class Asciitorium extends Component {
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
   private fpsCounter: number = 0;
   private totalRenderTime: number = 0;
+  private currentFPS: number = 0;
+  private currentCPU: number = 0;
+  private currentMemory: number = 0;
+  private lastCPUUsage?: any;
 
-  constructor(props: VerticalLayoutProps) {
-    super(props);
+  constructor(props: AsciitoriumProps) {
+    // Set vertical layout as default for Asciitorium, pass through fit option
+    const asciitoriumProps = {
+      ...props,
+      layout: props.layout ?? 'vertical',
+      layoutOptions: { fit: props.fit, ...props.layoutOptions }
+    };
+    
+    super(asciitoriumProps);
 
     this.renderer = getDefaultRenderer();
     this.focus = new FocusManager();
 
-    const list = Array.isArray(props.children)
-      ? props.children
-      : props.children
-        ? [props.children]
-        : [];
-
-    for (const child of list) {
-      super.addChild(child);
-    }
-
     this.focus.reset(this);
     this.render();
 
+    // Initialize performance monitoring
+    this.updatePerformanceMetrics();
+
     // Start FPS and render time reporting
     setInterval(() => {
-      if (this.fpsCounter > 0 && this.renderer instanceof DomRenderer) {
-        //
-      }
+      this.currentFPS = this.fpsCounter;
       this.fpsCounter = 0;
       this.totalRenderTime = 0;
+      this.updatePerformanceMetrics();
     }, 1000);
   }
 
@@ -94,6 +100,57 @@ export class Asciitorium extends VerticalLayout {
     super.removeChild(component);
     this.focus.reset(this);
     this.render();
+  }
+
+  getFPS(): number {
+    return this.currentFPS;
+  }
+
+  getRenderTime(): number {
+    return this.totalRenderTime;
+  }
+
+  getCPUUsage(): number {
+    return this.currentCPU;
+  }
+
+  getMemoryUsage(): number {
+    return this.currentMemory;
+  }
+
+  private updatePerformanceMetrics(): void {
+    // CPU and Memory monitoring - cross-platform
+    if (typeof process !== 'undefined' && process.cpuUsage && process.memoryUsage) {
+      // Node.js environment (CLI)
+      try {
+        const currentUsage = process.cpuUsage(this.lastCPUUsage);
+        const totalUsage = currentUsage.user + currentUsage.system;
+        // Convert microseconds to percentage (approximate)
+        this.currentCPU = Math.min(100, (totalUsage / 10000)); // Rough estimation
+        this.lastCPUUsage = process.cpuUsage();
+
+        const memUsage = process.memoryUsage();
+        this.currentMemory = memUsage.heapUsed / (1024 * 1024); // Convert to MB
+      } catch (e) {
+        this.currentCPU = 0;
+        this.currentMemory = 0;
+      }
+    } else if (typeof performance !== 'undefined' && (performance as any).memory) {
+      // Browser environment with memory API
+      try {
+        const memInfo = (performance as any).memory;
+        this.currentMemory = memInfo.usedJSHeapSize / (1024 * 1024); // Convert to MB
+        // No direct CPU access in browser, estimate from render performance
+        this.currentCPU = Math.min(100, Math.max(0, this.totalRenderTime * 6)); // Rough estimation
+      } catch (e) {
+        this.currentCPU = 0;
+        this.currentMemory = 0;
+      }
+    } else {
+      // Fallback - no metrics available
+      this.currentCPU = 0;
+      this.currentMemory = 0;
+    }
   }
 
   handleKey(key: string): void {

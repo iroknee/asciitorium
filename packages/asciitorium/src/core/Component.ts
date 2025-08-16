@@ -1,5 +1,7 @@
 import { Alignment } from './types';
 import type { State } from './State';
+import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/LayoutStrategy';
+import './layouts'; // Register layout strategies
 
 export interface ComponentProps {
   label?: string;
@@ -15,6 +17,9 @@ export interface ComponentProps {
   x?: number;
   y?: number;
   z?: number;
+  children?: Component[];  // Child components
+  layout?: LayoutType;     // Layout strategy to use for children
+  layoutOptions?: LayoutOptions; // Configuration for the layout strategy
 }
 
 export abstract class Component {
@@ -39,6 +44,12 @@ export abstract class Component {
   private unbindFns: (() => void)[] = [];
   public parent?: Component;
 
+  // Children support
+  protected children: Component[] = [];
+  protected layoutType: LayoutType;
+  protected layoutOptions?: LayoutOptions;
+  private layoutStrategy?: any;
+
   constructor(props: ComponentProps) {
     if (props.width < 1) throw new Error('Component width must be > 0');
     if (props.height < 1) throw new Error('Component height must be > 0');
@@ -56,10 +67,68 @@ export abstract class Component {
     this.y = props.y ?? 0;
     this.z = props.z ?? 0;
     this.buffer = [];
+
+    // Setup children and layout
+    this.layoutType = props.layout ?? 'horizontal'; // Default to horizontal layout
+    this.layoutOptions = props.layoutOptions;
+    
+    // Store children for later addition (to avoid calling addChild during construction)
+    if (props.children) {
+      const childList = Array.isArray(props.children) ? props.children : [props.children];
+      for (const child of childList) {
+        child.setParent(this);
+        this.children.push(child);
+      }
+      this.recalculateLayout();
+    }
   }
 
   setParent(parent: Component) {
     this.parent = parent;
+  }
+
+  // Child management methods
+  public addChild(child: Component): void {
+    child.setParent(this);
+    this.children.push(child);
+    this.recalculateLayout();
+  }
+
+  public removeChild(child: Component): void {
+    const index = this.children.indexOf(child);
+    if (index !== -1) {
+      this.children.splice(index, 1);
+      this.recalculateLayout();
+    }
+  }
+
+  public getChildren(): Component[] {
+    return this.children;
+  }
+
+  public getAllDescendants(): Component[] {
+    const result: Component[] = [];
+
+    for (const child of this.children) {
+      result.push(child);
+      const grandChildren = child.getAllDescendants();
+      result.push(...grandChildren);
+    }
+
+    return result;
+  }
+
+  protected invalidateLayout(): void {
+    this.layoutStrategy = undefined;
+  }
+
+  protected recalculateLayout(): void {
+    if (this.children.length === 0) return;
+    
+    if (!this.layoutStrategy) {
+      this.layoutStrategy = LayoutRegistry.create(this.layoutType, this.layoutOptions);
+    }
+    this.layoutStrategy.layout(this, this.children);
   }
 
   bind<T>(state: State<T>, apply: (val: T) => void): void {
@@ -81,6 +150,9 @@ export abstract class Component {
   }
 
   draw(): string[][] {
+    // Recalculate layout for children
+    this.recalculateLayout();
+    
     // Create buffer and fill only if not transparent
     this.buffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () =>
@@ -118,6 +190,24 @@ export abstract class Component {
       const start = 1;
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
         drawChar(i + start, 0, label[i]);
+      }
+    }
+
+    // Render children sorted by z-index
+    const sorted = [...this.children].sort((a, b) => a.z - b.z);
+    for (const child of sorted) {
+      const buf = child.draw();
+      for (let j = 0; j < buf.length; j++) {
+        for (let i = 0; i < buf[j].length; i++) {
+          const px = child.x + i;
+          const py = child.y + j;
+          if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
+            const char = buf[j][i];
+            if (char !== child.transparentChar) {
+              this.buffer[py][px] = char;
+            }
+          }
+        }
       }
     }
 

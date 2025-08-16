@@ -1,9 +1,10 @@
 import { AsciiArt } from './components/AsciiArt';
+import { Box } from './components/Box';
+import { PerfMonitor } from './components/PerfMonitor';
 import { Text } from './components/Text';
 import { HorizontalLine } from './components/HorizontalLine';
 import { Asciitorium } from './core/Asciitorium';
 import { State } from './core/State';
-import { HorizontalLayout } from './core/layouts/HorizontalLayout';
 import { bootstrap } from './core/bootstrap';
 import { loadAsciiAsset } from './core/utils';
 import { ProgressBar } from './components/ProgressBar';
@@ -11,7 +12,7 @@ import { TextInput } from './components/TextInput';
 import { CelticBorder } from './components/CelticBorder';
 
 const appWidth = 64;
-const appHeight = 26;
+const appHeight = 30;
 
 const loading = new State(0);
 const helloWorld = new State('Hello, World!');
@@ -25,29 +26,25 @@ const app = (
     <CelticBorder corner="topLeft" fixed x={0} y={0} />
     <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
     <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
-    <CelticBorder
-      corner="bottomRight"
-      fixed
-      x={appWidth - 8}
-      y={appHeight - 8}
-    />
 
     <Text value="" align="center" height={2} comment="vertical spacing" />
     <AsciiArt content={titleArt} align="center" />
     <HorizontalLine length={48} align="center" />
     <Text value="a ui framework for cli and web" align="top" height={5} />
 
-    <HorizontalLayout width={appWidth - 22} height={3} align="center">
+    <Box width={appWidth - 21} height={3} align="center" layout="horizontal">
       <Text value="Text Input:" align="center" />
       <TextInput width={30} value={helloWorld} />
-    </HorizontalLayout>
+    </Box>
 
     <Text value={helloWorld} width={appWidth - 24} align="center" height={4} />
 
-    <HorizontalLayout width={appWidth - 24} height={4} align="center">
+    <Box width={appWidth - 24} height={4} align="center" layout="horizontal">
       <Text value="loading:" align="center" />
       <ProgressBar width={30} percent={loading} align="center" showPercentage />
-    </HorizontalLayout>
+    </Box>
+
+    <PerfMonitor align="right" time memory fps cpu />
   </Asciitorium>
 );
 

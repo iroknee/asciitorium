@@ -7,7 +7,8 @@
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
     "release": "npm run publish --workspaces",
-    "test:lib": "scripts/pack-lib-test.sh",
+    "demo": "cd packages/asciitorium && npm run web",
+    "test:pack": "scripts/pack-lib-test.sh",
     "test:create": "scripts/create-asciitorium-test.sh",
     "publish:lib": "npm run build --workspace=asciitorium && cd packages/asciitorium && npm publish",
     "publish:create": "npm run build --workspace=create-asciitorium && cd packages/create-asciitorium && npm publish"

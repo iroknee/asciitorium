@@ -1,5 +1,4 @@
 import { Component } from './Component';
-import { Layout } from './layouts/Layout';
 
 export class FocusManager {
   private contextStack: Component[][] = [];
@@ -62,8 +61,8 @@ export class FocusManager {
     return handled ?? false;
   }
 
-  reset(layout: Layout) {
-    const focusables = this.getFocusableDescendants(layout).filter(
+  reset(component: Component) {
+    const focusables = this.getFocusableDescendants(component).filter(
       (c) => c.focusable
     );
     this.contextStack = [focusables];
@@ -71,7 +70,7 @@ export class FocusManager {
     this.setFocus(0);
   }
 
-  getFocusableDescendants(parent: Layout): Component[] {
+  getFocusableDescendants(parent: Component): Component[] {
     const focusables: Component[] = [];
 
     for (const child of parent.getChildren()) {
@@ -79,9 +78,8 @@ export class FocusManager {
         focusables.push(child);
       }
 
-      if (child instanceof Layout) {
-        focusables.push(...this.getFocusableDescendants(child));
-      }
+      // Now all components can have children, so recursively check all
+      focusables.push(...this.getFocusableDescendants(child));
     }
 
     return focusables;
