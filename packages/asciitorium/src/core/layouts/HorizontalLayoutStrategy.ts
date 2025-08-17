@@ -1,6 +1,6 @@
 import type { Component } from '../Component';
 import { LayoutStrategy, LayoutOptions } from './LayoutStrategy';
-import { resolveAlignment } from '../utils';
+import type { Alignment } from '../types';
 
 export class HorizontalLayoutStrategy implements LayoutStrategy {
   private fit: boolean;
@@ -28,7 +28,7 @@ export class HorizontalLayoutStrategy implements LayoutStrategy {
         child.height = innerHeight;
       }
 
-      const { y } = resolveAlignment(
+      const { y } = this.resolveAlignment(
         child.align,
         child.width,
         innerHeight,
@@ -41,5 +41,51 @@ export class HorizontalLayoutStrategy implements LayoutStrategy {
 
       currentX += child.width + child.gap;
     }
+  }
+
+  private resolveAlignment(
+    align: Alignment | undefined,
+    _parentWidth: number,
+    parentHeight: number,
+    _childWidth: number,
+    childHeight: number
+  ): { x: number; y: number } {
+    let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
+
+    if (typeof align === 'string') {
+      // For horizontal layout, alignment affects vertical positioning
+      switch (align) {
+        case 'top-left':
+        case 'top':
+        case 'top-right':
+          vAlign = 'top';
+          break;
+        case 'left':
+        case 'center':
+        case 'right':
+          vAlign = 'middle';
+          break;
+        case 'bottom-left':
+        case 'bottom':
+        case 'bottom-right':
+          vAlign = 'bottom';
+          break;
+        default:
+          vAlign = 'top';
+          break;
+      }
+    } else if (typeof align === 'object' && align !== null) {
+      vAlign = align.y ?? 'top';
+    }
+
+    const padY = parentHeight - childHeight;
+
+    let y: number;
+    if (typeof vAlign === 'number') y = vAlign;
+    else if (vAlign === 'middle') y = Math.floor(padY / 2);
+    else if (vAlign === 'bottom') y = padY;
+    else y = 0;
+
+    return { x: 0, y };
   }
 }

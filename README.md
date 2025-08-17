@@ -98,6 +98,12 @@ package.json           # Root scripts and workspace configuration
 
 ---
 
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and migration guides.
+
+---
+
 ## 📄 License
 
 This repository is licensed under the MIT License. See the [LICENSE](packages/asciitorium/LICENSE) file for details.

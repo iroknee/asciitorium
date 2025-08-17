@@ -170,6 +170,12 @@ asciitorium/
 
 ---
 
+## 📝 Changelog
+
+See [CHANGELOG.md](../../CHANGELOG.md) for detailed release notes and migration guides.
+
+---
+
 ## 📜 License
 
 MIT

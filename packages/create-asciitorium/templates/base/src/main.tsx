@@ -1,22 +1,20 @@
 /** Single entry that runs on Web (DOM) and CLI (Terminal) */
 import {
+  App,
+  Box,
   Text,
   State,
   AsciiArt,
   TextInput,
-  Asciitorium,
-  ProgressBar,
-  CelticBorder,
+  PerfMonitor,
   HorizontalLine,
-  HorizontalLayout,
-  loadAsciiAsset,
-  start,
+  loadAsciiAsset
 } from 'asciitorium';
 
-const appWidth = 64;
-const appHeight = 26;
 
-const loading = new State(0);
+const appWidth = 64;
+const appHeight = 30;
+
 const helloWorld = new State('Hello, World!');
 
 // Load the title ASCII art
@@ -24,43 +22,21 @@ const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 
 // Construct the app
 const app = (
-  <Asciitorium width={appWidth} height={appHeight}>
-    <CelticBorder corner="topLeft" fixed x={0} y={0} />
-    <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
-    <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
-    <CelticBorder
-      corner="bottomRight"
-      fixed
-      x={appWidth - 8}
-      y={appHeight - 8}
-    />
+  <App width={appWidth} height={appHeight} border>
 
-    <Text value="" align="center" height={2} comment="vertical spacing" />
-    <AsciiArt content={titleArt} align="center" />
+    <AsciiArt content={titleArt} align="center" label="Asciitorium" />
     <HorizontalLine length={48} align="center" />
-    <Text value="a ui framework for cli and web" align="top" height={5} />
+    <Text value="a ui framework for cli and web" align="top" gap={3} />
 
-    <HorizontalLayout width={appWidth - 22} height={3} align="center">
+    <Box align="center" layout="horizontal" gap={3} >
       <Text value="Text Input:" align="center" />
       <TextInput width={30} value={helloWorld} />
-    </HorizontalLayout>
+    </Box>
 
-    <Text value={helloWorld} width={appWidth - 24} align="center" height={4} />
+    <Text value={helloWorld} width={appWidth - 24} align="center" gap={3} />
 
-    <HorizontalLayout width={appWidth - 24} height={4} align="center">
-      <Text value="loading:" align="center" />
-      <ProgressBar width={30} percent={loading} align="center" showPercentage />
-    </HorizontalLayout>
-  </Asciitorium>
+    <PerfMonitor align="center" time memory fps cpu />
+  </App>
 );
 
-await start(app);
-
-// --- Demo: Set progress to a random value every 10s ---
-const randInt = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
-setInterval(() => {
-  const newLoadingvalue = randInt(0, 100);
-  loading.value = newLoadingvalue;
-}, 5_000);
+await app.start();

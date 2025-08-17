@@ -24,7 +24,7 @@ const app = (
     <HorizontalLine length={48} align="center" />
     <Text value="a ui framework for cli and web" align="top" gap={3} />
 
-    <Box align="center" layout="horizontal" gap={3} border>
+    <Box align="center" layout="horizontal" gap={3} >
       <Text value="Text Input:" align="center" />
       <TextInput width={30} value={helloWorld} />
     </Box>
