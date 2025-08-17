@@ -5,10 +5,8 @@ import { Text } from './components/Text';
 import { HorizontalLine } from './components/HorizontalLine';
 import { App } from './core/App';
 import { State } from './core/State';
-import { start } from './core/bootstrap';
 import { loadAsciiAsset } from './core/utils';
 import { TextInput } from './components/TextInput';
-import { CelticBorder } from './components/CelticBorder';
 
 const appWidth = 64;
 const appHeight = 30;
@@ -20,17 +18,13 @@ const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 
 // Construct the app
 const app = (
-  <App width={appWidth} height={appHeight}>
-    <CelticBorder corner="topLeft" fixed x={0} y={0} />
-    <CelticBorder corner="topRight" fixed x={appWidth - 8} y={0} />
-    <CelticBorder corner="bottomLeft" fixed x={0} y={appHeight - 8} />
-    <CelticBorder corner="bottomRight" fixed x={appWidth - 8} y={appHeight - 8} />
+  <App width={appWidth} height={appHeight} border>
 
-    <AsciiArt content={titleArt} align="center" gap={2} />
+    <AsciiArt content={titleArt} align="center" label="Asciitorium" />
     <HorizontalLine length={48} align="center" />
-    <Text value="a ui framework for cli and web" align="top" height={5} />
+    <Text value="a ui framework for cli and web" align="top" gap={3} />
 
-    <Box align="center" layout="horizontal" gap={3}>
+    <Box align="center" layout="horizontal" gap={3} border>
       <Text value="Text Input:" align="center" />
       <TextInput width={30} value={helloWorld} />
     </Box>
@@ -41,13 +35,4 @@ const app = (
   </App>
 );
 
-await start(app);
-
-// --- Demo: Set progress to a random value every 10s ---
-const randInt = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
-setInterval(() => {
-  const newLoadingvalue = randInt(0, 100);
-  loading.value = newLoadingvalue;
-}, 5_000);
+await app.start();

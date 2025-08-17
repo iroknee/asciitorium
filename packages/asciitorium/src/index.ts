@@ -1,6 +1,5 @@
 export * from './core/types';
 export * from './core/utils';
-export * from './core/bootstrap';
 export * from './core/App';
 export * from './core/Component';
 export * from './core/State';

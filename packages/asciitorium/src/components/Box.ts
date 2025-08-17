@@ -12,11 +12,16 @@ export class Box extends Component {
     // Calculate auto-dimensions from children if not provided
     const autoWidth = options.width ?? Box.calculateAutoWidth(options.children, options.layout);
     const autoHeight = options.height ?? Box.calculateAutoHeight(options.children, options.layout);
+    
+    // Account for border if present (add 2 for left+right or top+bottom)
+    const borderAdjustment = options.border ? 2 : 0;
+    const finalWidth = options.width ?? (autoWidth + borderAdjustment);
+    const finalHeight = options.height ?? (autoHeight + borderAdjustment);
 
     super({
       ...options,
-      width: autoWidth,
-      height: autoHeight,
+      width: finalWidth,
+      height: finalHeight,
       layout: options.layout ?? 'vertical', // Default to vertical layout
     });
   }

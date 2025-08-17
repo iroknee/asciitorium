@@ -3,6 +3,8 @@ import { FocusManager } from './FocusManager';
 import type { Renderer } from './renderers/Renderer';
 import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
+import { setRenderCallback } from './RenderScheduler';
+import { setupKeyboardHandling, validateWebEnvironment } from './utils';
 
 export interface AppProps extends ComponentProps {
   fit?: boolean; 
@@ -171,6 +173,12 @@ export class App extends Component {
     if (this.focus.handleKey(key)) {
       this.render();
     }
+  }
+
+  async start(): Promise<void> {
+    validateWebEnvironment();
+    await setupKeyboardHandling((key) => this.handleKey(key));
+    setRenderCallback(() => this.render());
   }
 }
 
