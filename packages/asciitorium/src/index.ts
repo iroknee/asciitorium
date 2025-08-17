@@ -3,7 +3,6 @@ export * from './core/utils';
 export * from './core/App';
 export * from './core/Component';
 export * from './core/State';
-import './core/layouts'; // Initialize layout strategies
 export * from './components/AsciiArt';
 export * from './components/Box';
 export * from './components/Button';

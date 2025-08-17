@@ -1,4 +1,7 @@
 import type { Component } from '../Component';
+import { HorizontalLayoutStrategy } from './HorizontalLayoutStrategy';
+import { VerticalLayoutStrategy } from './VerticalLayoutStrategy';
+import { AbsoluteLayoutStrategy } from './AbsoluteLayoutStrategy';
 
 /**
  * Interface for layout strategies that handle child component positioning
@@ -29,6 +32,13 @@ export interface LayoutOptions {
  */
 export class LayoutRegistry {
   private static strategies = new Map<LayoutType, new (options?: LayoutOptions) => LayoutStrategy>();
+  
+  // Static initialization - register all built-in layout strategies
+  static {
+    this.strategies.set('horizontal', HorizontalLayoutStrategy);
+    this.strategies.set('vertical', VerticalLayoutStrategy);
+    this.strategies.set('absolute', AbsoluteLayoutStrategy);
+  }
 
   static register(type: LayoutType, strategyClass: new (options?: LayoutOptions) => LayoutStrategy): void {
     this.strategies.set(type, strategyClass);

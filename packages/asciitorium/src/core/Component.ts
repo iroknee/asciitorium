@@ -1,7 +1,6 @@
 import { Alignment } from './types';
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/LayoutStrategy';
-import './layouts'; // Register layout strategies
 
 export interface ComponentProps {
   label?: string;
