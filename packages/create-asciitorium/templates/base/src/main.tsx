@@ -7,10 +7,10 @@ import {
   AsciiArt,
   TextInput,
   PerfMonitor,
+  CelticBorder,
   HorizontalLine,
   loadAsciiAsset
 } from 'asciitorium';
-
 
 const appWidth = 64;
 const appHeight = 30;
@@ -22,20 +22,22 @@ const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 
 // Construct the app
 const app = (
-  <App width={appWidth} height={appHeight} border>
+  <App width={appWidth} height={appHeight} layout="relaxed">
+    <CelticBorder edge="top-left" align="top-left" />
+    <CelticBorder edge="top-right" align="top-right" />
+    <CelticBorder edge="bottom-left" align="bottom-left" />
+    <CelticBorder edge="bottom-right" align="bottom-right" />
 
-    <AsciiArt content={titleArt} align="center" label="Asciitorium" />
-    <HorizontalLine length={48} align="center" />
-    <Text value="a ui framework for cli and web" align="top" gap={3} />
-
-    <Box align="center" layout="horizontal" gap={3} >
-      <Text value="Text Input:" align="center" />
-      <TextInput width={30} value={helloWorld} />
+    <Box align="top" layout="vertical" gap={2}>
+      <AsciiArt content={titleArt} align="top" />
+      <HorizontalLine length={48} align="center" />
+      <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Box>
 
-    <Text value={helloWorld} width={appWidth - 24} align="center" gap={3} />
+    <TextInput label="TextInput:" width={30} value={helloWorld} gap={2} align="center" />
 
-    <PerfMonitor align="center" time memory fps cpu />
+    <Text value={helloWorld} width={appWidth - 24} align="bottom" gap={8} />
+    <PerfMonitor align="bottom-right" gap={1} time memory fps cpu />
   </App>
 );
 

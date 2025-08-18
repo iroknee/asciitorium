@@ -26,7 +26,9 @@ rm -rf "$OUT_ABS"
 mkdir -p "$OUT_ABS"
 
 # Pack the package to a tarball in OUT_ABS (absolute path!)
-npm pack --pack-destination="$OUT_ABS" --prefix="$PKG_DIR"
+cd "$PKG_DIR"
+npm pack --pack-destination="$OUT_ABS"
+cd "$REPO_ROOT"
 
 # Find newest tarball (handles version changes)
 TARBALL_PATH="$(ls -t "$OUT_ABS"/"$PKG_NAME"-*.tgz | head -n 1)"
@@ -36,9 +38,18 @@ if [[ ! -f "$TARBALL_PATH" ]]; then
 fi
 echo "Tarball: $TARBALL_PATH"
 
-# Make a scratch app
-SCRATCH_DIR="$(mktemp -d ./tmp/${PKG_NAME}-test-XXXXXX)"
+# Make a scratch app with consistent directory name
+SCRATCH_DIR="./tmp/${PKG_NAME}-test"
 echo "Scratch dir: $SCRATCH_DIR"
+
+# Remove existing scratch directory if it exists
+if [[ -d "$SCRATCH_DIR" ]]; then
+  echo "Removing existing scratch directory: $SCRATCH_DIR"
+  rm -rf "$SCRATCH_DIR"
+fi
+
+# Create fresh scratch directory
+mkdir -p "$SCRATCH_DIR"
 cd "$SCRATCH_DIR"
 
 # Init and install tarball (npm to avoid SIGPIPE)
