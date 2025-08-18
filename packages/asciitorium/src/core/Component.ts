@@ -1,25 +1,29 @@
 import { Alignment } from './types';
 import type { State } from './State';
-import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/LayoutStrategy';
+import {
+  LayoutRegistry,
+  LayoutType,
+  LayoutOptions,
+} from './layouts/Layout';
 
 export interface ComponentProps {
   label?: string;
-  comment?: string;        // Comment to describe the component's purpose.  This isn't used for anything yet.
-  showLabel?: boolean;     // Whether to show the label or not
-  width?: number;          // Width of the component
-  height?: number;         // Height of the component
-  border?: boolean;        // Whether to show a border around the component
-  fill?: string;           // Fill character for the component
-  align?: Alignment;       // Alignment of the component
+  comment?: string; // Comment to describe the component's purpose.  This isn't used for anything yet.
+  showLabel?: boolean; // Whether to show the label or not
+  width?: number; // Width of the component
+  height?: number; // Height of the component
+  border?: boolean; // Whether to show a border around the component
+  fill?: string; // Fill character for the component
+  align?: Alignment; // Alignment of the component
   bind?: State<any> | ((state: State<any>) => void);
   fixed?: boolean;
   x?: number;
   y?: number;
   z?: number;
-  gap?: number;            // Space after this component in layout
-  children?: Component[];  // Child components
-  layout?: LayoutType;     // Layout strategy to use for children
-  layoutOptions?: LayoutOptions; // Configuration for the layout strategy
+  gap?: number; // Space after this component in layout
+  children?: Component[]; // Child components
+  layout?: LayoutType; // Layout to use for children
+  layoutOptions?: LayoutOptions; // Configuration for the layout
 }
 
 export abstract class Component {
@@ -49,7 +53,7 @@ export abstract class Component {
   protected children: Component[] = [];
   protected layoutType: LayoutType;
   protected layoutOptions?: LayoutOptions;
-  private layoutStrategy?: any;
+  private layout?: any;
 
   constructor(props: ComponentProps) {
     // Default dimensions if not provided
@@ -74,10 +78,12 @@ export abstract class Component {
     // Setup children and layout
     this.layoutType = props.layout ?? 'horizontal'; // Default to horizontal layout
     this.layoutOptions = props.layoutOptions;
-    
+
     // Store children for later addition (to avoid calling addChild during construction)
     if (props.children) {
-      const childList = Array.isArray(props.children) ? props.children : [props.children];
+      const childList = Array.isArray(props.children)
+        ? props.children
+        : [props.children];
       for (const child of childList) {
         child.setParent(this);
         this.children.push(child);
@@ -122,16 +128,19 @@ export abstract class Component {
   }
 
   protected invalidateLayout(): void {
-    this.layoutStrategy = undefined;
+    this.layout = undefined;
   }
 
   protected recalculateLayout(): void {
     if (this.children.length === 0) return;
-    
-    if (!this.layoutStrategy) {
-      this.layoutStrategy = LayoutRegistry.create(this.layoutType, this.layoutOptions);
+
+    if (!this.layout) {
+      this.layout = LayoutRegistry.create(
+        this.layoutType,
+        this.layoutOptions
+      );
     }
-    this.layoutStrategy.layout(this, this.children);
+    this.layout.layout(this, this.children);
   }
 
   bind<T>(state: State<T>, apply: (val: T) => void): void {
@@ -155,7 +164,7 @@ export abstract class Component {
   draw(): string[][] {
     // Recalculate layout for children
     this.recalculateLayout();
-    
+
     // Create buffer and fill only if not transparent
     this.buffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () =>
@@ -186,6 +195,11 @@ export abstract class Component {
         drawChar(0, y, '│');
         drawChar(w - 1, y, '│');
       }
+
+      if (this.hasFocus) {
+          drawChar(0, 1, '◆');
+      }
+
     }
 
     if (this.label && this.showLabel) {

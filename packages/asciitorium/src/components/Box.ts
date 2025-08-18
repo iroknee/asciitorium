@@ -1,5 +1,5 @@
 import { Component, ComponentProps } from '../core/Component';
-import { LayoutType } from '../core/layouts/LayoutStrategy';
+import { LayoutType } from '../core/layouts/Layout';
 
 export interface BoxOptions extends Omit<ComponentProps, 'width' | 'height'> {
   layout?: LayoutType;
@@ -10,13 +10,16 @@ export interface BoxOptions extends Omit<ComponentProps, 'width' | 'height'> {
 export class Box extends Component {
   constructor(options: BoxOptions) {
     // Calculate auto-dimensions from children if not provided
-    const autoWidth = options.width ?? Box.calculateAutoWidth(options.children, options.layout);
-    const autoHeight = options.height ?? Box.calculateAutoHeight(options.children, options.layout);
-    
+    const autoWidth =
+      options.width ?? Box.calculateAutoWidth(options.children, options.layout);
+    const autoHeight =
+      options.height ??
+      Box.calculateAutoHeight(options.children, options.layout);
+
     // Account for border if present (add 2 for left+right or top+bottom)
     const borderAdjustment = options.border ? 2 : 0;
-    const finalWidth = options.width ?? (autoWidth + borderAdjustment);
-    const finalHeight = options.height ?? (autoHeight + borderAdjustment);
+    const finalWidth = options.width ?? autoWidth + borderAdjustment;
+    const finalHeight = options.height ?? autoHeight + borderAdjustment;
 
     super({
       ...options,
@@ -26,7 +29,10 @@ export class Box extends Component {
     });
   }
 
-  private static calculateAutoWidth(children?: Component[], layout?: LayoutType): number {
+  private static calculateAutoWidth(
+    children?: Component[],
+    layout?: LayoutType
+  ): number {
     if (!children || children.length === 0) return 1;
 
     if (layout === 'horizontal') {
@@ -34,11 +40,14 @@ export class Box extends Component {
       return children.reduce((sum, child) => sum + child.width + child.gap, 0);
     } else {
       // Max width for vertical layout
-      return Math.max(...children.map(child => child.width));
+      return Math.max(...children.map((child) => child.width));
     }
   }
 
-  private static calculateAutoHeight(children?: Component[], layout?: LayoutType): number {
+  private static calculateAutoHeight(
+    children?: Component[],
+    layout?: LayoutType
+  ): number {
     if (!children || children.length === 0) return 1;
 
     if (layout === 'vertical') {
@@ -46,7 +55,7 @@ export class Box extends Component {
       return children.reduce((sum, child) => sum + child.height + child.gap, 0);
     } else {
       // Max height for horizontal layout
-      return Math.max(...children.map(child => child.height));
+      return Math.max(...children.map((child) => child.height));
     }
   }
 

@@ -1,8 +1,8 @@
 import type { Component } from '../Component';
-import { LayoutStrategy, LayoutOptions } from './LayoutStrategy';
+import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 
-export class VerticalLayoutStrategy implements LayoutStrategy {
+export class VerticalLayout implements Layout {
   private fit: boolean;
 
   constructor(options?: LayoutOptions) {

@@ -7,7 +7,7 @@ import { setRenderCallback } from './RenderScheduler';
 import { setupKeyboardHandling, validateWebEnvironment } from './utils';
 
 export interface AppProps extends ComponentProps {
-  fit?: boolean; 
+  fit?: boolean;
 }
 
 export class App extends Component {
@@ -25,9 +25,9 @@ export class App extends Component {
     const asciitoriumProps = {
       ...props,
       layout: props.layout ?? 'vertical',
-      layoutOptions: { fit: props.fit, ...props.layoutOptions }
+      layoutOptions: { fit: props.fit, ...props.layoutOptions },
     };
-    
+
     super(asciitoriumProps);
 
     this.renderer = getDefaultRenderer();
@@ -122,13 +122,17 @@ export class App extends Component {
 
   private updatePerformanceMetrics(): void {
     // CPU and Memory monitoring - cross-platform
-    if (typeof process !== 'undefined' && process.cpuUsage && process.memoryUsage) {
+    if (
+      typeof process !== 'undefined' &&
+      process.cpuUsage &&
+      process.memoryUsage
+    ) {
       // Node.js environment (CLI)
       try {
         const currentUsage = process.cpuUsage(this.lastCPUUsage);
         const totalUsage = currentUsage.user + currentUsage.system;
         // Convert microseconds to percentage (approximate)
-        this.currentCPU = Math.min(100, (totalUsage / 10000)); // Rough estimation
+        this.currentCPU = Math.min(100, totalUsage / 10000); // Rough estimation
         this.lastCPUUsage = process.cpuUsage();
 
         const memUsage = process.memoryUsage();
@@ -137,7 +141,10 @@ export class App extends Component {
         this.currentCPU = 0;
         this.currentMemory = 0;
       }
-    } else if (typeof performance !== 'undefined' && (performance as any).memory) {
+    } else if (
+      typeof performance !== 'undefined' &&
+      (performance as any).memory
+    ) {
       // Browser environment with memory API
       try {
         const memInfo = (performance as any).memory;

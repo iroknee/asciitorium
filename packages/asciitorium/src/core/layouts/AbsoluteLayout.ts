@@ -1,8 +1,8 @@
 import type { Component } from '../Component';
-import { LayoutStrategy } from './LayoutStrategy';
+import { Layout } from './Layout';
 import type { Alignment } from '../types';
 
-export class AbsoluteLayoutStrategy implements LayoutStrategy {
+export class AbsoluteLayout implements Layout {
   layout(parent: Component, children: Component[]): void {
     const borderPad = parent.border ? 1 : 0;
     const innerWidth = parent.width - 2 * borderPad;

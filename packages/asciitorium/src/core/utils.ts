@@ -87,9 +87,11 @@ export function isState<T>(v: any): v is State<T> {
 }
 
 export function isNodeEnvironment(): boolean {
-  return typeof process !== 'undefined' && 
-         typeof process.cpuUsage === 'function' && 
-         typeof process.memoryUsage === 'function';
+  return (
+    typeof process !== 'undefined' &&
+    typeof process.cpuUsage === 'function' &&
+    typeof process.memoryUsage === 'function'
+  );
 }
 
 export function isWebEnvironment(): boolean {
@@ -101,11 +103,15 @@ export function isCPUSupported(): boolean {
 }
 
 export function isMemorySupported(): boolean {
-  return isNodeEnvironment() || 
-         (typeof performance !== 'undefined' && (performance as any).memory);
+  return (
+    isNodeEnvironment() ||
+    (typeof performance !== 'undefined' && (performance as any).memory)
+  );
 }
 
-export async function setupKeyboardHandling(handleKey: (key: string) => void): Promise<void> {
+export async function setupKeyboardHandling(
+  handleKey: (key: string) => void
+): Promise<void> {
   if (isWebEnvironment()) {
     // Web environment
     window.addEventListener('keydown', (event) => {

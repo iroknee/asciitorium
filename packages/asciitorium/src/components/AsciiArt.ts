@@ -2,26 +2,26 @@ import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
 export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
-  content: string;           // raw text loaded from .txt (UTF-8)
-  width?: number;            // optional fixed width
-  height?: number;           // optional fixed height
+  content: string; // raw text loaded from .txt (UTF-8)
+  width?: number; // optional fixed width
+  height?: number; // optional fixed height
 }
 
 /** Parsed per-frame metadata (keep minimal per your spec) */
 type FrameMeta = {
-  duration?: number;  // ms
-  sound?: string;     // id or URL
+  duration?: number; // ms
+  sound?: string; // id or URL
 };
 
 /** Internal frame shape */
 type SpriteFrame = {
-  lines: string[][];  // 2D char grid
-  meta: FrameMeta;    // already merged with defaults
+  lines: string[][]; // 2D char grid
+  meta: FrameMeta; // already merged with defaults
 };
 
 /** Top-of-file defaults */
 type SpriteDefaults = {
-  duration?: number;  // ms
+  duration?: number; // ms
   loop?: boolean;
 };
 
@@ -146,7 +146,11 @@ export class AsciiArt extends Component {
  *  - Graceful JSON error handling (collects errors; uses fallbacks)
  *  - Trims CRLF; preserves leading/trailing spaces inside art lines
  */
-function parseSprite (text: string): { defaults: SpriteDefaults; frames: SpriteFrame[]; errors: string[] } {
+function parseSprite(text: string): {
+  defaults: SpriteDefaults;
+  frames: SpriteFrame[];
+  errors: string[];
+} {
   const errors: string[] = [];
   const lines = text.replace(/\r\n?/g, '\n').split('\n');
 
@@ -199,7 +203,9 @@ function parseSprite (text: string): { defaults: SpriteDefaults; frames: SpriteF
     // Frame separator
     if (trimmedStart.startsWith('¶')) {
       const payload = raw.slice(raw.indexOf('¶') + 1).trim();
-      const metaRaw = payload ? tryParseJSON(payload, `in frame meta at line ${i + 1}`) : {};
+      const metaRaw = payload
+        ? tryParseJSON(payload, `in frame meta at line ${i + 1}`)
+        : {};
       const meta: FrameMeta = {
         duration: asNum(metaRaw?.duration),
         sound: typeof metaRaw?.sound === 'string' ? metaRaw.sound : undefined,
@@ -220,7 +226,9 @@ function parseSprite (text: string): { defaults: SpriteDefaults; frames: SpriteF
   }
 
   // If we never saw § or ¶ and we have art, treat entire input as a still
-  const usedSpriteFormat = lines.some(l => l.trimStart().startsWith('§') || l.trimStart().startsWith('¶'));
+  const usedSpriteFormat = lines.some(
+    (l) => l.trimStart().startsWith('§') || l.trimStart().startsWith('¶')
+  );
   if (!usedSpriteFormat && sawAnyArt) {
     const still: SpriteFrame = {
       lines: normalizeBlock(lines),
@@ -253,12 +261,12 @@ function parseSprite (text: string): { defaults: SpriteDefaults; frames: SpriteF
 function normalizeBlock(blockLines: string[]): string[][] {
   // Drop a single leading empty line if present (authoring convenience)
   const lines = blockLines.slice();
-  
+
   if (lines.length && lines[0] === '') {
     lines.shift();
   }
 
-  const result = lines.map(line => [...line]);
+  const result = lines.map((line) => [...line]);
   return result;
 }
 

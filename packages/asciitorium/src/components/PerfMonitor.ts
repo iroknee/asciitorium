@@ -2,7 +2,8 @@ import { Component, ComponentProps } from '../core/Component';
 import { App } from '../core/App';
 import { isCPUSupported, isMemorySupported } from '../core/utils';
 
-export interface PerfMonitorOptions extends Omit<ComponentProps, 'height' | 'width'> {
+export interface PerfMonitorOptions
+  extends Omit<ComponentProps, 'height' | 'width'> {
   width?: number;
   height?: number;
   time?: boolean;
@@ -22,14 +23,14 @@ export class PerfMonitor extends Component {
     const showCPU = options.cpu ?? true;
     const showMem = options.memory ?? false;
     const showFPS = options.fps ?? false;
-    
+
     // Calculate height based on enabled metrics
     let lines = 2;
     if (showRT) lines++;
     if (showCPU) lines++;
     if (showMem) lines++;
     if (showFPS) lines++;
-    
+
     const height = Math.max(1, lines) + (options.border ? 2 : 0);
 
     super({
@@ -57,7 +58,6 @@ export class PerfMonitor extends Component {
     return null;
   }
 
-
   draw(): string[][] {
     super.draw();
 
@@ -75,7 +75,7 @@ export class PerfMonitor extends Component {
       const renderTime = root.getRenderTime();
       const rtStr = renderTime.toFixed(1).padStart(5, ' ');
       const text = `time ${rtStr}ms`;
-      
+
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
           this.buffer[currentLine][startX + i] = text[i];
@@ -94,7 +94,7 @@ export class PerfMonitor extends Component {
       } else {
         text = `cpu    N/A`;
       }
-      
+
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
           this.buffer[currentLine][startX + i] = text[i];
@@ -113,7 +113,7 @@ export class PerfMonitor extends Component {
       } else {
         text = `mem    N/A`;
       }
-      
+
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
           this.buffer[currentLine][startX + i] = text[i];
@@ -127,7 +127,7 @@ export class PerfMonitor extends Component {
       const fps = root.getFPS();
       const fpsStr = fps.toString().padStart(3, ' ');
       const text = `fps  ${fpsStr}`;
-      
+
       for (let i = 0; i < text.length && i < innerWidth; i++) {
         if (currentLine < this.height && startX + i < this.width) {
           this.buffer[currentLine][startX + i] = text[i];

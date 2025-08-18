@@ -131,7 +131,7 @@ npm run format
 ### 7️⃣ Generate FIGlet ASCII art assets
 
 ```bash
-npm run art FIGlet-font-name "phrase" 
+npm run art FIGlet-font-name "phrase"
 ```
 
 - Runs the `scripts/generate-art.js` tool to build `.txt` ASCII art files
