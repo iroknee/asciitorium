@@ -1,6 +1,5 @@
 import { AsciiArt } from './components/AsciiArt';
 import { Box } from './components/Box';
-import { PerfMonitor } from './components/PerfMonitor';
 import { Text } from './components/Text';
 import { HorizontalLine } from './components/HorizontalLine';
 import { App } from './core/App';
@@ -10,7 +9,7 @@ import { TextInput } from './components/TextInput';
 import { CelticBorder } from './components/CelticBorder';
 
 const appWidth = 64;
-const appHeight = 30;
+const appHeight = 20;
 
 const helloWorld = new State('Hello, World!');
 
@@ -31,10 +30,9 @@ const app = (
       <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Box>
 
-    <TextInput label="TextInput:" width={30} value={helloWorld} gap={2} align="center" />
+    <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
 
-    <Text value={helloWorld} width={appWidth - 24} align="bottom" gap={8} />
-    <PerfMonitor align="bottom-right" gap={1} time memory fps cpu />
+    <Text value={helloWorld} width={24} align="bottom" gap={2} />
   </App>
 );
 

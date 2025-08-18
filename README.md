@@ -1,8 +1,39 @@
 # asciitorium
 
-This mono-repo contains the source code for **asciitorium**, an ASCII-based ui framework that runs in both the web and cli, along with related tooling such as the `create-asciitorium` project scaffolder.
+**asciitorium** is an ASCII-based ui framework that runs in both the web and cli, along with related tooling such as the `create-asciitorium` project scaffolder.
 
 ![example](asciitorium.png)
+
+```jsx
+import { App, Box, Text, State, AsciiArt, TextInput, CelticBorder, HorizontalLine, loadAsciiAsset } from 'asciitorium';
+
+const helloWorld = new State('Hello, World!');
+
+// Load the title ASCII art
+const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
+
+// Construct the app
+const app = (
+  <App width={64} height={20} layout="relaxed">
+    <CelticBorder edge="top-left" align="top-left" />
+    <CelticBorder edge="top-right" align="top-right" />
+    <CelticBorder edge="bottom-left" align="bottom-left" />
+    <CelticBorder edge="bottom-right" align="bottom-right" />
+
+    <Box align="top" layout="vertical" gap={2}>
+      <AsciiArt content={titleArt} align="top" />
+      <HorizontalLine length={48} align="center" />
+      <Text value="a ui framework for cli and web" align="top" gap={3} />
+    </Box>
+
+    <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
+
+    <Text value={helloWorld} width={24} align="bottom" gap={2} />
+  </App>
+);
+
+await app.start();
+```
 
 ---
 
@@ -15,6 +46,7 @@ It uses `<pre>` blocks and styled spans in the browser, and a terminal renderer 
 Includes a custom JSX runtime so you can write components similar to React.
 
 **Installation:**
+
 ```bash
 npm install asciitorium
 ```
