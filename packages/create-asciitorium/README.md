@@ -14,7 +14,6 @@
 
 ### Installation
 
-
 The recommended way to start a new project is with the npm create command:
 
 ```bash
@@ -51,9 +50,8 @@ npm run figlet font "a phrase"
 List available FIGlet fonts:
 
 ```bash
-npm run art:fonts
+npm run figlet:fonts
 ```
-
 
 ## Generated Project Structure
 

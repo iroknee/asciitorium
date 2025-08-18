@@ -23,10 +23,10 @@ const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 // Construct the app
 const app = (
   <App width={appWidth} height={appHeight} layout="relaxed">
-    <CelticBorder edge="top-left" align="top-left" />
-    <CelticBorder edge="top-right" align="top-right" />
-    <CelticBorder edge="bottom-left" align="bottom-left" />
-    <CelticBorder edge="bottom-right" align="bottom-right" />
+    <CelticBorder align="top-left" />
+    <CelticBorder align="top-right" />
+    <CelticBorder align="bottom-left" />
+    <CelticBorder align="bottom-right" />
 
     <Box align="top" layout="vertical" gap={2}>
       <AsciiArt content={titleArt} align="top" />

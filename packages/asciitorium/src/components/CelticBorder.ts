@@ -32,14 +32,24 @@ const borderPatterns: Record<CelticEdge, string[]> = {
 };
 
 export interface CelticBorderOptions extends Partial<ComponentProps> {
-  edge: CelticEdge;
+  edge?: CelticEdge;
 }
 
 export class CelticBorder extends Component {
   private lines: string[][];
 
-  constructor({ edge: edge, ...options }: CelticBorderOptions) {
-    const pattern = borderPatterns[edge];
+  constructor({ edge, ...options }: CelticBorderOptions) {
+    // Use edge if provided, otherwise use align if it's a valid CelticEdge
+    let selectedEdge: CelticEdge;
+    if (edge) {
+      selectedEdge = edge;
+    } else if (options.align && typeof options.align === 'string' && options.align in borderPatterns) {
+      selectedEdge = options.align as CelticEdge;
+    } else {
+      throw new Error('CelticBorder requires either an "edge" property or an "align" property that is one of: top-left, top-right, bottom-left, bottom-right');
+    }
+
+    const pattern = borderPatterns[selectedEdge];
     const width = Math.max(...pattern.map((line) => line.length));
     const height = pattern.length;
 
