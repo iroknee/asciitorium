@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14] - 2025-08-18
+
+### Added
+
+- **New Layout Strategy:**
+  - `RelaxedLayout` - A new layout strategy for more flexible component positioning
+
+### Changed
+
+- **Component Updates:**
+  - Replaced `ListBox` component with `Select` component for improved usability
+  - Enhanced `CelticBorder` component with refactored implementation
+  - Improved `AsciiArt` component functionality
+  - Updated `Box`, `PerfMonitor`, and core layout components
+
+- **Developer Experience:**
+  - Updated README files with better documentation
+  - Enhanced FIGlet support and art generation scripts
+  - Streamlined project structure by removing test layout script
+  - Updated package configurations and dependencies
+
+- **Layout System:**
+  - Refactored layout strategies for better performance and flexibility
+  - Enhanced `App` class with improved layout handling
+  - Updated component utilities and helper functions
+
+### Removed
+
+- Removed `test-layout.mjs` script to streamline project structure
+- Cleaned up unused `ListBox` component in favor of `Select`
+
+### Technical Details
+
+- **Key Files Modified:** Core layout system, component library, documentation
+- **Breaking Changes:** `ListBox` component removed - use `Select` instead
+- **Improvements:** Better layout flexibility, enhanced component functionality
+
 ## [0.1.13] - 2024-08-17
 
 ### Breaking Changes

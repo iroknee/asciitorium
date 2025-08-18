@@ -1,6 +1,6 @@
 {
   "name": "asciitorium",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "private": false,
   "description": "an ASCII ui framework for web + cli",
   "type": "module",
@@ -36,8 +36,6 @@
     "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "figlet": "node scripts/gen-figlet-art.js",
-    "figlet:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
     "prepublishOnly": "npm run build"
   },
   "author": "Iroknee <tiroknee@gmail.com>",
