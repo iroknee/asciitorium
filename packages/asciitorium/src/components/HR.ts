@@ -1,12 +1,12 @@
 import { Component, ComponentProps } from '../core/Component';
 
-export interface HorizontalLineOptions
+export interface HROptions
   extends Omit<ComponentProps, 'width' | 'height'> {
   length?: number; // optional alias for width
 }
 
-export class HorizontalLine extends Component {
-  constructor(options: HorizontalLineOptions) {
+export class HR extends Component {
+  constructor(options: HROptions) {
     const resolvedWidth = options.length ?? 12;
 
     super({

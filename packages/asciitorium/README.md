@@ -45,7 +45,7 @@ await app.start();
 - **`TextInput`** - Text input fields
 - **`ProgressBar`** - Visual progress indicators
 - **`CelticBorder`** - Decorative borders
-- **`HorizontalLine`** - Decorative dividers
+- **`HR`** - Decorative horizontal dividers
 
 ### Layout Components
 

@@ -8,7 +8,7 @@ export * from './components/Box';
 export * from './components/Button';
 export * from './components/CelticBorder';
 export * from './components/PerfMonitor';
-export * from './components/HorizontalLine';
+export * from './components/HR';
 export * from './components/Select';
 export * from './components/ProgressBar';
 export * from './components/Tabs';

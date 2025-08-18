@@ -5,7 +5,7 @@
 ![example](asciitorium.png)
 
 ```jsx
-import { App, Box, Text, State, AsciiArt, TextInput, CelticBorder, HorizontalLine, loadAsciiAsset } from 'asciitorium';
+import { App, Box, Text, State, AsciiArt, TextInput, CelticBorder, HR, loadAsciiAsset } from 'asciitorium';
 
 const helloWorld = new State('Hello, World!');
 
@@ -22,7 +22,7 @@ const app = (
 
     <Box align="top" layout="vertical" gap={2}>
       <AsciiArt content={titleArt} align="top" />
-      <HorizontalLine length={48} align="center" />
+      <HR length={48} align="center" />
       <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Box>
 
