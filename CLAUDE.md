@@ -83,7 +83,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Support for fixed positioning and alignment
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `ProgressBar`, `Tabs`, `TextInput`, `AsciiArt`, `CelticBorder`, `HR`
+Located in `src/components/`: `Text`, `Button`, `Select`, `ProgressBar`, `Tabs`, `TextInput`, `AsciiArt`, `CelticBorder`, `HR`, `VR`
 
 ### Project Scaffolder (packages/create-asciitorium)
 

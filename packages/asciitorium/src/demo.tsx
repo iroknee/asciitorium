@@ -1,4 +1,4 @@
-import { App, Box, Text, State, AsciiArt, CelticBorder, TextInput, HR } from './index';
+import { App, Box, Text, State, AsciiArt, CelticBorder, TextInput, HR, VR } from './index';
 import { loadAsciiAsset } from './core/utils';
 
 const helloWorld = new State('Hello, World!');
@@ -19,6 +19,8 @@ const app = (
       <HR length={48} align="center" />
       <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Box>
+
+    <VR length={12} align="left" gap={15} />
 
     <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
 

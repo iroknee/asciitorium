@@ -46,6 +46,7 @@ await app.start();
 - **`ProgressBar`** - Visual progress indicators
 - **`CelticBorder`** - Decorative borders
 - **`HR`** - Decorative horizontal dividers
+- **`VR`** - Decorative vertical dividers
 
 ### Layout Components
 
