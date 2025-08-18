@@ -55,7 +55,7 @@ Key features:
 
 - Works in both Web (DOM) and CLI (Terminal)
 - Pure TypeScript, lightweight, no external framework dependencies
-- Built-in components (`Text`, `Button`, `ListBox`, `ProgressBar`, etc.)
+- Built-in components (`Text`, `Button`, `Select`, `ProgressBar`, etc.)
 - Stateful rendering with reactive `State<T>`
 - Custom JSX runtime for declarative UI
 

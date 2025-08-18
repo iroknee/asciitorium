@@ -9,7 +9,7 @@ export * from './components/Button';
 export * from './components/CelticBorder';
 export * from './components/PerfMonitor';
 export * from './components/HorizontalLine';
-export * from './components/ListBox';
+export * from './components/Select';
 export * from './components/ProgressBar';
 export * from './components/Tabs';
 export * from './components/Text';

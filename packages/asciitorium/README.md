@@ -1,20 +1,24 @@
 # asciitorium
 
-**asciitorium** is a UI framework for building retro terminal interfaces that fully function in the browser as well as the terminal.  
+**asciitorium** is a UI framework for building retro terminal interfaces that fully function in the browser as well as on the cli.  
 Why? I am still not sure 🙂. But it started with wanting to create a text-based game reminiscent of **Wizardry I**, **Zork**, and **Bard's Tale** from the 80s. I realized it would be fun to create a UI framework while I was at it — given my experience with React, here is that first pass.
 
 ## Installation
 
+> It is recommended that you use the create-asciitorium installer.
+
 ```bash
-npm install asciitorium
+npm create asciitorium@latest my-app
 ```
 
 ## Quick Start
 
 ### Basic Example
 
+update the src/main.tsx:
+
 ```tsx
-import { App, Text, TextInput, State, start } from 'asciitorium';
+import { App, Text, TextInput, State } from 'asciitorium';
 
 const message = new State('Hello, World!');
 
@@ -26,66 +30,35 @@ const app = (
   </App>
 );
 
-await start(app);
+await app.start();
 ```
-
-### JSX Configuration
-
-Add to your `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "asciitorium/jsx"
-  }
-}
-```
-
-## Use Cases
-
-- Terminal-style web apps
-- ASCII dashboards
-- Text-driven games
-- BBS-inspired experiments
-- Developer tools with retro aesthetics
-
-## Features
-
-- Support for TypeScript
-- Works in both **Web** and **CLI** (DOM or stdout)
-- Built-in components (`Text`, `Button`, `ListBox`, `ProgressBar`, etc.)
-- Reactive `State<T>` system for live updates
-- Custom JSX runtime (like React, minus the baggage)
 
 ## Built-in Components
 
+- **`App`** - App to wrap all components in
+- **`Box`** - Simple wrapper to wrap components
+- **`Tabs`** - Tabbed interface containers
 - **`Text`** - Display static or dynamic text
 - **`Button`** - Interactive buttons with click handlers
-- **`TextInput`** - Text input fields
-- **`ListBox`** - Selectable lists with keyboard navigation
-- **`ProgressBar`** - Visual progress indicators
-- **`Tabs`** - Tabbed interface containers
-- **`HorizontalLine`** - Decorative dividers
+- **`Select`** - Selectable lists with keyboard navigation
 - **`AsciiArt`** - Display ASCII art from files
+- **`TextInput`** - Text input fields
+- **`ProgressBar`** - Visual progress indicators
 - **`CelticBorder`** - Decorative borders
+- **`HorizontalLine`** - Decorative dividers
 
 ### Layout Components
 
+- **`FixedLayout`** - Place components by x y positions only
+- **`FlexibleLayout`** - Place components by alignment
 - **`HorizontalLayout`** - Arrange components horizontally
 - **`VerticalLayout`** - Arrange components vertically (default)
 
 ---
 
-## 🚀 Developing
+## 🚀 Developing with Asciitorium
 
-### 1️⃣ Install dependencies
-
-```bash
-npm install
-```
-
-### 2️⃣ Run in the browser (Web mode)
+### Run in the browser (Web mode)
 
 ```bash
 npm run web
@@ -93,9 +66,8 @@ npm run web
 
 - Starts the Vite dev server
 - Open your browser at **http://localhost:5173** (or the port Vite displays)
-- Uses the `DomRenderer` to draw into a `<pre>` block
 
-### 3️⃣ Run in the terminal (CLI mode)
+### Run in the terminal (CLI mode)
 
 ```bash
 npm run cli
@@ -104,42 +76,10 @@ npm run cli
 - Renders directly to stdout
 - Uses the `TerminalRenderer` for an interactive terminal UI
 
-### 4️⃣ Build for production
+### Build for production
 
 ```bash
 npm run build
-```
-
-- Builds both the browser bundle and TypeScript definitions
-
-### 5️⃣ Preview the production build
-
-```bash
-npm run preview
-```
-
-- Serves the `dist/` output locally using Vite
-
-### 6️⃣ Format the code
-
-```bash
-npm run format
-```
-
-- Runs Prettier across the entire project
-
-### 7️⃣ Generate FIGlet ASCII art assets
-
-```bash
-npm run art FIGlet-font-name "phrase"
-```
-
-- Runs the `scripts/generate-art.js` tool to build `.txt` ASCII art files
-
-To list available FIGlet fonts:
-
-```bash
-npm run art:fonts
 ```
 
 ---

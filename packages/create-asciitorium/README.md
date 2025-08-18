@@ -40,6 +40,21 @@ npm run cli
 npm run build
 ```
 
+### Other Scripts
+
+Generate FIGlet ASCII art assets (placed in public/art):
+
+```bash
+npm run figlet font "a phrase"
+```
+
+List available FIGlet fonts:
+
+```bash
+npm run art:fonts
+```
+
+
 ## Generated Project Structure
 
 A typical generated project will look like:

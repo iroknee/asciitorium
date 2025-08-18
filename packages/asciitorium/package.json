@@ -36,8 +36,8 @@
     "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "art": "node scripts/generate-art.js",
-    "art:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
+    "figlet": "node scripts/gen-figlet-art.js",
+    "figlet:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'",
     "prepublishOnly": "npm run build"
   },
   "author": "Iroknee <tiroknee@gmail.com>",

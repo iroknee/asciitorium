@@ -7,7 +7,9 @@
     "web": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "cli": "tsx src/main.tsx"
+    "cli": "tsx src/main.tsx",
+    "figlet": "node scripts/gen-figlet-art.js",
+    "figlet:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
   },
   "devDependencies": {
     "typescript": "^5.5.4",

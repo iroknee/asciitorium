@@ -1,13 +1,13 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface ListBoxOptions extends Omit<ComponentProps, 'height'> {
+export interface SelectOptions extends Omit<ComponentProps, 'height'> {
   items: string[];
   selectedItem: State<string>;
   height?: number;
 }
 
-export class ListBox extends Component {
+export class Select extends Component {
   private readonly items: string[];
   private readonly selectedItem: State<string>;
   private selectedIndex: number = 0;
@@ -15,8 +15,8 @@ export class ListBox extends Component {
   focusable = true;
   hasFocus = false;
 
-  constructor(options: ListBoxOptions) {
-    const height = options.height ?? 8;
+  constructor(options: SelectOptions) {
+    const height = options.height ?? 3;
     const border = options.border ?? true;
 
     super({ ...options, height, border });
