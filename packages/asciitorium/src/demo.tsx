@@ -1,33 +1,33 @@
-import { App, Box, Text, State, AsciiArt, CelticBorder, Select, HR } from './index';
-import { loadAsciiAsset } from './core/utils';
-
-const selectedA = new State('Option 1');
-const selectedB = new State('Option 1');
-
+import { App, Text, State, Select, MultiSelect } from './index';
+const select = new State('Option 1');
+const multi = new State(['Option 2']);
 
 // Construct the app
 const app = (
-  <App width={64} height={20} layout="relaxed" border>
+  <App width={48} height={24} layout="relaxed" border>
 
     <Select 
-      label="Select Option A"
-      width={24}
-      height={8}
-      items={['Option 1', 'Option 2', 'Option 3', 'Long Option Name 4', 'Final Choice']} 
-      selectedItem={selectedA} 
-      align="top-left" 
+      label="Select"
+      width={16}
+      height={10}
+      items={['Option 1', 'Option 2', 'Option 3', 'Option 4']} 
+      selectedItem={select} 
+      align="top-left"
+      gap={2} 
     />
 
-    <Select 
-      label="Select an Option"
-      width={24}
-      height={3}
-      items={['Option 1', 'Option 2', 'Option 3', 'Long Option Name 4', 'Final Choice']} 
-      selectedItem={selectedB} 
-      align="top-right" 
+    <MultiSelect 
+      label="MultiSelect"
+      width={16}
+      height={10}
+      items={['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5']} 
+      selectedItems={multi} 
+      align="top-right"
+      gap={2} 
     />
 
-    <Text value={selectedB} width={24} align="bottom-left" gap={2} />
+    <Text value={select} width={24} align="bottom-left" gap={3} />
+    <Text value={multi} width={24} align="bottom-right" gap={2} />
   </App>
 );
 

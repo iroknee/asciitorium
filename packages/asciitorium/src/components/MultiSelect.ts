@@ -1,49 +1,46 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface SelectOptions extends Omit<ComponentProps, 'height'> {
+export interface MultiSelectOptions extends Omit<ComponentProps, 'height'> {
   items: string[];
-  selectedItem: State<string>;
+  selectedItems: State<string[]>;
   height?: number;
 }
 
-export class Select extends Component {
+export class MultiSelect extends Component {
   private readonly items: string[];
-  private readonly selectedItem: State<string>;
+  private readonly selectedItems: State<string[]>;
   private focusedIndex: number = 0;
-  private selectedIndex: number = 0;
+  private selectedSet: Set<string> = new Set();
 
   focusable = true;
   hasFocus = false;
 
-  constructor(options: SelectOptions) {
+  constructor(options: MultiSelectOptions) {
     const height = options.height ?? 3;
     const border = options.border ?? true;
 
     super({ ...options, height, border });
 
     this.items = options.items;
-    this.selectedItem = options.selectedItem;
+    this.selectedItems = options.selectedItems;
 
-    const initialSelectedIndex = Math.max(
-      0,
-      this.items.findIndex((item) => item === this.selectedItem.value)
-    );
-    this.selectedIndex = initialSelectedIndex;
-    this.focusedIndex = initialSelectedIndex;
+    // Initialize selected set from the state
+    this.selectedSet = new Set(this.selectedItems.value);
 
-    this.bind(this.selectedItem, (value) => {
-      const index = this.items.indexOf(value);
-      if (index !== -1 && index !== this.selectedIndex) {
-        this.selectedIndex = index;
-        this.focusedIndex = index;
-      }
+    // Start focus on first selected item, or first item if none selected
+    const firstSelectedIndex = this.items.findIndex(item => this.selectedSet.has(item));
+    this.focusedIndex = Math.max(0, firstSelectedIndex);
+
+    // Bind to state changes
+    this.bind(this.selectedItems, (values) => {
+      this.selectedSet = new Set(values);
     });
   }
 
   override handleEvent(event: string): boolean {
     const prevFocusedIndex = this.focusedIndex;
-    const prevSelectedIndex = this.selectedIndex;
+    const prevSelectedSet = new Set(this.selectedSet);
 
     // Navigation (arrow keys move the focus cursor)
     if ((event === 'ArrowUp' || event === 'w') && this.focusedIndex > 0) {
@@ -54,14 +51,30 @@ export class Select extends Component {
     ) {
       this.focusedIndex++;
     }
-    // Selection (space/enter selects the focused item)
+    // Selection toggle (space/enter toggles selection of focused item)
     else if (event === ' ' || event === 'Enter') {
-      this.selectedIndex = this.focusedIndex;
-      this.selectedItem.value = this.items[this.selectedIndex];
+      const focusedItem = this.items[this.focusedIndex];
+      if (this.selectedSet.has(focusedItem)) {
+        this.selectedSet.delete(focusedItem);
+      } else {
+        this.selectedSet.add(focusedItem);
+      }
+      // Update the state with current selections
+      this.selectedItems.value = Array.from(this.selectedSet);
     }
 
     // Return true if any state changed
-    return this.focusedIndex !== prevFocusedIndex || this.selectedIndex !== prevSelectedIndex;
+    return this.focusedIndex !== prevFocusedIndex || 
+           this.selectedSet.size !== prevSelectedSet.size ||
+           !this.setsEqual(this.selectedSet, prevSelectedSet);
+  }
+
+  private setsEqual(set1: Set<string>, set2: Set<string>): boolean {
+    if (set1.size !== set2.size) return false;
+    for (const item of set1) {
+      if (!set2.has(item)) return false;
+    }
+    return true;
   }
 
   override draw(): string[][] {
@@ -74,15 +87,7 @@ export class Select extends Component {
     const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
     const itemCount = this.items.length;
 
-    const startIdx = Math.max(
-      0,
-      Math.min(
-        this.selectedIndex - Math.floor(maxVisible / 2),
-        Math.max(0, itemCount - maxVisible)
-      )
-    );
-
-    // Update scroll calculation to use focusedIndex
+    // Calculate scroll position based on focused item
     const focusedStartIdx = Math.max(
       0,
       Math.min(
@@ -106,18 +111,20 @@ export class Select extends Component {
       const itemIndex = focusedStartIdx + i;
 
       const isFocused = itemIndex === this.focusedIndex;
-      const isSelected = itemIndex === this.selectedIndex;
+      const isSelected = this.selectedSet.has(item);
       
       let prefix = ' ';
-      if (isSelected && this.hasFocus) {
-        prefix = '◆'; // selected, and component has focus
+      if (isFocused && this.hasFocus) {
+        prefix = '◈'; // ◇ Focused item (takes priority)
+      } else if (isSelected && this.hasFocus) {
+        prefix = '◆'; // Selected item
       } else if (isSelected) {
-        prefix = '◇'; // Selected but not focused or component doesn't have focus
-      } else if (isFocused && this.hasFocus) {
-        prefix = '◈'; // Focused but not selected
+        prefix = '◇'; // Selected item
+      } else {
+        prefix = ' '; // Non-selected item
       }
       
-      const line = `${prefix} ${item}`  
+      const line = `${prefix} ${item}`
         .slice(0, this.width - 2 * borderPad)
         .padEnd(this.width - 2 * borderPad, ' ');
 
@@ -132,6 +139,7 @@ export class Select extends Component {
       const x = this.width - 2;
       buffer[y][x] = '↓';
     }
+    
     this.buffer = buffer;
     return buffer;
   }

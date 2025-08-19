@@ -4,18 +4,18 @@ import { isState, resolveAlignment } from '../core/utils';
 import { Alignment } from 'core/types';
 
 export interface TextOptions extends Omit<ComponentProps, 'height' | 'width'> {
-  value: string | State<string>;
+  value: string | State<any>;
   height?: number;
   width?: number;
   align?: Alignment;
 }
 
 export class Text extends Component {
-  private source: string | State<string>;
+  private source: string | State<any>;
 
   constructor(options: TextOptions) {
     const rawValue = isState(options.value)
-      ? (options.value as State<string>).value
+      ? (options.value as State<any>).value
       : options.value;
 
     const contentLength = Math.max(1, String(rawValue).length); // <- enforce min width
@@ -31,7 +31,7 @@ export class Text extends Component {
 
     // If reactive, subscribe to changes
     if (isState(this.source)) {
-      (this.source as State<string>).subscribe(() => {
+      (this.source as State<any>).subscribe(() => {
         //this.markDirty();
       });
     }
@@ -39,7 +39,7 @@ export class Text extends Component {
 
   get value(): string {
     return isState(this.source)
-      ? String((this.source as State<string>).value)
+      ? String((this.source as State<any>).value)
       : String(this.source);
   }
 
