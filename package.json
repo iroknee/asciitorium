@@ -1,18 +1,15 @@
 {
   "name": "asciitorium-monorepo",
   "private": true,
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Monorepo for asciitorium and create-asciitorium",
   "scripts": {
+    "web": "cd packages/asciitorium && npm run web",
+    "cli": "cd packages/asciitorium && npm run cli",
     "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
-    "release": "npm run publish --workspaces",
-    "demo": "cd packages/asciitorium && npm run web",
-    "demo:cli": "cd packages/asciitorium && npm run cli",
     "test": "scripts/test-create.sh && cd tmp/asciitorium/example && npm run web",
-    "publish:lib": "npm run build --workspace=asciitorium && cd packages/asciitorium && npm publish",
-    "publish:create": "npm run build --workspace=create-asciitorium && cd packages/create-asciitorium && npm publish"
-
+    "version": "node scripts/update-version.js",
+    "release": "npm run publish:lib && npm run publish:create"
   },
   "workspaces": [
     "packages/*"
