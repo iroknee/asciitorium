@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.17] - 2025-08-19
+
+### Added
+
+- **New Components:**
+  - `MultiSelect` component for selecting multiple items from a list
+
+### Changed
+
+- **Enhanced Components:**
+  - `Select` component refactored with improved focus handling and selection logic
+  - `AsciiArt`, `Button`, and `Text` components now support JSX children
+  - Improved keyboard handling: `handleKey` method now accepts `KeyboardEvent` parameter
+  - Enhanced component positioning and display formatting
+
+- **Component Refinements:**
+  - `Select` component: adjusted paddingTop based on height for better visual alignment
+  - `CelticBorder` component: made 'edge' property optional with enhanced alignment handling
+  - Replaced `HorizontalLine` component with `HR` component for better consistency
+  - Added `VR` component for decorative vertical dividers
+
+- **Developer Experience:**
+  - Updated demo applications for consistent formatting and better component showcasing
+  - Improved keyboard event handling throughout the framework
+  - Enhanced documentation and component examples
+
+### Technical Details
+
+- **Key Files Modified:** Core components, demo applications, keyboard handling system
+- **Improvements:** Better component flexibility with JSX children support, enhanced keyboard navigation, improved visual consistency
+
 ## [0.1.16] - 2025-08-18
 
 ### Added
