@@ -162,7 +162,7 @@ export class App extends Component {
     }
   }
 
-  handleKey(key: string): void {
+  handleKey(key: string, event?: KeyboardEvent): void {
     if (key === 'Tab') {
       this.focus.focusNext();
       this.render();
@@ -184,7 +184,7 @@ export class App extends Component {
 
   async start(): Promise<void> {
     validateWebEnvironment();
-    await setupKeyboardHandling((key) => this.handleKey(key));
+    await setupKeyboardHandling((key, event) => this.handleKey(key, event));
     setRenderCallback(() => this.render());
   }
 }

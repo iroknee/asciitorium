@@ -110,12 +110,12 @@ export function isMemorySupported(): boolean {
 }
 
 export async function setupKeyboardHandling(
-  handleKey: (key: string) => void
+  handleKey: (key: string, event?: KeyboardEvent) => void
 ): Promise<void> {
   if (isWebEnvironment()) {
     // Web environment
     window.addEventListener('keydown', (event) => {
-      handleKey(event.key);
+      handleKey(event.key, event);
     });
   } else {
     // Terminal environment
