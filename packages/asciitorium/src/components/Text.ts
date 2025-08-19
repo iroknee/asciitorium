@@ -3,31 +3,49 @@ import type { State } from '../core/State';
 import { isState, resolveAlignment } from '../core/utils';
 import { Alignment } from 'core/types';
 
-export interface TextOptions extends Omit<ComponentProps, 'height' | 'width'> {
-  value: string | State<any>;
+export interface TextOptions extends Omit<ComponentProps, 'height' | 'width' | 'children'> {
+  content?: string | State<any>;
+  value?: string | State<any>; // deprecated: use content instead
   height?: number;
   width?: number;
   align?: Alignment;
+  children?: (string | State<any>) | (string | State<any>)[];
 }
 
 export class Text extends Component {
   private source: string | State<any>;
 
   constructor(options: TextOptions) {
-    const rawValue = isState(options.value)
-      ? (options.value as State<any>).value
-      : options.value;
+    // Support both new content prop and legacy value prop
+    // Also support JSX children syntax
+    let actualContent = options.content || options.value;
+    
+    if (!actualContent && options.children) {
+      const children = Array.isArray(options.children) ? options.children : [options.children];
+      if (children.length > 0) {
+        actualContent = children[0];
+      }
+    }
+    
+    if (!actualContent) {
+      throw new Error('Text component requires either content prop, value prop (deprecated), or children');
+    }
+
+    const rawValue = isState(actualContent)
+      ? (actualContent as State<any>).value
+      : actualContent;
 
     const contentLength = Math.max(1, String(rawValue).length); // <- enforce min width
     const borderPadding = options.border ? 2 : 0;
 
+    const { children, content, value, ...componentProps } = options;
     super({
-      ...options,
+      ...componentProps,
       width: options.width ?? contentLength + borderPadding,
       height: options.height ?? 1 + (options.border ? 2 : 0),
     });
 
-    this.source = options.value;
+    this.source = actualContent;
 
     // If reactive, subscribe to changes
     if (isState(this.source)) {

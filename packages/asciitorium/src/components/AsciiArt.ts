@@ -1,10 +1,11 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
-export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height'> {
-  content: string; // raw text loaded from .txt (UTF-8)
+export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
+  content?: string; // raw text loaded from .txt (UTF-8)
   width?: number; // optional fixed width
   height?: number; // optional fixed height
+  children?: string | string[];
 }
 
 /** Parsed per-frame metadata (keep minimal per your spec) */
@@ -32,15 +33,30 @@ export class AsciiArt extends Component {
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(options: ArtOptions) {
+    // Support both content prop and JSX children
+    let actualContent = options.content;
+    
+    if (!actualContent && options.children) {
+      const children = Array.isArray(options.children) ? options.children : [options.children];
+      if (children.length > 0) {
+        actualContent = children[0];
+      }
+    }
+    
+    if (!actualContent) {
+      throw new Error('AsciiArt component requires either content prop or children');
+    }
+
     // Parse content (supports §/¶ JSON; falls back to single still)
-    const parsed = parseSprite(options.content);
+    const parsed = parseSprite(actualContent);
 
     // Compute width/height from max of all frames (unless provided)
     const { maxW, maxH } = measureFrames(parsed.frames);
     const borderPadding = options.border ? 2 : 0;
 
+    const { children, content, ...componentProps } = options;
     super({
-      ...options,
+      ...componentProps,
       width: options.width ?? Math.max(1, maxW + borderPadding),
       height: options.height ?? Math.max(1, maxH + borderPadding),
     });

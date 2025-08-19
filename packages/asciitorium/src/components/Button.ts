@@ -1,10 +1,12 @@
 import { Component, ComponentProps } from '../core/Component';
 
 export interface ButtonOptions
-  extends Omit<ComponentProps, 'width' | 'height'> {
+  extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
+  content?: string;
   onClick?: () => void;
   width?: number;
   height?: number;
+  children?: string | string[];
 }
 
 export class Button extends Component {
@@ -13,12 +15,23 @@ export class Button extends Component {
   hasFocus = false;
 
   constructor({ onClick, ...options }: ButtonOptions) {
-    const label = options.label ?? 'Button';
+    // Support both new content prop and JSX children
+    let actualContent = options.content || options.label; // fallback to label for backward compatibility
+    
+    if (!actualContent && options.children) {
+      const children = Array.isArray(options.children) ? options.children : [options.children];
+      if (children.length > 0) {
+        actualContent = children[0];
+      }
+    }
+    
+    const buttonText = actualContent ?? 'Button';
     const showLabel = false; // Buttons don't show label in border
-    const width = options.width ?? label.length + 6; // padding
+    const width = options.width ?? buttonText.length + 6; // padding
     const height = options.height ?? 3;
     const border = options.border ?? true;
-    super({ ...options, width, height, border, label, showLabel });
+    const { children, content, ...componentProps } = options;
+    super({ ...componentProps, width, height, border, label: buttonText, showLabel });
 
     this.onClick = onClick;
   }
