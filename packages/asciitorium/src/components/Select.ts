@@ -10,6 +10,7 @@ export interface SelectOptions extends Omit<ComponentProps, 'height'> {
 export class Select extends Component {
   private readonly items: string[];
   private readonly selectedItem: State<string>;
+  private focusedIndex: number = 0;
   private selectedIndex: number = 0;
 
   focusable = true;
@@ -24,37 +25,43 @@ export class Select extends Component {
     this.items = options.items;
     this.selectedItem = options.selectedItem;
 
-    this.selectedIndex = Math.max(
+    const initialSelectedIndex = Math.max(
       0,
       this.items.findIndex((item) => item === this.selectedItem.value)
     );
+    this.selectedIndex = initialSelectedIndex;
+    this.focusedIndex = initialSelectedIndex;
 
     this.bind(this.selectedItem, (value) => {
       const index = this.items.indexOf(value);
       if (index !== -1 && index !== this.selectedIndex) {
         this.selectedIndex = index;
+        this.focusedIndex = index;
       }
     });
   }
 
   override handleEvent(event: string): boolean {
-    const prevIndex = this.selectedIndex;
+    const prevFocusedIndex = this.focusedIndex;
+    const prevSelectedIndex = this.selectedIndex;
 
-    if ((event === 'ArrowUp' || event === 'w') && this.selectedIndex > 0) {
-      this.selectedIndex--;
+    // Navigation (arrow keys move the focus cursor)
+    if ((event === 'ArrowUp' || event === 'w') && this.focusedIndex > 0) {
+      this.focusedIndex--;
     } else if (
       (event === 'ArrowDown' || event === 's') &&
-      this.selectedIndex < this.items.length - 1
+      this.focusedIndex < this.items.length - 1
     ) {
-      this.selectedIndex++;
+      this.focusedIndex++;
     }
-
-    if (this.selectedIndex !== prevIndex) {
+    // Selection (space/enter selects the focused item)
+    else if (event === ' ' || event === 'Enter') {
+      this.selectedIndex = this.focusedIndex;
       this.selectedItem.value = this.items[this.selectedIndex];
-      return true;
     }
 
-    return false;
+    // Return true if any state changed
+    return this.focusedIndex !== prevFocusedIndex || this.selectedIndex !== prevSelectedIndex;
   }
 
   override draw(): string[][] {
@@ -74,22 +81,42 @@ export class Select extends Component {
         Math.max(0, itemCount - maxVisible)
       )
     );
-    const visibleItems = this.items.slice(startIdx, startIdx + maxVisible);
+
+    // Update scroll calculation to use focusedIndex
+    const focusedStartIdx = Math.max(
+      0,
+      Math.min(
+        this.focusedIndex - Math.floor(maxVisible / 2),
+        Math.max(0, itemCount - maxVisible)
+      )
+    );
+    const focusedVisibleItems = this.items.slice(focusedStartIdx, focusedStartIdx + maxVisible);
 
     // Scroll up indicator
-    if (startIdx > 0) {
+    if (focusedStartIdx > 0) {
       const y = borderPad;
       const x = this.width - 2;
       buffer[y][x] = '↑';
     }
 
     // Draw items
-    visibleItems.forEach((item, i) => {
+    focusedVisibleItems.forEach((item, i) => {
       const y = borderPad + paddingTop + i * lineHeight;
       const x = borderPad;
+      const itemIndex = focusedStartIdx + i;
 
-      const isSelected = startIdx + i === this.selectedIndex && this.hasFocus;
-      const prefix = isSelected ? '>' : ' ';
+      const isFocused = itemIndex === this.focusedIndex;
+      const isSelected = itemIndex === this.selectedIndex;
+      
+      let prefix = ' ';
+      if (isSelected && this.hasFocus) {
+        prefix = '◆'; // selected, and component has focus
+      } else if (isSelected) {
+        prefix = '◇'; // Selected but not focused or component doesn't have focus
+      } else if (isFocused && this.hasFocus) {
+        prefix = '◇'; // Focused but not selected
+      }
+      
       const line = `${prefix} ${item}`
         .slice(0, this.width - 2 * borderPad)
         .padEnd(this.width - 2 * borderPad, ' ');
@@ -100,7 +127,7 @@ export class Select extends Component {
     });
 
     // Scroll down indicator
-    if (startIdx + maxVisible < itemCount) {
+    if (focusedStartIdx + maxVisible < itemCount) {
       const y = this.height - 1 - borderPad;
       const x = this.width - 2;
       buffer[y][x] = '↓';

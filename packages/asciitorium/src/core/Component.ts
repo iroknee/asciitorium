@@ -196,10 +196,6 @@ export abstract class Component {
         drawChar(w - 1, y, '│');
       }
 
-      if (this.hasFocus) {
-          drawChar(0, 1, '◆');
-      }
-
     }
 
     if (this.label && this.showLabel) {
