@@ -1,7 +1,7 @@
-import { App, Box, Text, State, AsciiArt, CelticBorder, TextInput, HR, VR } from './index';
+import { App, Box, Text, State, AsciiArt, CelticBorder, Select, HR } from './index';
 import { loadAsciiAsset } from './core/utils';
 
-const helloWorld = new State('Hello, World!');
+const selectedOption = new State('Option 1');
 
 // Load the title ASCII art
 const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
@@ -20,11 +20,15 @@ const app = (
       <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Box>
 
-    <VR length={12} align="left" gap={15} />
+    <Select 
+      width={24}
+      items={['Option 1', 'Option 2', 'Option 3', 'Long Option Name 4', 'Final Choice']} 
+      selectedItem={selectedOption} 
+      gap={5} 
+      align="bottom" 
+    />
 
-    <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
-
-    <Text value={helloWorld} width={24} align="bottom" gap={2} />
+    <Text value={selectedOption} width={24} align="bottom" gap={2} />
   </App>
 );
 

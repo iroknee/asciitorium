@@ -60,7 +60,7 @@ export class Select extends Component {
   override draw(): string[][] {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
-    const paddingTop = 1;
+    const paddingTop = (this.height < 5) ? 0 : 1;
     const lineHeight = 1;
     const innerHeight = this.height - 3 * borderPad - paddingTop;
 
