@@ -27,7 +27,7 @@ const app = (
     />
 
     <Text width={24} align="bottom-left" gap={3}>{select}</Text>
-    <Text width={24} content={multi} align="bottom-right" gap={2}/>
+    <Text width={24} content={multi} align="bottom-right" gap={2} />
   </App>
 );
 

@@ -85,8 +85,11 @@ export abstract class Component {
         ? props.children
         : [props.children];
       for (const child of childList) {
-        child.setParent(this);
-        this.children.push(child);
+        // Only call setParent on Component instances, not strings or other values
+        if (child && typeof child === 'object' && typeof child.setParent === 'function') {
+          child.setParent(this);
+          this.children.push(child);
+        }
       }
       this.recalculateLayout();
     }
