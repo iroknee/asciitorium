@@ -5,7 +5,17 @@
 ![example](asciitorium.png)
 
 ```jsx
-import { App, Box, Text, State, AsciiArt, TextInput, CelticBorder, HR, loadAsciiAsset } from 'asciitorium';
+import {
+  App,
+  Box,
+  Text,
+  State,
+  AsciiArt,
+  TextInput,
+  CelticBorder,
+  HR,
+  loadAsciiAsset,
+} from 'asciitorium';
 
 const helloWorld = new State('Hello, World!');
 
@@ -17,8 +27,6 @@ const app = (
   <App width={64} height={20} layout="relaxed">
     <CelticBorder edge="top-left" align="top-left" />
     <CelticBorder edge="top-right" align="top-right" />
-    <CelticBorder edge="bottom-left" align="bottom-left" />
-    <CelticBorder edge="bottom-right" align="bottom-right" />
 
     <Box align="top" layout="vertical" gap={2}>
       <AsciiArt content={titleArt} align="top" />
@@ -28,44 +36,31 @@ const app = (
 
     <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
 
-    <Text value={helloWorld} width={24} align="bottom" gap={2} />
+    <Text width={24} align="bottom" gap={2}>
+      {helloWorld}
+    </Text>
+
+    <CelticBorder edge="bottom-left" align="bottom-left" />
+    <CelticBorder edge="bottom-right" align="bottom-right" />
   </App>
 );
 
 await app.start();
 ```
 
----
-
-## 📦 Packages
-
-### [`asciitorium`](packages/asciitorium)
-
-A TypeScript-based UI framework for building retro-style terminal interfaces.  
-It uses `<pre>` blocks and styled spans in the browser, and a terminal renderer for cli apps.  
-Includes a custom JSX runtime so you can write components similar to React.
-
-**Installation:**
-
-```bash
-npm install asciitorium
-```
-
-Key features:
+## Key features
 
 - Works in both Web (DOM) and CLI (Terminal)
 - Pure TypeScript, lightweight, no external framework dependencies
 - Built-in components (`Text`, `Button`, `Select`, `ProgressBar`, etc.)
-- Stateful rendering with reactive `State<T>`
+- Stateful rendering with reactive `State<T>` objects
 - Custom JSX runtime for declarative UI
 
 See the [package README](packages/asciitorium/README.md) for full usage details.
 
----
+## Installation
 
-### [`create-asciitorium`](packages/create-asciitorium)
-
-A CLI tool to scaffold new projects using **asciitorium** with **Vite + TypeScript** preconfigured.
+> NOTE: if you intend to build projects leveraging asciitorium you should use: [`create-asciitorium`](packages/create-asciitorium).  It's a CLI tool to scaffold new projects using **Vite + TypeScript** preconfigured:
 
 Usage:
 
@@ -76,9 +71,6 @@ npm create asciitorium my-app
 # Move into your new project
 cd my-app
 
-# Install
-npm install
-
 # Start the dev server (web)
 npm run web
 
@@ -86,38 +78,31 @@ npm run web
 npm run cli
 ```
 
----
+> Otherwise if you want to extend, just fork the repo:
 
 ## 🛠 Development
 
 This repo uses **npm** workspaces.
 
-### Install dependencies
+### Available Scripts
+
+This monorepo provides several npm scripts for development, building, and testing.
+
+#### Root Level Scripts (from repository root)
 
 ```bash
-npm install
+# Development
+npm run web      # Start the core library demo in web mode (vite dev server)
+npm run cli      # Run the core library demo in CLI/terminal mode
+
+# Building
+npm run build    # Build all packages in the workspace
+
+# Testing & Release
+npm run test     # Run full test suite (scaffolding + web demo)
+npm run version  # Update version numbers across all packages
+npm run release  # Publish all packages to npm
 ```
-
-### Build all packages
-
-```bash
-npm run build --workspaces
-```
-
-### Work on a specific package
-
-```bash
-# Build only the core library
-npm run build --workspace=asciitorium
-
-# Run the asciitorium demo in web mode
-cd packages/asciitorium && npm run web
-
-# Run the asciitorium demo in CLI mode
-cd packages/asciitorium && npm run cli
-```
-
----
 
 ## 📂 Monorepo Structure
 
@@ -128,13 +113,9 @@ packages/
 package.json           # Root scripts and workspace configuration
 ```
 
----
-
 ## 📝 Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and migration guides.
-
----
 
 ## 📄 License
 

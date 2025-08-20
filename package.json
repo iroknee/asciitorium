@@ -9,7 +9,7 @@
     "build": "npm run build --workspaces",
     "test": "scripts/test-create.sh && cd tmp/asciitorium/example && npm run web",
     "version": "node scripts/update-version.js",
-    "release": "npm run publish:lib && npm run publish:create"
+    "release": "npm publish --workspaces"
   },
   "workspaces": [
     "packages/*"
