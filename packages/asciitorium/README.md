@@ -95,7 +95,7 @@ asciitorium/
 │   │   ├── layouts/       # Layout components
 │   │   └── renderers/     # DOM and Terminal renderers
 │   ├── jsx/               # Custom JSX runtime
-│   └── demo.tsx           # Demo application
+│   └── main.tsx           # Demo application
 ├── public/                # Static assets
 │   ├── art/               # ASCII art files (.txt)
 │   │   └── asciitorium.txt

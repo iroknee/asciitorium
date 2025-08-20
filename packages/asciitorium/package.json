@@ -32,7 +32,7 @@
   "sideEffects": false,
   "scripts": {
     "web": "vite",
-    "cli": "tsx src/demo.tsx",
+    "cli": "tsx src/main.tsx",
     "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview",
     "format": "prettier --write .",

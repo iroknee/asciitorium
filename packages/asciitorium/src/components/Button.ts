@@ -1,4 +1,5 @@
 import { Component, ComponentProps } from '../core/Component';
+import { requestRender } from '../core/RenderScheduler';
 
 export interface ButtonOptions
   extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
@@ -13,6 +14,8 @@ export class Button extends Component {
   public readonly onClick?: () => void;
   focusable = true;
   hasFocus = false;
+  private isPressed = false;
+  private pressTimer?: NodeJS.Timeout;
 
   constructor({ onClick, ...options }: ButtonOptions) {
     // Support both new content prop and JSX children
@@ -27,8 +30,8 @@ export class Button extends Component {
     
     const buttonText = actualContent ?? 'Button';
     const showLabel = false; // Buttons don't show label in border
-    const width = options.width ?? buttonText.length + 6; // padding
-    const height = options.height ?? 3;
+    const width = options.width ?? buttonText.length + 7; // padding + shadow
+    const height = options.height ?? 4; // height + shadow
     const border = options.border ?? true;
     const { children, content, ...componentProps } = options;
     super({ ...componentProps, width, height, border, label: buttonText, showLabel });
@@ -36,40 +39,116 @@ export class Button extends Component {
     this.onClick = onClick;
   }
 
+  private press(): void {
+    // Clear any existing timer
+    if (this.pressTimer) {
+      clearTimeout(this.pressTimer);
+    }
+    
+    // Set pressed state
+    this.isPressed = true;
+    
+    // Return to normal state after 250ms
+    this.pressTimer = setTimeout(() => {
+      this.isPressed = false;
+      this.pressTimer = undefined;
+      requestRender();
+    }, 250);
+  }
+
   handleEvent(event: string): boolean {
     if (event === 'Enter' || event === ' ') {
+      this.press();
       this.onClick?.();
       return true;
     }
     return false;
   }
   override draw(): string[][] {
-    const buffer = super.draw();
+    // Create buffer filled with transparent chars
+    this.buffer = Array.from({ length: this.height }, () =>
+      Array.from({ length: this.width }, () => this.transparentChar)
+    );
 
+    const drawChar = (x: number, y: number, char: string) => {
+      if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+        this.buffer[y][x] = char;
+      }
+    };
+
+    // Shadow dimensions (button area is 1 less in each dimension to make room for shadow)
+    const buttonWidth = this.width - 1;
+    const buttonHeight = this.height - 1;
+    
+    // Draw shadow based on press state
+    if (this.isPressed) {
+      // Pressed: shadow on top and left
+      for (let x = 0; x < buttonWidth; x++) {
+        drawChar(x, 0, ' '); // top shadow
+      }
+      for (let y = 0; y < buttonHeight; y++) {
+        drawChar(0, y, ' '); // left shadow
+      }
+    } else {
+      // Normal: shadow on bottom and right
+      for (let x = 1; x < this.width-1; x++) {
+        drawChar(x, buttonHeight, '`'); // bottom shadow
+      }
+      for (let y = 1; y < this.height-1; y++) {
+        drawChar(buttonWidth, y, '`'); // right shadow
+      }
+      drawChar(buttonWidth, buttonHeight, '‛'); // bottom-right corner shadow
+    }
+
+    // Calculate button area offset based on press state
+    const offsetX = this.isPressed ? 1 : 0;
+    const offsetY = this.isPressed ? 1 : 0;
+    
+    // Draw button border
+    if (this.border) {
+      const bw = buttonWidth;
+      const bh = buttonHeight;
+
+      drawChar(offsetX + 0, offsetY + 0, '╭');
+      drawChar(offsetX + bw - 1, offsetY + 0, '╮');
+      drawChar(offsetX + 0, offsetY + bh - 1, '╰');
+      drawChar(offsetX + bw - 1, offsetY + bh - 1, '╯');
+
+      for (let x = 1; x < bw - 1; x++) {
+        drawChar(offsetX + x, offsetY + 0, '─');
+        drawChar(offsetX + x, offsetY + bh - 1, '─');
+      }
+      for (let y = 1; y < bh - 1; y++) {
+        drawChar(offsetX + 0, offsetY + y, '│');
+        drawChar(offsetX + bw - 1, offsetY + y, '│');
+      }
+    }
+
+    // Draw button content
     const padX = this.border ? 1 : 0;
     const padY = this.border ? 1 : 0;
-
-    const contentWidth = this.width - padX * 2;
-    const contentHeight = this.height - padY * 2;
+    const contentWidth = buttonWidth - padX * 2;
+    const contentHeight = buttonHeight - padY * 2;
 
     // Calculate label placement (centered)
     const label = this.label ?? 'Button';
-    const labelX =
-      padX + Math.max(Math.floor((contentWidth - label.length) / 2), 0);
-    const labelY = padY + Math.floor(contentHeight / 2);
+    const labelX = offsetX + padX + Math.max(Math.floor((contentWidth - label.length) / 2), 0) + 1;
+    const labelY = offsetY + padY + Math.floor(contentHeight / 2);
 
     // Write the label centered
-    for (let i = 0; i < label.length && labelX + i < this.width - padX; i++) {
-      buffer[labelY][labelX + i] = label[i];
+    for (let i = 0; i < label.length && labelX + i < offsetX + buttonWidth - padX; i++) {
+      drawChar(labelX + i, labelY, label[i]);
     }
 
-    // If focused, draw '>' in first visible column of content area
+    // Draw focus indicator
     if (this.hasFocus) {
-      const indicatorX = padX; // 1st char inside content
-      buffer[labelY][indicatorX] = '>';
+      const indicatorX = offsetX + padX;
+      drawChar(indicatorX, labelY, '◆');
+    } else {
+      const indicatorX = offsetX + padX;
+      drawChar(indicatorX, labelY, '◇');
     }
 
-    this.buffer = buffer;
-    return buffer;
+    return this.buffer;
   }
 }
