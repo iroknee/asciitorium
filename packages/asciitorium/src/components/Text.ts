@@ -3,7 +3,8 @@ import type { State } from '../core/State';
 import { isState, resolveAlignment } from '../core/utils';
 import { Alignment } from 'core/types';
 
-export interface TextOptions extends Omit<ComponentProps, 'height' | 'width' | 'children'> {
+export interface TextOptions
+  extends Omit<ComponentProps, 'height' | 'width' | 'children'> {
   content?: string | State<any>;
   value?: string | State<any>; // deprecated: use content instead
   height?: number;
@@ -19,16 +20,20 @@ export class Text extends Component {
     // Support both new content prop and legacy value prop
     // Also support JSX children syntax
     let actualContent = options.content || options.value;
-    
+
     if (!actualContent && options.children) {
-      const children = Array.isArray(options.children) ? options.children : [options.children];
+      const children = Array.isArray(options.children)
+        ? options.children
+        : [options.children];
       if (children.length > 0) {
         actualContent = children[0];
       }
     }
-    
+
     if (!actualContent) {
-      throw new Error('Text component requires either content prop, value prop (deprecated), or children');
+      throw new Error(
+        'Text component requires either content prop, value prop (deprecated), or children'
+      );
     }
 
     const rawValue = isState(actualContent)
@@ -67,21 +72,96 @@ export class Text extends Component {
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
 
+    // Wrap text if both width and height are explicitly set
+    const wrappedLines = this.wrapText(this.value, innerWidth, innerHeight);
+
     const { x, y } = resolveAlignment(
       this.align,
       innerWidth,
       innerHeight,
-      Math.min(this.value.length, innerWidth),
-      1
+      innerWidth,
+      wrappedLines.length
     );
 
     const drawX = this.border ? x + 1 : x;
     const drawY = this.border ? y + 1 : y;
 
-    for (let i = 0; i < this.value.length && i + drawX < this.width; i++) {
-      this.buffer[drawY][drawX + i] = this.value[i];
+    // Draw each wrapped line
+    for (
+      let lineIndex = 0;
+      lineIndex < wrappedLines.length && lineIndex < innerHeight;
+      lineIndex++
+    ) {
+      const line = wrappedLines[lineIndex];
+      const currentY = drawY + lineIndex;
+
+      if (currentY >= this.height) break;
+
+      for (
+        let charIndex = 0;
+        charIndex < line.length && charIndex < innerWidth;
+        charIndex++
+      ) {
+        const currentX = drawX + charIndex;
+        if (currentX < this.width) {
+          this.buffer[currentY][currentX] = line[charIndex];
+        }
+      }
     }
 
     return this.buffer;
+  }
+
+  private wrapText(
+    text: string,
+    maxWidth: number,
+    maxHeight: number
+  ): string[] {
+    if (maxWidth <= 0) return [];
+
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+
+      if (testLine.length <= maxWidth) {
+        currentLine = testLine;
+      } else {
+        // If current line has content, push it and start new line
+        if (currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          // Word is longer than maxWidth, break it
+          if (word.length > maxWidth) {
+            let remainingWord = word;
+            while (
+              remainingWord.length > maxWidth &&
+              lines.length < maxHeight
+            ) {
+              lines.push(remainingWord.substring(0, maxWidth));
+              remainingWord = remainingWord.substring(maxWidth);
+            }
+            if (remainingWord.length > 0 && lines.length < maxHeight) {
+              currentLine = remainingWord;
+            }
+          } else {
+            currentLine = word;
+          }
+        }
+      }
+
+      // Stop if we've reached max height
+      if (lines.length >= maxHeight) break;
+    }
+
+    // Add remaining content if there's space
+    if (currentLine && lines.length < maxHeight) {
+      lines.push(currentLine);
+    }
+
+    return lines.slice(0, maxHeight);
   }
 }

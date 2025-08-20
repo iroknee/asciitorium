@@ -29,7 +29,9 @@ export class MultiSelect extends Component {
     this.selectedSet = new Set(this.selectedItems.value);
 
     // Start focus on first selected item, or first item if none selected
-    const firstSelectedIndex = this.items.findIndex(item => this.selectedSet.has(item));
+    const firstSelectedIndex = this.items.findIndex((item) =>
+      this.selectedSet.has(item)
+    );
     this.focusedIndex = Math.max(0, firstSelectedIndex);
 
     // Bind to state changes
@@ -64,9 +66,11 @@ export class MultiSelect extends Component {
     }
 
     // Return true if any state changed
-    return this.focusedIndex !== prevFocusedIndex || 
-           this.selectedSet.size !== prevSelectedSet.size ||
-           !this.setsEqual(this.selectedSet, prevSelectedSet);
+    return (
+      this.focusedIndex !== prevFocusedIndex ||
+      this.selectedSet.size !== prevSelectedSet.size ||
+      !this.setsEqual(this.selectedSet, prevSelectedSet)
+    );
   }
 
   private setsEqual(set1: Set<string>, set2: Set<string>): boolean {
@@ -80,7 +84,7 @@ export class MultiSelect extends Component {
   override draw(): string[][] {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
-    const paddingTop = (this.height < 5) ? 0 : 1;
+    const paddingTop = this.height < 5 ? 0 : 1;
     const lineHeight = 1;
     const innerHeight = this.height - 3 * borderPad - paddingTop;
 
@@ -95,7 +99,10 @@ export class MultiSelect extends Component {
         Math.max(0, itemCount - maxVisible)
       )
     );
-    const focusedVisibleItems = this.items.slice(focusedStartIdx, focusedStartIdx + maxVisible);
+    const focusedVisibleItems = this.items.slice(
+      focusedStartIdx,
+      focusedStartIdx + maxVisible
+    );
 
     // Scroll up indicator
     if (focusedStartIdx > 0) {
@@ -112,7 +119,7 @@ export class MultiSelect extends Component {
 
       const isFocused = itemIndex === this.focusedIndex;
       const isSelected = this.selectedSet.has(item);
-      
+
       let prefix = ' ';
       if (isFocused && this.hasFocus) {
         prefix = '◈'; // ◇ Focused item (takes priority)
@@ -123,7 +130,7 @@ export class MultiSelect extends Component {
       } else {
         prefix = ' '; // Non-selected item
       }
-      
+
       const line = `${prefix} ${item}`
         .slice(0, this.width - 2 * borderPad)
         .padEnd(this.width - 2 * borderPad, ' ');
@@ -139,7 +146,7 @@ export class MultiSelect extends Component {
       const x = this.width - 2;
       buffer[y][x] = '↓';
     }
-    
+
     this.buffer = buffer;
     return buffer;
   }

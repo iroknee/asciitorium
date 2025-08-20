@@ -1,48 +1,112 @@
-import { App, Text, State, Select, MultiSelect, Button } from './index';
-const select = new State('Option 1');
-const multi = new State(['Option 2']);
-const buttonClickCount = new State(0);
-const clicksText = new State(`Clicks: ${buttonClickCount.value}`);
+import { App, Text, State, Select, Box, Component } from './index';
 
-// Update clicksText whenever buttonClickCount changes
-buttonClickCount.subscribe(() => {
-  clicksText.value = `Clicks: ${buttonClickCount.value}`;
-});
+// Import example components
+import { ButtonExample } from './examples/ButtonExample';
+import { SelectExample } from './examples/SelectExample';
+import { TextInputExample } from './examples/TextInputExample';
+import { ProgressBarExample } from './examples/ProgressBarExample';
+import { TabsExample } from './examples/TabsExample';
+import { TextExample } from './examples/TextExample';
+import { LayoutExample } from './examples/LayoutExample';
 
-// Construct the app
+// Main state for component selection
+const selectedComponent = new State('Button');
+
+// Component list for navigation
+const componentList = [
+  'Button',
+  'Select & MultiSelect',
+  'TextInput',
+  'ProgressBar',
+  'Tabs',
+  'Text & AsciiArt',
+  'Layout Components',
+];
+
+// Component mapping
+const examples: Record<string, any> = {
+  Button: ButtonExample,
+  'Select & MultiSelect': SelectExample,
+  TextInput: TextInputExample,
+  ProgressBar: ProgressBarExample,
+  Tabs: TabsExample,
+  'Text & AsciiArt': TextExample,
+  'Layout Components': LayoutExample,
+};
+
+// Create a wrapper component that dynamically switches based on state
+
+class DynamicExampleWrapper extends Box {
+  constructor() {
+    super({ width: 53, height: 28, layout: 'relaxed' });
+
+    // Initially set the current example
+    this.updateExample();
+
+    // Subscribe to changes in selectedComponent
+    selectedComponent.subscribe(() => {
+      this.updateExample();
+    });
+  }
+
+  private updateExample() {
+    // Properly remove existing children using removeChild to notify parent
+    const childrenToRemove = [...this.children]; // Create copy to avoid mutation during iteration
+    for (const child of childrenToRemove) {
+      child.destroy();
+      this.removeChild(child);
+    }
+
+    // Get the current example factory function
+    const exampleFactory = examples[selectedComponent.value];
+    if (exampleFactory) {
+      // Call the factory function to create a new component instance
+      const exampleComponent = exampleFactory();
+      this.addChild(exampleComponent);
+    } else {
+      // Fallback for unknown component
+      this.addChild(
+        new Text({
+          width: 40,
+          height: 5,
+          border: true,
+          children: ['Unknown component'],
+        })
+      );
+    }
+
+    // Find the root App component and reset focus manager
+    this.notifyAppOfFocusChange();
+  }
+
+  private notifyAppOfFocusChange() {
+    // Walk up the parent chain to find the App
+    let current: Component | undefined = this;
+    while (current && current.constructor.name !== 'App') {
+      current = current.parent;
+    }
+    
+    // If we found the App, reset its focus manager
+    if (current && (current as any).focus) {
+      (current as any).focus.reset(current);
+    }
+  }
+}
+
+// Construct the app with horizontal layout
 const app = (
-  <App width={64} height={24} layout="relaxed" border>
-
-    <Select 
-      label="Select"
-      width={16}
-      height={10}
-      items={['Option 1', 'Option 2', 'Option 3', 'Option 4']} 
-      selectedItem={select} 
-      align="top-left"
-      gap={2} 
+  <App width={80} height={30} layout="horizontal">
+    {/* Left Panel - Navigation */}
+    <Select
+      label="Components"
+      width={25}
+      height={28}
+      items={componentList}
+      selectedItem={selectedComponent}
+      border
     />
-
-    <MultiSelect 
-      label="MultiSelect"
-      width={16}
-      height={10}
-      items={['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5']} 
-      selectedItems={multi} 
-      align="top-right"
-      gap={2} 
-    />
-
-    <Button
-      label="Click Me!"
-      align="top"
-      gap={2}
-      onClick={() => buttonClickCount.value = buttonClickCount.value + 1}
-    />
-
-    <Text width={24} align="bottom-left" gap={3}>{select}</Text>
-    <Text width={24} content={multi} align="bottom-right" gap={2} />
-    <Text width={24} align="bottom" gap={1}>{clicksText}</Text>
+    {/* Right Panel - Dynamic content */}
+    {new DynamicExampleWrapper()}
   </App>
 );
 

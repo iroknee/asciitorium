@@ -1,7 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 
-export interface VROptions
-  extends Omit<ComponentProps, 'width' | 'height'> {
+export interface VROptions extends Omit<ComponentProps, 'width' | 'height'> {
   length?: number; // optional alias for height
 }
 

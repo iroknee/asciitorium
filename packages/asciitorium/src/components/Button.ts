@@ -20,21 +20,30 @@ export class Button extends Component {
   constructor({ onClick, ...options }: ButtonOptions) {
     // Support both new content prop and JSX children
     let actualContent = options.content || options.label; // fallback to label for backward compatibility
-    
+
     if (!actualContent && options.children) {
-      const children = Array.isArray(options.children) ? options.children : [options.children];
+      const children = Array.isArray(options.children)
+        ? options.children
+        : [options.children];
       if (children.length > 0) {
         actualContent = children[0];
       }
     }
-    
+
     const buttonText = actualContent ?? 'Button';
     const showLabel = false; // Buttons don't show label in border
     const width = options.width ?? buttonText.length + 7; // padding + shadow
     const height = options.height ?? 4; // height + shadow
     const border = options.border ?? true;
     const { children, content, ...componentProps } = options;
-    super({ ...componentProps, width, height, border, label: buttonText, showLabel });
+    super({
+      ...componentProps,
+      width,
+      height,
+      border,
+      label: buttonText,
+      showLabel,
+    });
 
     this.onClick = onClick;
   }
@@ -44,10 +53,10 @@ export class Button extends Component {
     if (this.pressTimer) {
       clearTimeout(this.pressTimer);
     }
-    
+
     // Set pressed state
     this.isPressed = true;
-    
+
     // Return to normal state after 250ms
     this.pressTimer = setTimeout(() => {
       this.isPressed = false;
@@ -79,7 +88,7 @@ export class Button extends Component {
     // Shadow dimensions (button area is 1 less in each dimension to make room for shadow)
     const buttonWidth = this.width - 1;
     const buttonHeight = this.height - 1;
-    
+
     // Draw shadow based on press state
     if (this.isPressed) {
       // Pressed: shadow on top and left
@@ -91,10 +100,10 @@ export class Button extends Component {
       }
     } else {
       // Normal: shadow on bottom and right
-      for (let x = 1; x < this.width-1; x++) {
+      for (let x = 1; x < this.width - 1; x++) {
         drawChar(x, buttonHeight, '`'); // bottom shadow
       }
-      for (let y = 1; y < this.height-1; y++) {
+      for (let y = 1; y < this.height - 1; y++) {
         drawChar(buttonWidth, y, '`'); // right shadow
       }
       drawChar(buttonWidth, buttonHeight, '‛'); // bottom-right corner shadow
@@ -103,7 +112,7 @@ export class Button extends Component {
     // Calculate button area offset based on press state
     const offsetX = this.isPressed ? 1 : 0;
     const offsetY = this.isPressed ? 1 : 0;
-    
+
     // Draw button border
     if (this.border) {
       const bw = buttonWidth;
@@ -132,11 +141,19 @@ export class Button extends Component {
 
     // Calculate label placement (centered)
     const label = this.label ?? 'Button';
-    const labelX = offsetX + padX + Math.max(Math.floor((contentWidth - label.length) / 2), 0) + 1;
+    const labelX =
+      offsetX +
+      padX +
+      Math.max(Math.floor((contentWidth - label.length) / 2), 0) +
+      1;
     const labelY = offsetY + padY + Math.floor(contentHeight / 2);
 
     // Write the label centered
-    for (let i = 0; i < label.length && labelX + i < offsetX + buttonWidth - padX; i++) {
+    for (
+      let i = 0;
+      i < label.length && labelX + i < offsetX + buttonWidth - padX;
+      i++
+    ) {
       drawChar(labelX + i, labelY, label[i]);
     }
 

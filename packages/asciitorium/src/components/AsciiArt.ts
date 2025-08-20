@@ -1,7 +1,8 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
-export interface ArtOptions extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
+export interface ArtOptions
+  extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
   content?: string; // raw text loaded from .txt (UTF-8)
   width?: number; // optional fixed width
   height?: number; // optional fixed height
@@ -35,16 +36,20 @@ export class AsciiArt extends Component {
   constructor(options: ArtOptions) {
     // Support both content prop and JSX children
     let actualContent = options.content;
-    
+
     if (!actualContent && options.children) {
-      const children = Array.isArray(options.children) ? options.children : [options.children];
+      const children = Array.isArray(options.children)
+        ? options.children
+        : [options.children];
       if (children.length > 0) {
         actualContent = children[0];
       }
     }
-    
+
     if (!actualContent) {
-      throw new Error('AsciiArt component requires either content prop or children');
+      throw new Error(
+        'AsciiArt component requires either content prop or children'
+      );
     }
 
     // Parse content (supports §/¶ JSON; falls back to single still)

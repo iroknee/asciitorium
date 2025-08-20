@@ -1,10 +1,6 @@
 import { Alignment } from './types';
 import type { State } from './State';
-import {
-  LayoutRegistry,
-  LayoutType,
-  LayoutOptions,
-} from './layouts/Layout';
+import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 
 export interface ComponentProps {
   label?: string;
@@ -86,7 +82,11 @@ export abstract class Component {
         : [props.children];
       for (const child of childList) {
         // Only call setParent on Component instances, not strings or other values
-        if (child && typeof child === 'object' && typeof child.setParent === 'function') {
+        if (
+          child &&
+          typeof child === 'object' &&
+          typeof child.setParent === 'function'
+        ) {
           child.setParent(this);
           this.children.push(child);
         }
@@ -138,10 +138,7 @@ export abstract class Component {
     if (this.children.length === 0) return;
 
     if (!this.layout) {
-      this.layout = LayoutRegistry.create(
-        this.layoutType,
-        this.layoutOptions
-      );
+      this.layout = LayoutRegistry.create(this.layoutType, this.layoutOptions);
     }
     this.layout.layout(this, this.children);
   }
@@ -198,7 +195,6 @@ export abstract class Component {
         drawChar(0, y, '│');
         drawChar(w - 1, y, '│');
       }
-
     }
 
     if (this.label && this.showLabel) {

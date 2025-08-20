@@ -43,10 +43,16 @@ export class CelticBorder extends Component {
     let selectedEdge: CelticEdge;
     if (edge) {
       selectedEdge = edge;
-    } else if (options.align && typeof options.align === 'string' && options.align in borderPatterns) {
+    } else if (
+      options.align &&
+      typeof options.align === 'string' &&
+      options.align in borderPatterns
+    ) {
       selectedEdge = options.align as CelticEdge;
     } else {
-      throw new Error('CelticBorder requires either an "edge" property or an "align" property that is one of: top-left, top-right, bottom-left, bottom-right');
+      throw new Error(
+        'CelticBorder requires either an "edge" property or an "align" property that is one of: top-left, top-right, bottom-left, bottom-right'
+      );
     }
 
     const pattern = borderPatterns[selectedEdge];

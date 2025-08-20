@@ -61,13 +61,16 @@ export class Select extends Component {
     }
 
     // Return true if any state changed
-    return this.focusedIndex !== prevFocusedIndex || this.selectedIndex !== prevSelectedIndex;
+    return (
+      this.focusedIndex !== prevFocusedIndex ||
+      this.selectedIndex !== prevSelectedIndex
+    );
   }
 
   override draw(): string[][] {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
-    const paddingTop = (this.height < 5) ? 0 : 1;
+    const paddingTop = this.height < 5 ? 0 : 1;
     const lineHeight = 1;
     const innerHeight = this.height - 3 * borderPad - paddingTop;
 
@@ -90,7 +93,10 @@ export class Select extends Component {
         Math.max(0, itemCount - maxVisible)
       )
     );
-    const focusedVisibleItems = this.items.slice(focusedStartIdx, focusedStartIdx + maxVisible);
+    const focusedVisibleItems = this.items.slice(
+      focusedStartIdx,
+      focusedStartIdx + maxVisible
+    );
 
     // Scroll up indicator
     if (focusedStartIdx > 0) {
@@ -107,7 +113,7 @@ export class Select extends Component {
 
       const isFocused = itemIndex === this.focusedIndex;
       const isSelected = itemIndex === this.selectedIndex;
-      
+
       let prefix = ' ';
       if (isSelected && this.hasFocus) {
         prefix = '◆'; // selected, and component has focus
@@ -116,8 +122,8 @@ export class Select extends Component {
       } else if (isFocused && this.hasFocus) {
         prefix = '◈'; // Focused but not selected
       }
-      
-      const line = `${prefix} ${item}`  
+
+      const line = `${prefix} ${item}`
         .slice(0, this.width - 2 * borderPad)
         .padEnd(this.width - 2 * borderPad, ' ');
 
