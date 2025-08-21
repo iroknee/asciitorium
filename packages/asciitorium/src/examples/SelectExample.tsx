@@ -1,46 +1,40 @@
-import { Text, State, Select, MultiSelect, Box, HR } from '../index';
+import { Text, State, Select, Box, HR } from '../index';
 
 export const SelectExample = () => {
-  // States for select components - local to each component instance
-  const selectValue = new State('Option 1');
-  const multiValue = new State(['Option 2']);
+  const selectValue = new State('Tesla Model S');
+
+  const carModels = [
+    'Tesla Model S',
+    'BMW M3',
+    'Audi A4',
+    'Mercedes C-Class',
+    'Honda Civic',
+    'Toyota Camry',
+    'Ford Mustang',
+    'Chevrolet Corvette',
+    'Porsche 911',
+    'Ferrari 488',
+    'Lamborghini Huracan',
+    'McLaren 720S',
+    'Nissan GTR',
+    'Subaru WRX',
+  ];
 
   return (
-    <Box width={53} height={28} border layout="vertical">
-      <Text align="top" content="  " />
-      <Text align="center" gap={{ top: 1, bottom: 1 }} content="Select & MultiSelect Examples" />
-      <HR length={51} gap={{ bottom: 2 }} />
-      <Box layout="horizontal" align="center" gap={{ bottom: 2 }}>
+    <Box width={42} height={28} label="Select Example:" border>
+      <Box align="center" gap={{ top: 2, bottom: 2 }}>
         <Select
-          label="Single Select"
-          width={20}
-          height={8}
-          items={['Option 1', 'Option 2', 'Option 3', 'Red', 'Green', 'Blue']}
+          label="Car's to Select:"
+          width={34}
+          height={10}
+          items={carModels}
           selectedItem={selectValue}
-          gap={{ right: 1 }}
-        />
-        <MultiSelect
-          label="Multi Select"
-          width={20}
-          height={8}
-          items={['Item A', 'Item B', 'Item C', 'Item D', 'Item E']}
-          selectedItems={multiValue}
         />
       </Box>
-      <Text
-        width={40}
-        align="center"
-        children={[
-          new State(
-            `Selected: ${selectValue.value} | Multi: [${multiValue.value.join(', ')}]`
-          ),
-        ]}
-      />
-      <Text 
-        align="left" 
-        gap={{ left: 5, top: 1 }} 
-        content="← Left-aligned with 5-char indent" 
-      />
+      <Box align="center" gap={{ left: 5 }} layout="horizontal">
+        <Text>Car Selected: </Text>
+        <Text width={20}>{selectValue}</Text>
+      </Box>
     </Box>
   );
 };

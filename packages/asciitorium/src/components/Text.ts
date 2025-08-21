@@ -112,47 +112,61 @@ export class Text extends Component {
   ): string[] {
     if (maxWidth <= 0) return [];
 
-    const words = text.split(' ');
+    // First split by newlines to handle explicit line breaks
+    const paragraphs = text.split('\n');
     const lines: string[] = [];
-    let currentLine = '';
 
-    for (const word of words) {
-      const testLine = currentLine ? `${currentLine} ${word}` : word;
+    for (const paragraph of paragraphs) {
+      if (lines.length >= maxHeight) break;
 
-      if (testLine.length <= maxWidth) {
-        currentLine = testLine;
-      } else {
-        // If current line has content, push it and start new line
-        if (currentLine) {
-          lines.push(currentLine);
-          currentLine = word;
-        } else {
-          // Word is longer than maxWidth, break it
-          if (word.length > maxWidth) {
-            let remainingWord = word;
-            while (
-              remainingWord.length > maxWidth &&
-              lines.length < maxHeight
-            ) {
-              lines.push(remainingWord.substring(0, maxWidth));
-              remainingWord = remainingWord.substring(maxWidth);
-            }
-            if (remainingWord.length > 0 && lines.length < maxHeight) {
-              currentLine = remainingWord;
-            }
-          } else {
-            currentLine = word;
-          }
-        }
+      if (paragraph.trim() === '') {
+        // Empty line
+        lines.push('');
+        continue;
       }
 
-      // Stop if we've reached max height
-      if (lines.length >= maxHeight) break;
-    }
+      const words = paragraph.split(' ');
+      let currentLine = '';
 
-    // Add remaining content if there's space
-    if (currentLine && lines.length < maxHeight) {
-      lines.push(currentLine);
+      for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+
+        if (testLine.length <= maxWidth) {
+          currentLine = testLine;
+        } else {
+          // If current line has content, push it and start new line
+          if (currentLine) {
+            lines.push(currentLine);
+            if (lines.length >= maxHeight) break;
+            currentLine = word;
+          } else {
+            // Word is longer than maxWidth, break it
+            if (word.length > maxWidth) {
+              let remainingWord = word;
+              while (
+                remainingWord.length > maxWidth &&
+                lines.length < maxHeight
+              ) {
+                lines.push(remainingWord.substring(0, maxWidth));
+                remainingWord = remainingWord.substring(maxWidth);
+              }
+              if (remainingWord.length > 0 && lines.length < maxHeight) {
+                currentLine = remainingWord;
+              }
+            } else {
+              currentLine = word;
+            }
+          }
+        }
+
+        // Stop if we've reached max height
+        if (lines.length >= maxHeight) break;
+      }
+
+      // Add remaining content if there's space
+      if (currentLine && lines.length < maxHeight) {
+        lines.push(currentLine);
+      }
     }
 
     return lines.slice(0, maxHeight);

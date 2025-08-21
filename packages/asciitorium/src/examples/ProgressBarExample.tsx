@@ -1,54 +1,42 @@
-import { Text, State, ProgressBar, Button, Box } from '../index';
+import { Text, State, ProgressBar, Button, Box, HR } from '../index';
 
 export const ProgressBarExample = () => {
   // State for progress bar - local to each component instance
   const progressValue = new State(25);
 
   return (
-    <Box width={53} height={27} border={true} layout="vertical">
-      <Text
-        width={40}
-        height={2}
-        children={['ProgressBar Examples with controls']}
-      />
+    <Box width={42} height={28} border label="ProgressBar Example:" >
+      <Text align="center" gap={{top: 2}}>With Percentage</Text>
       <ProgressBar
         width={35}
         percent={progressValue}
-        showPercentage={true}
-        gap={1}
+        align="center"
+        showPercentage
       />
+      <Text align="center" gap={{top: 2}}>Without Percentage</Text>
       <ProgressBar
         width={35}
         percent={progressValue}
         showPercentage={false}
-        gap={2}
+        align="center"
       />
-      <Button
-        label="Increase"
-        width={10}
-        height={3}
-        onClick={() =>
-          (progressValue.value = Math.min(100, progressValue.value + 10))
-        }
-        gap={1}
-      />
-      <Button
-        label="Decrease"
-        width={10}
-        height={3}
-        onClick={() =>
-          (progressValue.value = Math.max(0, progressValue.value - 10))
-        }
-        gap={1}
-      />
-      <Button
-        label="Reset"
-        width={10}
-        height={3}
-        onClick={() => (progressValue.value = 25)}
-        gap={1}
-      />
-      <Text width={30} height={2} gap={1} children={[progressValue]} />
+
+      <Box layout="horizontal" align="center" gap={{ top: 3 }}>
+        <Button
+          label="Increase"
+          onClick={() =>
+            (progressValue.value = Math.min(100, progressValue.value + 10))
+          }
+          gap={1}
+        />
+        <Button
+          label="Decrease"
+          onClick={() =>
+            (progressValue.value = Math.max(0, progressValue.value - 10))
+          }
+          gap={1}
+        />
+      </Box>
     </Box>
   );
 };

@@ -73,7 +73,7 @@ export class Tabs extends Component {
     for (let i = 0; i < this.tabs.length; i++) {
       const label = this.tabs[i];
       const isSelected = i === this.selectedIndex && this.hasFocus;
-      const text = isSelected ? `[${label}]` : ` ${label} `;
+      const text = isSelected ? `◆${label}◆` : ` ${label} `;
 
       for (let j = 0; j < text.length && x + j < this.width - borderPad; j++) {
         buffer[y][x + j] = text[j];

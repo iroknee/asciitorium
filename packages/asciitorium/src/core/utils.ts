@@ -172,7 +172,7 @@ export function validateWebEnvironment(): void {
   }
 }
 
-export async function loadAsciiAsset(relativePath: string): Promise<string> {
+export async function loadArt(relativePath: string): Promise<string> {
   if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
     // Web: use fetch from public path
     return fetch(relativePath).then((res) => {

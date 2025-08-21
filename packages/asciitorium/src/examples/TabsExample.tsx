@@ -34,22 +34,16 @@ export const TabsExample = () => {
         : 'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
 
   return (
-    <Box width={53} height={27} border={true} layout="vertical">
-      <Text
-        width={40}
-        height={2}
-        children={['Tabs Example with dynamic content']}
-      />
+    <Box width={42} height={28} border label="Tabs Example:">
       <Tabs
         tabs={['Tab 1', 'Tab 2', 'Tab 3']}
+        align="center"
         selectedTab={tabsValue}
-        width={35}
         gap={1}
       />
       <Box
-        width={35}
+        width={38}
         height={8}
-        border={true}
         gap={1}
         children={[
           new Text({ width: 30, height: 6, children: [tabContentState] }),

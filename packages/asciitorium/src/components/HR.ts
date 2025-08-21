@@ -1,18 +1,20 @@
 import { Component, ComponentProps } from '../core/Component';
 
-export interface HROptions extends Omit<ComponentProps, 'width' | 'height'> {
-  length?: number; // optional alias for width
+export interface HROptions extends Omit<ComponentProps, 'height'> {
+  width?: number;
 }
 
 export class HR extends Component {
-  constructor(options: HROptions) {
-    const resolvedWidth = options.length ?? 12;
+
+  constructor(options: HROptions = {}) {
+    const resolvedWidth = options.width ?? 12;
 
     super({
       ...options,
       width: resolvedWidth,
       height: 1, // Always one line tall
     });
+
   }
 
   draw(): string[][] {

@@ -1,17 +1,18 @@
 import { Text, HR, VR, Box, CelticBorder } from '../index';
 
 export const LayoutExample = () => (
-  <Box width={53} height={27} border={true} layout="vertical">
+  <Box width={42} height={27} border layout="vertical">
     <Text
       width={40}
       height={2}
-      children={['Layout Components - HR, VR, Box, Borders']}
-    />
-    <HR length={35} gap={1} />
+    >
+      Layout Components - HR, VR, Box, Borders
+    </Text>
+    <HR gap={1} />
     <Box
       width={20}
       height={5}
-      border={true}
+      border
       gap={1}
       children={[
         new Text({
@@ -33,11 +34,12 @@ export const LayoutExample = () => (
         }),
       ]}
     />
-    <HR length={35} gap={1} />
+    <HR gap={1} />
     <Text
       width={35}
       height={2}
-      children={['Layout components help organize\nand structure your UI.']}
-    />
+    >
+      Layout components help organize\nand structure your UI.
+    </Text>
   </Box>
 );
