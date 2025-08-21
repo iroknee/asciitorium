@@ -3,6 +3,7 @@ export * from './core/utils';
 export * from './core/App';
 export * from './core/Component';
 export * from './core/State';
+export * from './core/PersistentState';
 export * from './components/AsciiArt';
 export * from './components/Box';
 export * from './components/Button';

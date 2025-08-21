@@ -7,19 +7,20 @@ export const TextInputExample = () => {
 
   return (
     <Box width={53} height={27} border={true} layout="vertical">
-      <Text
-        width={40}
-        height={2}
-        children={['TextInput Examples - String and Numeric inputs']}
-      />
+      <Text content="TextInput Examples" align="center" gap={1}/>
+      <HR length={51} gap={1} />
+
+      <Text content="String and Numeric inputs" align="center" gap={4}/>
       <TextInput
+        label="String"
         width={30}
         height={3}
         value={textInputValue}
-        placeholder="Enter text here..."
+        placeholder="Enter text here..."    
         gap={1}
       />
       <TextInput
+        label="Number"
         width={30}
         height={3}
         value={numericInputValue}
@@ -29,11 +30,12 @@ export const TextInputExample = () => {
       />
       <Text
         width={40}
+        align="center"
         height={3}
         gap={1}
         children={[
           new State(
-            `Text: "${textInputValue.value}"\nNumber: ${numericInputValue.value}`
+            `Text: "${textInputValue.value}", Number: ${numericInputValue.value}`
           ),
         ]}
       />

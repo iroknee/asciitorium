@@ -1,4 +1,4 @@
-import { App, Text, State, Select, Box, Component } from './index';
+import { App, Text, Select, Box, Component, PersistentState } from './index';
 
 // Import example components
 import { ButtonExample } from './examples/ButtonExample';
@@ -9,8 +9,8 @@ import { TabsExample } from './examples/TabsExample';
 import { TextExample } from './examples/TextExample';
 import { LayoutExample } from './examples/LayoutExample';
 
-// Main state for component selection
-const selectedComponent = new State('Button');
+// Main state for component selection with persistence
+const selectedComponent = new PersistentState('Button', 'demo-selected-component');
 
 // Component list for navigation
 const componentList = [
