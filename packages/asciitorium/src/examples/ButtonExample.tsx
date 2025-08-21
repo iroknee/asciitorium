@@ -15,7 +15,10 @@ export const ButtonExample = () => {
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
         gap={{top: 4, bottom: 3}}
       />
-      <Text align="center" width={2}>{buttonClickCount}</Text>
+      <Box layout="horizontal" gap={{left: 2, right: 2}} align="center">
+        <Text>Click Count: </Text>
+        <Text width={4}>{buttonClickCount}</Text>
+      </Box>
       <Text align="center" width={40} height={3} gap={{top: 5}}>
         Use [Tab] to change component focus. Press [Enter] or [Space] to 'click it'.
       </Text>

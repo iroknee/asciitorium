@@ -62,7 +62,7 @@ export class Button extends Component {
       this.isPressed = false;
       this.pressTimer = undefined;
       requestRender();
-    }, 250);
+    }, 100);
   }
 
   handleEvent(event: string): boolean {
