@@ -8,16 +8,16 @@ export const SelectExample = () => {
   return (
     <Box width={53} height={28} border layout="vertical">
       <Text align="top" content="  " />
-      <Text align="center" gap={1} content="Select & MultiSelect Examples" />
-      <HR length={51} gap={2} />
-      <Box layout="horizontal" align="center" gap={2}>
+      <Text align="center" gap={{ top: 1, bottom: 1 }} content="Select & MultiSelect Examples" />
+      <HR length={51} gap={{ bottom: 2 }} />
+      <Box layout="horizontal" align="center" gap={{ bottom: 2 }}>
         <Select
           label="Single Select"
           width={20}
           height={8}
           items={['Option 1', 'Option 2', 'Option 3', 'Red', 'Green', 'Blue']}
           selectedItem={selectValue}
-          gap={1}
+          gap={{ right: 1 }}
         />
         <MultiSelect
           label="Multi Select"
@@ -25,7 +25,6 @@ export const SelectExample = () => {
           height={8}
           items={['Item A', 'Item B', 'Item C', 'Item D', 'Item E']}
           selectedItems={multiValue}
-          gap={1}
         />
       </Box>
       <Text
@@ -36,6 +35,11 @@ export const SelectExample = () => {
             `Selected: ${selectValue.value} | Multi: [${multiValue.value.join(', ')}]`
           ),
         ]}
+      />
+      <Text 
+        align="left" 
+        gap={{ left: 5, top: 1 }} 
+        content="← Left-aligned with 5-char indent" 
       />
     </Box>
   );

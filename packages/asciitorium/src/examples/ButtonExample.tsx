@@ -5,30 +5,20 @@ export const ButtonExample = () => {
   const buttonClickCount = new State(0);
 
   return (
-    <Box width={53} height={28} border={true} layout="relaxed">
-      <Text align="top" gap={1} content="Button Example" />
-      <HR align="top" length={51} gap={3} />
-      <Text
-        align="top"
-        gap={5}
-        content="Interactive button with click handling"
-      />
+    <Box width={53} height={28} border={true} layout="vertical">
+      <Text align="top" gap={{ top: 1, bottom: 1 }}>Button Example</Text>
+      <HR align="top" length={51} />
+      <Text align="center">Interactive button with click handling</Text>
       <Button
-        label="Click Me!"
+        label="I'm a Button!"
         align="center"
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
-        gap={2}
+        gap={{top: 4, bottom: 3}}
       />
-      <Text align="bottom" width={2} gap={7} children={[buttonClickCount]} />
-      <Text
-        align="bottom"
-        width={40}
-        height={3}
-        gap={2}
-        children={[
-          'Use [Tab] to navigate between buttons. Press [Enter] or [Space] to activate.',
-        ]}
-      />
+      <Text align="center" width={2}>{buttonClickCount}</Text>
+      <Text align="center" width={40} height={3} gap={{top: 5}}>
+        Use [Tab] to change component focus. Press [Enter] or [Space] to 'click it'.
+      </Text>
     </Box>
   );
 };

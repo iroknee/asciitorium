@@ -1,6 +1,7 @@
 import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
+import { resolveGap } from '../utils/gapUtils';
 
 export class HorizontalLayout implements Layout {
   private fit: boolean;
@@ -20,26 +21,37 @@ export class HorizontalLayout implements Layout {
     for (const child of children) {
       if (child.fixed) continue; // Skip positioning if component is fixed
 
+      // Resolve child's gap to normalized format
+      const gap = resolveGap(child.gap);
+
+      // Apply left gap
+      currentX += gap.left;
+
       if (this.fit && count > 0) {
         child.width = Math.floor(innerWidth / count);
       }
 
+      // Calculate available height after accounting for top/bottom gaps
+      const availableHeight = innerHeight - gap.top - gap.bottom;
+      
       if (!child.height) {
-        child.height = innerHeight;
+        child.height = Math.max(1, availableHeight); // Ensure minimum height of 1
       }
 
       const { y } = this.resolveAlignment(
         child.align,
         child.width,
-        innerHeight,
+        availableHeight, // Use available height for alignment calculation
         child.width,
         child.height
       );
 
+      // Position with current X and border padding + top gap + alignment offset
       child.x = currentX;
-      child.y = borderPad + y;
+      child.y = borderPad + gap.top + y;
 
-      currentX += child.width + child.gap;
+      // Move to next position: current position + component width + right gap
+      currentX += child.width + gap.right;
     }
   }
 

@@ -16,7 +16,14 @@ export interface ComponentProps {
   x?: number;
   y?: number;
   z?: number;
-  gap?: number; // Space after this component in layout
+  gap?: number | {
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+    x?: number; // shorthand for left + right
+    y?: number; // shorthand for top + bottom
+  } | number[]; // CSS-style shorthand
   children?: Component[]; // Child components
   layout?: LayoutType; // Layout to use for children
   layoutOptions?: LayoutOptions; // Configuration for the layout
@@ -35,7 +42,14 @@ export abstract class Component {
   public x = 0;
   public y = 0;
   public z = 0;
-  public gap: number = 0;
+  public gap: number | {
+    top?: number;
+    bottom?: number;
+    left?: number;
+    right?: number;
+    x?: number;
+    y?: number;
+  } | number[] = 0;
 
   public focusable: boolean = false;
   public hasFocus: boolean = false;

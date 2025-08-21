@@ -1,6 +1,7 @@
 import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
+import { resolveGap } from '../utils/gapUtils';
 
 export class RelaxedLayout implements Layout {
   constructor(_options?: LayoutOptions) {
@@ -26,11 +27,11 @@ export class RelaxedLayout implements Layout {
         child.height
       );
 
-      // Apply gap based on alignment direction
-      const { gapX, gapY } = this.calculateGapOffset(child.align, child.gap);
+      // Resolve gap and apply it to the final position
+      const gap = resolveGap(child.gap);
 
-      child.x = borderPad + x + gapX;
-      child.y = borderPad + y + gapY;
+      child.x = borderPad + x + gap.left;
+      child.y = borderPad + y + gap.top;
     }
   }
 
@@ -122,56 +123,4 @@ export class RelaxedLayout implements Layout {
     return { x, y };
   }
 
-  private calculateGapOffset(
-    align: Alignment | undefined,
-    gap: number
-  ): { gapX: number; gapY: number } {
-    if (!gap || !align) {
-      return { gapX: 0, gapY: 0 };
-    }
-
-    let gapX = 0;
-    let gapY = 0;
-
-    if (typeof align === 'string') {
-      // Apply gap based on alignment direction
-      switch (align) {
-        case 'top':
-          gapY = gap; // Gap above (push down)
-          break;
-        case 'top-left':
-          gapY = gap; // Gap above
-          gapX = gap; // Gap to the left (push right)
-          break;
-        case 'top-right':
-          gapY = gap; // Gap above
-          gapX = -gap; // Gap to the right (push left)
-          break;
-        case 'left':
-          gapX = gap; // Gap to the left (push right)
-          break;
-        case 'right':
-          gapX = -gap; // Gap to the right (push left)
-          break;
-        case 'bottom':
-          gapY = -gap; // Gap below (push up)
-          break;
-        case 'bottom-left':
-          gapY = -gap; // Gap below
-          gapX = gap; // Gap to the left (push right)
-          break;
-        case 'bottom-right':
-          gapY = -gap; // Gap below
-          gapX = -gap; // Gap to the right (push left)
-          break;
-        case 'center':
-          // No gap applied for center alignment
-          break;
-      }
-    }
-    // For object-based alignment, we could extend this if needed
-    // but for now we'll only handle string-based alignments
-
-    return { gapX, gapY };
-  }
 }

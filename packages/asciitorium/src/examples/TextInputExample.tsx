@@ -7,7 +7,7 @@ export const TextInputExample = () => {
 
   return (
     <Box width={53} height={27} border={true} layout="vertical">
-      <Text content="TextInput Examples" align="center" gap={1}/>
+      <Text content="TextInput Examples" align="center" gap={1} border/>
       <HR length={51} gap={1} />
 
       <Text content="String and Numeric inputs" align="center" gap={4}/>

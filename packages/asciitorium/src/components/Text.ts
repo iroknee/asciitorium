@@ -51,13 +51,6 @@ export class Text extends Component {
     });
 
     this.source = actualContent;
-
-    // If reactive, subscribe to changes
-    if (isState(this.source)) {
-      (this.source as State<any>).subscribe(() => {
-        //this.markDirty();
-      });
-    }
   }
 
   get value(): string {

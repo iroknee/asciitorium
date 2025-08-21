@@ -1,6 +1,7 @@
 import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
+import { resolveGap } from '../utils/gapUtils';
 
 export class VerticalLayout implements Layout {
   private fit: boolean;
@@ -22,26 +23,37 @@ export class VerticalLayout implements Layout {
         continue; // Skip positioning if component is fixed
       }
 
+      // Resolve child's gap to normalized format
+      const gap = resolveGap(child.gap);
+
+      // Apply top gap
+      currentY += gap.top;
+
       if (this.fit && count > 0) {
         child.height = Math.floor(innerHeight / count);
       }
 
+      // Calculate available width after accounting for left/right gaps
+      const availableWidth = innerWidth - gap.left - gap.right;
+      
       if (!child.width) {
-        child.width = innerWidth;
+        child.width = Math.max(1, availableWidth); // Ensure minimum width of 1
       }
 
       const { x } = this.resolveAlignment(
         child.align,
-        innerWidth,
+        availableWidth, // Use available width for alignment calculation
         child.height,
         child.width,
         child.height
       );
 
-      child.x = borderPad + x;
+      // Position with border padding + left gap + alignment offset
+      child.x = borderPad + gap.left + x;
       child.y = currentY;
 
-      currentY += child.height + child.gap;
+      // Move to next position: current position + component height + bottom gap
+      currentY += child.height + gap.bottom;
     }
   }
 

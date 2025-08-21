@@ -1,5 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 import { LayoutType } from '../core/layouts/Layout';
+import { resolveGap } from '../core/utils/gapUtils';
 
 export interface BoxOptions extends Omit<ComponentProps, 'width' | 'height'> {
   layout?: LayoutType;
@@ -37,10 +38,16 @@ export class Box extends Component {
 
     if (layout === 'horizontal') {
       // Sum widths + gaps for horizontal layout
-      return children.reduce((sum, child) => sum + child.width + child.gap, 0);
+      return children.reduce((sum, child) => {
+        const gap = resolveGap(child.gap);
+        return sum + child.width + gap.left + gap.right;
+      }, 0);
     } else {
-      // Max width for vertical layout
-      return Math.max(...children.map((child) => child.width));
+      // Max width for vertical layout (including horizontal gaps)
+      return Math.max(...children.map((child) => {
+        const gap = resolveGap(child.gap);
+        return child.width + gap.left + gap.right;
+      }));
     }
   }
 
@@ -52,10 +59,16 @@ export class Box extends Component {
 
     if (layout === 'vertical') {
       // Sum heights + gaps for vertical layout
-      return children.reduce((sum, child) => sum + child.height + child.gap, 0);
+      return children.reduce((sum, child) => {
+        const gap = resolveGap(child.gap);
+        return sum + child.height + gap.top + gap.bottom;
+      }, 0);
     } else {
-      // Max height for horizontal layout
-      return Math.max(...children.map((child) => child.height));
+      // Max height for horizontal layout (including vertical gaps)
+      return Math.max(...children.map((child) => {
+        const gap = resolveGap(child.gap);
+        return child.height + gap.top + gap.bottom;
+      }));
     }
   }
 
