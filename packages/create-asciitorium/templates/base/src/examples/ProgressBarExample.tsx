@@ -21,7 +21,7 @@ export const ProgressBarExample = () => {
         align="center"
       />
 
-      <Box layout="horizontal" align="center" gap={{ top: 3 }}>
+      <Box layout="row" align="center" gap={{ top: 3 }}>
         <Button
           label="Increase"
           onClick={() =>

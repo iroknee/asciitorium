@@ -1,7 +1,7 @@
 import { Text, HR, VR, Component, CelticBorder } from '../index';
 
 export const LayoutExample = () => (
-  <Component width={42} height={27} border layout="vertical">
+  <Component width={42} height={27} border layout="column">
     <Text
       width={40}
       height={2}

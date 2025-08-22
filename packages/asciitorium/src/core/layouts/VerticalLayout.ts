@@ -67,7 +67,7 @@ export class VerticalLayout implements Layout {
     let hAlign: 'left' | 'center' | 'right' | number = 'left';
 
     if (typeof align === 'string') {
-      // For vertical layout, alignment affects horizontal positioning
+      // For column layout, alignment affects horizontal positioning
       switch (align) {
         case 'top-left':
         case 'left':

@@ -12,7 +12,7 @@ export const ButtonExample = () => {
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
         gap={{top: 4, bottom: 3}}
       />
-      <Component layout="horizontal" gap={{left: 6, right: 2}} align="center">
+      <Component layout="row" gap={{left: 6, right: 2}} align="center">
         <Text>Click Count: </Text>
         <Text width={4}>{buttonClickCount}</Text>
       </Component>

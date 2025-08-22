@@ -97,7 +97,7 @@ export abstract class Component {
     this.buffer = [];
 
     // Setup children and layout
-    this.layoutType = props.layout ?? 'vertical'; // Default to vertical layout (matches Box behavior)
+    this.layoutType = props.layout ?? 'column'; // Default to column layout (matches Box behavior)
     this.layoutOptions = props.layoutOptions;
 
     // Store children for later addition (to avoid calling addChild during construction)
@@ -194,14 +194,14 @@ export abstract class Component {
   ): number {
     if (!children || children.length === 0) return 1;
 
-    if (layout === 'horizontal') {
-      // Sum widths + gaps for horizontal layout
+    if (layout === 'row') {
+      // Sum widths + gaps for row layout
       return children.reduce((sum, child) => {
         const gap = resolveGap(child.gap);
         return sum + child.width + gap.left + gap.right;
       }, 0);
     } else {
-      // Max width for vertical layout (including horizontal gaps)
+      // Max width for column layout (including horizontal gaps)
       return Math.max(...children.map((child) => {
         const gap = resolveGap(child.gap);
         return child.width + gap.left + gap.right;
@@ -215,14 +215,14 @@ export abstract class Component {
   ): number {
     if (!children || children.length === 0) return 1;
 
-    if (layout === 'vertical') {
-      // Sum heights + gaps for vertical layout
+    if (layout === 'column') {
+      // Sum heights + gaps for column layout
       return children.reduce((sum, child) => {
         const gap = resolveGap(child.gap);
         return sum + child.height + gap.top + gap.bottom;
       }, 0);
     } else {
-      // Max height for horizontal layout (including vertical gaps)
+      // Max height for row layout (including vertical gaps)
       return Math.max(...children.map((child) => {
         const gap = resolveGap(child.gap);
         return child.height + gap.top + gap.bottom;

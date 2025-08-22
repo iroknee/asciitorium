@@ -19,7 +19,7 @@ export interface Layout {
 /**
  * Available layout types that can be specified by name
  */
-export type LayoutType = 'horizontal' | 'vertical' | 'absolute' | 'relaxed';
+export type LayoutType = 'row' | 'column' | 'fixed' | 'aligned';
 
 /**
  * Configuration options for specific layouts
@@ -39,10 +39,10 @@ export class LayoutRegistry {
 
   // Static initialization - register all built-in layouts
   static {
-    this.layouts.set('horizontal', HorizontalLayout);
-    this.layouts.set('vertical', VerticalLayout);
-    this.layouts.set('absolute', AbsoluteLayout);
-    this.layouts.set('relaxed', RelaxedLayout);
+    this.layouts.set('row', HorizontalLayout);
+    this.layouts.set('column', VerticalLayout);
+    this.layouts.set('fixed', AbsoluteLayout);
+    this.layouts.set('aligned', RelaxedLayout);
   }
 
   static register(

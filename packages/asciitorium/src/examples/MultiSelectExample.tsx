@@ -37,7 +37,7 @@ export const MultiSelectExample = () => {
         selectedItems={multiValue}
         gap={{ top: 2, bottom: 2 }}
       />
-      <Component align="center" layout="horizontal">
+      <Component align="center" layout="row">
         <Text align="top">Selected: </Text>
         <Text
           width={24}

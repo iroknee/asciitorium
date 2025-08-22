@@ -65,7 +65,7 @@ export class HorizontalLayout implements Layout {
     let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
 
     if (typeof align === 'string') {
-      // For horizontal layout, alignment affects vertical positioning
+      // For row layout, alignment affects vertical positioning
       switch (align) {
         case 'top-left':
         case 'top':

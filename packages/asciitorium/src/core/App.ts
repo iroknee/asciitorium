@@ -21,10 +21,10 @@ export class App extends Component {
   private lastCPUUsage?: any;
 
   constructor(props: AppProps) {
-    // Set vertical layout as default for Asciitorium, pass through fit option
+    // Set column layout as default for Asciitorium, pass through fit option
     const asciitoriumProps = {
       ...props,
-      layout: props.layout ?? 'vertical',
+      layout: props.layout ?? 'column',
       layoutOptions: { fit: props.fit, ...props.layoutOptions },
     };
 

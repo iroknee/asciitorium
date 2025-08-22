@@ -18,17 +18,14 @@ import {
 } from 'asciitorium';
 
 const helloWorld = new State('Hello, World!');
-
-// Load the title ASCII art
 const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
 
-// Construct the app
 const app = (
-  <App width={64} height={20} layout="relaxed">
+  <App width={64} height={20} layout="aligned">
     <CelticBorder edge="top-left" align="top-left" />
     <CelticBorder edge="top-right" align="top-right" />
 
-    <Box align="top" layout="vertical" gap={2}>
+    <Box align="top" layout="column" gap={2}>
       <AsciiArt content={titleArt} align="top" />
       <HR length={48} align="center" />
       <Text value="a ui framework for cli and web" align="top" gap={3} />

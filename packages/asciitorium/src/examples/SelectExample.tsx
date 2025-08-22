@@ -31,7 +31,7 @@ export const SelectExample = () => {
           selectedItem={selectValue}
         />
       </Component>
-      <Component align="center" gap={{ left: 5 }} layout="horizontal">
+      <Component align="center" gap={{ left: 5 }} layout="row">
         <Text>Car Selected: </Text>
         <Text width={20}>{selectValue}</Text>
       </Component>

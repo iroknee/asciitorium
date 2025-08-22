@@ -1,7 +1,7 @@
 import { Text, HR, VR, Box, CelticBorder } from 'asciitorium';
 
 export const LayoutExample = () => (
-  <Box width={42} height={27} border layout="vertical">
+  <Box width={42} height={27} border layout="column">
     <Text
       width={40}
       height={2}

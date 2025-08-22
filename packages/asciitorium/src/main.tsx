@@ -51,11 +51,11 @@ const examples = {
 };
 
 
-// Construct the app with horizontal layout
+// Construct the app with row layout
 const app = (
   <App width={67} height={35}>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Component layout="horizontal">
+    <Component layout="row">
       <Select
         label="Components:"
         width={25}

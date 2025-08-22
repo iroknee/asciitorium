@@ -36,7 +36,6 @@ await app.start();
 ## Built-in Components
 
 - **`App`** - App to wrap all components in
-- **`Box`** - Simple wrapper to wrap components
 - **`Tabs`** - Tabbed interface containers
 - **`Text`** - Display static or dynamic text
 - **`Button`** - Interactive buttons with click handlers
@@ -54,13 +53,13 @@ Asciitorium provides a flexible layout system that automatically positions compo
 
 #### Layout Types
 
-- **`vertical`** - Arranges components top-to-bottom (default)
-- **`horizontal`** - Arranges components left-to-right
-- **`absolute`** - Uses fixed x,y positioning
-- **`relaxed`** - Uses alignment-based positioning without flow
+- **`column`** - Arranges components top-to-bottom (default)
+- **`row`** - Arranges components left-to-right
+- **`fixed`** - Uses fixed x,y positioning
+- **`aligned`** - Uses alignment-based positioning without flow
 
 ```tsx
-<Box layout="horizontal" width={40} height={10}>
+<Box layout="row" width={40} height={10}>
   <Text content="Left" />
   <Text content="Right" />
 </Box>
