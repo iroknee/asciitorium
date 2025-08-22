@@ -17,6 +17,7 @@ import { TextInputExample } from './examples/TextInputExample';
 import { ProgressBarExample } from './examples/ProgressBarExample';
 import { TabsExample } from './examples/TabsExample';
 import { TextExample } from './examples/TextExample';
+import { AsciiArtExample } from './examples/AsciiArtExample';
 
 // Load the title ASCII art
 const titleArt = await loadArt('./art/asciitorium.txt');
@@ -29,13 +30,14 @@ const selectedComponent = new PersistentState(
 
 // Component list for navigation
 const componentList = [
+  'AsciiArt',
   'Button',
-  'Select',
   'MultiSelect',
-  'TextInput',
   'ProgressBar',
+  'Select',
   'Tabs',
-  'Text'
+  'Text',
+  'TextInput'
 ];
 
 // Component mapping
@@ -46,7 +48,8 @@ const examples: Record<string, any> = {
   TextInput: TextInputExample,
   ProgressBar: ProgressBarExample,
   Tabs: TabsExample,
-  Text: TextExample
+  Text: TextExample,
+  AsciiArt: AsciiArtExample
 };
 
 // Create a wrapper component that dynamically switches based on state
