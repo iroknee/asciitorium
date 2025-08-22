@@ -12,10 +12,10 @@ import { ButtonExample } from './examples/ButtonExample';
 import { SelectExample } from './examples/SelectExample';
 import { MultiSelectExample } from './examples/MultiSelectExample';
 import { TextInputExample } from './examples/TextInputExample';
-import { ProgressBarExample } from './examples/ProgressBarExample';
 import { TabsExample } from './examples/TabsExample';
 import { TextExample } from './examples/TextExample';
 import { AsciiArtExample } from './examples/AsciiArtExample';
+import { SlidersExample } from './examples/SlidersExample';
 
 // Load the title ASCII art
 const titleArt = await loadArt('./art/asciitorium.txt');
@@ -31,11 +31,11 @@ const componentList = [
   'AsciiArt',
   'Button',
   'MultiSelect',
-  'ProgressBar',
   'Select',
+  'Sliders',
   'Tabs',
   'Text',
-  'TextInput'
+  'TextInput',
 ];
 
 // Component mapping for dynamic content
@@ -44,12 +44,11 @@ const examples = {
   Select: SelectExample,
   MultiSelect: MultiSelectExample,
   TextInput: TextInputExample,
-  ProgressBar: ProgressBarExample,
+  Sliders: SlidersExample,
   Tabs: TabsExample,
   Text: TextExample,
-  AsciiArt: AsciiArtExample
+  AsciiArt: AsciiArtExample,
 };
-
 
 // Construct the app with row layout
 const app = (
@@ -64,12 +63,12 @@ const app = (
         selectedItem={selectedComponent}
         border
       />
-      <Component 
-        width={53} 
+      <Component
+        width={53}
         height={28}
         dynamicContent={{
           selectedKey: selectedComponent,
-          componentMap: examples
+          componentMap: examples,
         }}
       />
     </Component>
