@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.20] - 2025-08-21
+
+### Added
+
+- **New Components and Examples:**
+  - `AsciiArtExample` component with ASCII art rendering
+  - Comprehensive component examples: `ButtonExample`, `MultiSelectExample`, `ProgressBarExample`, `SelectExample`, `TabsExample`, `TextExample`, `TextInputExample`
+  - `LayoutExample` demonstrating layout functionality
+  - `PersistentState` utility for component selection persistence
+  - Gap resolution utility (`gapUtils`) for consistent layout spacing
+
+- **New ASCII Art Assets:**
+  - Computer ASCII art added to both core and template packages
+
+### Changed
+
+- **Component Enhancements:**
+  - `Button` component: Reduced press delay from 250ms to 100ms for improved responsiveness
+  - `Button` component: Enhanced with press effect and improved dimensions
+  - `TextInput` component: Updated focus prefix for better visual feedback
+  - `Text` component: Implemented automatic word wrapping functionality
+  - Multiple components refactored for improved readability and consistency
+
+- **Layout System Improvements:**
+  - Refactored layout components to utilize new gap resolution utility
+  - Enhanced `Box`, `HorizontalLayout`, `VerticalLayout` components with consistent gap handling
+  - Simplified `RelaxedLayout` implementation
+
+- **Developer Experience:**
+  - Demo application restructured: renamed `demo.tsx` to `main.tsx`
+  - Enhanced component examples with improved layouts and functionality
+  - Updated README documentation and package.json for release script consistency
+  - Improved template generation with comprehensive examples
+
+- **Visual and UX Improvements:**
+  - Enhanced MultiSelectExample with dynamic selection display
+  - Better click count display in ButtonExample
+  - Improved component imports and dimension adjustments across examples
+  - Enhanced focus handling and keyboard navigation
+
+### Technical Details
+
+- **Key Files Modified:** Component library, layout system, demo applications, template generation
+- **New Utilities:** Gap resolution system, persistent state management
+- **Performance:** Reduced button interaction latency, optimized layout calculations
+- **Architecture:** Better separation of concerns in layout handling
+
 ## [0.1.17] - 2025-08-19
 
 ### Added
