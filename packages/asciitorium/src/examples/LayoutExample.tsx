@@ -1,7 +1,7 @@
-import { Text, HR, VR, Box, CelticBorder } from '../index';
+import { Text, HR, VR, Component, CelticBorder } from '../index';
 
 export const LayoutExample = () => (
-  <Box width={42} height={27} border layout="vertical">
+  <Component width={42} height={27} border layout="vertical">
     <Text
       width={40}
       height={2}
@@ -9,7 +9,7 @@ export const LayoutExample = () => (
       Layout Components - HR, VR, Box, Borders
     </Text>
     <HR gap={1} />
-    <Box
+    <Component
       width={20}
       height={5}
       border
@@ -41,5 +41,5 @@ export const LayoutExample = () => (
     >
       Layout components help organize\nand structure your UI.
     </Text>
-  </Box>
+  </Component>
 );

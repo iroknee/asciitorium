@@ -1,6 +1,7 @@
 import { Alignment } from './types';
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
+import { resolveGap } from './utils/gapUtils';
 
 export interface ComponentProps {
   label?: string;
@@ -27,6 +28,11 @@ export interface ComponentProps {
   children?: Component[]; // Child components
   layout?: LayoutType; // Layout to use for children
   layoutOptions?: LayoutOptions; // Configuration for the layout
+  dynamicContent?: {
+    selectedKey: State<string>;
+    componentMap: Record<string, () => Component>;
+    fallback?: () => Component;
+  }; // Dynamic content switching support
 }
 
 export abstract class Component {
@@ -66,9 +72,14 @@ export abstract class Component {
   private layout?: any;
 
   constructor(props: ComponentProps) {
-    // Default dimensions if not provided
-    this.width = props.width ?? 1;
-    this.height = props.height ?? 1;
+    // Calculate auto-dimensions from children if not provided
+    const autoWidth = props.width ?? Component.calculateAutoWidth(props.children, props.layout);
+    const autoHeight = props.height ?? Component.calculateAutoHeight(props.children, props.layout);
+    
+    // Account for border if present (add 2 for left+right or top+bottom)
+    const borderAdjustment = props.border ? 2 : 0;
+    this.width = props.width ?? autoWidth + borderAdjustment;
+    this.height = props.height ?? autoHeight + borderAdjustment;
 
     if (this.width < 1) throw new Error('Component width must be > 0');
     if (this.height < 1) throw new Error('Component height must be > 0');
@@ -86,7 +97,7 @@ export abstract class Component {
     this.buffer = [];
 
     // Setup children and layout
-    this.layoutType = props.layout ?? 'horizontal'; // Default to horizontal layout
+    this.layoutType = props.layout ?? 'vertical'; // Default to vertical layout (matches Box behavior)
     this.layoutOptions = props.layoutOptions;
 
     // Store children for later addition (to avoid calling addChild during construction)
@@ -106,6 +117,11 @@ export abstract class Component {
         }
       }
       this.recalculateLayout();
+    }
+    
+    // Setup dynamic content if provided
+    if (props.dynamicContent) {
+      this.setupDynamicContent(props.dynamicContent);
     }
   }
 
@@ -169,6 +185,101 @@ export abstract class Component {
   destroy(): void {
     for (const unbind of this.unbindFns) unbind();
     this.unbindFns = [];
+  }
+  
+  // Auto-sizing methods (moved from Box)
+  private static calculateAutoWidth(
+    children?: Component[],
+    layout?: LayoutType
+  ): number {
+    if (!children || children.length === 0) return 1;
+
+    if (layout === 'horizontal') {
+      // Sum widths + gaps for horizontal layout
+      return children.reduce((sum, child) => {
+        const gap = resolveGap(child.gap);
+        return sum + child.width + gap.left + gap.right;
+      }, 0);
+    } else {
+      // Max width for vertical layout (including horizontal gaps)
+      return Math.max(...children.map((child) => {
+        const gap = resolveGap(child.gap);
+        return child.width + gap.left + gap.right;
+      }));
+    }
+  }
+
+  private static calculateAutoHeight(
+    children?: Component[],
+    layout?: LayoutType
+  ): number {
+    if (!children || children.length === 0) return 1;
+
+    if (layout === 'vertical') {
+      // Sum heights + gaps for vertical layout
+      return children.reduce((sum, child) => {
+        const gap = resolveGap(child.gap);
+        return sum + child.height + gap.top + gap.bottom;
+      }, 0);
+    } else {
+      // Max height for horizontal layout (including vertical gaps)
+      return Math.max(...children.map((child) => {
+        const gap = resolveGap(child.gap);
+        return child.height + gap.top + gap.bottom;
+      }));
+    }
+  }
+  
+  // Dynamic content support
+  private setupDynamicContent(dynamicContent: {
+    selectedKey: State<string>;
+    componentMap: Record<string, () => Component>;
+    fallback?: () => Component;
+  }): void {
+    const updateContent = () => {
+      // Clear existing children
+      const childrenToRemove = [...this.children];
+      for (const child of childrenToRemove) {
+        child.destroy();
+        this.removeChild(child);
+      }
+      
+      // Get the current component factory function
+      const componentFactory = dynamicContent.componentMap[dynamicContent.selectedKey.value];
+      if (componentFactory) {
+        // Create new component instance
+        const component = componentFactory();
+        this.addChild(component);
+      } else if (dynamicContent.fallback) {
+        // Use fallback component
+        const fallbackComponent = dynamicContent.fallback();
+        this.addChild(fallbackComponent);
+      }
+      
+      // Notify app of focus changes
+      this.notifyAppOfFocusChange();
+    };
+    
+    // Initially set the current content
+    updateContent();
+    
+    // Subscribe to changes in selectedKey
+    const listener = () => updateContent();
+    dynamicContent.selectedKey.subscribe(listener);
+    this.unbindFns.push(() => dynamicContent.selectedKey.unsubscribe(listener));
+  }
+  
+  private notifyAppOfFocusChange(): void {
+    // Walk up the parent chain to find the App
+    let current: Component | undefined = this;
+    while (current && current.constructor.name !== 'App') {
+      current = current.parent;
+    }
+    
+    // If we found the App, reset its focus manager
+    if (current && (current as any).focus) {
+      (current as any).focus.reset(current);
+    }
   }
 
   handleEvent(event: string): boolean {

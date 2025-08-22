@@ -1,4 +1,4 @@
-import { Text, State, Tabs, Box } from '../index';
+import { Text, State, Tabs, Component } from '../index';
 
 export const TabsExample = () => {
   // State for tabs - local to each component instance
@@ -34,14 +34,14 @@ export const TabsExample = () => {
         : 'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
 
   return (
-    <Box width={42} height={28} border label="Tabs Example:">
+    <Component width={42} height={28} border label="Tabs Example:">
       <Tabs
         tabs={['Tab 1', 'Tab 2', 'Tab 3']}
         align="center"
         selectedTab={tabsValue}
         gap={1}
       />
-      <Box
+      <Component
         width={38}
         height={8}
         gap={1}
@@ -49,6 +49,6 @@ export const TabsExample = () => {
           new Text({ width: 30, height: 6, children: [tabContentState] }),
         ]}
       />
-    </Box>
+    </Component>
   );
 };

@@ -1,4 +1,4 @@
-import { Text, State, Select, Box, HR } from '../index';
+import { Text, State, Select, Component, HR } from '../index';
 
 export const SelectExample = () => {
   const selectValue = new State('Tesla Model S');
@@ -21,8 +21,8 @@ export const SelectExample = () => {
   ];
 
   return (
-    <Box width={42} height={28} label="Select Example:" border>
-      <Box align="center" gap={{ top: 2, bottom: 2 }}>
+    <Component width={42} height={28} label="Select Example:" border>
+      <Component align="center" gap={{ top: 2, bottom: 2 }}>
         <Select
           label="Car's to Select:"
           width={34}
@@ -30,11 +30,11 @@ export const SelectExample = () => {
           items={carModels}
           selectedItem={selectValue}
         />
-      </Box>
-      <Box align="center" gap={{ left: 5 }} layout="horizontal">
+      </Component>
+      <Component align="center" gap={{ left: 5 }} layout="horizontal">
         <Text>Car Selected: </Text>
         <Text width={20}>{selectValue}</Text>
-      </Box>
-    </Box>
+      </Component>
+    </Component>
   );
 };

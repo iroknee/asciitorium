@@ -1,11 +1,11 @@
-import { Text, State, ProgressBar, Button, Box, HR } from '../index';
+import { Text, State, ProgressBar, Button, Component, HR } from '../index';
 
 export const ProgressBarExample = () => {
   // State for progress bar - local to each component instance
   const progressValue = new State(25);
 
   return (
-    <Box width={42} height={28} border label="ProgressBar Example:" >
+    <Component width={42} height={28} border label="ProgressBar Example:" >
       <Text align="center" gap={{top: 2}}>With Percentage</Text>
       <ProgressBar
         width={35}
@@ -21,7 +21,7 @@ export const ProgressBarExample = () => {
         align="center"
       />
 
-      <Box layout="horizontal" align="center" gap={{ top: 3 }}>
+      <Component layout="horizontal" align="center" gap={{ top: 3 }}>
         <Button
           label="Increase"
           onClick={() =>
@@ -36,7 +36,7 @@ export const ProgressBarExample = () => {
           }
           gap={1}
         />
-      </Box>
-    </Box>
+      </Component>
+    </Component>
   );
 };

@@ -1,7 +1,7 @@
-import { Text, AsciiArt, Box } from '../index';
+import { Text, AsciiArt, Component } from '../index';
 
 export const TextExample = () => (
-  <Box width={42} height={28} border label="Text Example:">
+  <Component width={42} height={28} border label="Text Example:">
     <Text
       width={36}
       height={8}
@@ -20,5 +20,5 @@ export const TextExample = () => (
     </Text>
 
     <Text>Simple Text.</Text>
-  </Box>
+  </Component>
 );
