@@ -71,8 +71,8 @@ export class Select extends Component {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
     const paddingTop = this.height < 5 ? 0 : 1;
-    const lineHeight = 1;
-    const innerHeight = this.height - 3 * borderPad - paddingTop;
+    const lineHeight = 2;
+    const innerHeight = this.height - 2 * borderPad - paddingTop;
 
     const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
     const itemCount = this.items.length;
@@ -129,6 +129,17 @@ export class Select extends Component {
 
       for (let j = 0; j < line.length; j++) {
         buffer[y][x + j] = line[j];
+      }
+
+      // Add underline for selected items
+      if (isSelected && y + 1 < this.height - borderPad) {
+        const underlineY = y + 1;
+        const underlineLength = Math.min(item.length + 2, this.width - 2 * borderPad);
+        for (let j = 0; j < underlineLength; j++) {
+          if (x + j < this.width - borderPad) {
+            buffer[underlineY][x + j] = '─';
+          }
+        }
       }
     });
 

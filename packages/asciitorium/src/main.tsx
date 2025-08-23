@@ -50,21 +50,20 @@ const examples = {
   AsciiArt: AsciiArtExample,
 };
 
-// Construct the app with row layout
 const app = (
-  <App width={67} height={35}>
+  <App width={64} height={35}>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
     <Component layout="row">
       <Select
         label="Components:"
-        width={25}
+        width={16}
         height={28}
         items={componentList}
         selectedItem={selectedComponent}
         border
       />
       <Component
-        width={53}
+        width={48}
         height={28}
         dynamicContent={{
           selectedKey: selectedComponent,
