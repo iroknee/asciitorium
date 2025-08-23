@@ -141,11 +141,9 @@ export class Button extends Component {
 
     // Calculate label placement (centered)
     const label = this.label ?? 'Button';
-    const labelX =
-      offsetX +
-      padX +
-      Math.max(Math.floor((contentWidth - label.length) / 2), 0) +
-      1;
+    const totalLabelWidth = label.length + 4; // label + 2 indicators + 2 spaces
+    const labelStartX = offsetX + padX + Math.max(Math.floor((contentWidth - totalLabelWidth) / 2), 0);
+    const labelX = labelStartX + 2; // space for left indicator + space
     const labelY = offsetY + padY + Math.floor(contentHeight / 2);
 
     // Write the label centered
@@ -158,12 +156,27 @@ export class Button extends Component {
     }
 
     // Draw focus indicator
-    if (this.hasFocus) {
-      const indicatorX = offsetX + padX;
-      drawChar(indicatorX, labelY, '◆');
+    // Determine indicator characters based on state
+    let leftIndicator: string, rightIndicator: string;
+    if (this.isPressed) {
+      leftIndicator = '◆';
+      rightIndicator = '◆';
+    } else if (this.hasFocus) {
+      leftIndicator = '>';
+      rightIndicator = '<';
+
     } else {
-      const indicatorX = offsetX + padX;
-      drawChar(indicatorX, labelY, '◇');
+      leftIndicator = ' ';
+      rightIndicator = ' ';
+    }
+
+    // Draw left indicator
+    drawChar(labelStartX, labelY, leftIndicator);
+    
+    // Draw right indicator with space after label
+    const rightIndicatorX = labelX + label.length + 1;
+    if (rightIndicatorX < offsetX + buttonWidth - padX) {
+      drawChar(rightIndicatorX, labelY, rightIndicator);
     }
 
     return this.buffer;

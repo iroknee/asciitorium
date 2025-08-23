@@ -139,7 +139,7 @@ export class TextInput extends Component {
   override draw(): string[][] {
     const buffer = super.draw();
 
-    const prefix = this.hasFocus ? '◆ > ' : '◇ > ';
+    const prefix = this.hasFocus ? '> ' : '> ';
     const prefixLength = prefix.length;
     const y = this.border ? 1 : 0;
     const x = this.border ? 1 : 0;
