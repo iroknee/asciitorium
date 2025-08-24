@@ -9,6 +9,7 @@ import {
 
 import {
   ButtonExample,
+  CelticBorderExample,
   SelectExample,
   MultiSelectExample,
   TextInputExample,
@@ -31,6 +32,7 @@ const selectedComponent = new PersistentState(
 const componentList = [
   'AsciiArt',
   'Button',
+  'CelticBorder',
   'MultiSelect',
   'Select',
   'Sliders',
@@ -42,6 +44,7 @@ const componentList = [
 // Component mapping for dynamic content
 const examples = {
   Button: ButtonExample,
+  CelticBorder: CelticBorderExample,
   Select: SelectExample,
   MultiSelect: MultiSelectExample,
   TextInput: TextInputExample,

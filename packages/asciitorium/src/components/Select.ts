@@ -120,7 +120,7 @@ export class Select extends Component {
       } else if (isSelected) {
         prefix = '◇'; // Selected but not focused or component doesn't have focus
       } else if (isFocused && this.hasFocus) {
-        prefix = '◈'; // Focused but not selected
+        prefix = '>'; // Focused but not selected
       }
 
       const line = `${prefix} ${item}`
@@ -132,15 +132,15 @@ export class Select extends Component {
       }
 
       // Add underline for selected items
-      if (isSelected && y + 1 < this.height - borderPad) {
-        const underlineY = y + 1;
-        const underlineLength = Math.min(item.length + 2, this.width - 2 * borderPad);
-        for (let j = 0; j < underlineLength; j++) {
-          if (x + j < this.width - borderPad) {
-            buffer[underlineY][x + j] = '─';
-          }
-        }
-      }
+      // if (isSelected && y + 1 < this.height - borderPad) {
+      //   const underlineY = y + 1;
+      //   const underlineLength = Math.min(item.length + 2, this.width - 2 * borderPad);
+      //   for (let j = 0; j < underlineLength; j++) {
+      //     if (x + j < this.width - borderPad) {
+      //       buffer[underlineY][x + j] = '─';
+      //     }
+      //   }
+      // }
     });
 
     // Scroll down indicator

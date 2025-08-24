@@ -6,29 +6,67 @@ export type CelticEdge =
   | 'bottom-left'
   | 'bottom-right';
 
+// Base pattern to rotate from
+const basePattern = [
+  '╭⎯╮╭⎯⎯⎯⎯⎯', 
+  '⏐╭⎯⎯⎯⎯', 
+  '╰⎯⏐╯', 
+  '╭⏐╯', 
+  '⏐⏐', 
+  '⏐⏐', 
+  '⏐', 
+  '⏐',
+  '⏐'
+];
+
+// Rotation functions
+function rotatePattern90(pattern: string[]): string[] {
+  const maxLen = Math.max(...pattern.map(line => line.length));
+  const result: string[] = [];
+  
+  for (let x = 0; x < maxLen; x++) {
+    let newLine = '';
+    for (let y = pattern.length - 1; y >= 0; y--) {
+      const char = pattern[y][x] || ' ';
+      newLine += rotateChar90(char);
+    }
+    result.push(newLine);
+  }
+  
+  // Remove trailing empty/whitespace-only lines
+  while (result.length > 0 && result[result.length - 1].trim() === '') {
+    result.pop();
+  }
+  
+  return result;
+}
+
+function rotateChar90(char: string): string {
+  const rotationMap: Record<string, string> = {
+    '╭': '╮',
+    '╮': '╯',
+    '╯': '╰',
+    '╰': '╭',
+    '─': '│',
+    '│': '─',
+    '⎯': '⏐',
+    '⏐': '⎯',
+    ' ': ' '
+  };
+  return rotationMap[char] || char;
+}
+
+// Generate all patterns from base
+const topRight = rotatePattern90(basePattern);
+const bottomRight = rotatePattern90(rotatePattern90(basePattern));
+const bottomLeft = rotatePattern90(rotatePattern90(rotatePattern90(basePattern)));
+
+
 const borderPatterns: Record<CelticEdge, string[]> = {
-  'top-left': ['╭⎯╮╭⎯⎯⎯⎯⎯', '⏐╭⎯⎯⎯⎯', '╰⎯⏐╯', '╭⏐╯', '⏐⏐', '⏐⏐', '⏐', '⏐'],
-  'top-right': [
-    '⎯⎯⎯⎯╮╭⎯╮',
-    ' ⎯⎯⎯⎯⎯╮⏐',
-    '    ╰⏐⎯╯',
-    '     ╰⏐╮',
-    '      ⏐⏐',
-    '      ⏐⏐',
-    '       ⏐',
-    '       ⏐',
-  ],
-  'bottom-left': ['⏐', '⏐', '⏐⏐', '⏐⏐', '╰⏐╮', '╭⎯⏐╮', '⏐╰⎯⎯⎯⎯⎯', '╰⎯╯╰⎯⎯⎯⎯⎯'],
-  'bottom-right': [
-    '       ⏐',
-    '       ⏐',
-    '      ⏐⏐',
-    '      ⏐⏐',
-    '     ╭⏐╯',
-    '    ╭⏐⎯╮',
-    '  ⎯⎯⎯⎯╯⏐',
-    '⎯⎯⎯⎯╯╰⎯╯',
-  ],
+  'top-left': basePattern,
+  'top-right': topRight,
+  'bottom-right': bottomRight,
+  'bottom-left': bottomLeft,
 };
 
 export interface CelticBorderOptions extends Partial<ComponentProps> {
