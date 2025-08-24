@@ -27,7 +27,7 @@ export const SlidersExample = () => {
           step={5}
           width={24}
         />
-        <Text width={4} height={3} align="center">
+        <Text width={3} height={3} align="center">
           {sharedValue}
         </Text>
       </Component>
@@ -41,13 +41,13 @@ export const SlidersExample = () => {
           step={5}
           width={24}
         />
-        <Text width={4}>{sharedValue}</Text>
+        <Text width={3}>{sharedValue}</Text>
       </Component>
 
       <Component layout="row" gap={{ left: 1, bottom: 1 }} align="left">
         <Text width={8}>Dot Pattern:</Text>
         <DotSlider value={sharedValue} min={0} max={100} step={5} width={24} />
-        <Text width={4}>{sharedValue}</Text>
+        <Text width={3} align="right">{sharedValue}</Text>
       </Component>
 
       <Component layout="row" gap={{ left: 1, top: 2 }} align="left">

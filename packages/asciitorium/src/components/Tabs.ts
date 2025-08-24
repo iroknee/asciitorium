@@ -73,7 +73,7 @@ export class Tabs extends Component {
     for (let i = 0; i < this.tabs.length; i++) {
       const label = this.tabs[i];
       const isSelected = i === this.selectedIndex && this.hasFocus;
-      const text = isSelected ? `◆${label}◆` : ` ${label} `;
+      const text = isSelected ? `>${label}<` : ` ${label} `;
 
       for (let j = 0; j < text.length && x + j < this.width - borderPad; j++) {
         buffer[y][x + j] = text[j];
@@ -83,7 +83,9 @@ export class Tabs extends Component {
 
       // Separator, unless it's the last tab
       if (i < this.tabs.length - 1 && x < this.width - borderPad - 1) {
+        buffer[y - 1][x] = '┬';
         buffer[y][x] = '⏐';
+        buffer[y + 1][x] = '┴';
         x += 1;
       }
     }

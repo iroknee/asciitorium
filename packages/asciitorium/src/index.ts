@@ -15,3 +15,4 @@ export * from './components/MultiSelect';
 export * from './components/Tabs';
 export * from './components/Text';
 export * from './components/TextInput';
+export * from './components/Sliders';
