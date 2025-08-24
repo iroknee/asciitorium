@@ -16,22 +16,20 @@ export default defineConfig({
         }
         return `${entryName}.js`;
       },
+      formats: ['es', 'cjs'],
     },
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
-      external: ['fs/promises', 'path', 'readline'],
+      external: ['fs/promises', 'path', 'readline', 'asciitorium/jsx-runtime', 'asciitorium/jsx-dev-runtime'],
     },
   },
   plugins: [],
   assetsInclude: ['**/*.md'],
   resolve: {
-    alias: {
-      '@jsx': path.resolve(__dirname, 'src/jsx'),
-    },
   },
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: '@jsx',
+    jsxImportSource: 'asciitorium',
   },
 });

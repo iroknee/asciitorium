@@ -1,6 +1,5 @@
 import {
   App,
-  Text,
   AsciiArt,
   Select,
   Component,
@@ -8,14 +7,17 @@ import {
   loadArt,
 } from 'asciitorium';
 
-// Import example components
-import { ButtonExample } from './examples/ButtonExample';
-import { SelectExample } from './examples/SelectExample';
-import { MultiSelectExample } from './examples/MultiSelectExample';
-import { TextInputExample } from './examples/TextInputExample';
-import { TabsExample } from './examples/TabsExample';
-import { TextExample } from './examples/TextExample';
-import { AsciiArtExample } from './examples/AsciiArtExample';
+import {
+  ButtonExample,
+  CelticBorderExample,
+  SelectExample,
+  MultiSelectExample,
+  TextInputExample,
+  TabsExample,
+  TextExample,
+  AsciiArtExample,
+  SlidersExample,
+} from 'asciitorium/examples';
 
 // Load the title ASCII art
 const titleArt = await loadArt('./art/asciitorium.txt');
@@ -30,100 +32,49 @@ const selectedComponent = new PersistentState(
 const componentList = [
   'AsciiArt',
   'Button',
+  'CelticBorder',
   'MultiSelect',
   'Select',
+  'Sliders',
   'Tabs',
   'Text',
-  'TextInput'
+  'TextInput',
 ];
 
-// Component mapping
-const examples: Record<string, any> = {
+// Component mapping for dynamic content
+const examples = {
   Button: ButtonExample,
+  CelticBorder: CelticBorderExample,
   Select: SelectExample,
   MultiSelect: MultiSelectExample,
   TextInput: TextInputExample,
+  Sliders: SlidersExample,
   Tabs: TabsExample,
   Text: TextExample,
-  AsciiArt: AsciiArtExample
+  AsciiArt: AsciiArtExample,
 };
 
-// Create a wrapper component that dynamically switches based on state
-
-class DynamicExampleWrapper extends Box {
-  constructor() {
-    super({ width: 53, height: 28 });
-
-    // Initially set the current example
-    this.updateExample();
-
-    // Subscribe to changes in selectedComponent
-    selectedComponent.subscribe(() => {
-      this.updateExample();
-    });
-  }
-
-  private updateExample() {
-    // Properly remove existing children using removeChild to notify parent
-    const childrenToRemove = [...this.children]; // Create copy to avoid mutation during iteration
-    for (const child of childrenToRemove) {
-      child.destroy();
-      this.removeChild(child);
-    }
-
-    // Get the current example factory function
-    const exampleFactory = examples[selectedComponent.value];
-    if (exampleFactory) {
-      // Call the factory function to create a new component instance
-      const exampleComponent = exampleFactory();
-      this.addChild(exampleComponent);
-    } else {
-      // Fallback for unknown component
-      this.addChild(
-        new Text({
-          width: 40,
-          height: 5,
-          border: true,
-          children: ['Unknown component'],
-        })
-      );
-    }
-
-    // Find the root App component and reset focus manager
-    this.notifyAppOfFocusChange();
-  }
-
-  private notifyAppOfFocusChange() {
-    // Walk up the parent chain to find the App
-    let current: Component | undefined = this;
-    while (current && current.constructor.name !== 'App') {
-      current = current.parent;
-    }
-
-    // If we found the App, reset its focus manager
-    if (current && (current as any).focus) {
-      (current as any).focus.reset(current);
-    }
-  }
-}
-
-// Construct the app with horizontal layout
 const app = (
-  <App width={67} height={35}>
+  <App width={64} height={35}>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Box layout="horizontal">
-      {/* Left Panel - Navigation */}
+    <Component layout="row">
       <Select
         label="Components:"
-        width={25}
+        width={16}
         height={28}
         items={componentList}
         selectedItem={selectedComponent}
         border
       />
-      {/* Right Panel - Dynamic content */}
-      {new DynamicExampleWrapper()}
-    </Box>
+      <Component
+        width={48}
+        height={28}
+        dynamicContent={{
+          selectedKey: selectedComponent,
+          componentMap: examples,
+        }}
+      />
+    </Component>
   </App>
 );
 

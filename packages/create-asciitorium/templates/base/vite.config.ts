@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, Plugin } from 'vite';
 
 // Minimal virtual shim for Node built-ins on the web build
 function nodeBuiltinsShim(): Plugin {
@@ -26,7 +26,11 @@ function nodeBuiltinsShim(): Plugin {
 }
 
 export default defineConfig({
-  esbuild: { target: 'esnext' },
+  esbuild: { 
+    target: 'esnext',
+    jsx: 'automatic',
+    jsxImportSource: 'asciitorium',
+  },
   build: { target: 'esnext' },
   plugins: [nodeBuiltinsShim()],
   server: {
