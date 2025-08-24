@@ -122,7 +122,7 @@ export class MultiSelect extends Component {
 
       let prefix = ' ';
       if (isFocused && this.hasFocus) {
-        prefix = '◈'; // ◇ Focused item (takes priority)
+        prefix = '>'; // ◇ Focused item (takes priority)
       } else if (isSelected && this.hasFocus) {
         prefix = '◆'; // Selected item
       } else if (isSelected) {

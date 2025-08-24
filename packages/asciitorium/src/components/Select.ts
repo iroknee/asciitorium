@@ -115,12 +115,12 @@ export class Select extends Component {
       const isSelected = itemIndex === this.selectedIndex;
 
       let prefix = ' ';
-      if (isSelected && this.hasFocus) {
+      if (isFocused && this.hasFocus) {
+        prefix = '>'; // Focused but not selected
+      } else if (isSelected && this.hasFocus) {
         prefix = '◆'; // selected, and component has focus
       } else if (isSelected) {
         prefix = '◇'; // Selected but not focused or component doesn't have focus
-      } else if (isFocused && this.hasFocus) {
-        prefix = '>'; // Focused but not selected
       }
 
       const line = `${prefix} ${item}`
