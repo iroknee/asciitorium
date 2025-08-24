@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.21] - 2025-08-24
+
+### Added
+
+- **New Components:**
+  - `CelticBorder` component with rotation functionality and `CelticBorderExample` for demonstration
+  - Multiple slider variants: `ProgressBarSlider`, `GaugeSlider`, `DotSlider`, `VerticalSlider`
+  - `SlidersExample` showcasing all slider components
+  - New ASCII art borders for bubbles, celtic, and DNA designs
+
+- **New Architecture:**
+  - `SliderBase` abstract class for consolidated slider logic
+  - Enhanced examples index with better component organization
+  - Multiple entry points support in Vite configuration
+
+### Changed
+
+- **Component Enhancements:**
+  - Refactored all slider components to extend from `SliderBase` class for better code reuse
+  - Enhanced `Select` component with underlining for selected dropdown items and improved line height calculations
+  - Updated prefix indicators: `MultiSelect` and `Select` now use '>' for focused items
+  - Improved `Button` component label positioning and alignment
+  - Simplified `TextInput` focus indicator by removing unnecessary characters
+
+- **Architecture Improvements:**
+  - **Breaking Change:** Refactored layout terminology from 'horizontal/vertical' to 'row/column' for consistency
+  - **Breaking Change:** Replaced `Box` component with enhanced `Component` base class
+  - Consolidated auto-sizing logic into `Component` class
+  - Enhanced dynamic content support across components
+
+- **Documentation and Examples:**
+  - Updated README to reflect component changes (Box → Component)
+  - Enhanced slider documentation with comprehensive examples
+  - Improved component width alignment across examples
+  - Better text alignment in slider examples
+  - Adjusted main app layout dimensions for improved component display
+
+### Removed
+
+- `ProgressBarExample` component (consolidated into `SlidersExample`)
+- Redundant `Box` component functionality (moved to `Component` base class)
+
+### Technical Details
+
+- **Key Files Modified:** Core component architecture, slider system, layout terminology, examples
+- **Breaking Changes:** 
+  - Layout props changed from `horizontal/vertical` to `row/column`
+  - `Box` component removed - use `Component` base class instead
+- **Performance:** Better code reuse through `SliderBase` abstraction
+- **Architecture:** Enhanced component hierarchy and consolidated functionality
+
 ## [0.1.20] - 2025-08-21
 
 ### Added
