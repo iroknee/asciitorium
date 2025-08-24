@@ -1,11 +1,11 @@
-import { Text, State, TextInput, HR, Component } from '../index';
+import { Text, State, TextInput, Component } from '../index';
 
 export const TextInputExample = () => {
   // States for text input components - local to each component instance
   const textInputValue = new State('Hello World');
 
   return (
-    <Component width={42} height={28} label="TextInput Example:" border>
+    <Component width={48} height={28} label="TextInput Example:" border>
       <TextInput
         gap={{ top: 2 }}
         width={20}

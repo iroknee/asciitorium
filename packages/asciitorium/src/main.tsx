@@ -7,15 +7,16 @@ import {
   loadArt,
 } from './index';
 
-// Import example components
-import { ButtonExample } from './examples/ButtonExample';
-import { SelectExample } from './examples/SelectExample';
-import { MultiSelectExample } from './examples/MultiSelectExample';
-import { TextInputExample } from './examples/TextInputExample';
-import { TabsExample } from './examples/TabsExample';
-import { TextExample } from './examples/TextExample';
-import { AsciiArtExample } from './examples/AsciiArtExample';
-import { SlidersExample } from './examples/SlidersExample';
+import {
+  ButtonExample,
+  SelectExample,
+  MultiSelectExample,
+  TextInputExample,
+  TabsExample,
+  TextExample,
+  AsciiArtExample,
+  SlidersExample,
+} from './examples';
 
 // Load the title ASCII art
 const titleArt = await loadArt('./art/asciitorium.txt');

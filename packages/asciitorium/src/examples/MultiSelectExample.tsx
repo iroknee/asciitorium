@@ -1,4 +1,4 @@
-import { Text, State, MultiSelect, Component, HR } from '../index';
+import { Text, State, MultiSelect, Component } from '../index';
 
 export const MultiSelectExample = () => {
   const multiValue = new State(['Suspension', 'Brakes']);
@@ -27,7 +27,7 @@ export const MultiSelectExample = () => {
   ];
 
   return (
-    <Component label="MultiSelect Example:" width={42} height={28} border>
+    <Component label="MultiSelect Example:" width={48} height={28} border>
       <MultiSelect
         label="Car Parts:"
         align="center"

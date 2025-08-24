@@ -16,6 +16,10 @@
       "import": "./dist/asciitorium.es.js",
       "default": "./dist/asciitorium.es.js"
     },
+    "./examples": {
+      "types": "./dist/examples/index.d.ts",
+      "import": "./dist/examples/index.js"
+    },
     "./jsx": {
       "types": "./dist/jsx/index.d.ts",
       "import": "./dist/jsx/index.js"

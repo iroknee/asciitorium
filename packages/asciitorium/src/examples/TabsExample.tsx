@@ -34,7 +34,7 @@ export const TabsExample = () => {
         : 'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
 
   return (
-    <Component width={42} height={28} border label="Tabs Example:">
+    <Component width={48} height={28} border label="Tabs Example:">
       <Tabs
         tabs={['Tab 1', 'Tab 2', 'Tab 3']}
         align="center"

@@ -5,9 +5,17 @@ export default defineConfig({
   publicDir: 'public',
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        'examples/index': path.resolve(__dirname, 'src/examples/index.ts'),
+      },
       name: 'asciitorium',
-      fileName: (format) => `asciitorium.${format}.js`,
+      fileName: (format, entryName) => {
+        if (entryName === 'index') {
+          return `asciitorium.${format}.js`;
+        }
+        return `${entryName}.js`;
+      },
     },
     outDir: 'dist',
     emptyOutDir: true,
