@@ -1,4 +1,4 @@
-import { Text, State, Button, HR, Component } from '../index';
+import { Text, State, Button, Component, Row } from '../index';
 
 export const ButtonExample = () => {
   // State for button click count - local to each component instance
@@ -12,10 +12,10 @@ export const ButtonExample = () => {
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
         gap={{top: 4, bottom: 3}}
       />
-      <Component layout="row" gap={{left: 6, right: 2}} align="center">
+      <Row gap={{left: 6, right: 2}} align="center">
         <Text>Click Count: </Text>
         <Text width={4}>{buttonClickCount}</Text>
-      </Component>
+      </Row>
     </Component>
   );
 };

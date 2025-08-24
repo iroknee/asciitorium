@@ -3,7 +3,7 @@ import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 import { resolveGap } from '../utils/gapUtils';
 
-export class HorizontalLayout implements Layout {
+export class RowLayout implements Layout {
   private fit: boolean;
 
   constructor(options?: LayoutOptions) {

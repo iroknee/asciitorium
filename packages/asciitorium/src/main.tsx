@@ -3,6 +3,7 @@ import {
   AsciiArt,
   Select,
   Component,
+  Row,
   PersistentState,
   loadArt,
 } from './index';
@@ -57,7 +58,7 @@ const examples = {
 const app = (
   <App width={64} height={35}>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Component layout="row">
+    <Row>
       <Select
         label="Components:"
         width={16}
@@ -74,7 +75,7 @@ const app = (
           componentMap: examples,
         }}
       />
-    </Component>
+    </Row>
   </App>
 );
 

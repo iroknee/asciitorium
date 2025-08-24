@@ -1,17 +1,24 @@
 import type { Component } from '../Component';
-import { Layout } from './Layout';
+import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
+import { resolveGap } from '../utils/gapUtils';
 
-export class AbsoluteLayout implements Layout {
+export class AlignedLayout implements Layout {
+  constructor(_options?: LayoutOptions) {
+    // AlignedLayout doesn't use any specific options currently
+  }
+
   layout(parent: Component, children: Component[]): void {
     const borderPad = parent.border ? 1 : 0;
     const innerWidth = parent.width - 2 * borderPad;
     const innerHeight = parent.height - 2 * borderPad;
 
     for (const child of children) {
-      if (child.fixed) continue; // Skip positioning if component is fixed
+      if (child.fixed) {
+        continue; // Skip positioning if component is fixed
+      }
 
-      // Apply alignment within the parent's inner area
+      // Only apply alignment-based positioning
       const { x, y } = this.resolveAlignment(
         child.align,
         innerWidth,
@@ -20,8 +27,11 @@ export class AbsoluteLayout implements Layout {
         child.height
       );
 
-      child.x = borderPad + x;
-      child.y = borderPad + y;
+      // Resolve gap and apply it to the final position
+      const gap = resolveGap(child.gap);
+
+      child.x = borderPad + x + gap.left;
+      child.y = borderPad + y + gap.top;
     }
   }
 
@@ -36,47 +46,47 @@ export class AbsoluteLayout implements Layout {
     let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
 
     if (typeof align === 'string') {
-      // Handle compound alignments like "top-left"
+      // Parse string alignment into horizontal and vertical components
       switch (align) {
         case 'top-left':
-          vAlign = 'top';
           hAlign = 'left';
+          vAlign = 'top';
           break;
         case 'top':
-          vAlign = 'top';
           hAlign = 'center';
+          vAlign = 'top';
           break;
         case 'top-right':
-          vAlign = 'top';
           hAlign = 'right';
+          vAlign = 'top';
           break;
         case 'left':
-          vAlign = 'middle';
           hAlign = 'left';
+          vAlign = 'middle';
           break;
         case 'center':
-          vAlign = 'middle';
           hAlign = 'center';
+          vAlign = 'middle';
           break;
         case 'right':
-          vAlign = 'middle';
           hAlign = 'right';
+          vAlign = 'middle';
           break;
         case 'bottom-left':
-          vAlign = 'bottom';
           hAlign = 'left';
+          vAlign = 'bottom';
           break;
         case 'bottom':
-          vAlign = 'bottom';
           hAlign = 'center';
+          vAlign = 'bottom';
           break;
         case 'bottom-right':
-          vAlign = 'bottom';
           hAlign = 'right';
+          vAlign = 'bottom';
           break;
         default:
-          vAlign = 'top';
           hAlign = 'left';
+          vAlign = 'top';
           break;
       }
     } else if (typeof align === 'object' && align !== null) {
@@ -84,21 +94,33 @@ export class AbsoluteLayout implements Layout {
       vAlign = align.y ?? 'top';
     }
 
+    // Calculate horizontal position
     const padX = parentWidth - childWidth;
-    const padY = parentHeight - childHeight;
-
     let x: number;
-    if (typeof hAlign === 'number') x = hAlign;
-    else if (hAlign === 'center') x = Math.floor(padX / 2);
-    else if (hAlign === 'right') x = padX;
-    else x = 0;
+    if (typeof hAlign === 'number') {
+      x = hAlign;
+    } else if (hAlign === 'center') {
+      x = Math.floor(padX / 2);
+    } else if (hAlign === 'right') {
+      x = padX;
+    } else {
+      x = 0; // left
+    }
 
+    // Calculate vertical position
+    const padY = parentHeight - childHeight;
     let y: number;
-    if (typeof vAlign === 'number') y = vAlign;
-    else if (vAlign === 'middle') y = Math.floor(padY / 2);
-    else if (vAlign === 'bottom') y = padY;
-    else y = 0;
+    if (typeof vAlign === 'number') {
+      y = vAlign;
+    } else if (vAlign === 'middle') {
+      y = Math.floor(padY / 2);
+    } else if (vAlign === 'bottom') {
+      y = padY;
+    } else {
+      y = 0; // top
+    }
 
     return { x, y };
   }
+
 }

@@ -8,6 +8,8 @@
 import {
   App,
   Component,
+  Row,
+  Column,
   Text,
   State,
   AsciiArt,
@@ -49,7 +51,7 @@ await app.start();
 
 - Works in both Web (DOM) and CLI (Terminal)
 - Pure TypeScript, lightweight, no external framework dependencies
-- Built-in components (`Text`, `Button`, `Select`, `GaugeSlider`, `MultiSelect`, etc.)
+- Built-in components (`Text`, `Button`, `Select`, `GaugeSlider`, `MultiSelect`, `Row`, `Column`, etc.)
 - Stateful rendering with reactive `State<T>` objects
 - Custom JSX runtime for declarative UI
 

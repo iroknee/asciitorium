@@ -1,4 +1,4 @@
-import { Text, State, Select, Component, HR } from '../index';
+import { Text, State, Select, Component, Row } from '../index';
 
 export const SelectExample = () => {
   const selectValue = new State('Tesla Model S');
@@ -31,10 +31,10 @@ export const SelectExample = () => {
           selectedItem={selectValue}
         />
       </Component>
-      <Component align="center" gap={{ left: 5 }} layout="row">
+      <Row align="center" gap={{ left: 5 }}>
         <Text>Car Selected: </Text>
         <Text width={20}>{selectValue}</Text>
-      </Component>
+      </Row>
     </Component>
   );
 };

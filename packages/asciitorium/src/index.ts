@@ -16,3 +16,5 @@ export * from './components/Tabs';
 export * from './components/Text';
 export * from './components/TextInput';
 export * from './components/Sliders';
+export * from './components/Row';
+export * from './components/Column';

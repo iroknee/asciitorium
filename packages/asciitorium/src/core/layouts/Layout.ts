@@ -1,8 +1,8 @@
 import type { Component } from '../Component';
-import { HorizontalLayout } from './HorizontalLayout';
-import { VerticalLayout } from './VerticalLayout';
-import { AbsoluteLayout } from './AbsoluteLayout';
-import { RelaxedLayout } from './RelaxedLayout';
+import { RowLayout } from './RowLayout';
+import { ColumnLayout } from './ColumnLayout';
+import { FixedLayout } from './FixedLayout';
+import { AlignedLayout } from './AlignedLayout';
 
 /**
  * Interface for layouts that handle child component positioning
@@ -39,10 +39,10 @@ export class LayoutRegistry {
 
   // Static initialization - register all built-in layouts
   static {
-    this.layouts.set('row', HorizontalLayout);
-    this.layouts.set('column', VerticalLayout);
-    this.layouts.set('fixed', AbsoluteLayout);
-    this.layouts.set('aligned', RelaxedLayout);
+    this.layouts.set('row', RowLayout);
+    this.layouts.set('column', ColumnLayout);
+    this.layouts.set('fixed', FixedLayout);
+    this.layouts.set('aligned', AlignedLayout);
   }
 
   static register(

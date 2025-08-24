@@ -36,24 +36,24 @@ await app.start();
 ### Slider Examples
 
 ```tsx
-import { App, GaugeSlider, ProgressBarSlider, Text, State, Component } from 'asciitorium';
+import { App, GaugeSlider, ProgressBarSlider, Text, State, Row } from 'asciitorium';
 
 const volume = new State(75);
 const brightness = new State(50);
 
 const app = (
   <App width={50} height={15}>
-    <Component layout="row">
+    <Row>
       <Text width={12}>Volume:</Text>
       <GaugeSlider value={volume} min={0} max={100} width={25} />
       <Text width={8}>{volume}%</Text>
-    </Component>
+    </Row>
     
-    <Component layout="row">
+    <Row>
       <Text width={12}>Brightness:</Text>
       <ProgressBarSlider value={brightness} min={0} max={255} step={5} width={25} />
       <Text width={8}>{brightness}</Text>
-    </Component>
+    </Row>
     
     <Text align="center" gap={{top: 1}}>
       Use ← → arrows or A/D keys to adjust values
@@ -66,7 +66,15 @@ await app.start();
 
 ## Built-in Components
 
+### Layout Components
+
 - **`App`** - App to wrap all components in
+- **`Component`** - Base component class with customizable layout
+- **`Row`** - Horizontal layout container (convenience wrapper)
+- **`Column`** - Vertical layout container (convenience wrapper)
+
+### UI Components
+
 - **`Tabs`** - Tabbed interface containers
 - **`Text`** - Display static or dynamic text
 - **`Button`** - Interactive buttons with click handlers
@@ -84,6 +92,50 @@ await app.start();
 - **`VR`** - Decorative vertical dividers
 
 ### Component Reference
+
+#### Layout Components
+
+##### Row and Column
+
+Convenience components that extend `Component` with predefined layouts:
+
+**Row Component:**
+- Automatically applies `layout="row"` (horizontal layout)
+- Children are arranged left-to-right
+- Supports optional `fit` prop to make children fill available width
+
+**Column Component:**
+- Automatically applies `layout="column"` (vertical layout) 
+- Children are arranged top-to-bottom (default behavior)
+- Supports optional `fit` prop to make children fill available height
+
+**Props:**
+- `fit?: boolean` - Whether children should fit/fill available space
+- All standard `ComponentProps` except `layout` (which is fixed)
+
+**Examples:**
+
+```tsx
+// Horizontal layout with fitted children
+<Row fit border width={40} height={5}>
+  <Button>Left</Button>
+  <Button>Center</Button>  
+  <Button>Right</Button>
+</Row>
+
+// Vertical layout (explicit Column, but same as default Component)
+<Column border width={20} height={10}>
+  <Text>Top text</Text>
+  <Text>Middle text</Text>
+  <Text>Bottom text</Text>
+</Column>
+
+// Equivalent using Component directly
+<Component layout="row" fit>
+  <Button>Button 1</Button>
+  <Button>Button 2</Button>
+</Component>
+```
 
 #### Slider Components
 
@@ -185,10 +237,17 @@ Asciitorium provides a flexible layout system that automatically positions compo
 - **`aligned`** - Uses alignment-based positioning without flow
 
 ```tsx
-<Box layout="row" width={40} height={10}>
+// Using Component with layout prop
+<Component layout="row" width={40} height={10}>
   <Text content="Left" />
   <Text content="Right" />
-</Box>
+</Component>
+
+// Or using the Row convenience component
+<Row width={40} height={10}>
+  <Text content="Left" />
+  <Text content="Right" />
+</Row>
 ```
 
 ## Positioning & Spacing

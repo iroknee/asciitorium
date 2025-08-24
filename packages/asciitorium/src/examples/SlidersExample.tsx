@@ -1,4 +1,4 @@
-import { Text, State, Component } from '../index';
+import { Text, State, Component, Row } from '../index';
 import {
   ProgressBarSlider,
   GaugeSlider,
@@ -16,7 +16,7 @@ export const SlidersExample = () => {
         All sliders share the same value for comparison
       </Text>
 
-      <Component layout="row" gap={{ left: 1, bottom: 2 }} align="left">
+      <Row gap={{ left: 1, bottom: 2 }} align="left">
         <Text width={8} height={3} align="center">
           Progress
         </Text>
@@ -30,9 +30,9 @@ export const SlidersExample = () => {
         <Text width={3} height={3} align="center">
           {sharedValue}
         </Text>
-      </Component>
+      </Row>
 
-      <Component layout="row" gap={{ left: 1, bottom: 2 }} align="left">
+      <Row gap={{ left: 1, bottom: 2 }} align="left">
         <Text width={8}>Gauge Style:</Text>
         <GaugeSlider
           value={sharedValue}
@@ -42,15 +42,15 @@ export const SlidersExample = () => {
           width={24}
         />
         <Text width={3}>{sharedValue}</Text>
-      </Component>
+      </Row>
 
-      <Component layout="row" gap={{ left: 1, bottom: 1 }} align="left">
+      <Row gap={{ left: 1, bottom: 1 }} align="left">
         <Text width={8}>Dot Pattern:</Text>
         <DotSlider value={sharedValue} min={0} max={100} step={5} width={24} />
         <Text width={3} align="right">{sharedValue}</Text>
-      </Component>
+      </Row>
 
-      <Component layout="row" gap={{ left: 1, top: 2 }} align="left">
+      <Row gap={{ left: 1, top: 2 }} align="left">
         <Text width={10}>Vertical:</Text>
         <VerticalSlider
           value={volumeValue}
@@ -66,7 +66,7 @@ export const SlidersExample = () => {
           Use ← → arrows or A/D keys for horizontal sliders Use ↑ ↓ arrows or
           W/S keys for vertical slider
         </Text>
-      </Component>
+      </Row>
     </Component>
   );
 };
