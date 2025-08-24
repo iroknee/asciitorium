@@ -7,29 +7,29 @@
 ```jsx
 import {
   App,
-  Box,
+  Component,
   Text,
   State,
   AsciiArt,
   TextInput,
   CelticBorder,
   HR,
-  loadAsciiAsset,
 } from 'asciitorium';
 
 const helloWorld = new State('Hello, World!');
-const titleArt = await loadAsciiAsset('./art/asciitorium.txt');
+// Load ASCII art from public/art directory
+const titleArt = 'Your ASCII Art Here';
 
 const app = (
   <App width={64} height={20} layout="aligned">
     <CelticBorder edge="top-left" align="top-left" />
     <CelticBorder edge="top-right" align="top-right" />
 
-    <Box align="top" layout="column" gap={2}>
+    <Component align="top" layout="column" gap={2}>
       <AsciiArt content={titleArt} align="top" />
       <HR length={48} align="center" />
       <Text value="a ui framework for cli and web" align="top" gap={3} />
-    </Box>
+    </Component>
 
     <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
 
@@ -49,7 +49,7 @@ await app.start();
 
 - Works in both Web (DOM) and CLI (Terminal)
 - Pure TypeScript, lightweight, no external framework dependencies
-- Built-in components (`Text`, `Button`, `Select`, `ProgressBar`, etc.)
+- Built-in components (`Text`, `Button`, `Select`, `GaugeSlider`, `MultiSelect`, etc.)
 - Stateful rendering with reactive `State<T>` objects
 - Custom JSX runtime for declarative UI
 

@@ -33,10 +33,10 @@ const app = (
 await app.start();
 ```
 
-### Slider Example
+### Slider Examples
 
 ```tsx
-import { App, Slider, Text, State, Component } from 'asciitorium';
+import { App, GaugeSlider, ProgressBarSlider, Text, State, Component } from 'asciitorium';
 
 const volume = new State(75);
 const brightness = new State(50);
@@ -45,13 +45,13 @@ const app = (
   <App width={50} height={15}>
     <Component layout="row">
       <Text width={12}>Volume:</Text>
-      <Slider value={volume} min={0} max={100} width={25} />
+      <GaugeSlider value={volume} min={0} max={100} width={25} />
       <Text width={8}>{volume}%</Text>
     </Component>
     
     <Component layout="row">
       <Text width={12}>Brightness:</Text>
-      <Slider value={brightness} min={0} max={255} step={5} width={25} />
+      <ProgressBarSlider value={brightness} min={0} max={255} step={5} width={25} />
       <Text width={8}>{brightness}</Text>
     </Component>
     
@@ -73,52 +73,105 @@ await app.start();
 - **`Select`** - Selectable lists with keyboard navigation
 - **`AsciiArt`** - Display ASCII art from files
 - **`TextInput`** - Text input fields
-- **`ProgressBar`** - Visual progress indicators
-- **`Slider`** - Interactive numeric value selectors with keyboard controls
+- **`GaugeSlider`** - Horizontal slider with diamond indicator
+- **`ProgressBarSlider`** - Progress bar style slider with filled track
+- **`DotSlider`** - Dot-based horizontal slider
+- **`VerticalSlider`** - Vertical slider with filled bar
+- **`MultiSelect`** - Multi-selection lists with checkboxes
+- **`PerfMonitor`** - Performance monitoring display
 - **`CelticBorder`** - Decorative borders
 - **`HR`** - Decorative horizontal dividers
 - **`VR`** - Decorative vertical dividers
 
 ### Component Reference
 
-#### Slider
+#### Slider Components
 
-Interactive numeric value selector with keyboard controls. Displays as a horizontal track with tick marks and a diamond indicator.
+Asciitorium provides 4 different slider variants for different visual styles:
+
+##### GaugeSlider
+
+Horizontal slider with a diamond indicator on a track.
 
 **Visual Appearance:**
 ```
-[---+---+---◆---+---+---]
+├─────◆─────┤
 ```
 
 - `◆` - Focused state (component has focus)
 - `◇` - Unfocused state
-- `+` - Tick marks (every 3 positions)
 - `─` - Track rail
-- `[` `]` - Track boundaries
+- `├` `┤` - Track boundaries
 
-**Props:**
+**Example:**
+```tsx
+const volume = new State(50);
+<GaugeSlider value={volume} min={0} max={100} width={25} />
+```
+
+##### ProgressBarSlider
+
+3-line progress bar style slider with filled track.
+
+**Visual Appearance:**
+```
+ ⎽⎽⎽⎽⎽⎽⎽⎽⎽
+⎹████▓    ⎸
+ ⎺⎺⎺⎺⎺⎺⎺⎺⎺
+```
+
+**Example:**
+```tsx
+const progress = new State(75);
+<ProgressBarSlider value={progress} width={20} height={3} />
+```
+
+##### DotSlider
+
+Dot-based horizontal slider.
+
+**Visual Appearance:**
+```
+◆ ◆ ◆ ◇ ◇ ◇
+```
+
+**Example:**
+```tsx
+const rating = new State(3);
+<DotSlider value={rating} min={0} max={5} width={12} />
+```
+
+##### VerticalSlider
+
+Vertical slider with filled bar.
+
+**Visual Appearance:**
+```
+┌─┐
+│█│
+│█│
+│░│
+│░│
+└─┘
+```
+
+**Example:**
+```tsx
+const level = new State(60);
+<VerticalSlider value={level} width={3} height={10} />
+```
+
+**Common Props for All Sliders:**
 - `value: State<number>` - Reactive state for the current value
 - `min?: number` - Minimum value (default: 0)
 - `max?: number` - Maximum value (default: 100)  
 - `step?: number` - Increment/decrement amount (default: 1)
-- `width?: number` - Slider width in characters (default: 25)
+- `width?: number` - Component width
+- `height?: number` - Component height
 
 **Keyboard Controls:**
-- `←` / `A` - Decrease value by step amount
-- `→` / `D` - Increase value by step amount
-
-**Example:**
-```tsx
-const temperature = new State(72);
-
-<Slider 
-  value={temperature}
-  min={32}
-  max={100} 
-  step={2}
-  width={30}
-/>
-```
+- Horizontal sliders: `←` / `A` (decrease), `→` / `D` (increase)
+- Vertical slider: `↓` / `S` (decrease), `↑` / `W` (increase)
 
 ### Layout System
 
@@ -179,6 +232,27 @@ The `align` property controls how components position themselves within their av
 <Text align={{ x: 'center', y: 'top' }} />
 <Text align={{ x: 10, y: 'middle' }} />  // Absolute positioning
 ```
+
+#### MultiSelect
+
+Multi-selection list component with checkboxes.
+
+**Props:**
+- `options: string[]` - Array of selectable options
+- `selected: State<string[]>` - Reactive state for selected items
+- `width?: number` - Component width
+- `height?: number` - Component height
+
+**Keyboard Controls:**
+- `↑` / `↓` - Navigate through options
+- `Space` - Toggle selection of current item
+
+#### PerfMonitor
+
+Performance monitoring display component for debugging.
+
+**Props:**
+- Standard component props for positioning and sizing
 
 Available alignment values:
 - **Horizontal**: `'left'`, `'center'`, `'right'`, or a number (absolute position)
