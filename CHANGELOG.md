@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.23] - 2025-08-25
+
+### Fixed
+
+- **Build System:**
+  - Fixed missing exports for `setupKeyboardHandling` and `validateWebEnvironment` functions in utils module
+  - Resolved CLI runtime error: "The requested module './utils' does not provide an export named 'setupKeyboardHandling'"
+  - Ensured all utility functions are properly exported in the built distribution files
+
+### Technical Details
+
+- **Issue Resolution:** Corrected build output to include all necessary exports from core/utils module
+- **Affected Components:** CLI applications using `npm create asciitorium@latest`
+- **Impact:** CLI applications can now run without import errors
+
 ## [0.1.22] - 2025-08-25
 
 ### Added
