@@ -5,7 +5,7 @@ export const TextInputExample = () => {
   const textInputValue = new State('Hello World');
 
   return (
-    <Component width={48} height={28} label="TextInput Example:" border>
+    <Component label="TextInput Example:" border>
       <TextInput
         gap={{ top: 2 }}
         width={20}

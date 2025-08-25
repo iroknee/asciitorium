@@ -21,17 +21,28 @@ export class App extends Component {
   private lastCPUUsage?: any;
 
   constructor(props: AppProps) {
+    // Initialize renderer first to get screen size
+    const renderer = getDefaultRenderer();
+    const screenSize = renderer.getScreenSize();
+    console.log('Initial screen size:', screenSize);
+
     // Set column layout as default for Asciitorium, pass through fit option
+    // Use screen size if width/height not explicitly provided
     const asciitoriumProps = {
       ...props,
+      width: props.width ?? screenSize.width,
+      height: props.height ?? screenSize.height,
       layout: props.layout ?? 'column',
       layoutOptions: { fit: props.fit, ...props.layoutOptions },
     };
 
     super(asciitoriumProps);
 
-    this.renderer = getDefaultRenderer();
+    this.renderer = renderer;
     this.focus = new FocusManager();
+
+    // Setup resize handling
+    this.setupResizeHandling();
 
     this.focus.reset(this);
     this.render();
@@ -180,6 +191,31 @@ export class App extends Component {
     if (this.focus.handleKey(key)) {
       this.render();
     }
+  }
+
+  private setupResizeHandling(): void {
+    const handleResize = () => {
+      const newSize = this.renderer.getScreenSize();
+      if (newSize.width !== this.width || newSize.height !== this.height) {
+        this.width = newSize.width;
+        this.height = newSize.height;
+        this.render();
+      }
+    };
+
+    // Web environment resize handling
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+    }
+
+    // Terminal environment resize handling (SIGWINCH signal)
+    if (typeof process !== 'undefined' && process.on) {
+      process.on('SIGWINCH', handleResize);
+    }
+  }
+
+  getScreenSize(): { width: number; height: number } {
+    return this.renderer.getScreenSize();
   }
 
   async start(): Promise<void> {

@@ -27,7 +27,7 @@ export const MultiSelectExample = () => {
   ];
 
   return (
-    <Component label="MultiSelect Example:" width={48} height={28} border>
+    <Component label="MultiSelect Example:" border>
       <MultiSelect
         label="Car Parts:"
         align="center"

@@ -1,13 +1,11 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface SliderVariantOptions extends Omit<ComponentProps, 'height'> {
+export interface SliderVariantOptions extends ComponentProps {
   value: State<number>;
   min?: number;
   max?: number;
   step?: number;
-  width?: number;
-  height?: number;
 }
 
 abstract class SliderBase extends Component {

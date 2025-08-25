@@ -2,10 +2,8 @@ import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
 export interface ArtOptions
-  extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
+  extends Omit<ComponentProps, 'children'> {
   content?: string; // raw text loaded from .txt (UTF-8)
-  width?: number; // optional fixed width
-  height?: number; // optional fixed height
   children?: string | string[];
 }
 

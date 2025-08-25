@@ -3,4 +3,5 @@
  */
 export interface Renderer {
   render(buffer: string[][]): void;
+  getScreenSize(): { width: number; height: number };
 }

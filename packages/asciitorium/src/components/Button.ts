@@ -2,11 +2,9 @@ import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
 export interface ButtonOptions
-  extends Omit<ComponentProps, 'width' | 'height' | 'children'> {
+  extends Omit<ComponentProps, 'children'> {
   content?: string;
   onClick?: () => void;
-  width?: number;
-  height?: number;
   children?: string | string[];
 }
 

@@ -21,3 +21,18 @@ export type Alignment =
       x: 'left' | 'center' | 'right' | number;
       y: 'top' | 'middle' | 'bottom' | number;
     };
+
+// Size value types for relative and absolute sizing
+export type SizeValue = 
+  | number                    // Absolute size in characters
+  | `${number}%`             // Percentage of parent
+  | 'auto'                   // Size to content
+  | 'fit';                   // Fill available space
+
+// Resolved size with context for calculations
+export interface SizeContext {
+  parentWidth: number;
+  parentHeight: number;
+  availableWidth: number;
+  availableHeight: number;
+}

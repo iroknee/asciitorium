@@ -1,11 +1,9 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface TabsOptions extends Omit<ComponentProps, 'height' | 'width'> {
+export interface TabsOptions extends ComponentProps {
   tabs: string[];
   selectedTab: State<string>;
-  height?: number;
-  width?: number;
 }
 
 export class Tabs extends Component {

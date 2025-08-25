@@ -11,7 +11,7 @@ loadArt('./art/computer.txt').then(art => {
 });
 
 export const AsciiArtExample = () => (
-  <Component width={48} height={28} layout="aligned" label="ASCII Art Example:" border>
+  <Component layout="aligned" label="ASCII Art Example:" border>
     <AsciiArt content={computer || 'Loading...'} align="center" />
   </Component>
 );

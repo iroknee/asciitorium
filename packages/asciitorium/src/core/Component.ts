@@ -1,14 +1,15 @@
-import { Alignment } from './types';
+import { Alignment, SizeValue, SizeContext } from './types';
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
+import { resolveSize, createSizeContext } from './utils/sizeUtils';
 
 export interface ComponentProps {
   label?: string;
   comment?: string; // Comment to describe the component's purpose.  This isn't used for anything yet.
   showLabel?: boolean; // Whether to show the label or not
-  width?: number; // Width of the component
-  height?: number; // Height of the component
+  width?: SizeValue; // Width of the component
+  height?: SizeValue; // Height of the component
   border?: boolean; // Whether to show a border around the component
   fill?: string; // Fill character for the component
   align?: Alignment; // Alignment of the component
@@ -41,6 +42,10 @@ export abstract class Component {
   public showLabel: boolean = true;
   public width: number;
   public height: number;
+  
+  // Store original size values for relative sizing
+  private originalWidth?: SizeValue;
+  private originalHeight?: SizeValue;
   public border: boolean;
   public fill: string;
   public align?: Alignment;
@@ -72,17 +77,31 @@ export abstract class Component {
   private layout?: any;
 
   constructor(props: ComponentProps) {
-    // Calculate auto-dimensions from children if not provided
-    const autoWidth = props.width ?? Component.calculateAutoWidth(props.children, props.layout);
-    const autoHeight = props.height ?? Component.calculateAutoHeight(props.children, props.layout);
+    // Store original size values for relative sizing - default to 'fit'
+    this.originalWidth = props.width ?? 'fit';
+    this.originalHeight = props.height ?? 'fit';
     
-    // Account for border if present (add 2 for left+right or top+bottom)
-    const borderAdjustment = props.border ? 2 : 0;
-    this.width = props.width ?? autoWidth + borderAdjustment;
-    this.height = props.height ?? autoHeight + borderAdjustment;
+    // Initialize with default values - will be resolved during layout
+    if (typeof props.width === 'number') {
+      this.width = props.width;
+    } else {
+      // For non-numeric values, calculate auto-dimensions as fallback
+      const autoWidth = Component.calculateAutoWidth(props.children, props.layout);
+      const borderAdjustment = props.border ? 2 : 0;
+      this.width = autoWidth + borderAdjustment;
+    }
+    
+    if (typeof props.height === 'number') {
+      this.height = props.height;
+    } else {
+      // For non-numeric values, calculate auto-dimensions as fallback
+      const autoHeight = Component.calculateAutoHeight(props.children, props.layout);
+      const borderAdjustment = props.border ? 2 : 0;
+      this.height = autoHeight + borderAdjustment;
+    }
 
-    if (this.width < 1) throw new Error('Component width must be > 0');
-    if (this.height < 1) throw new Error('Component height must be > 0');
+    if (this.width < 1) this.width = 1;
+    if (this.height < 1) this.height = 1;
     this.label = props.label;
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
@@ -280,6 +299,37 @@ export abstract class Component {
     if (current && (current as any).focus) {
       (current as any).focus.reset(current);
     }
+  }
+
+  // Size resolution methods
+  public getOriginalWidth(): SizeValue | undefined {
+    return this.originalWidth;
+  }
+
+  public getOriginalHeight(): SizeValue | undefined {
+    return this.originalHeight;
+  }
+
+  public resolveSize(context: SizeContext): void {
+    const borderAdjustment = this.border ? 2 : 0;
+    
+    if (this.originalWidth !== undefined) {
+      const resolved = resolveSize(this.originalWidth, context, 'width');
+      if (resolved !== undefined) {
+        this.width = resolved;
+      }
+    }
+    
+    if (this.originalHeight !== undefined) {
+      const resolved = resolveSize(this.originalHeight, context, 'height');
+      if (resolved !== undefined) {
+        this.height = resolved;
+      }
+    }
+
+    // Ensure minimum size
+    if (this.width < 1) this.width = 1;
+    if (this.height < 1) this.height = 1;
   }
 
   handleEvent(event: string): boolean {

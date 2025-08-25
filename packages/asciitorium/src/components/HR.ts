@@ -1,7 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 
-export interface HROptions extends Omit<ComponentProps, 'height'> {
-  width?: number;
+export interface HROptions extends ComponentProps {
 }
 
 export class HR extends Component {

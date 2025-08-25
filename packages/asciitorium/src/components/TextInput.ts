@@ -1,13 +1,11 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface TextInputOptions extends Omit<ComponentProps, 'height'> {
+export interface TextInputOptions extends ComponentProps {
   /** Accepts string OR number state */
   value?: State<string> | State<number>;
   /** Shown when empty (string or number ok) */
   placeholder?: string | number;
-  /** Fixed height (defaults 3) */
-  height?: number;
   /** If true, restricts typing to numeric characters (0-9, one '.', leading '-') */
   numeric?: boolean;
 }

@@ -2,10 +2,7 @@ import { Component, ComponentProps } from '../core/Component';
 import { App } from '../core/App';
 import { isCPUSupported, isMemorySupported } from '../core/utils';
 
-export interface PerfMonitorOptions
-  extends Omit<ComponentProps, 'height' | 'width'> {
-  width?: number;
-  height?: number;
+export interface PerfMonitorOptions extends ComponentProps {
   time?: boolean;
   cpu?: boolean;
   memory?: boolean;

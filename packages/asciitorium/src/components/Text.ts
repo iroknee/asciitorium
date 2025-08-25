@@ -1,14 +1,12 @@
 import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState, resolveAlignment } from '../core/utils';
-import { Alignment } from 'core/types';
+import { Alignment, SizeValue } from 'core/types';
 
 export interface TextOptions
-  extends Omit<ComponentProps, 'height' | 'width' | 'children'> {
+  extends Omit<ComponentProps, 'children'> {
   content?: string | State<any>;
   value?: string | State<any>; // deprecated: use content instead
-  height?: number;
-  width?: number;
   align?: Alignment;
   children?: (string | State<any>) | (string | State<any>)[];
 }

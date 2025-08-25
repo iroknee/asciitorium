@@ -14,10 +14,26 @@ body {
   background: black;
   color: #3fff00;
 
-  /* Center the screen horizontally */
+  /* Center the screen both horizontally and vertically */
   display: flex;
   justify-content: center;
+  align-items: center;
   height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+}
+
+#screen {
+  /* Use 90% of viewport dimensions to leave some margin */
+  width: 90vw;
+  height: 90vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Hide scrollbars for clean appearance */
+  
+  /* Ensure monospace font for proper character sizing */
+  font-family: 'PrintChar21', 'Courier New', Courier, monospace;
+  font-size: 16px; /* Base font size for character measurement */
+  line-height: 1; /* Tight line spacing for ASCII art */
 }
 
 .inverted {

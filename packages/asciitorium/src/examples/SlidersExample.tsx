@@ -11,13 +11,13 @@ export const SlidersExample = () => {
   const volumeValue = new State(75);
 
   return (
-    <Component width={48} height={28} label="Sliders:" border>
-      <Text height={2} width={32} align="center" gap={{ top: 1, bottom: 1 }}>
+    <Component label="Sliders:" border>
+      <Text height={2} align="center" gap={{ top: 1, bottom: 1 }}>
         All sliders share the same value for comparison
       </Text>
 
-      <Row gap={{ left: 1, bottom: 2 }} align="left">
-        <Text width={8} height={3} align="center">
+      <Row gap={{ left: 1, bottom: 2 }} height={3} align="left">
+        <Text width={8} gap={{ top: 1 }}>
           Progress
         </Text>
         <ProgressBarSlider
@@ -27,12 +27,12 @@ export const SlidersExample = () => {
           step={5}
           width={24}
         />
-        <Text width={3} height={3} align="center">
+        <Text width={3} height={3} gap={{ top: 1 }}>
           {sharedValue}
         </Text>
       </Row>
 
-      <Row gap={{ left: 1, bottom: 2 }} align="left">
+      <Row height={3} gap={{ left: 1, bottom: 1 }}>
         <Text width={8}>Gauge Style:</Text>
         <GaugeSlider
           value={sharedValue}
@@ -44,13 +44,13 @@ export const SlidersExample = () => {
         <Text width={3}>{sharedValue}</Text>
       </Row>
 
-      <Row gap={{ left: 1, bottom: 1 }} align="left">
+      <Row height={1} gap={{ left: 1, bottom: 1 }} align="left">
         <Text width={8}>Dot Pattern:</Text>
         <DotSlider value={sharedValue} min={0} max={100} step={5} width={24} />
         <Text width={3} align="right">{sharedValue}</Text>
       </Row>
 
-      <Row gap={{ left: 1, top: 2 }} align="left">
+      <Row height="fit" gap={{ left: 1, top: 2 }} align="left">
         <Text width={10}>Vertical:</Text>
         <VerticalSlider
           value={volumeValue}
@@ -58,7 +58,7 @@ export const SlidersExample = () => {
           max={100}
           step={10}
           width={3}
-          height={10}
+          height="fit"
         />
         <Text width={6}>{volumeValue}</Text>
 

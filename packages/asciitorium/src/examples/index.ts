@@ -2,6 +2,7 @@ export { AsciiArtExample } from './AsciiArtExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { MultiSelectExample } from './MultiSelectExample';
+export { RelativeSizingExample } from './RelativeSizingExample';
 export { SelectExample } from './SelectExample';
 export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';

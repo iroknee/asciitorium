@@ -2,6 +2,7 @@ import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 import { resolveGap } from '../utils/gapUtils';
+import { createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/sizeUtils';
 
 export class ColumnLayout implements Layout {
   private fit: boolean;
@@ -14,8 +15,44 @@ export class ColumnLayout implements Layout {
     const borderPad = parent.border ? 1 : 0;
     const innerWidth = parent.width - 2 * borderPad;
     const innerHeight = parent.height - 2 * borderPad;
-    const count = children.length;
+    
+    // Calculate total gap height consumed by all children
+    const totalGapHeight = children.reduce((sum, child) => {
+      if (child.fixed) return sum;
+      const gap = resolveGap(child.gap);
+      return sum + gap.top + gap.bottom;
+    }, 0);
+    
+    // Create size context that accounts for gaps
+    const context = createSizeContext(parent.width, parent.height, borderPad);
+    // Adjust available height to account for gaps
+    context.availableHeight = Math.max(0, context.availableHeight - totalGapHeight);
 
+    // First pass: resolve sizes for all children
+    for (const child of children) {
+      if (child.fixed) continue;
+      
+      // Resolve child size based on parent context
+      child.resolveSize(context);
+    }
+
+    // Second pass: handle fit/flex sizing if enabled
+    if (this.fit && children.length > 0) {
+      const nonFixedChildren = children.filter(child => !child.fixed);
+      const totalGapHeight = nonFixedChildren.reduce((sum, child) => {
+        const gap = resolveGap(child.gap);
+        return sum + gap.top + gap.bottom;
+      }, 0);
+      
+      const availableHeight = innerHeight - totalGapHeight;
+      const childHeight = Math.floor(availableHeight / nonFixedChildren.length);
+      
+      for (const child of nonFixedChildren) {
+        child.height = Math.max(1, childHeight);
+      }
+    }
+
+    // Third pass: position children
     let currentY = borderPad;
 
     for (const child of children) {
@@ -29,20 +66,25 @@ export class ColumnLayout implements Layout {
       // Apply top gap
       currentY += gap.top;
 
-      if (this.fit && count > 0) {
-        child.height = Math.floor(innerHeight / count);
-      }
-
       // Calculate available width after accounting for left/right gaps
       const availableWidth = innerWidth - gap.left - gap.right;
       
-      if (!child.width) {
-        child.width = Math.max(1, availableWidth); // Ensure minimum width of 1
+      // For column layout, children should fill width if not specified
+      const originalWidth = child.getOriginalWidth();
+      if (originalWidth === undefined || originalWidth === 'fit') {
+        child.width = Math.max(1, availableWidth);
+      }
+
+      // Handle height="fit" - fill remaining vertical space
+      const originalHeight = child.getOriginalHeight();
+      if (originalHeight === 'fit') {
+        const remainingHeight = innerHeight - (currentY - borderPad) - gap.top - gap.bottom;
+        child.height = Math.max(1, remainingHeight);
       }
 
       const { x } = this.resolveAlignment(
         child.align,
-        availableWidth, // Use available width for alignment calculation
+        availableWidth,
         child.height,
         child.width,
         child.height

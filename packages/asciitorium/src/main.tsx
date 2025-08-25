@@ -13,6 +13,7 @@ import {
   CelticBorderExample,
   SelectExample,
   MultiSelectExample,
+  RelativeSizingExample,
   TextInputExample,
   TabsExample,
   TextExample,
@@ -35,6 +36,7 @@ const componentList = [
   'Button',
   'CelticBorder',
   'MultiSelect',
+  'RelativeSizing',
   'Select',
   'Sliders',
   'Tabs',
@@ -48,6 +50,7 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Select: SelectExample,
   MultiSelect: MultiSelectExample,
+  RelativeSizing: RelativeSizingExample,
   TextInput: TextInputExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
@@ -56,20 +59,20 @@ const examples = {
 };
 
 const app = (
-  <App width={64} height={35}>
+  <App>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Row>
+    <Row height="fit">
       <Select
         label="Components:"
-        width={16}
-        height={28}
+        width="30%"
+        height="fit"
         items={componentList}
         selectedItem={selectedComponent}
         border
       />
       <Component
-        width={48}
-        height={28}
+        width="fit"
+        height="fit"
         dynamicContent={{
           selectedKey: selectedComponent,
           componentMap: examples,

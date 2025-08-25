@@ -1,10 +1,9 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface SelectOptions extends Omit<ComponentProps, 'height'> {
+export interface SelectOptions extends ComponentProps {
   items: string[];
   selectedItem: State<string>;
-  height?: number;
 }
 
 export class Select extends Component {
@@ -17,8 +16,9 @@ export class Select extends Component {
   hasFocus = false;
 
   constructor(options: SelectOptions) {
-    const height = options.height ?? 3;
     const border = options.border ?? true;
+    // Only set default height if no height was provided at all
+    const height = options.height === undefined ? 3 : options.height;
 
     super({ ...options, height, border });
 
@@ -68,6 +68,7 @@ export class Select extends Component {
   }
 
   override draw(): string[][] {
+
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
     const paddingTop = this.height < 5 ? 0 : 1;
@@ -76,14 +77,6 @@ export class Select extends Component {
 
     const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
     const itemCount = this.items.length;
-
-    const startIdx = Math.max(
-      0,
-      Math.min(
-        this.selectedIndex - Math.floor(maxVisible / 2),
-        Math.max(0, itemCount - maxVisible)
-      )
-    );
 
     // Update scroll calculation to use focusedIndex
     const focusedStartIdx = Math.max(

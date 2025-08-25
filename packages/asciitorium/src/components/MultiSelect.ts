@@ -1,10 +1,9 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 
-export interface MultiSelectOptions extends Omit<ComponentProps, 'height'> {
+export interface MultiSelectOptions extends ComponentProps {
   items: string[];
   selectedItems: State<string[]>;
-  height?: number;
 }
 
 export class MultiSelect extends Component {

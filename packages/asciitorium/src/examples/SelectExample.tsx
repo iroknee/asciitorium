@@ -21,7 +21,7 @@ export const SelectExample = () => {
   ];
 
   return (
-    <Component width={48} height={28} label="Select Example:" border>
+    <Component label="Select Example:" border>
       <Component align="center" gap={{ top: 2, bottom: 2 }}>
         <Select
           label="Car's to Select:"

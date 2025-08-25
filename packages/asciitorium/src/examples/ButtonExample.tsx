@@ -5,7 +5,7 @@ export const ButtonExample = () => {
   const buttonClickCount = new State(0);
 
   return (
-    <Component width={48} height={28} label="Button Example:" border>
+    <Component label="Button Example:" border>
       <Button
         label="I'm a Button!"
         align="center"
