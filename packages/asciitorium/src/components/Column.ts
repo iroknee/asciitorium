@@ -1,7 +1,7 @@
 import { Component, ComponentProps } from '../core/Component';
 
 export interface ColumnProps extends Omit<ComponentProps, 'layout'> {
-  fit?: boolean;
+  // Column-specific props can be added here
 }
 
 export class Column extends Component {
@@ -9,7 +9,7 @@ export class Column extends Component {
     super({
       ...props,
       layout: 'column',
-      layoutOptions: { fit: props.fit }
+      layoutOptions: {}
     });
   }
 

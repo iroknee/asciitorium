@@ -25,7 +25,7 @@ export type LayoutType = 'row' | 'column' | 'fixed' | 'aligned';
  * Configuration options for specific layouts
  */
 export interface LayoutOptions {
-  fit?: boolean; // Whether to fit children to available space
+  // Layout options can be extended by specific layout implementations
 }
 
 /**

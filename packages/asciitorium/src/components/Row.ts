@@ -1,7 +1,7 @@
 import { Component, ComponentProps } from '../core/Component';
 
 export interface RowProps extends Omit<ComponentProps, 'layout'> {
-  fit?: boolean;
+  // Row-specific props can be added here
 }
 
 export class Row extends Component {
@@ -9,7 +9,7 @@ export class Row extends Component {
     super({
       ...props,
       layout: 'row',
-      layoutOptions: { fit: props.fit }
+      layoutOptions: {}
     });
   }
 

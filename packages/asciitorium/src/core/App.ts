@@ -7,7 +7,7 @@ import { setRenderCallback } from './RenderScheduler';
 import { setupKeyboardHandling, validateWebEnvironment } from './utils';
 
 export interface AppProps extends ComponentProps {
-  fit?: boolean;
+  // App-specific props can be added here
 }
 
 export class App extends Component {
@@ -27,14 +27,14 @@ export class App extends Component {
     const screenSize = renderer.getScreenSize();
     console.log('Initial screen size:', screenSize);
 
-    // Set column layout as default for Asciitorium, pass through fit option
+    // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
     const asciitoriumProps = {
       ...props,
       width: props.width ?? screenSize.width,
       height: props.height ?? screenSize.height,
       layout: props.layout ?? 'column',
-      layoutOptions: { fit: props.fit, ...props.layoutOptions },
+      layoutOptions: props.layoutOptions ?? {},
     };
 
     super(asciitoriumProps);

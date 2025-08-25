@@ -5,10 +5,8 @@ import { resolveGap } from '../utils/gapUtils';
 import { createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/sizeUtils';
 
 export class RowLayout implements Layout {
-  private fit: boolean;
-
-  constructor(options?: LayoutOptions) {
-    this.fit = options?.fit ?? false;
+  constructor(_options?: LayoutOptions) {
+    // Row layout constructor - options reserved for future extensions
   }
 
   layout(parent: Component, children: Component[]): void {
@@ -36,21 +34,7 @@ export class RowLayout implements Layout {
       child.resolveSize(context);
     }
 
-    // Second pass: handle fit/flex sizing if enabled
-    if (this.fit && children.length > 0) {
-      const nonFixedChildren = children.filter(child => !child.fixed);
-      const totalGapWidth = nonFixedChildren.reduce((sum, child) => {
-        const gap = resolveGap(child.gap);
-        return sum + gap.left + gap.right;
-      }, 0);
-      
-      const availableWidth = innerWidth - totalGapWidth;
-      const childWidth = Math.floor(availableWidth / nonFixedChildren.length);
-      
-      for (const child of nonFixedChildren) {
-        child.width = Math.max(1, childWidth);
-      }
-    }
+    // Second pass: sizing is now handled via width/height props and 'fit' values
 
     // Third pass: position children
     let currentX = borderPad;
