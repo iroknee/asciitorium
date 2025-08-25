@@ -1,6 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
-import { isState } from '../core/utils';
+import { isState } from '../core/environment';
 import { resolveAlignment } from '../core/utils/index';
 import { Alignment, SizeValue } from 'core/types';
 

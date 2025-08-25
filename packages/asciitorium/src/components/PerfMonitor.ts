@@ -1,6 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 import { App } from '../core/App';
-import { isCPUSupported, isMemorySupported } from '../core/utils';
+import { isCPUSupported, isMemorySupported } from '../core/environment';
 
 export interface PerfMonitorOptions extends ComponentProps {
   time?: boolean;

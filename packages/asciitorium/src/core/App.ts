@@ -4,7 +4,7 @@ import type { Renderer } from './renderers/Renderer';
 import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
 import { setRenderCallback } from './RenderScheduler';
-import { setupKeyboardHandling, validateWebEnvironment } from './utils';
+import { setupKeyboardHandling, validateWebEnvironment } from './environment';
 
 export interface AppProps extends ComponentProps {
   // App-specific props can be added here
