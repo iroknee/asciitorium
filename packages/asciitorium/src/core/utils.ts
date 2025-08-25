@@ -188,3 +188,10 @@ export async function loadArt(relativePath: string): Promise<string> {
     return readFile(fullPath, 'utf-8');
   }
 }
+
+export async function start(app: { handleKey: (key: string) => void; render: () => void }): Promise<void> {
+  validateWebEnvironment();
+  await setupKeyboardHandling((key) => app.handleKey(key));
+  const { setRenderCallback } = await import('./RenderScheduler');
+  setRenderCallback(() => app.render());
+}
