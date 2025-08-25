@@ -12,6 +12,7 @@ This is a monorepo for **asciitorium**, an ASCII-based UI framework that runs in
 ## Common Commands
 
 ### Development Commands
+
 ```bash
 # Install dependencies for all packages
 npm install
@@ -19,39 +20,34 @@ npm install
 # Build all packages
 npm run build
 
-# Build specific package
-npm run build --workspace=asciitorium
-npm run build --workspace=create-asciitorium
-
 # Run core library demo in web mode
-cd packages/asciitorium && npm run web
+npm run web
 
-# Run core library demo in CLI mode  
-cd packages/asciitorium && npm run cli
+# Run core library demo in CLI mode
+npm run cli
 
 # Format code
 cd packages/asciitorium && npm run format
 ```
 
 ### Testing Commands
-```bash
-# Test library packaging (builds and tests import)
-npm run test:lib
 
-# Test create-asciitorium scaffolding
-npm run test:create
+```bash
+# Test library packaging and scaffolding
+npm run test
 
 # Test with local library version
-USE_LOCAL_LIB=1 npm run test:create
+USE_LOCAL_LIB=1 scripts/test-create.sh
 ```
 
 ### Publishing Commands
-```bash
-# Publish library to npm
-npm run publish:lib
 
-# Publish create-asciitorium to npm
-npm run publish:create
+```bash
+# Release all packages to npm
+npm run release
+
+# Update version across packages
+npm run version
 ```
 
 ## Architecture
@@ -61,49 +57,58 @@ npm run publish:create
 The framework uses a component-based architecture with custom JSX runtime:
 
 **Core Classes:**
-- `Asciitorium` - Main application class that extends `VerticalLayout`, handles rendering and focus management
+
+- `App` - Main application class that handles rendering, focus management, and performance monitoring
 - `Component` - Abstract base class for all UI components with properties like position (x,y,z), dimensions, borders, focus handling
 - `State<T>` - Reactive state management system with subscribe/unsubscribe pattern
+- `PersistentState<T>` - State management with localStorage persistence
 - `FocusManager` - Handles keyboard navigation between focusable components
+- `RenderScheduler` - Manages render callbacks and scheduling
 
 **Rendering System:**
+
 - Dual renderer architecture: `DomRenderer` for web (renders to `#screen` element) and `TerminalRenderer` for CLI
 - Character-based rendering using 2D string arrays as buffers
 - Z-index based layering system for component ordering
-- Transparent character system using '‽' for overlay effects
+- Transparent character system for overlay effects
 
 **JSX Runtime:**
-- Custom JSX factory functions in `src/jsx/jsx-runtime.ts`
-- TypeScript configured with `jsx: "react-jsx"` and custom `jsxImportSource: "@jsx"`
+
+- Custom JSX factory functions in `src/jsx/jsx-runtime.ts` and `jsx-dev-runtime.ts`
+- TypeScript configured with `jsx: "react-jsx"` and custom `jsxImportSource: "asciitorium"`
 - Components are instantiated as classes via `new type(props)`
 
 **Layout System:**
-- `Layout` base class with `HorizontalLayout` and `VerticalLayout` implementations
+
+- Multiple layout implementations: `RowLayout`, `ColumnLayout`, `FixedLayout`, `AlignedLayout`
 - Components can be positioned absolutely or use layout-based positioning
-- Support for fixed positioning and alignment
+- Support for relative sizing and alignment options
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `ProgressBar`, `Tabs`, `TextInput`, `AsciiArt`, `CelticBorder`, `HR`, `VR`
+Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`
 
 ### Project Scaffolder (packages/create-asciitorium)
 
 CLI tool built with Node.js that:
+
 - Uses `prompts` for interactive project setup
-- Copies template files from `templates/base/` 
+- Copies template files from `templates/base/`
 - Generates Vite + TypeScript projects pre-configured for asciitorium
 - Supports both web and CLI execution modes
+- Dependencies: `execa`, `kolorist`, `minimist`, `prompts`
 
 ### Build System
 
 - **Library**: Uses Vite for bundling with TypeScript compilation
 - **Types**: Generated via TypeScript compiler with `declaration: true`
-- **Exports**: Multiple entry points including main library, JSX runtime, and JSX dev runtime
+- **Exports**: Multiple entry points including main library, examples, JSX runtime, and JSX dev runtime
 - **External Dependencies**: Node.js modules (`fs/promises`, `path`, `readline`) marked as external for CLI usage
+- **No Runtime Dependencies**: The core library has zero dependencies
 
 ### Development Workflow
 
 1. The framework targets ES2020 with DOM and Node.js compatibility
-2. Uses strict TypeScript configuration
+2. Uses strict TypeScript configuration with custom JSX setup
 3. Vite handles both development server and production builds
 4. Custom JSX setup allows React-like syntax without React dependency
 5. Testing scripts verify packaging and scaffolding functionality
@@ -112,8 +117,17 @@ CLI tool built with Node.js that:
 ### Key Files
 
 - `packages/asciitorium/src/index.ts` - Main library exports
-- `packages/asciitorium/src/core/Asciitorium.ts` - Application entry point
+- `packages/asciitorium/src/core/App.ts` - Application entry point
 - `packages/asciitorium/vite.config.js` - Build configuration with JSX setup
 - `packages/create-asciitorium/src/index.ts` - CLI entry point
-- `scripts/pack-lib-test.sh` - Library packaging test
-- `scripts/create-asciitorium-test.sh` - Scaffolding test
+- `scripts/test-pack.sh` - Library packaging test
+- `scripts/test-create.sh` - Scaffolding test
+
+# important-instruction-reminders
+
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User.
+
+      IMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.
