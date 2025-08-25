@@ -8,8 +8,10 @@
   font-style: normal;
 }
 
+@import url('https://fonts.cdnfonts.com/css/jetbrains-mono');
+
 body {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'JetBrains Mono', sans-serif;
   margin: 0;
   background: black;
   color: #3fff00;
@@ -29,7 +31,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden; /* Hide scrollbars for clean appearance */
-  
+
   /* Ensure monospace font for proper character sizing */
   font-family: 'PrintChar21', 'Courier New', Courier, monospace;
   font-size: 16px; /* Base font size for character measurement */

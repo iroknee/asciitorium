@@ -9,8 +9,8 @@ export class DomRenderer implements Renderer {
 
   constructor(private screen: HTMLElement) {
     this.screen.style.whiteSpace = 'pre';
-    this.screen.style.fontFamily = 'PrintChar21, monospace';
-    
+    this.screen.style.fontFamily = 'JetBrains Mono, monospace';
+
     // Delay measurement slightly to ensure CSS is applied
     setTimeout(() => this.measureCharacterSize(), 10);
   }

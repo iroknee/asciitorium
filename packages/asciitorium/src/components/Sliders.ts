@@ -94,24 +94,26 @@ export class ProgressBarSlider extends SliderBase {
     let barContent = '█'.repeat(Math.max(0, filledLength)) + ' '.repeat(Math.max(0, emptyLength));
 
     // Top border
-    const top = ' ⎽' + '⎽'.repeat(Math.max(0, this.width - 3));
-    for (let x = 0; x < top.length && x < this.width; x++) {
-      this.drawChar(x, 0, top[x]);
+    this.drawChar(0, 0, '┌');
+    for (let x = 1; x < this.width - 1; x++) {
+      this.drawChar(x, 0, '─');
     }
+    this.drawChar(this.width - 1, 0, '┐');
 
     // Middle with content
-    this.drawChar(0, 1, '⎹');
+    this.drawChar(0, 1, '│');
     for (let x = 0; x < barContent.length && x < innerWidth; x++) {
       const char = this.hasFocus && x === filledLength - 1 && filledLength > 0 ? '▓' : barContent[x];
       this.drawChar(x + 1, 1, char);
     }
-    this.drawChar(this.width - 1, 1, '⎸');
+    this.drawChar(this.width - 1, 1, '│');
 
     // Bottom border
-    const bot = ' ' + '⎺'.repeat(Math.max(0, this.width - 2));
-    for (let x = 0; x < bot.length && x < this.width; x++) {
-      this.drawChar(x, 2, bot[x]);
+    this.drawChar(0, 2, '└');
+    for (let x = 1; x < this.width - 1; x++) {
+      this.drawChar(x, 2, '─');
     }
+    this.drawChar(this.width - 1, 2, '┘');
 
     return this.buffer;
   }
