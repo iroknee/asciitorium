@@ -1,4 +1,5 @@
 import { State } from './State';
+import { setRenderCallback } from './RenderScheduler';
 
 export function isState<T>(v: any): v is State<T> {
   return typeof v === 'object' && typeof v.subscribe === 'function';
@@ -110,6 +111,5 @@ export async function loadArt(relativePath: string): Promise<string> {
 export async function start(app: { handleKey: (key: string) => void; render: () => void }): Promise<void> {
   validateWebEnvironment();
   await setupKeyboardHandling((key) => app.handleKey(key));
-  const { setRenderCallback } = await import('./RenderScheduler');
   setRenderCallback(() => app.render());
 }
