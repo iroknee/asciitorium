@@ -1,7 +1,7 @@
 {
   "name": "asciitorium-monorepo",
   "private": true,
-  "version": "0.1.24",
+  "version": "0.1.25",
   "description": "Monorepo for asciitorium and create-asciitorium",
   "scripts": {
     "web": "cd packages/asciitorium && npm run web",
