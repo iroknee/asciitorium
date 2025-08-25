@@ -291,7 +291,7 @@ export abstract class Component {
   private notifyAppOfFocusChange(): void {
     // Walk up the parent chain to find the App
     let current: Component | undefined = this;
-    while (current && current.constructor.name !== 'App') {
+    while (current && !(current as any).isApp) {
       current = current.parent;
     }
     

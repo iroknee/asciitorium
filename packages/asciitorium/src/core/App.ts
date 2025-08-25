@@ -11,6 +11,7 @@ export interface AppProps extends ComponentProps {
 }
 
 export class App extends Component {
+  readonly isApp = true; // Reliable identifier for App class
   readonly focus: FocusManager;
   private readonly renderer: Renderer;
   private fpsCounter: number = 0;

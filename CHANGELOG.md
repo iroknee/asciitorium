@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.22] - 2025-08-25
+
+### Added
+
+- **New Components:**
+  - `Row` component for horizontal layout management
+  - `Column` component for vertical layout management
+  - Size utility functions for percentage-based sizing and context resolution
+
+### Changed
+
+- **Component Architecture:**
+  - **Breaking Change:** Removed fixed width and height properties from multiple components
+  - Introduced relative sizing options for dynamic component resizing
+  - Enhanced layout handling for dynamic resizing in `App` and `Renderer` classes
+  - Updated examples to demonstrate new sizing capabilities
+
+- **Visual Improvements:**
+  - Updated font family to JetBrains Mono in CSS and DOM renderer for consistency
+  - Enhanced visual consistency across web and CLI environments
+
+- **Architecture Improvements:**
+  - Refactored `start` function moved to utils with updated import for render callback
+  - Improved code organization and module structure
+
+- **Documentation:**
+  - Updated CLAUDE.md for improved command clarity and architecture details
+  - Enhanced project documentation with better technical specifications
+
+### Technical Details
+
+- **Key Files Modified:** Core component architecture, sizing system, font rendering, utility functions
+- **Breaking Changes:**
+  - Fixed width/height properties removed from components - use relative sizing instead
+- **Performance:** Enhanced dynamic resizing capabilities and improved layout calculations
+- **Architecture:** Better separation of concerns with utility-based sizing system
+
 ## [0.1.21] - 2025-08-24
 
 ### Added

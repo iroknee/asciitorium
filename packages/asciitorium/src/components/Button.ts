@@ -55,10 +55,21 @@ export class Button extends Component {
     // Set pressed state
     this.isPressed = true;
 
-    // Return to normal state after 250ms
+    // Return to normal state after 100ms
     this.pressTimer = setTimeout(() => {
       this.isPressed = false;
       this.pressTimer = undefined;
+      
+      // Find App and render directly (reliable fallback)
+      let current = this.parent;
+      while (current && !(current as any).isApp) {
+        current = current.parent;
+      }
+      if (current && (current as any).render) {
+        (current as any).render();
+      }
+      
+      // Also try RenderScheduler (may work in some environments)
       requestRender();
     }, 100);
   }
