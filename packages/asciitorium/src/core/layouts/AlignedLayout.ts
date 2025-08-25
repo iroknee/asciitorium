@@ -1,7 +1,7 @@
 import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
-import { resolveGap } from '../utils/gapUtils';
+import { resolveGap, resolveAlignment } from '../utils/index';
 
 export class AlignedLayout implements Layout {
   constructor(_options?: LayoutOptions) {
@@ -19,7 +19,7 @@ export class AlignedLayout implements Layout {
       }
 
       // Only apply alignment-based positioning
-      const { x, y } = this.resolveAlignment(
+      const { x, y } = resolveAlignment(
         child.align,
         innerWidth,
         innerHeight,
@@ -35,92 +35,5 @@ export class AlignedLayout implements Layout {
     }
   }
 
-  private resolveAlignment(
-    align: Alignment | undefined,
-    parentWidth: number,
-    parentHeight: number,
-    childWidth: number,
-    childHeight: number
-  ): { x: number; y: number } {
-    let hAlign: 'left' | 'center' | 'right' | number = 'left';
-    let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
-
-    if (typeof align === 'string') {
-      // Parse string alignment into horizontal and vertical components
-      switch (align) {
-        case 'top-left':
-          hAlign = 'left';
-          vAlign = 'top';
-          break;
-        case 'top':
-          hAlign = 'center';
-          vAlign = 'top';
-          break;
-        case 'top-right':
-          hAlign = 'right';
-          vAlign = 'top';
-          break;
-        case 'left':
-          hAlign = 'left';
-          vAlign = 'middle';
-          break;
-        case 'center':
-          hAlign = 'center';
-          vAlign = 'middle';
-          break;
-        case 'right':
-          hAlign = 'right';
-          vAlign = 'middle';
-          break;
-        case 'bottom-left':
-          hAlign = 'left';
-          vAlign = 'bottom';
-          break;
-        case 'bottom':
-          hAlign = 'center';
-          vAlign = 'bottom';
-          break;
-        case 'bottom-right':
-          hAlign = 'right';
-          vAlign = 'bottom';
-          break;
-        default:
-          hAlign = 'left';
-          vAlign = 'top';
-          break;
-      }
-    } else if (typeof align === 'object' && align !== null) {
-      hAlign = align.x ?? 'left';
-      vAlign = align.y ?? 'top';
-    }
-
-    // Calculate horizontal position
-    const padX = parentWidth - childWidth;
-    let x: number;
-    if (typeof hAlign === 'number') {
-      x = hAlign;
-    } else if (hAlign === 'center') {
-      x = Math.floor(padX / 2);
-    } else if (hAlign === 'right') {
-      x = padX;
-    } else {
-      x = 0; // left
-    }
-
-    // Calculate vertical position
-    const padY = parentHeight - childHeight;
-    let y: number;
-    if (typeof vAlign === 'number') {
-      y = vAlign;
-    } else if (vAlign === 'middle') {
-      y = Math.floor(padY / 2);
-    } else if (vAlign === 'bottom') {
-      y = padY;
-    } else {
-      y = 0; // top
-    }
-
-    return { x, y };
-  }
 
 }

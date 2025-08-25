@@ -1,8 +1,7 @@
 import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
-import { resolveGap } from '../utils/gapUtils';
-import { createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/sizeUtils';
+import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index';
 
 export class RowLayout implements Layout {
   constructor(_options?: LayoutOptions) {
@@ -64,7 +63,7 @@ export class RowLayout implements Layout {
         child.width = Math.max(1, remainingWidth);
       }
 
-      const { y } = this.resolveAlignment(
+      const { y } = resolveAlignment(
         child.align,
         child.width,
         availableHeight,
@@ -81,49 +80,4 @@ export class RowLayout implements Layout {
     }
   }
 
-  private resolveAlignment(
-    align: Alignment | undefined,
-    _parentWidth: number,
-    parentHeight: number,
-    _childWidth: number,
-    childHeight: number
-  ): { x: number; y: number } {
-    let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
-
-    if (typeof align === 'string') {
-      // For row layout, alignment affects vertical positioning
-      switch (align) {
-        case 'top-left':
-        case 'top':
-        case 'top-right':
-          vAlign = 'top';
-          break;
-        case 'left':
-        case 'center':
-        case 'right':
-          vAlign = 'middle';
-          break;
-        case 'bottom-left':
-        case 'bottom':
-        case 'bottom-right':
-          vAlign = 'bottom';
-          break;
-        default:
-          vAlign = 'top';
-          break;
-      }
-    } else if (typeof align === 'object' && align !== null) {
-      vAlign = align.y ?? 'top';
-    }
-
-    const padY = parentHeight - childHeight;
-
-    let y: number;
-    if (typeof vAlign === 'number') y = vAlign;
-    else if (vAlign === 'middle') y = Math.floor(padY / 2);
-    else if (vAlign === 'bottom') y = padY;
-    else y = 0;
-
-    return { x: 0, y };
-  }
 }
