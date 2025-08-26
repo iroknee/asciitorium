@@ -2,6 +2,7 @@ import type { Component } from '../Component';
 import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 import { resolveGap, resolveAlignment } from '../utils/index';
+import { createSizeContext } from '../utils/sizeUtils';
 
 export class AlignedLayout implements Layout {
   constructor(_options?: LayoutOptions) {
@@ -13,10 +14,16 @@ export class AlignedLayout implements Layout {
     const innerWidth = parent.width - 2 * borderPad;
     const innerHeight = parent.height - 2 * borderPad;
 
+    // Create size context for resolving relative sizes
+    const sizeContext = createSizeContext(innerWidth, innerHeight, 0);
+
     for (const child of children) {
       if (child.fixed) {
         continue; // Skip positioning if component is fixed
       }
+
+      // Resolve child sizes first
+      child.resolveSize(sizeContext);
 
       // Only apply alignment-based positioning
       const { x, y } = resolveAlignment(

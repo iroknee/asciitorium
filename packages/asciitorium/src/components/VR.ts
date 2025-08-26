@@ -1,12 +1,13 @@
 import { Component, ComponentProps } from '../core/Component';
 
-export interface VROptions extends Omit<ComponentProps, 'width' | 'height'> {
-  length?: number; // optional alias for height
+export interface VROptions extends Omit<ComponentProps, 'width'> {
+  length?: number; // optional alias for height (deprecated, use height instead)
 }
 
 export class VR extends Component {
   constructor(options: VROptions) {
-    const resolvedHeight = options.length ?? 12;
+    // Support both height and legacy length prop, with height taking priority
+    const resolvedHeight = options.height ?? options.length ?? 12;
 
     super({
       ...options,

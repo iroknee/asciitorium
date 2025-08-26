@@ -6,11 +6,9 @@ export interface HROptions extends ComponentProps {
 export class HR extends Component {
 
   constructor(options: HROptions = {}) {
-    const resolvedWidth = options.width ?? 12;
-
     super({
       ...options,
-      width: resolvedWidth,
+      width: options.width ?? 12, // Default width if not specified
       height: 1, // Always one line tall
     });
 
