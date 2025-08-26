@@ -5,6 +5,7 @@ import { DomRenderer } from './renderers/DomRenderer';
 import { TerminalRenderer } from './renderers/TerminalRenderer';
 import { setRenderCallback } from './RenderScheduler';
 import { setupKeyboardHandling, validateWebEnvironment } from './environment';
+import { createSizeContext } from './utils/sizeUtils';
 
 export interface AppProps extends ComponentProps {
   // App-specific props can be added here
@@ -66,6 +67,7 @@ export class App extends Component {
         ? performance.now()
         : Date.now();
     this.fpsCounter++;
+    
     const screenBuffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () => ' ')
     );
@@ -223,6 +225,27 @@ export class App extends Component {
     validateWebEnvironment();
     await setupKeyboardHandling((key, event) => this.handleKey(key, event));
     setRenderCallback(() => this.render());
+  }
+
+  private resolveSizesRecursively(): void {
+    // Create size context for the app (root component)
+    const sizeContext = createSizeContext(this.width, this.height, 0);
+    
+    // Resolve sizes for all components in the tree
+    const allComponents = this.getAllDescendants().concat([this]);
+    for (const component of allComponents) {
+      // Create appropriate size context based on parent
+      let componentContext = sizeContext;
+      if (component.parent) {
+        const borderPad = component.parent.border ? 1 : 0;
+        componentContext = createSizeContext(
+          component.parent.width, 
+          component.parent.height, 
+          borderPad
+        );
+      }
+      component.resolveSize(componentContext);
+    }
   }
 }
 

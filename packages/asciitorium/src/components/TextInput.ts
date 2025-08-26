@@ -1,5 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
+import { requestRender } from '../core/RenderScheduler';
 
 export interface TextInputOptions extends ComponentProps {
   /** Accepts string OR number state */
@@ -22,6 +23,8 @@ export class TextInput extends Component {
 
   private readonly placeholder: string;
   private readonly numericMode: boolean;
+  private readonly fixedHeight?: number; // Store original height for fixed height behavior
+  private initialHeightCalculated = false; // Track if we've done the initial height calculation
 
   private cursorIndex = 0;
   private suppressCursorSync = false;
@@ -30,9 +33,11 @@ export class TextInput extends Component {
   hasFocus = false;
 
   constructor(options: TextInputOptions) {
-    const height = options.height ?? 3;
+    const height = options.height ?? 3; // Default to 3 for dynamic behavior
     const border = options.border ?? true;
     super({ ...options, height, border });
+
+    this.fixedHeight = typeof options.height === 'number' ? options.height : undefined;
 
     this.numericMode = options.numeric === true || isNumberState(options.value);
     this.placeholder = String(options.placeholder ?? '');
@@ -53,14 +58,20 @@ export class TextInput extends Component {
       this.valueNum = undefined;
       this.bind(this.valueStr, (v) => {
         if (!this.suppressCursorSync) this.cursorIndex = v.length;
+        this.updateHeight(); // Update height when value changes
       });
     }
+
+    // Don't do initial height calculation here - wait until first render when width is properly resolved
   }
 
   private setString(next: string) {
     this.suppressCursorSync = true;
     this.valueStr.value = next;
     this.suppressCursorSync = false;
+
+    // Update height based on content if not fixed height
+    this.updateHeight();
 
     // If we have a backing number, try to parse and propagate
     if (this.valueNum) {
@@ -71,6 +82,66 @@ export class TextInput extends Component {
       }
       this.valueNum.value = parsed;
     }
+  }
+
+  private updateHeight(): void {
+    // Only adjust height if no explicit height was set
+    if (this.fixedHeight !== undefined) {
+      return;
+    }
+
+    const newHeight = this.calculateRequiredHeight();
+    if (newHeight !== this.height) {
+      this.height = newHeight;
+      // Trigger layout recalculation by calling protected method from this context
+      this.invalidateLayout();
+      // Request a full re-render to update parent layouts
+      requestRender();
+    }
+  }
+
+  private calculateRequiredHeight(): number {
+    const borderPad = this.border ? 2 : 0;
+    const innerWidth = this.width - borderPad;
+    const prefixLength = 2; // "> " prefix
+    const usableWidth = Math.max(1, innerWidth - prefixLength);
+
+    const content = this.valueStr.value.length > 0 ? this.valueStr.value : this.placeholder;
+    const lines = this.wrapText(content, usableWidth);
+    
+    // Calculate required height: actual lines needed + border padding
+    const requiredLines = Math.max(1, lines.length);
+    const totalHeight = requiredLines + borderPad;
+    
+    // For dynamic height: start at 3 (1 line + border), grow as needed
+    // So: 1 line = height 3, 2 lines = height 4, 3 lines = height 5, etc.
+    return Math.max(3, totalHeight);
+  }
+
+  private wrapText(text: string, maxWidth: number): string[] {
+    if (maxWidth <= 0) return [text];
+    
+    const lines: string[] = [];
+    let currentLine = '';
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (char === '\n') {
+        lines.push(currentLine);
+        currentLine = '';
+      } else if (currentLine.length >= maxWidth) {
+        lines.push(currentLine);
+        currentLine = char;
+      } else {
+        currentLine += char;
+      }
+    }
+    
+    if (currentLine.length > 0 || lines.length === 0) {
+      lines.push(currentLine);
+    }
+    
+    return lines;
   }
 
   private allowChar(ch: string, current: string): boolean {
@@ -135,39 +206,86 @@ export class TextInput extends Component {
   }
 
   override draw(): string[][] {
+    // Do initial height calculation on first draw when width is properly resolved
+    if (!this.initialHeightCalculated) {
+      this.updateHeight();
+      this.initialHeightCalculated = true;
+    }
+
     const buffer = super.draw();
 
     const prefix = this.hasFocus ? '> ' : '> ';
     const prefixLength = prefix.length;
-    const y = this.border ? 1 : 0;
-    const x = this.border ? 1 : 0;
+    const startY = this.border ? 1 : 0;
+    const startX = this.border ? 1 : 0;
     const innerWidth = this.width - (this.border ? 2 : 0);
     const usableWidth = Math.max(0, innerWidth - prefixLength);
 
-    const raw =
-      this.valueStr.value.length > 0 ? this.valueStr.value : this.placeholder;
-    const visible = raw.slice(0, usableWidth);
+    const raw = this.valueStr.value.length > 0 ? this.valueStr.value : this.placeholder;
+    const lines = this.wrapText(raw, usableWidth);
 
-    // prefix
-    for (let i = 0; i < prefixLength && i < innerWidth; i++) {
-      buffer[y][x + i] = prefix[i];
-    }
+    // Render each line
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      const y = startY + lineIndex;
+      if (y >= this.height - (this.border ? 1 : 0)) break; // Don't draw outside buffer
 
-    // text
-    for (let i = 0; i < visible.length && i < usableWidth; i++) {
-      buffer[y][x + prefixLength + i] = visible[i];
+      const line = lines[lineIndex];
+
+      // prefix (only on first line)
+      if (lineIndex === 0) {
+        for (let i = 0; i < prefixLength && i < innerWidth; i++) {
+          if (y < buffer.length && startX + i < buffer[y].length) {
+            buffer[y][startX + i] = prefix[i];
+          }
+        }
+      }
+
+      // text
+      const textStartX = lineIndex === 0 ? startX + prefixLength : startX;
+      for (let i = 0; i < line.length; i++) {
+        const x = textStartX + i;
+        if (y < buffer.length && x < buffer[y].length) {
+          buffer[y][x] = line[i];
+        }
+      }
     }
 
     // cursor
     if (this.hasFocus && usableWidth > 0) {
-      const safeCursor = Math.min(
-        this.cursorIndex,
-        visible.length,
-        usableWidth - 1
-      );
-      buffer[y][x + prefixLength + safeCursor] = '▉';
+      const { line: cursorLine, pos: cursorPos } = this.getCursorPosition(lines);
+      const y = startY + cursorLine;
+      const x = (cursorLine === 0 ? startX + prefixLength : startX) + cursorPos;
+      
+      if (y < buffer.length && x < buffer[y].length) {
+        buffer[y][x] = '▉';
+      }
     }
+    
     this.buffer = buffer;
     return buffer;
+  }
+
+  private getCursorPosition(lines: string[]): { line: number, pos: number } {
+    let charCount = 0;
+    
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      const lineLength = lines[lineIndex].length;
+      
+      if (this.cursorIndex <= charCount + lineLength) {
+        return {
+          line: lineIndex,
+          pos: Math.min(this.cursorIndex - charCount, lineLength)
+        };
+      }
+      
+      charCount += lineLength;
+    }
+    
+    // Cursor at end
+    const lastLineIndex = lines.length - 1;
+    return {
+      line: Math.max(0, lastLineIndex),
+      pos: lines[lastLineIndex]?.length || 0
+    };
   }
 }

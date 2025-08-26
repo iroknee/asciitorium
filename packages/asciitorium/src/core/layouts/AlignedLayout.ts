@@ -22,8 +22,19 @@ export class AlignedLayout implements Layout {
         continue; // Skip positioning if component is fixed
       }
 
-      // Resolve child sizes first
-      child.resolveSize(sizeContext);
+      // Always resolve width, but only resolve height for non-dynamic TextInputs
+      const hasFixedHeight = (child as any).fixedHeight !== undefined;
+      const isTextInput = child.constructor.name === 'TextInput';
+      
+      if (!isTextInput || hasFixedHeight) {
+        // Resolve full size for non-TextInput components or TextInputs with fixed height
+        child.resolveSize(sizeContext);
+      } else {
+        // For dynamic TextInputs, only resolve width but preserve dynamic height
+        const originalHeight = child.height;
+        child.resolveSize(sizeContext);
+        child.height = originalHeight; // Restore the dynamic height
+      }
 
       // Only apply alignment-based positioning
       const { x, y } = resolveAlignment(
