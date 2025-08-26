@@ -9,6 +9,8 @@ export interface TextInputOptions extends ComponentProps {
   placeholder?: string | number;
   /** If true, restricts typing to numeric characters (0-9, one '.', leading '-') */
   numeric?: boolean;
+  /** Callback function called when Enter key is pressed */
+  onEnter?: () => void;
 }
 
 function isNumberState(s: any): s is State<number> {
@@ -24,6 +26,7 @@ export class TextInput extends Component {
   private readonly placeholder: string;
   private readonly numericMode: boolean;
   private readonly fixedHeight?: number; // Store original height for fixed height behavior
+  private readonly onEnter?: () => void; // Callback for Enter key press
   private initialHeightCalculated = false; // Track if we've done the initial height calculation
 
   private cursorIndex = 0;
@@ -41,6 +44,7 @@ export class TextInput extends Component {
 
     this.numericMode = options.numeric === true || isNumberState(options.value);
     this.placeholder = String(options.placeholder ?? '');
+    this.onEnter = options.onEnter;
 
     // Wire up states
     if (isNumberState(options.value)) {
@@ -198,6 +202,10 @@ export class TextInput extends Component {
       if (this.valueNum) {
         const parsed = Number(this.valueStr.value.trim());
         if (Number.isFinite(parsed)) this.valueNum.value = parsed;
+      }
+      // Call the onEnter callback if provided
+      if (this.onEnter) {
+        this.onEnter();
       }
       updated = true;
     }

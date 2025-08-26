@@ -11,9 +11,16 @@ export const TextInputExample = () => {
         <Text width={30} height={6} align="center">
           {textInputValue}
         </Text>
-        <TextInput width="100%" align="bottom-left" value={textInputValue} />
+        <TextInput
+          width="100%"
+          align="bottom-left"
+          value={textInputValue}
+          onEnter={() => {
+            textInputValue.value = '';
+          }}
+        />
       </Component>
-      <VR height="100%"/>
+      <VR height="100%" />
       <Component layout="aligned">
         <Text>LLM Side</Text>
         <Text width={30} height={6} align="center">
@@ -24,6 +31,9 @@ export const TextInputExample = () => {
           align="bottom"
           value={textInputValue}
           placeholder="Enter text here..."
+          onEnter={() => {
+            textInputValue.value = '';
+          }}
         />
       </Component>
     </Row>
