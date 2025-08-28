@@ -61,18 +61,18 @@ const examples = {
 const app = (
   <App>
     <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Row height="fit">
+    <Row height="fill">
       <Select
         label="Components:"
         width="30%"
-        height="fit"
+        height="fill"
         items={componentList}
         selectedItem={selectedComponent}
         border
       />
       <Component
-        width="fit"
-        height="fit"
+        width="fill"
+        height="fill"
         dynamicContent={{
           selectedKey: selectedComponent,
           componentMap: examples,

@@ -33,7 +33,7 @@ export class ColumnLayout implements Layout {
       child.resolveSize(context);
     }
 
-    // Second pass: sizing is now handled via width/height props and 'fit' values
+    // Second pass: sizing is now handled via width/height props and 'fill' values
 
     // Third pass: position children
     let currentY = borderPad;
@@ -54,14 +54,26 @@ export class ColumnLayout implements Layout {
       
       // For column layout, children should fill width if not specified
       const originalWidth = child.getOriginalWidth();
-      if (originalWidth === undefined || originalWidth === 'fit') {
+      if (originalWidth === undefined || originalWidth === 'fill') {
         child.width = Math.max(1, availableWidth);
       }
 
-      // Handle height="fit" - fill remaining vertical space
+      // Handle height="fill" - fill remaining vertical space
       const originalHeight = child.getOriginalHeight();
-      if (originalHeight === 'fit') {
-        const remainingHeight = innerHeight - (currentY - borderPad) - gap.top - gap.bottom;
+      if (originalHeight === 'fill') {
+        // Calculate space needed by remaining components
+        const currentIndex = children.indexOf(child);
+        let spaceNeededByLaterComponents = 0;
+        
+        for (let i = currentIndex + 1; i < children.length; i++) {
+          const laterChild = children[i];
+          if (laterChild.fixed) continue;
+          
+          const laterGap = resolveGap(laterChild.gap);
+          spaceNeededByLaterComponents += laterChild.height + laterGap.top + laterGap.bottom;
+        }
+        
+        const remainingHeight = innerHeight - (currentY - borderPad) - gap.top - gap.bottom - spaceNeededByLaterComponents;
         child.height = Math.max(1, remainingHeight);
       }
 

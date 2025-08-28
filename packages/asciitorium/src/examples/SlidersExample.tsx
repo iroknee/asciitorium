@@ -50,7 +50,7 @@ export const SlidersExample = () => {
         <Text width={3} align="right">{sharedValue}</Text>
       </Row>
 
-      <Row height="fit" gap={{ left: 1, top: 2 }} align="left">
+      <Row height="fill" gap={{ left: 1, top: 2 }} align="left">
         <Text width={10}>Vertical:</Text>
         <VerticalSlider
           value={volumeValue}
@@ -58,7 +58,7 @@ export const SlidersExample = () => {
           max={100}
           step={10}
           width={3}
-          height="fit"
+          height="fill"
         />
         <Text width={6}>{volumeValue}</Text>
 

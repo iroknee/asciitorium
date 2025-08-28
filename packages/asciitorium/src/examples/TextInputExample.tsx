@@ -1,41 +1,53 @@
-import { Text, State, TextInput, Component, Row, VR } from '../index';
+import { Text, State, TextInput, Column } from '../index';
 
 export const TextInputExample = () => {
-  // States for text input components - local to each component instance
-  const textInputValue = new State('Hello World');
+  const inputValue = new State('');
+  const log = new State<string[]>([]);
+  const logDisplay = new State('Welcome! Type something and press Enter...');
+
+  const responses = [
+    'Oh hello there!',
+    'That\'s interesting!',
+    'Tell me more about that.',
+    'I see what you mean.',
+    'Fascinating perspective!',
+    'How intriguing!',
+    'That makes sense.',
+    'What an interesting observation!'
+  ];
+
+  const addToLog = (message: string) => {
+    log.value = [...log.value, message].slice(-10);
+    logDisplay.value = log.value.join('\n');
+  };
+
+  const simulateBotResponse = () => {
+    // Add thinking indicator
+    addToLog('...thinking...');
+    
+    // Replace with actual response after delay
+    setTimeout(() => {
+      log.value = log.value.slice(0, -1); // Remove thinking message
+      const response = responses[Math.floor(Math.random() * responses.length)];
+      addToLog(`Bot: ${response}`);
+    }, 1500);
+  };
 
   return (
-    <Row label="TextInput Example:" border>
-      <Component layout="aligned" width="60%">
-        <Text>CLI Side</Text>
-        <Text width={30} height={6} align="center">
-          {textInputValue}
-        </Text>
-        <TextInput
-          width="100%"
-          align="bottom-left"
-          value={textInputValue}
-          onEnter={() => {
-            textInputValue.value = '';
-          }}
-        />
-      </Component>
-      <VR height="100%" />
-      <Component layout="aligned">
-        <Text>LLM Side</Text>
-        <Text width={30} height={6} align="center">
-          {textInputValue}
-        </Text>
-        <TextInput
-          width="100%"
-          align="bottom"
-          value={textInputValue}
-          placeholder="Enter text here..."
-          onEnter={() => {
-            textInputValue.value = '';
-          }}
-        />
-      </Component>
-    </Row>
+    <Column label="TextInput Chat Demo" border>
+      <Text width="100%" height="fill" content={logDisplay} border/>
+      <TextInput
+        width="100%"
+        value={inputValue}
+        placeholder="Type your message here..."
+        onEnter={() => {
+          if (inputValue.value.trim()) {
+            addToLog(`You: ${inputValue.value}`);
+            inputValue.value = '';
+            simulateBotResponse();
+          }
+        }}
+      />
+    </Column>
   );
 };

@@ -77,9 +77,9 @@ export abstract class Component {
   private layout?: any;
 
   constructor(props: ComponentProps) {
-    // Store original size values for relative sizing - default to 'fit'
-    this.originalWidth = props.width ?? 'fit';
-    this.originalHeight = props.height ?? 'fit';
+    // Store original size values for relative sizing - default to 'fill'
+    this.originalWidth = props.width ?? 'fill';
+    this.originalHeight = props.height ?? 'fill';
     
     // Initialize with default values - will be resolved during layout
     if (typeof props.width === 'number') {

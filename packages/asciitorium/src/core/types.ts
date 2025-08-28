@@ -27,7 +27,7 @@ export type SizeValue =
   | number                    // Absolute size in characters
   | `${number}%`             // Percentage of parent
   | 'auto'                   // Size to content
-  | 'fit';                   // Fill available space
+  | 'fill';                  // Fill available space
 
 // Resolved size with context for calculations
 export interface SizeContext {

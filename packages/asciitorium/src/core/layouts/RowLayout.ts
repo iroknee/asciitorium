@@ -33,7 +33,7 @@ export class RowLayout implements Layout {
       child.resolveSize(context);
     }
 
-    // Second pass: sizing is now handled via width/height props and 'fit' values
+    // Second pass: sizing is now handled via width/height props and 'fill' values
 
     // Third pass: position children
     let currentX = borderPad;
@@ -52,13 +52,13 @@ export class RowLayout implements Layout {
       
       // For row layout, children should fill height if not specified
       const originalHeight = child.getOriginalHeight();
-      if (originalHeight === undefined || originalHeight === 'fit') {
+      if (originalHeight === undefined || originalHeight === 'fill') {
         child.height = Math.max(1, availableHeight);
       }
 
-      // Handle width="fit" - fill remaining horizontal space
+      // Handle width="fill" - fill remaining horizontal space
       const originalWidth = child.getOriginalWidth();
-      if (originalWidth === 'fit') {
+      if (originalWidth === 'fill') {
         const remainingWidth = innerWidth - (currentX - borderPad) - gap.left - gap.right;
         child.width = Math.max(1, remainingWidth);
       }

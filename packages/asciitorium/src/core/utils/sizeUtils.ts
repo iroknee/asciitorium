@@ -52,7 +52,7 @@ export function resolveSize(
     return undefined; // Auto-sizing will be handled by layout
   }
 
-  if (size === 'fit') {
+  if (size === 'fill') {
     return dimension === 'width' ? context.availableWidth : context.availableHeight;
   }
 
@@ -77,7 +77,7 @@ export function calculateAvailableSpace(
   let flexibleChildren = 0;
 
   for (const childSize of children) {
-    if (childSize === 'fit') {
+    if (childSize === 'fill') {
       flexibleChildren++;
     } else {
       const resolved = resolveSize(childSize, context, dimension);
