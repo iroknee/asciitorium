@@ -19,6 +19,7 @@ import {
   TextExample,
   AsciiArtExample,
   SlidersExample,
+  MapViewExample,
 } from './examples';
 
 // Load the title ASCII art
@@ -35,6 +36,7 @@ const componentList = [
   'AsciiArt',
   'Button',
   'CelticBorder',
+  'MapView',
   'MultiSelect',
   'RelativeSizing',
   'Select',
@@ -49,6 +51,7 @@ const examples = {
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
   Select: SelectExample,
+  MapView: MapViewExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
   TextInput: TextInputExample,

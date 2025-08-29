@@ -8,3 +8,4 @@ export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';
 export { TextExample } from './TextExample';
 export { TextInputExample } from './TextInputExample';
+export { MapViewExample } from './MapViewExample';
