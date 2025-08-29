@@ -45,11 +45,38 @@ export class AlignedLayout implements Layout {
         child.height
       );
 
-      // Resolve gap and apply it to the final position
+      // Resolve gap and apply it to the final position based on alignment
       const gap = resolveGap(child.gap);
+      
+      // Determine alignment components
+      const align = child.align || 'top-left';
+      const isRight = typeof align === 'string' && (align.includes('right') || align === 'right');
+      const isBottom = typeof align === 'string' && (align.includes('bottom') || align === 'bottom');
+      const isCenter = typeof align === 'string' && align === 'center';
+      const isMiddle = typeof align === 'string' && (align.includes('middle') || align === 'left' || align === 'right');
+      
+      // Apply gap based on alignment direction
+      let finalX = borderPad + x;
+      let finalY = borderPad + y;
+      
+      if (isRight) {
+        finalX += gap.left - gap.right; // For right-aligned, right gap moves left
+      } else if (isCenter || (typeof align === 'string' && align === 'top')) {
+        finalX += (gap.left - gap.right) / 2; // For center-aligned, balance gaps
+      } else {
+        finalX += gap.left; // For left-aligned, left gap moves right
+      }
+      
+      if (isBottom) {
+        finalY += gap.top - gap.bottom; // For bottom-aligned, bottom gap moves up
+      } else if (isMiddle || (typeof align === 'string' && align === 'bottom')) {
+        finalY += (gap.top - gap.bottom) / 2; // For middle-aligned, balance gaps
+      } else {
+        finalY += gap.top; // For top-aligned, top gap moves down
+      }
 
-      child.x = borderPad + x + gap.left;
-      child.y = borderPad + y + gap.top;
+      child.x = finalX;
+      child.y = finalY;
     }
   }
 
