@@ -8,15 +8,15 @@ export type CelticEdge =
 
 // Base pattern to rotate from
 const basePattern = [
-  '╭⎯╮╭⎯⎯⎯⎯⎯', 
-  '⏐╭⎯⎯⎯⎯', 
-  '╰⎯⏐╯', 
-  '╭⏐╯', 
-  '⏐⏐', 
-  '⏐⏐', 
-  '⏐', 
-  '⏐',
-  '⏐'
+  '╭─╮╭─────', 
+  '│╭────', 
+  '╰─│╯', 
+  '╭│╯', 
+  '││', 
+  '││', 
+  '│', 
+  '│',
+  '│'
 ];
 
 // Rotation functions
@@ -49,8 +49,6 @@ function rotateChar90(char: string): string {
     '╰': '╭',
     '─': '│',
     '│': '─',
-    '⎯': '⏐',
-    '⏐': '⎯',
     ' ': ' '
   };
   return rotationMap[char] || char;
