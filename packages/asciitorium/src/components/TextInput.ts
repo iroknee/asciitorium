@@ -171,7 +171,7 @@ export class TextInput extends Component {
       this.cursorIndex++;
       updated = true;
     } else if (event === 'Backspace') {
-      if (this.cursorIndex > 0) {. 
+      if (this.cursorIndex > 0) { 
         const left = val.slice(0, this.cursorIndex - 1);
         const right = val.slice(this.cursorIndex);
         this.setString(left + right);

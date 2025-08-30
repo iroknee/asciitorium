@@ -19,7 +19,7 @@ import {
   TextExample,
   AsciiArtExample,
   SlidersExample,
-  MapViewExample,
+  AsciiMazeExample,
 } from './examples';
 
 // Load the title ASCII art
@@ -34,9 +34,9 @@ const selectedComponent = new PersistentState(
 // Component list for navigation
 const componentList = [
   'AsciiArt',
+  'AsciiMaze',
   'Button',
   'CelticBorder',
-  'MapView',
   'MultiSelect',
   'RelativeSizing',
   'Select',
@@ -48,17 +48,17 @@ const componentList = [
 
 // Component mapping for dynamic content
 const examples = {
+  AsciiArt: AsciiArtExample,
+  AsciiMaze: AsciiMazeExample,
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
-  Select: SelectExample,
-  MapView: MapViewExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
-  TextInput: TextInputExample,
+  Select: SelectExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
   Text: TextExample,
-  AsciiArt: AsciiArtExample,
+  TextInput: TextInputExample,
 };
 
 const app = (

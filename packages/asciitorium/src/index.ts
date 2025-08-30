@@ -18,4 +18,4 @@ export * from './components/TextInput';
 export * from './components/Sliders';
 export * from './components/Row';
 export * from './components/Column';
-export * from './components/MapView';
+export * from './components/AsciiMaze';

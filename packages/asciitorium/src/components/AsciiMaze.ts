@@ -11,24 +11,19 @@ export interface Position {
 }
 
 export interface MapData {
-  title: string;
   map: string[];
-  objects: Record<string, {
-    object: string;
-    text?: string;
-  }>;
 }
 
-export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
-  map: MapData | State<MapData>;
+export interface AsciiMazeOptions extends Omit<ComponentProps, 'children'> {
+  map: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   position: Position | State<Position>;
 }
 
-export class MapView extends Component {
-  private mapSource: MapData | State<MapData>;
+export class AsciiMaze extends Component {
+  private mapSource: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   private positionSource: Position | State<Position>;
 
-  constructor(options: MapViewOptions) {
+  constructor(options: AsciiMazeOptions) {
     const { map, position, ...componentProps } = options;
 
     // Default dimensions if not specified
@@ -46,15 +41,34 @@ export class MapView extends Component {
   }
 
   get mapData(): MapData {
-    return isState(this.mapSource)
-      ? (this.mapSource as State<MapData>).value
-      : this.mapSource;
+    let rawMapData: any;
+    
+    if (isState(this.mapSource)) {
+      rawMapData = (this.mapSource as State<any>).value;
+    } else {
+      rawMapData = this.mapSource;
+    }
+
+    // Convert to MapData format
+    if (typeof rawMapData === 'string') {
+      // If it's a string (loaded text file), split by lines
+      return { map: rawMapData.split('\n') };
+    } else if (Array.isArray(rawMapData)) {
+      // If it's a string array
+      return { map: rawMapData };
+    } else if (rawMapData && rawMapData.map) {
+      // If it's already MapData
+      return rawMapData;
+    } else {
+      // Fallback to empty map
+      return { map: [] };
+    }
   }
 
   get position(): Position {
     return isState(this.positionSource)
       ? (this.positionSource as State<Position>).value
-      : this.positionSource;
+      : (this.positionSource as Position);
   }
 
   draw(): string[][] {
