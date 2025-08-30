@@ -20,7 +20,7 @@ function parseArgs() {
   if (filteredArgs.length !== 3) {
     console.error('Usage: node maze-builder.js <width> <height> <filename> [--smooth]')
     console.error('Example: node maze-builder.js 10 10 dungeon-level-1.txt --smooth')
-    console.error('Mazes will be saved to public/art/maps/ directory')
+    console.error('Mazes will be saved to public/art/mazes/ directory')
     console.error('Use --smooth flag to enable Unicode box drawing characters')
     process.exit(1)
   }
@@ -40,10 +40,10 @@ function parseArgs() {
   }
   
   // Construct the full path to the mazes directory
-  const mapsDir = path.join(process.cwd(), '../public/art/maps')
-  const fullPath = path.join(mapsDir, filename)
+  const mazesDir = path.join(process.cwd(), '../public/art/mazes')
+  const fullPath = path.join(mazesDir, filename)
   
-  return { width, height, filename: fullPath, mapsDir, smooth }
+  return { width, height, filename: fullPath, mazesDir, smooth }
 }
 
 class MazeBuilder {
@@ -66,9 +66,9 @@ class MazeBuilder {
   // conversion: y = y, x = x*2
   // only place items and creatures on odd values of y and x
 
-  constructor(width, height, fileName, mapsDir, smooth = false) {
+  constructor(width, height, fileName, mazesDir, smooth = false) {
     this.fileName = fileName
-    this.mapsDir = mapsDir
+    this.mazesDir = mazesDir
     this.width = width
     this.height = height
     this.smooth = smooth
@@ -103,8 +103,8 @@ class MazeBuilder {
 
   async saveToText() {
     try {
-      // Ensure the maps directory exists
-      await fs.mkdir(this.mapsDir, { recursive: true })
+      // Ensure the mazes directory exists
+      await fs.mkdir(this.mazesDir, { recursive: true })
       
       // Join the map array with newlines to create plain text
       const textOutput = this.map.join('\n')
@@ -289,6 +289,6 @@ class MazeBuilder {
   }
 }
 
-const { width, height, filename, mapsDir, smooth } = parseArgs()
-const builder = new MazeBuilder(width, height, filename, mapsDir, smooth)
+const { width, height, filename, mazesDir, smooth } = parseArgs()
+const builder = new MazeBuilder(width, height, filename, mazesDir, smooth)
 builder.build()

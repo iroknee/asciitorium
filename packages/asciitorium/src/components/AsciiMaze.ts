@@ -15,16 +15,29 @@ export interface MapData {
 }
 
 export interface AsciiMazeOptions extends Omit<ComponentProps, 'children'> {
-  map: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
+  content?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
+  map?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>; // deprecated, use content
   position: Position | State<Position>;
+  fogOfWar?: boolean;
+  exploredTiles?: Set<string> | State<Set<string>>;
+  fogCharacter?: string;
 }
 
 export class AsciiMaze extends Component {
-  private mapSource: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
+  private contentSource: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   private positionSource: Position | State<Position>;
+  private fogOfWar: boolean;
+  private exploredTilesSource?: Set<string> | State<Set<string>>;
+  private fogCharacter: string;
 
   constructor(options: AsciiMazeOptions) {
-    const { map, position, ...componentProps } = options;
+    const { content, map, position, fogOfWar, exploredTiles, fogCharacter, ...componentProps } = options;
+    
+    // Use content if provided, fall back to map for backward compatibility
+    const actualContent = content ?? map;
+    if (!actualContent) {
+      throw new Error('AsciiMaze requires either content or map parameter');
+    }
 
     // Default dimensions if not specified
     const defaultWidth = 20;
@@ -36,17 +49,20 @@ export class AsciiMaze extends Component {
       height: options.height ?? defaultHeight,
     });
 
-    this.mapSource = map;
+    this.contentSource = actualContent;
     this.positionSource = position;
+    this.fogOfWar = fogOfWar ?? false;
+    this.exploredTilesSource = exploredTiles;
+    this.fogCharacter = fogCharacter ?? ' ';
   }
 
   get mapData(): MapData {
     let rawMapData: any;
     
-    if (isState(this.mapSource)) {
-      rawMapData = (this.mapSource as State<any>).value;
+    if (isState(this.contentSource)) {
+      rawMapData = (this.contentSource as State<any>).value;
     } else {
-      rawMapData = this.mapSource;
+      rawMapData = this.contentSource;
     }
 
     // Convert to MapData format
@@ -69,6 +85,52 @@ export class AsciiMaze extends Component {
     return isState(this.positionSource)
       ? (this.positionSource as State<Position>).value
       : (this.positionSource as Position);
+  }
+
+  get exploredTiles(): Set<string> {
+    if (!this.exploredTilesSource) {
+      return new Set<string>();
+    }
+    return isState(this.exploredTilesSource)
+      ? (this.exploredTilesSource as State<Set<string>>).value
+      : (this.exploredTilesSource as Set<string>);
+  }
+
+  private isPositionVisible(x: number, y: number, playerX: number, playerY: number): boolean {
+    // 5 width x 3 height grid centered on player (±2 horizontally, ±1 vertically)
+    const deltaX = Math.abs(x - playerX);
+    const deltaY = Math.abs(y - playerY);
+    return deltaX <= 2 && deltaY <= 1;
+  }
+
+  private isPositionExplored(x: number, y: number): boolean {
+    return this.exploredTiles.has(`${x},${y}`);
+  }
+
+  private addExploredPosition(x: number, y: number): void {
+    const key = `${x},${y}`;
+    if (this.exploredTilesSource) {
+      if (isState(this.exploredTilesSource)) {
+        const currentSet = (this.exploredTilesSource as State<Set<string>>).value;
+        if (!currentSet.has(key)) {
+          const newSet = new Set(currentSet);
+          newSet.add(key);
+          (this.exploredTilesSource as State<Set<string>>).value = newSet;
+        }
+      } else {
+        (this.exploredTilesSource as Set<string>).add(key);
+      }
+    }
+  }
+
+  private getVisiblePositions(playerX: number, playerY: number): { x: number; y: number }[] {
+    const positions: { x: number; y: number }[] = [];
+    for (let y = playerY - 1; y <= playerY + 1; y++) {
+      for (let x = playerX - 2; x <= playerX + 2; x++) {
+        positions.push({ x, y });
+      }
+    }
+    return positions;
   }
 
   draw(): string[][] {
@@ -99,6 +161,16 @@ export class AsciiMaze extends Component {
       return this.buffer;
     }
 
+    // If fog of war is enabled, mark visible positions as explored
+    if (this.fogOfWar) {
+      const visiblePositions = this.getVisiblePositions(pos.x, pos.y);
+      for (const visPos of visiblePositions) {
+        if (visPos.x >= 0 && visPos.x < mapWidth && visPos.y >= 0 && visPos.y < mapHeight) {
+          this.addExploredPosition(visPos.x, visPos.y);
+        }
+      }
+    }
+
     // Calculate the starting position in the map based on player position
     const startMapY = Math.max(0, pos.y - centerY);
     const endMapY = Math.min(mapHeight, startMapY + innerHeight);
@@ -127,7 +199,19 @@ export class AsciiMaze extends Component {
           const directionChar = this.getDirectionChar(pos.direction);
           this.buffer[bufferY][bufferX] = directionChar;
         } else {
-          this.buffer[bufferY][bufferX] = char;
+          // Apply fog of war logic
+          if (this.fogOfWar) {
+            const isVisible = this.isPositionVisible(mapX, mapY, pos.x, pos.y);
+            const isExplored = this.isPositionExplored(mapX, mapY);
+            
+            if (isVisible || isExplored) {
+              this.buffer[bufferY][bufferX] = char;
+            } else {
+              this.buffer[bufferY][bufferX] = this.fogCharacter;
+            }
+          } else {
+            this.buffer[bufferY][bufferX] = char;
+          }
         }
       }
     }
