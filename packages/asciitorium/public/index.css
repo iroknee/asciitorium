@@ -32,7 +32,6 @@ body {
   overflow: hidden; /* Hide scrollbars for clean appearance */
 
   /* Ensure monospace font for proper character sizing */
-  font-family: 'PrintChar21', 'Courier New', Courier, monospace;
   font-size: 16px; /* Base font size for character measurement */
   line-height: 1; /* Tight line spacing for ASCII art */
 }

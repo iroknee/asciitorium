@@ -22,9 +22,10 @@ export class DomRenderer implements Renderer {
     measureElement.style.visibility = 'hidden';
     measureElement.style.whiteSpace = 'pre';
     measureElement.style.fontFamily = this.screen.style.fontFamily;
-    measureElement.style.fontSize = getComputedStyle(this.screen).fontSize || '16px';
+    measureElement.style.fontSize =
+      getComputedStyle(this.screen).fontSize || '16px';
     measureElement.textContent = 'M'; // Use 'M' as it's typically the widest character
-    
+
     document.body.appendChild(measureElement);
     const rect = measureElement.getBoundingClientRect();
     this.charWidth = rect.width;
@@ -35,7 +36,7 @@ export class DomRenderer implements Renderer {
       charWidth: this.charWidth,
       charHeight: this.charHeight,
       font: measureElement.style.fontFamily,
-      fontSize: measureElement.style.fontSize
+      fontSize: measureElement.style.fontSize,
     });
 
     // Fallback values if measurement fails
@@ -62,13 +63,13 @@ export class DomRenderer implements Renderer {
       charWidth: this.charWidth,
       charHeight: this.charHeight,
       calculatedWidth: width,
-      calculatedHeight: height
+      calculatedHeight: height,
     });
 
     // Minimum size fallback
     const result = {
       width: Math.max(width, 80),
-      height: Math.max(height, 24)
+      height: Math.max(height, 24),
     };
 
     return result;

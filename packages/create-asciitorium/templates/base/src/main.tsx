@@ -19,6 +19,7 @@ import {
   TextExample,
   AsciiArtExample,
   SlidersExample,
+  AsciiMazeExample,
 } from 'asciitorium/examples';
 
 // Load the title ASCII art
@@ -33,6 +34,7 @@ const selectedComponent = new PersistentState(
 // Component list for navigation
 const componentList = [
   'AsciiArt',
+  'AsciiMaze',
   'Button',
   'CelticBorder',
   'MultiSelect',
@@ -46,16 +48,17 @@ const componentList = [
 
 // Component mapping for dynamic content
 const examples = {
+  AsciiArt: AsciiArtExample,
+  AsciiMaze: AsciiMazeExample,
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
-  Select: SelectExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
-  TextInput: TextInputExample,
+  Select: SelectExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
   Text: TextExample,
-  AsciiArt: AsciiArtExample,
+  TextInput: TextInputExample,
 };
 
 const app = (
