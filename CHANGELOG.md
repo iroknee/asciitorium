@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.26] - 2025-09-01
+
+### Added
+
+- **New Components:**
+  - `AsciiMaze` component for rendering and navigating ASCII-based mazes with collision detection and fog of war support
+  - `onEnter` callback support for `TextInput` component to handle Enter key press events
+  - Maze builder script (`scripts/maze-builder.js`) for generating maze files
+  - FIGlet art generation script (`scripts/gen-figlet-art.js`)
+
+### Changed
+
+- **Component Enhancements:**
+  - **Breaking Change:** Renamed size value `'fit'` to `'fill'` throughout framework for better semantic clarity
+  - Enhanced `AsciiArt` component with `State<string>` support for dynamic content
+  - Improved `ColumnLayout` space allocation to properly account for all remaining components when using `height="fill"`
+  - Fixed `Select` and `MultiSelect` component alignment and selection behavior
+  - Enhanced `Tabs` component with improved layout and styling
+  - Updated `CelticBorder` component with better rendering and fixed edge cases
+  - Improved `TextInput` component with better focus handling
+
+- **JSX Runtime Improvements:**
+  - Added implicit component function support for more flexible JSX usage
+  - Streamlined JSX type definitions for better TypeScript integration
+  - Enhanced component instantiation logic
+
+- **Layout System:**
+  - Enhanced `AlignedLayout` with improved positioning calculations
+  - Better space allocation algorithms in column layouts
+
+### Technical Details
+
+- **Key Files Modified:** Core components, JSX runtime, layout system, examples
+- **Breaking Changes:** 
+  - Size value `'fit'` renamed to `'fill'` - update all references
+- **New Features:** Maze navigation with collision detection, Enter key handling in text inputs
+- **Architecture:** Enhanced JSX runtime flexibility, improved layout calculations
+
 ## [0.1.23] - 2025-08-25
 
 ### Fixed
