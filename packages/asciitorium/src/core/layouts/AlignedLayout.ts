@@ -69,7 +69,7 @@ export class AlignedLayout implements Layout {
       
       if (isBottom) {
         finalY += gap.top - gap.bottom; // For bottom-aligned, bottom gap moves up
-      } else if (isMiddle || (typeof align === 'string' && align === 'bottom')) {
+      } else if (isMiddle) {
         finalY += (gap.top - gap.bottom) / 2; // For middle-aligned, balance gaps
       } else {
         finalY += gap.top; // For top-aligned, top gap moves down

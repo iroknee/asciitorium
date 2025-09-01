@@ -222,7 +222,7 @@ export class TextInput extends Component {
 
     const buffer = super.draw();
 
-    const prefix = this.hasFocus ? '> ' : '> ';
+    const prefix = this.hasFocus ? ' > ' : ' > ';
     const prefixLength = prefix.length;
     const startY = this.border ? 1 : 0;
     const startX = this.border ? 1 : 0;

@@ -119,15 +119,15 @@ export class MultiSelect extends Component {
       const isFocused = itemIndex === this.focusedIndex;
       const isSelected = this.selectedSet.has(item);
 
-      let prefix = ' ';
+      let prefix = '  ';
       if (isFocused && this.hasFocus) {
-        prefix = '>'; // ◇ Focused item (takes priority)
+        prefix = ' >'; // ◇ Focused item (takes priority)
       } else if (isSelected && this.hasFocus) {
-        prefix = '◆'; // Selected item
+        prefix = ' ◆'; // Selected item
       } else if (isSelected) {
-        prefix = '◇'; // Selected item
+        prefix = ' ◇'; // Selected item
       } else {
-        prefix = ' '; // Non-selected item
+        prefix = '  '; // Non-selected item
       }
 
       const line = `${prefix} ${item}`

@@ -1,78 +1,28 @@
-// src/runtime/jsx-runtime.ts
-import { Component } from '../core/Component';
-import { Text } from '../components/Text'; // adjust path if needed
-
-/**
- * Normalize children to a flat array (preserve your existing "children on props" behavior).
- */
-function normalizeChildren(children: any): any[] {
-  if (children == null) return [];
-  return Array.isArray(children) ? children.flat(Infinity) : [children];
-}
-
-/**
- * Convert a function component's return value into a Component.
- * - Component -> pass through
- * - string/number -> wrap in Text
- * - array -> wrap in a simple container Component (column stack)
- */
-function toComponent(node: any): Component {
-  if (node == null) {
-    return new Text({ value: '' });
-  }
-  if (node instanceof Component) {
-    return node;
-  }
-  if (Array.isArray(node)) {
-    const container = new Component({ layout: 'column' } as any);
-    for (const n of node) {
-      container.addChild(toComponent(n));
-    }
-    return container;
-  }
-  if (typeof node === 'string' || typeof node === 'number') {
-    return new Text({ value: String(node) });
-  }
-  // As a fallback, try stringify
-  return new Text({ value: String(node) });
-}
-
 /**
  * JSX factory function to create elements.
- * Supports both class components (existing behavior) and function components (new).
+ * This function is used by the JSX transpiler to convert JSX syntax into
+ * calls to this function.
+ *
+ * @param type The component type (class or function).
+ * @param props The properties passed to the component.
+ * @param _key Optional key for the element (not used here).
+ * @returns An instance of the component with the given props.
  */
 export function jsx(type: any, props: any, _key?: string): any {
-  // Preserve your current behavior: keep children on props, but flatten them
   if (props?.children) {
-    props.children = normalizeChildren(props.children);
+    // Flatten children if they're an array of arrays
+    props.children = Array.isArray(props.children)
+      ? props.children.flat()
+      : [props.children];
   }
 
-  const isClassComponent =
-    typeof type === 'function' && type.prototype instanceof Component;
-
-  if (isClassComponent) {
-    // Unchanged from your version: just construct the class.
-    // Your class components can read props.children as before.
-    return new type(props);
-  }
-
-  if (typeof type === 'function') {
-    // Function component: call it with props and normalize the result.
-    const out = type(props);
-    return toComponent(out);
-  }
-
-  // If someone tried an intrinsic tag like <div>, we don’t support it.
-  throw new Error(`Unsupported JSX element type: ${String(type)}`);
+  return new type(props);
 }
 
 export const jsxs = jsx;
 export const jsxDEV = jsx;
 
-/**
- * Optional: keep Fragment unsupported (matches your current behavior).
- * If you later want fragments, replace this with: `export const Fragment = (p:{children?:any}) => p.children ?? null;`
- */
+// Required by JSX spec, even if unsupported
 export const Fragment = () => {
   throw new Error('Fragment syntax (<></>) is not supported in asciitorium.');
 };

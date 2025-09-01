@@ -1,4 +1,4 @@
-import { Component, AsciiMaze, State, Button, Row, Text, Direction, loadArt, Column } from '../index';
+import { AsciiMaze, State, Button, Row, Text, Direction, loadArt, Column } from '../index';
 
 let dungeonMap: string | null = null;
 
@@ -90,8 +90,8 @@ export const AsciiMazeExample = () => (
       position={playerPosition}
       width={45}
       height={10}
-      fogOfWar
-      exploredTiles={exploredTiles}
+      // fogOfWar
+      // exploredTiles={exploredTiles}
       border
       gap={1}
     />
