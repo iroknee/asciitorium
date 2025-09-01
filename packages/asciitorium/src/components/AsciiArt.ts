@@ -1,9 +1,10 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
+import { State } from '../core/State';
 
 export interface ArtOptions
   extends Omit<ComponentProps, 'children'> {
-  content?: string; // raw text loaded from .txt (UTF-8)
+  content?: string | State<string>; // raw text loaded from .txt (UTF-8) or reactive state
   children?: string | string[];
 }
 
@@ -26,14 +27,17 @@ type SpriteDefaults = {
 };
 
 export class AsciiArt extends Component {
-  private readonly frames: SpriteFrame[] = [];
+  private frames: SpriteFrame[] = [];
   private frameIndex = 0;
   private loop = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
+  private contentState?: State<string>;
+  private unsubscribe?: () => void;
 
   constructor(options: ArtOptions) {
     // Support both content prop and JSX children
     let actualContent = options.content;
+    let contentValue: string;
 
     if (!actualContent && options.children) {
       const children = Array.isArray(options.children)
@@ -50,8 +54,15 @@ export class AsciiArt extends Component {
       );
     }
 
+    // Handle State<string> or string content - determine initial value
+    if (actualContent instanceof State) {
+      contentValue = actualContent.value;
+    } else {
+      contentValue = actualContent;
+    }
+
     // Parse content (supports §/¶ JSON; falls back to single still)
-    const parsed = parseSprite(actualContent);
+    const parsed = parseSprite(contentValue);
 
     // Compute width/height from max of all frames (unless provided)
     const { maxW, maxH } = measureFrames(parsed.frames);
@@ -66,6 +77,18 @@ export class AsciiArt extends Component {
 
     this.frames = parsed.frames;
     this.loop = parsed.defaults.loop || false;
+
+    // Set up state subscription after super() call
+    if (actualContent instanceof State) {
+      this.contentState = actualContent;
+      
+      // Subscribe to state changes
+      const updateContent = (newValue: string) => {
+        this.updateContent(newValue);
+      };
+      this.contentState.subscribe(updateContent);
+      this.unsubscribe = () => this.contentState!.unsubscribe(updateContent);
+    }
 
     // If we have animation (2+ frames), start it
     if (this.frames.length > 1) {
@@ -126,9 +149,33 @@ export class AsciiArt extends Component {
     }
   }
 
+  private updateContent(newContent: string): void {
+    // Re-parse the new content
+    const parsed = parseSprite(newContent);
+    
+    // Stop current animation
+    this.clearTimer();
+    
+    // Update frames and reset animation state
+    this.frames = parsed.frames;
+    this.loop = parsed.defaults.loop || false;
+    this.frameIndex = 0;
+    
+    // Restart animation if needed
+    if (this.frames.length > 1) {
+      this.startAnimation();
+    }
+    
+    // Request a re-render
+    requestRender();
+  }
+
   override destroy(): void {
     super.destroy();
     this.clearTimer();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   override draw(): string[][] {
