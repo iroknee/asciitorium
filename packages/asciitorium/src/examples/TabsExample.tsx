@@ -1,54 +1,41 @@
-import { Text, State, Tabs, Component } from '../index';
+import { Component, Tabs, Text, State } from "../index";
 
-export const TabsExample = () => {
-  // State for tabs - local to each component instance
-  const tabsValue = new State('Tab 1');
+function contentForTab(tab: string): string {
+  switch (tab) {
+    case "Tab 1":
+      return "Content for Tab 1\nThis shows dynamic content\nbased on selected tab.";
+    case "Tab 2":
+      return "Content for Tab 2\nDifferent content here!\nTabs make navigation easy.";
+    case "Tab 3":
+      return "Content for Tab 3\nYet another section.\nUse arrow keys to switch.";
+    default:
+      return "Select a tab above";
+  }
+}
 
-  // Dynamic content state based on selected tab
-  const tabContentState = new State('');
+export function TabsExample() {
+  // Selected tab
+  const tabsValue = new State("Tab 1");
+
+  // Derived content as its own State so <Text> can react
+  const tabContentState = new State<string>(contentForTab(tabsValue.value));
+
+  // Update derived state whenever the tab changes
   tabsValue.subscribe((tab) => {
-    switch (tab) {
-      case 'Tab 1':
-        tabContentState.value =
-          'Content for Tab 1\nThis shows dynamic content\nbased on selected tab.';
-        break;
-      case 'Tab 2':
-        tabContentState.value =
-          'Content for Tab 2\nDifferent content here!\nTabs make navigation easy.';
-        break;
-      case 'Tab 3':
-        tabContentState.value =
-          'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
-        break;
-      default:
-        tabContentState.value = 'Select a tab above';
-    }
+    tabContentState.value = contentForTab(tab);
   });
-
-  // Initialize content
-  tabContentState.value =
-    tabsValue.value === 'Tab 1'
-      ? 'Content for Tab 1\nThis shows dynamic content\nbased on selected tab.'
-      : tabsValue.value === 'Tab 2'
-        ? 'Content for Tab 2\nDifferent content here!\nTabs make navigation easy.'
-        : 'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
 
   return (
     <Component border label="Tabs Example:">
       <Tabs
-        tabs={['Tab 1', 'Tab 2', 'Tab 3']}
+        tabs={["Tab 1", "Tab 2", "Tab 3"]}
         align="center"
         selectedTab={tabsValue}
         gap={1}
       />
-      <Component
-        width={38}
-        height={8}
-        gap={1}
-        children={[
-          new Text({ width: 30, height: 6, children: [tabContentState] }),
-        ]}
-      />
+      <Component width={38} height={8} gap={1}>
+        <Text width={30} height={6} value={tabContentState} />
+      </Component>
     </Component>
   );
-};
+}

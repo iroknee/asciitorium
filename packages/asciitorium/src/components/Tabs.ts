@@ -82,7 +82,7 @@ export class Tabs extends Component {
       // Separator, unless it's the last tab
       if (i < this.tabs.length - 1 && x < this.width - borderPad - 1) {
         buffer[y - 1][x] = '┬';
-        buffer[y][x] = '⏐';
+        buffer[y][x] = '│';
         buffer[y + 1][x] = '┴';
         x += 1;
       }
