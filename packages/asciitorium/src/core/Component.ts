@@ -18,23 +18,62 @@ export interface ComponentProps {
   x?: number;
   y?: number;
   z?: number;
-  gap?: number | {
-    top?: number;
-    bottom?: number;
-    left?: number;
-    right?: number;
-    x?: number; // shorthand for left + right
-    y?: number; // shorthand for top + bottom
-  } | number[]; // CSS-style shorthand
+  gap?:
+    | number
+    | {
+        top?: number;
+        bottom?: number;
+        left?: number;
+        right?: number;
+        x?: number; // shorthand for left + right
+        y?: number; // shorthand for top + bottom
+      }
+    | number[]; // CSS-style shorthand
   children?: Component[]; // Child components
   layout?: LayoutType; // Layout to use for children
   layoutOptions?: LayoutOptions; // Configuration for the layout
+
+  // 🔧 Dynamic content switching support (now accepts instance | class | factory)
   dynamicContent?: {
     selectedKey: State<string>;
-    componentMap: Record<string, () => Component>;
-    fallback?: () => Component;
-  }; // Dynamic content switching support
+    componentMap: Record<
+      string,
+      Component | (() => Component) | (new (...args: any[]) => Component)
+    >;
+    fallback?:
+      | Component
+      | (() => Component)
+      | (new (...args: any[]) => Component);
+  };
 }
+
+// -- Helpers for dynamic content ---------------------------------------------
+
+function isComponentCtor(v: any): v is new (...args: any[]) => Component {
+  return (
+    typeof v === 'function' && v.prototype && v.prototype instanceof Component
+  );
+}
+
+function makeComponent(entry: any): Component {
+  // Allow: pre-built instance
+  if (entry instanceof Component) return entry;
+
+  // Allow: class constructor
+  if (isComponentCtor(entry)) return new entry({});
+
+  // Allow: factory function
+  if (typeof entry === 'function') {
+    const out = entry();
+    if (out instanceof Component) return out;
+  }
+
+  throw new Error(
+    'dynamicContent entries must be a Component instance, a Component class, or a factory that returns a Component.'
+  );
+}
+
+// ---------------------------------------------------------------------------
 
 export abstract class Component {
   public label: string | undefined;
@@ -42,7 +81,7 @@ export abstract class Component {
   public showLabel: boolean = true;
   public width: number;
   public height: number;
-  
+
   // Store original size values for relative sizing
   private originalWidth?: SizeValue;
   private originalHeight?: SizeValue;
@@ -53,14 +92,17 @@ export abstract class Component {
   public x = 0;
   public y = 0;
   public z = 0;
-  public gap: number | {
-    top?: number;
-    bottom?: number;
-    left?: number;
-    right?: number;
-    x?: number;
-    y?: number;
-  } | number[] = 0;
+  public gap:
+    | number
+    | {
+        top?: number;
+        bottom?: number;
+        left?: number;
+        right?: number;
+        x?: number;
+        y?: number;
+      }
+    | number[] = 0;
 
   public focusable: boolean = false;
   public hasFocus: boolean = false;
@@ -80,22 +122,28 @@ export abstract class Component {
     // Store original size values for relative sizing - default to 'fill'
     this.originalWidth = props.width ?? 'fill';
     this.originalHeight = props.height ?? 'fill';
-    
+
     // Initialize with default values - will be resolved during layout
     if (typeof props.width === 'number') {
       this.width = props.width;
     } else {
       // For non-numeric values, calculate auto-dimensions as fallback
-      const autoWidth = Component.calculateAutoWidth(props.children, props.layout);
+      const autoWidth = Component.calculateAutoWidth(
+        props.children,
+        props.layout
+      );
       const borderAdjustment = props.border ? 2 : 0;
       this.width = autoWidth + borderAdjustment;
     }
-    
+
     if (typeof props.height === 'number') {
       this.height = props.height;
     } else {
       // For non-numeric values, calculate auto-dimensions as fallback
-      const autoHeight = Component.calculateAutoHeight(props.children, props.layout);
+      const autoHeight = Component.calculateAutoHeight(
+        props.children,
+        props.layout
+      );
       const borderAdjustment = props.border ? 2 : 0;
       this.height = autoHeight + borderAdjustment;
     }
@@ -129,7 +177,7 @@ export abstract class Component {
         if (
           child &&
           typeof child === 'object' &&
-          typeof child.setParent === 'function'
+          typeof (child as any).setParent === 'function'
         ) {
           child.setParent(this);
           this.children.push(child);
@@ -137,7 +185,7 @@ export abstract class Component {
       }
       this.recalculateLayout();
     }
-    
+
     // Setup dynamic content if provided
     if (props.dynamicContent) {
       this.setupDynamicContent(props.dynamicContent);
@@ -205,7 +253,7 @@ export abstract class Component {
     for (const unbind of this.unbindFns) unbind();
     this.unbindFns = [];
   }
-  
+
   // Auto-sizing methods (moved from Box)
   private static calculateAutoWidth(
     children?: Component[],
@@ -221,10 +269,12 @@ export abstract class Component {
       }, 0);
     } else {
       // Max width for column layout (including horizontal gaps)
-      return Math.max(...children.map((child) => {
-        const gap = resolveGap(child.gap);
-        return child.width + gap.left + gap.right;
-      }));
+      return Math.max(
+        ...children.map((child) => {
+          const gap = resolveGap(child.gap);
+          return child.width + gap.left + gap.right;
+        })
+      );
     }
   }
 
@@ -242,18 +292,26 @@ export abstract class Component {
       }, 0);
     } else {
       // Max height for row layout (including vertical gaps)
-      return Math.max(...children.map((child) => {
-        const gap = resolveGap(child.gap);
-        return child.height + gap.top + gap.bottom;
-      }));
+      return Math.max(
+        ...children.map((child) => {
+          const gap = resolveGap(child.gap);
+          return child.height + gap.top + gap.bottom;
+        })
+      );
     }
   }
-  
+
   // Dynamic content support
   private setupDynamicContent(dynamicContent: {
     selectedKey: State<string>;
-    componentMap: Record<string, () => Component>;
-    fallback?: () => Component;
+    componentMap: Record<
+      string,
+      Component | (() => Component) | (new (...args: any[]) => Component)
+    >;
+    fallback?:
+      | Component
+      | (() => Component)
+      | (new (...args: any[]) => Component);
   }): void {
     const updateContent = () => {
       // Clear existing children
@@ -262,39 +320,39 @@ export abstract class Component {
         child.destroy();
         this.removeChild(child);
       }
-      
-      // Get the current component factory function
-      const componentFactory = dynamicContent.componentMap[dynamicContent.selectedKey.value];
-      if (componentFactory) {
-        // Create new component instance
-        const component = componentFactory();
+
+      // Get the current entry (instance | class | factory)
+      const key = dynamicContent.selectedKey.value;
+      const entry = dynamicContent.componentMap[key];
+
+      if (entry) {
+        const component = makeComponent(entry);
         this.addChild(component);
       } else if (dynamicContent.fallback) {
-        // Use fallback component
-        const fallbackComponent = dynamicContent.fallback();
+        const fallbackComponent = makeComponent(dynamicContent.fallback);
         this.addChild(fallbackComponent);
       }
-      
+
       // Notify app of focus changes
       this.notifyAppOfFocusChange();
     };
-    
+
     // Initially set the current content
     updateContent();
-    
+
     // Subscribe to changes in selectedKey
     const listener = () => updateContent();
     dynamicContent.selectedKey.subscribe(listener);
     this.unbindFns.push(() => dynamicContent.selectedKey.unsubscribe(listener));
   }
-  
+
   private notifyAppOfFocusChange(): void {
     // Walk up the parent chain to find the App
     let current: Component | undefined = this;
     while (current && !(current as any).isApp) {
       current = current.parent;
     }
-    
+
     // If we found the App, reset its focus manager
     if (current && (current as any).focus) {
       (current as any).focus.reset(current);
@@ -312,14 +370,14 @@ export abstract class Component {
 
   public resolveSize(context: SizeContext): void {
     const borderAdjustment = this.border ? 2 : 0;
-    
+
     if (this.originalWidth !== undefined) {
       const resolved = resolveSize(this.originalWidth, context, 'width');
       if (resolved !== undefined) {
         this.width = resolved;
       }
     }
-    
+
     if (this.originalHeight !== undefined) {
       const resolved = resolveSize(this.originalHeight, context, 'height');
       if (resolved !== undefined) {
@@ -332,7 +390,7 @@ export abstract class Component {
     if (this.height < 1) this.height = 1;
   }
 
-  handleEvent(event: string): boolean {
+  handleEvent(_event: string): boolean {
     return false;
   }
 

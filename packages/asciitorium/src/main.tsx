@@ -11,6 +11,7 @@ import {
 import {
   ButtonExample,
   CelticBorderExample,
+  FormExample,
   SelectExample,
   MultiSelectExample,
   RelativeSizingExample,
@@ -37,6 +38,7 @@ const componentList = [
   'AsciiMaze',
   'Button',
   'CelticBorder',
+  'Form',
   'MultiSelect',
   'RelativeSizing',
   'Select',
@@ -52,6 +54,7 @@ const examples = {
   AsciiMaze: AsciiMazeExample,
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
+  Form: FormExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
   Select: SelectExample,

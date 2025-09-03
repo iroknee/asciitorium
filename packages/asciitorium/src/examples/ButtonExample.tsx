@@ -11,6 +11,7 @@ export const ButtonExample = () => {
         align="center"
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
         gap={{top: 4, bottom: 3}}
+        height={10}
       />
       <Row gap={{left: 6, right: 2}} align="center">
         <Text>Click Count: </Text>

@@ -1,6 +1,7 @@
 export { AsciiArtExample } from './AsciiArtExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
+export { FormExample } from './FormExample';
 export { MultiSelectExample } from './MultiSelectExample';
 export { RelativeSizingExample } from './RelativeSizingExample';
 export { SelectExample } from './SelectExample';

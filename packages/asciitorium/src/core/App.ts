@@ -184,12 +184,12 @@ export class App extends Component {
       return;
     }
 
-    if (key === 'Shift') {
-      this.focus.focusPrevious();
-      this.render();
-      event?.preventDefault();
-      return;
-    }
+    // if (key === 'Shift') {
+    //   this.focus.focusPrevious();
+    //   this.render();
+    //   event?.preventDefault();
+    //   return;
+    // }
 
     if (this.focus.handleKey(key)) {
       this.render();
