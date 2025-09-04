@@ -36,7 +36,7 @@ export class TextInput extends Component {
   hasFocus = false;
 
   constructor(options: TextInputOptions) {
-    const height = options.height ?? 3; // Default to 3 for dynamic behavior
+    const height = options.height ?? 3; // Default to 3 for backwards compatibility
     const border = options.border ?? true;
     super({ ...options, height, border });
 
