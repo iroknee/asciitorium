@@ -3,9 +3,15 @@ import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index';
 
+export interface RowLayoutOptions extends LayoutOptions {
+  align?: Alignment;
+}
+
 export class RowLayout implements Layout {
-  constructor(_options?: LayoutOptions) {
-    // Row layout constructor - options reserved for future extensions
+  private options: RowLayoutOptions;
+
+  constructor(options?: RowLayoutOptions) {
+    this.options = options || {};
   }
 
   layout(parent: Component, children: Component[]): void {
@@ -35,8 +41,36 @@ export class RowLayout implements Layout {
 
     // Second pass: sizing is now handled via width/height props and 'fill' values
 
-    // Third pass: position children
-    let currentX = borderPad;
+    // Third pass: calculate total row width for alignment
+    let totalRowWidth = 0;
+    for (const child of children) {
+      if (child.fixed) continue;
+      const gap = resolveGap(child.gap);
+      totalRowWidth += gap.left + child.width + gap.right;
+    }
+
+    // Fourth pass: determine starting position based on row alignment
+    const rowAlign = this.options.align || 'left';
+    let startX = borderPad;
+    
+    if (typeof rowAlign === 'string') {
+      if (rowAlign.includes('right') || rowAlign === 'right') {
+        startX = borderPad + innerWidth - totalRowWidth;
+      } else if (rowAlign.includes('center') || rowAlign === 'center') {
+        startX = borderPad + Math.floor((innerWidth - totalRowWidth) / 2);
+      }
+    } else if (typeof rowAlign === 'object' && rowAlign.x !== undefined) {
+      if (rowAlign.x === 'right') {
+        startX = borderPad + innerWidth - totalRowWidth;
+      } else if (rowAlign.x === 'center') {
+        startX = borderPad + Math.floor((innerWidth - totalRowWidth) / 2);
+      } else if (typeof rowAlign.x === 'number') {
+        startX = borderPad + rowAlign.x;
+      }
+    }
+
+    // Fifth pass: position children
+    let currentX = startX;
 
     for (const child of children) {
       if (child.fixed) continue;

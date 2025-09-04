@@ -2,18 +2,20 @@ import {
   Text,
   State,
   Button,
-  Component,
   Row,
   Column,
   TextInput,
+  GaugeSlider,
   Select,
 } from '../index';
 
 /** derive a State<T> from other states */
 function computed<T>(sources: State<any>[], calc: () => T): State<T> {
   const out = new State<T>(calc());
-  const resub = () => { out.value = calc(); };
-  sources.forEach(s => s.subscribe(resub));
+  const resub = () => {
+    out.value = calc();
+  };
+  sources.forEach((s) => s.subscribe(resub));
   return out;
 }
 
@@ -23,22 +25,27 @@ interface ValidationResult {
 }
 
 const validateEmail = (email: string): ValidationResult => {
-  if (email.trim() === '') return { isValid: false, error: 'Email is required' };
+  if (email.trim() === '')
+    return { isValid: false, error: 'Email is required' };
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) return { isValid: false, error: 'Invalid email format' };
+  if (!emailRegex.test(email))
+    return { isValid: false, error: 'Invalid email format' };
   return { isValid: true };
 };
 
 const validateAge = (age: number): ValidationResult => {
-  if (isNaN(age) || age <= 0) return { isValid: false, error: 'Age must be a positive number' };
-  if (age < 13) return { isValid: false, error: 'Must be at least 13 years old' };
+  if (isNaN(age) || age <= 0)
+    return { isValid: false, error: 'Age must be a positive number' };
+  if (age < 13)
+    return { isValid: false, error: 'Must be at least 13 years old' };
   if (age > 120) return { isValid: false, error: 'Age must be realistic' };
   return { isValid: true };
 };
 
 const validateName = (name: string): ValidationResult => {
   if (name.trim() === '') return { isValid: false, error: 'Name is required' };
-  if (name.trim().length < 2) return { isValid: false, error: 'Name must be at least 2 characters' };
+  if (name.trim().length < 2)
+    return { isValid: false, error: 'Name must be at least 2 characters' };
   return { isValid: true };
 };
 
@@ -46,9 +53,8 @@ export const FormExample = () => {
   // Form field states
   const name = new State('');
   const email = new State('');
-  const age = new State(0);
+  const age = new State(22);
   const country = new State('');
-  const interests = new State('');
 
   // Validation error states
   const nameError = new State('');
@@ -125,10 +131,10 @@ export const FormExample = () => {
         `Name: ${name.value}, ` +
         `Email: ${email.value}\n` +
         `Age: ${age.value}, ` +
-        `Country: ${countryLabel}\n` +
-        `Interests: ${interests.value || 'None specified'}`;
+        `Country: ${countryLabel}`;
     } else {
-      submissionResult.value = 'Please fix validation errors before submitting.';
+      submissionResult.value =
+        'Please fix validation errors before submitting.';
     }
   };
 
@@ -137,7 +143,6 @@ export const FormExample = () => {
     email.value = '';
     age.value = 0;
     country.value = '';
-    interests.value = '';
     nameError.value = '';
     emailError.value = '';
     ageError.value = '';
@@ -148,75 +153,85 @@ export const FormExample = () => {
   // UI
   return (
     <Column label="Form Example:" border>
-        {/* Name */}
-        <Row width="80%" height={3} gap={{left: 1, top: 1}}>
-          <Text align="left" width={10}>Name:</Text>
-          <TextInput
-            value={name}
-            placeholder="Enter your full name"
-            width={32}
-            onEnter={handleSubmit}
-          />
-          <Text align="right">{nameErrorDisplay}</Text>
-        </Row>
+      {/* Name */}
+      {nameErrorDisplay}
+      <Row height={3} gap={{ left: 1, top: 1 }}>
+        <Text align="left" width={10}>
+          Name:
+        </Text>
+        <TextInput
+          value={name}
+          placeholder="Enter your full name"
+          width={32}
+          onEnter={handleSubmit}
+        />
+        <Text width="fill" align="center" gap={{ left: 1 }}>
+          {nameErrorDisplay}
+        </Text>
+      </Row>
 
-        {/* Email */}
-        <Row width="80%" height={3} gap={{left: 1, top: 1}}>
-          <Text align="left" width={10}>Email:</Text>
-          <TextInput
-            value={email}
-            placeholder="your.email@example.com"
-            width={32}
-            onEnter={handleSubmit}
-          />
-          <Text align="right">{emailErrorDisplay}</Text>
-        </Row>
+      {/* Email */}
+      <Row height={3} gap={{ left: 1, top: 1 }}>
+        <Text align="left" width={10}>
+          Email:
+        </Text>
+        <TextInput
+          value={email}
+          placeholder="your.email@example.com"
+          width={32}
+          onEnter={handleSubmit}
+        />
+        <Text align="center" gap={{ left: 1 }}>
+          {emailErrorDisplay}
+        </Text>
+      </Row>
 
-        {/* Age */}
-        <Row width="80%" height={3} gap={{left: 1, top: 1}}>
-          <Text align="left" width={10}>Age:</Text>
-          <TextInput
-            value={age}
-            placeholder="25"
-            width={10}
-            numeric={true}
-            onEnter={handleSubmit}
-          />
-          <Text align="right">{ageErrorDisplay}</Text>
-        </Row>
+      {/* Age */}
+      <Row height={3} gap={{ left: 1, top: 1 }}>
+        <Text align="left" width={10}>
+          Age:
+        </Text>
+        <GaugeSlider
+          height={3}
+          value={age}
+          min={18}
+          max={100}
+          step={1}
+          width={32}
+        />
+        <Text gap={1} width={3}>
+          {age}
+        </Text>
+      </Row>
 
-        {/* Country */}
-        <Row width="80%" height={3} gap={{left: 1, top: 1}}>
-          <Text align="left" width={10}>Country:</Text>
-          <Select selectedItem={country} items={countryOptions} width={25} />
-        </Row>
+      {/* Country */}
+      <Row height={3} gap={{ left: 1, top: 1 }}>
+        <Text align="left" width={10}>
+          Country:
+        </Text>
+        <Select selectedItem={country} items={countryOptions} width={25} />
+      </Row>
 
-        {/* Interests */}
-        <Row width="80%" height={3} gap={{left: 1, top: 1}}>
-          <Text align="left">Interests (Optional):</Text>
-          <TextInput
-            value={interests}
-            placeholder="What are you interested in?"
-            width={40}
-            onEnter={handleSubmit}
-          />
-        </Row>
+      {/* Actions */}
+      <Row gap={{ top: 1 }} height={4} align="right">
+        <Button onClick={handleSubmit} gap={{ right: 1 }}>
+          Submit
+        </Button>
+        <Button onClick={handleClear} gap={{ right: 1 }}>
+          Clear
+        </Button>
+      </Row>
 
-        {/* Actions */}
-        <Row gap={{ top: 1 }} width="35%" align="right" height={4}>
-          <Button content="Submit" onClick={handleSubmit} gap={{ right: 1 }} />
-          <Button content="Clear" onClick={handleClear} />
-        </Row>
+      {/* Status */}
+      <Row gap={{ top: 1 }}>
+        <Text>Form Status: </Text>
+        <Text>{formStatusText}</Text>
+      </Row>
 
-        {/* Status */}
-        <Row gap={{ top: 1 }}>
-          <Text>Form Status: </Text>
-          <Text>{formStatusText}</Text>
-        </Row>
-
-        {/* Result (always mounted; prints empty string until submit) */}
-        <Text label="Results:" border width="100%" height={6} gap={{ top: 1 }}>{submissionResult}</Text>
-
+      {/* Result (always mounted; prints empty string until submit) */}
+      <Text label="Results:" border width="fill" height={6} gap={{ top: 1 }}>
+        {submissionResult}
+      </Text>
     </Column>
   );
 };

@@ -6,10 +6,11 @@ export interface RowProps extends Omit<ComponentProps, 'layout'> {
 
 export class Row extends Component {
   constructor(props: RowProps = {}) {
+    if (props.width === undefined) props.width = 'fill';
     super({
       ...props,
       layout: 'row',
-      layoutOptions: {}
+      layoutOptions: { align: props.align }
     });
   }
 
