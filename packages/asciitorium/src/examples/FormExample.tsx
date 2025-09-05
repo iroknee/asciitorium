@@ -171,7 +171,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Email */}
-      <Row height={3} gap={{ left: 1, top: 1 }}>
+      <Row height={3} gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Email:
         </Text>
@@ -187,7 +187,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Age */}
-      <Row height={3} gap={{ left: 1, top: 1 }}>
+      <Row height={3} gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Age:
         </Text>
@@ -205,7 +205,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Country */}
-      <Row height={3} gap={{ left: 1, top: 1 }}>
+      <Row height={3} gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Country:
         </Text>
@@ -213,7 +213,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Actions */}
-      <Row gap={{ top: 1 }} height={4} align="right">
+      <Row height={4} align="right">
         <Button onClick={handleSubmit} gap={{ right: 1 }}>
           Submit
         </Button>
@@ -223,13 +223,12 @@ export const FormExample = () => {
       </Row>
 
       {/* Status */}
-      <Row gap={{ top: 1 }}>
+      <Row>
         <Text>Form Status: </Text>
         <Text>{formStatusText}</Text>
       </Row>
-
-      {/* Result (always mounted; prints empty string until submit) */}
-      <Text label="Results:" border width="fill" height={6} gap={{ top: 1 }}>
+      {/* Results */}
+      <Text label="Results:" border width="fill" height={6}>
         {submissionResult}
       </Text>
     </Column>
