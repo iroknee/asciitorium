@@ -11,12 +11,10 @@ import {
 import {
   ButtonExample,
   CelticBorderExample,
-  SelectExample,
   MultiSelectExample,
   RelativeSizingExample,
   TextInputExample,
   TabsExample,
-  TextExample,
   AsciiArtExample,
   SlidersExample,
   AsciiMazeExample,
@@ -54,10 +52,8 @@ const examples = {
   CelticBorder: CelticBorderExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
-  Select: SelectExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
-  Text: TextExample,
   TextInput: TextInputExample,
 };
 

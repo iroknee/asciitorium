@@ -83,39 +83,42 @@ const movePlayer = (dx: number, dy: number) => {
 };
 
 export const AsciiMazeExample = () => (
-  <Column border label="AsciiMaze Example:">
+  <Column height="fill" border label="AsciiMaze Example:">
     <AsciiMaze
       align="center"
       content={dungeonMap || 'Loading map...'}
       position={playerPosition}
-      width={45}
-      height={10}
       // fogOfWar
       // exploredTiles={exploredTiles}
       border
-      gap={1}
     />
     
-    <Row gap={1} width={56} height={4} align="center">
-      <Button 
-        label="↑ North" 
-        onClick={() => movePlayer(0, -2)}
-      />
-      <Button 
-        label="↓ South" 
-        onClick={() => movePlayer(0, 2)}
-      />
-      <Button 
-        label="← West" 
-        onClick={() => movePlayer(-2, 0)}
-      />
-      <Button 
-        label="→ East" 
-        onClick={() => movePlayer(2, 0)}
-      />
-    </Row>
+    <Column>
+      <Row align="center">
+        <Button 
+          label="↑ North" 
+          onClick={() => movePlayer(0, -2)}
+        />
+      </Row>
+      <Row align="center">
+        <Button 
+          label="← West" 
+          onClick={() => movePlayer(-2, 0)}
+        />
+        <Button 
+          label="→ East" 
+          onClick={() => movePlayer(2, 0)}
+        />
+      </Row>
+      <Row align="center">
+        <Button 
+          label="↓ South" 
+          onClick={() => movePlayer(0, 2)}
+        />
+      </Row>
+    </Column>
     
-    <Text gap={1} width={60} height="fill" align="center">
+    <Text border>
       Example Dungeon Map loaded from art/mazes/example.txt - Navigate through corridors and rooms. The plus symbols (+) and pipes (|) represent walls, and 'o' symbols are doors to rooms. The player is shown as an arrow (↑↓←→).
     </Text>
   </Column>

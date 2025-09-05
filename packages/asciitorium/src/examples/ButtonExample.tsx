@@ -5,16 +5,16 @@ export const ButtonExample = () => {
   const buttonClickCount = new State(0);
 
   return (
-    <Component label="Button Example:" border>
+    <Component height="fill" label="Button Example:" border>
       <Button
         label="I'm a Button!"
         align="center"
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
-        gap={{top: 4, bottom: 3}}
+        gap={2}
         height={10}
       />
-      <Row gap={{left: 6, right: 2}} align="center">
-        <Text>Click Count: </Text>
+      <Row align="center">
+        <Text>Click Count:</Text>
         <Text width={4}>{buttonClickCount}</Text>
       </Row>
     </Component>

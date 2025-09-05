@@ -152,10 +152,10 @@ export const FormExample = () => {
 
   // UI
   return (
-    <Column label="Form Example:" border>
+    <Column label="Form Example:" height="fill" border>
       {/* Name */}
       {nameErrorDisplay}
-      <Row height={3} gap={{ left: 1, top: 1 }}>
+      <Row gap={{ left: 1, top: 1 }}>
         <Text align="left" width={10}>
           Name:
         </Text>
@@ -165,13 +165,13 @@ export const FormExample = () => {
           width={32}
           onEnter={handleSubmit}
         />
-        <Text width="fill" align="center" gap={{ left: 1 }}>
+        <Text align="center" gap={{ left: 1 }}>
           {nameErrorDisplay}
         </Text>
       </Row>
 
       {/* Email */}
-      <Row height={3} gap={{ left: 1 }}>
+      <Row gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Email:
         </Text>
@@ -187,7 +187,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Age */}
-      <Row height={3} gap={{ left: 1 }}>
+      <Row gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Age:
         </Text>
@@ -205,7 +205,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Country */}
-      <Row height={3} gap={{ left: 1 }}>
+      <Row gap={{ left: 1 }}>
         <Text align="left" width={10}>
           Country:
         </Text>
@@ -213,7 +213,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Actions */}
-      <Row height={4} align="right">
+      <Row align="right">
         <Button onClick={handleSubmit} gap={{ right: 1 }}>
           Submit
         </Button>
@@ -228,7 +228,7 @@ export const FormExample = () => {
         <Text>{formStatusText}</Text>
       </Row>
       {/* Results */}
-      <Text label="Results:" border width="fill" height={6}>
+      <Text label="Results:" border height={6}>
         {submissionResult}
       </Text>
     </Column>

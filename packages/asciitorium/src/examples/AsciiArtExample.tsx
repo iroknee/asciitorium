@@ -12,7 +12,7 @@ loadArt('./art/computer.txt')
 
 export function AsciiArtExample() {
   return (
-    <Component layout="aligned" label="ASCII Art Example:" border>
+    <Component height="fill" layout="aligned" label="ASCII Art Example:" border>
       <AsciiArt content={computer} align="center" />
     </Component>
   );

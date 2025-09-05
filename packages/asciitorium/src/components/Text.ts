@@ -35,21 +35,56 @@ export class Text extends Component {
       );
     }
 
-    const rawValue = isState(actualContent)
-      ? (actualContent as State<any>).value
-      : actualContent;
-
-    const contentLength = Math.max(1, String(rawValue).length); // <- enforce min width
-    const borderPadding = options.border ? 2 : 0;
-
     const { children, content, value, ...componentProps } = options;
     super({
       ...componentProps,
-      width: options.width ?? contentLength + borderPadding,
-      height: options.height ?? 1 + (options.border ? 2 : 0),
+      width: options.width, // Don't default to fill - let resolveSize handle it
+      height: options.height, // Let auto-sizing calculate height based on wrapped content
     });
 
     this.source = actualContent;
+  }
+
+  // Override resolveSize to handle width and height auto-sizing
+  public resolveSize(context: any): void {
+    // Handle width auto-sizing if not explicitly set
+    if (this.getOriginalWidth() === undefined) {
+      const contentLength = this.value.length;
+      const borderAdjustment = this.border ? 2 : 0;
+      
+      // Check if we have a layout context that provides available width
+      const availableWidth = context?.availableWidth;
+      
+      if (availableWidth !== undefined) {
+        const maxInnerWidth = availableWidth - borderAdjustment;
+        
+        // Only use fill behavior if content would actually wrap
+        if (contentLength > maxInnerWidth && maxInnerWidth > 0) {
+          this.width = availableWidth;
+        } else {
+          // Content fits on one line, use content length
+          this.width = Math.max(1, contentLength + borderAdjustment);
+        }
+      } else {
+        // No layout context, use content length
+        this.width = Math.max(1, contentLength + borderAdjustment);
+      }
+    }
+    
+    // First, let the base class resolve the width (e.g., 'fill' -> actual pixel width)
+    super.resolveSize(context);
+    
+    // Then calculate height based on the resolved width if height is not explicitly set
+    if (this.getOriginalHeight() === undefined) {
+      const innerWidth = this.width - (this.border ? 2 : 0);
+      
+      if (innerWidth > 0) {
+        const wrappedLines = this.wrapText(this.value, innerWidth, Infinity);
+        const borderAdjustment = this.border ? 2 : 0;
+        const newHeight = Math.max(1, wrappedLines.length + borderAdjustment);
+        this.height = newHeight;
+      }
+    }
   }
 
   get value(): string {

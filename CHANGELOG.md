@@ -152,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **New Components and Examples:**
   - `AsciiArtExample` component with ASCII art rendering
-  - Comprehensive component examples: `ButtonExample`, `MultiSelectExample`, `ProgressBarExample`, `SelectExample`, `TabsExample`, `TextExample`, `TextInputExample`
+  - Comprehensive component examples: `ButtonExample`, `MultiSelectExample`, `ProgressBarExample`, `SelectExample`, `TabsExample`,  `TextInputExample`
   - `LayoutExample` demonstrating layout functionality
   - `PersistentState` utility for component selection persistence
   - Gap resolution utility (`gapUtils`) for consistent layout spacing

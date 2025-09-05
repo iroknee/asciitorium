@@ -12,12 +12,10 @@ import {
   ButtonExample,
   CelticBorderExample,
   FormExample,
-  SelectExample,
   MultiSelectExample,
   RelativeSizingExample,
   TextInputExample,
   TabsExample,
-  TextExample,
   AsciiArtExample,
   SlidersExample,
   AsciiMazeExample,
@@ -41,10 +39,8 @@ const componentList = [
   'Form',
   'MultiSelect',
   'RelativeSizing',
-  'Select',
   'Sliders',
   'Tabs',
-  'Text',
   'TextInput',
 ];
 
@@ -57,10 +53,8 @@ const examples = {
   Form: FormExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
-  Select: SelectExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
-  Text: TextExample,
   TextInput: TextInputExample,
 };
 

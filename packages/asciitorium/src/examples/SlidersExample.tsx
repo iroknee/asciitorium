@@ -11,7 +11,7 @@ export const SlidersExample = () => {
   const volumeValue = new State(75);
 
   return (
-    <Component label="Sliders:" border>
+    <Component height="fill" label="Sliders:" border>
       <Text height={2} align="center" gap={{ top: 1, bottom: 1 }}>
         All sliders share the same value for comparison
       </Text>

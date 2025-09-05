@@ -119,37 +119,24 @@ export abstract class Component {
   private layout?: any;
 
   constructor(props: ComponentProps) {
-    // Store original size values for relative sizing - default to 'fill'
-    this.originalWidth = props.width ?? 'fill';
-    this.originalHeight = props.height ?? 'fill';
+    // Store original size values for relative sizing - default to undefined for auto-sizing
+    this.originalWidth = props.width;
+    this.originalHeight = props.height;
 
-    // Initialize with default values - will be resolved during layout
+    // Initialize with explicit values or temporary defaults (will be recalculated after layout)
     if (typeof props.width === 'number') {
       this.width = props.width;
     } else {
-      // For non-numeric values, calculate auto-dimensions as fallback
-      const autoWidth = Component.calculateAutoWidth(
-        props.children,
-        props.layout
-      );
-      const borderAdjustment = props.border ? 2 : 0;
-      this.width = autoWidth + borderAdjustment;
+      // Temporary size - will be recalculated after children are added
+      this.width = 1;
     }
 
     if (typeof props.height === 'number') {
       this.height = props.height;
     } else {
-      // For non-numeric values, calculate auto-dimensions as fallback
-      const autoHeight = Component.calculateAutoHeight(
-        props.children,
-        props.layout
-      );
-      const borderAdjustment = props.border ? 2 : 0;
-      this.height = autoHeight + borderAdjustment;
+      // Temporary size - will be recalculated after children are added
+      this.height = 1;
     }
-
-    if (this.width < 1) this.width = 1;
-    if (this.height < 1) this.height = 1;
     this.label = props.label;
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
@@ -238,6 +225,40 @@ export abstract class Component {
       this.layout = LayoutRegistry.create(this.layoutType, this.layoutOptions);
     }
     this.layout.layout(this, this.children);
+    
+    // After layout, recalculate auto-sizing if needed
+    this.recalculateAutoSize();
+  }
+
+  protected recalculateAutoSize(): void {
+    let sizeChanged = false;
+    
+    // Recalculate width if it should be auto-sized
+    if (this.originalWidth === undefined && this.children.length > 0) {
+      const autoWidth = Component.calculateAutoWidth(this.children, this.layoutType);
+      const borderAdjustment = this.border ? 2 : 0;
+      const newWidth = Math.max(1, autoWidth + borderAdjustment);
+      if (newWidth !== this.width) {
+        this.width = newWidth;
+        sizeChanged = true;
+      }
+    }
+    
+    // Recalculate height if it should be auto-sized
+    if (this.originalHeight === undefined && this.children.length > 0) {
+      const autoHeight = Component.calculateAutoHeight(this.children, this.layoutType);
+      const borderAdjustment = this.border ? 2 : 0;
+      const newHeight = Math.max(1, autoHeight + borderAdjustment);
+      if (newHeight !== this.height) {
+        this.height = newHeight;
+        sizeChanged = true;
+      }
+    }
+    
+    // If our size changed, we need to notify parent to recalculate its layout
+    if (sizeChanged && this.parent) {
+      this.parent.recalculateLayout();
+    }
   }
 
   bind<T>(state: State<T>, apply: (val: T) => void): void {
@@ -369,7 +390,6 @@ export abstract class Component {
   }
 
   public resolveSize(context: SizeContext): void {
-    const borderAdjustment = this.border ? 2 : 0;
 
     if (this.originalWidth !== undefined) {
       const resolved = resolveSize(this.originalWidth, context, 'width');

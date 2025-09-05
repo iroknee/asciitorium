@@ -40,13 +40,12 @@ export class AsciiMaze extends Component {
     }
 
     // Default dimensions if not specified
-    const defaultWidth = 20;
     const defaultHeight = 10;
 
     super({
       ...componentProps,
-      width: options.width ?? defaultWidth,
-      height: options.height ?? defaultHeight,
+      width: options.width ?? "fill",
+      height: options.height ?? "fill",
     });
 
     this.contentSource = actualContent;
