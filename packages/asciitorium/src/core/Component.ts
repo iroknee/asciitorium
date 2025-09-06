@@ -380,6 +380,19 @@ export abstract class Component {
     }
   }
 
+  protected notifyAppOfFocusRefresh(): void {
+    // Walk up the parent chain to find the App
+    let current: Component | undefined = this;
+    while (current && !(current as any).isApp) {
+      current = current.parent;
+    }
+
+    // If we found the App, refresh its focus manager (preserves current focus)
+    if (current && (current as any).focus) {
+      (current as any).focus.refresh(current);
+    }
+  }
+
   // Size resolution methods
   public getOriginalWidth(): SizeValue | undefined {
     return this.originalWidth;

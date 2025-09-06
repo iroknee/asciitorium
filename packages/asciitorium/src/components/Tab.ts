@@ -5,7 +5,6 @@ export interface TabOptions extends ComponentProps {
 }
 
 export class Tab extends Component {
-  label: string;
 
   constructor(options: TabOptions) {
     super({
@@ -13,7 +12,7 @@ export class Tab extends Component {
       width: options.width || 'fill',
       height: options.height || 'fill',
       gap: options.gap || { top: 3 },
+      showLabel: false,
     });
-    this.label = options.label;
   }
 }

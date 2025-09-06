@@ -63,6 +63,9 @@ export class TabContainer extends Component {
       this.currentContent.height = this.height - 3 - (this.border ? 2 : 0);
       this.currentContent.setParent(this);
       this.children.push(this.currentContent);
+      
+      // Notify the App's FocusManager to rebuild focusable components while preserving current focus
+      this.notifyAppOfFocusRefresh();
     }
   }
 

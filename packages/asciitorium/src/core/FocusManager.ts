@@ -70,6 +70,28 @@ export class FocusManager {
     this.setFocus(0);
   }
 
+  refresh(component: Component) {
+    const currentlyFocused = this.currentContext[this.index];
+    const focusables = this.getFocusableDescendants(component).filter(
+      (c) => c.focusable
+    );
+    this.contextStack = [focusables];
+    
+    // Try to find the same component in the new list
+    if (currentlyFocused) {
+      const newIndex = focusables.indexOf(currentlyFocused);
+      if (newIndex !== -1) {
+        this.index = newIndex;
+        this.setFocus(newIndex);
+        return;
+      }
+    }
+    
+    // Fallback to index 0 if current component not found
+    this.index = 0;
+    this.setFocus(0);
+  }
+
   getFocusableDescendants(parent: Component): Component[] {
     const focusables: Component[] = [];
 

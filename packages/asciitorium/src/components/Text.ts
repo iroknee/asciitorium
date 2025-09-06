@@ -2,12 +2,11 @@ import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState } from '../core/environment';
 import { resolveAlignment } from '../core/utils/index';
-import { Alignment, SizeValue } from 'core/types';
+import { Alignment } from 'core/types';
 
 export interface TextOptions
   extends Omit<ComponentProps, 'children'> {
   content?: string | State<any>;
-  value?: string | State<any>; // deprecated: use content instead
   align?: Alignment;
   children?: (string | State<any>) | (string | State<any>)[];
 }
@@ -16,11 +15,11 @@ export class Text extends Component {
   private source: string | State<any>;
 
   constructor(options: TextOptions) {
-    // Support both new content prop and legacy value prop
     // Also support JSX children syntax
-    let actualContent = options.content || options.value;
+    let actualContent = options.content;
 
     if (!actualContent && options.children) {
+      console.log('Text children:', options.children);
       const children = Array.isArray(options.children)
         ? options.children
         : [options.children];
@@ -31,11 +30,11 @@ export class Text extends Component {
 
     if (!actualContent) {
       throw new Error(
-        'Text component requires either content prop, value prop (deprecated), or children'
+        'Text component requires either content prop or children'
       );
     }
 
-    const { children, content, value, ...componentProps } = options;
+    const { children, content, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width, // Don't default to fill - let resolveSize handle it
@@ -43,13 +42,17 @@ export class Text extends Component {
     });
 
     this.source = actualContent;
+    console.log('Text source:', this.source);
   }
 
   // Override resolveSize to handle width and height auto-sizing
   public resolveSize(context: any): void {
     // Handle width auto-sizing if not explicitly set
     if (this.getOriginalWidth() === undefined) {
-      const contentLength = this.value.length;
+      const contentLength = this.getContentAsString().length;
+      console.log('Text Length:', contentLength);
+      console.log('Text:', this.getContentAsString());
+
       const borderAdjustment = this.border ? 2 : 0;
       
       // Check if we have a layout context that provides available width
@@ -70,7 +73,6 @@ export class Text extends Component {
         this.width = Math.max(1, contentLength + borderAdjustment);
       }
     }
-    
     // First, let the base class resolve the width (e.g., 'fill' -> actual pixel width)
     super.resolveSize(context);
     
@@ -79,7 +81,7 @@ export class Text extends Component {
       const innerWidth = this.width - (this.border ? 2 : 0);
       
       if (innerWidth > 0) {
-        const wrappedLines = this.wrapText(this.value, innerWidth, Infinity);
+        const wrappedLines = this.wrapText(this.getContentAsString(), innerWidth, Infinity);
         const borderAdjustment = this.border ? 2 : 0;
         const newHeight = Math.max(1, wrappedLines.length + borderAdjustment);
         this.height = newHeight;
@@ -87,7 +89,7 @@ export class Text extends Component {
     }
   }
 
-  get value(): string {
+  getContentAsString(): string {
     return isState(this.source)
       ? String((this.source as State<any>).value)
       : String(this.source);
@@ -99,8 +101,7 @@ export class Text extends Component {
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
 
-    // Wrap text if both width and height are explicitly set
-    const wrappedLines = this.wrapText(this.value, innerWidth, innerHeight);
+    const wrappedLines = this.wrapText(this.getContentAsString(), innerWidth, innerHeight);
 
     const { x, y } = resolveAlignment(
       this.align,

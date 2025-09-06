@@ -14,19 +14,22 @@ export function TabsExample() {
     <Component height="fill" border label="TabContainer Example:">
       <TabContainer 
         selectedIndex={selectedIndex}
-        gap={1}
       >
         <Tab label="Welcome">
-          <Text 
-            value="Welcome to TabContainer!\n\nThis demonstrates the new\ncomposition-based tab system.\n\nEach tab can contain any\ncomponent as its content."
-            width={40}
-            height={8}
-          />
+          <Text align="center" width="60%">
+            {`Welcome to the TabContainer example!
+            This example showcases a TabContainer with three tabs:
+
+            - Welcome
+            - Interactive
+            - Info
+
+            Use the <- and -> arrow keys to switch between tabs.`}
+          </Text>
         </Tab>
-        
         <Tab label="Interactive">
           <Text 
-            value={clickCountText}
+            content={clickCountText}
             width={30}
             height={2}
             gap={1}
@@ -38,18 +41,16 @@ export function TabsExample() {
         </Tab>
         
         <Tab label="Info">
-          <Text
-            width={40}
-            height={12}
-          >
-            TabContainer Features:
+          <Text width={40} align="center">
+            {`TabContainer Features:
+
              - Composition-based design
              - Reuses existing Tabs component
              - Clean separation of concerns
              - Easy to extend and maintain
 
             Compare this to the original
-            TabsExample to see the difference!
+            TabsExample to see the difference!`}
           </Text>
         </Tab>
       </TabContainer>
