@@ -29,15 +29,6 @@ export class TerminalRenderer implements Renderer {
         height = parseInt(process.env.LINES || '24', 10);
       }
     }
-
-    console.log('Terminal screen size detection:', {
-      isTTY: process.stdout.isTTY,
-      columns: process.stdout.columns,
-      rows: process.stdout.rows,
-      finalWidth: width,
-      finalHeight: height
-    });
-
     return { width, height };
   }
 

@@ -19,7 +19,6 @@ export class Text extends Component {
     let actualContent = options.content;
 
     if (!actualContent && options.children) {
-      console.log('Text children:', options.children);
       const children = Array.isArray(options.children)
         ? options.children
         : [options.children];
@@ -42,7 +41,6 @@ export class Text extends Component {
     });
 
     this.source = actualContent;
-    console.log('Text source:', this.source);
   }
 
   // Override resolveSize to handle width and height auto-sizing
@@ -50,8 +48,6 @@ export class Text extends Component {
     // Handle width auto-sizing if not explicitly set
     if (this.getOriginalWidth() === undefined) {
       const contentLength = this.getContentAsString().length;
-      console.log('Text Length:', contentLength);
-      console.log('Text:', this.getContentAsString());
 
       const borderAdjustment = this.border ? 2 : 0;
       

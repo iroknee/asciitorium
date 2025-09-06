@@ -26,7 +26,6 @@ export class App extends Component {
     // Initialize renderer first to get screen size
     const renderer = getDefaultRenderer();
     const screenSize = renderer.getScreenSize();
-    console.log('Initial screen size:', screenSize);
 
     // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
