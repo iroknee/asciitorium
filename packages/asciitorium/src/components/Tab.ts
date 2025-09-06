@@ -5,6 +5,7 @@ export interface TabOptions extends ComponentProps {
 }
 
 export class Tab extends Component {
+  readonly label: string;
 
   constructor(options: TabOptions) {
     super({
@@ -14,5 +15,7 @@ export class Tab extends Component {
       gap: options.gap || { top: 3 },
       showLabel: false,
     });
+    
+    this.label = options.label;
   }
 }

@@ -1,4 +1,5 @@
 export { AsciiArtExample } from './AsciiArtExample';
+export { AsciiMazeExample } from './AsciiMazeExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';
@@ -6,4 +7,3 @@ export { MultiSelectExample } from './MultiSelectExample';
 export { RelativeSizingExample } from './RelativeSizingExample';
 export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';
-export { AsciiMazeExample } from './AsciiMazeExample';

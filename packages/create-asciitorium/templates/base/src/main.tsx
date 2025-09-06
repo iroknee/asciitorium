@@ -16,6 +16,7 @@ import {
   TabsExample,
   AsciiArtExample,
   SlidersExample,
+  FormExample,
   AsciiMazeExample,
 } from 'asciitorium/examples';
 
@@ -34,12 +35,11 @@ const componentList = [
   'AsciiMaze',
   'Button',
   'CelticBorder',
+  'Form',
   'MultiSelect',
   'RelativeSizing',
-  'Select',
   'Sliders',
   'Tabs',
-  'Text',
 ];
 
 // Component mapping for dynamic content
@@ -51,6 +51,7 @@ const examples = {
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
   Sliders: SlidersExample,
+  Form: FormExample,
   Tabs: TabsExample,
 };
 
