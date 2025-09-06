@@ -13,7 +13,6 @@ import {
   CelticBorderExample,
   MultiSelectExample,
   RelativeSizingExample,
-  TextInputExample,
   TabsExample,
   AsciiArtExample,
   SlidersExample,
@@ -41,7 +40,6 @@ const componentList = [
   'Sliders',
   'Tabs',
   'Text',
-  'TextInput',
 ];
 
 // Component mapping for dynamic content
@@ -54,7 +52,6 @@ const examples = {
   RelativeSizing: RelativeSizingExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
-  TextInput: TextInputExample,
 };
 
 const app = (

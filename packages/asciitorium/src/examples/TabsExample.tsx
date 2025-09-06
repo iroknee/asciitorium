@@ -1,41 +1,58 @@
-import { Component, Tabs, Text, State } from '../index';
-
-function contentForTab(tab: string): string {
-  switch (tab) {
-    case 'Tab 1':
-      return 'Content for Tab 1\nThis shows dynamic content\nbased on selected tab.';
-    case 'Tab 2':
-      return 'Content for Tab 2\nDifferent content here!\nTabs make navigation easy.';
-    case 'Tab 3':
-      return 'Content for Tab 3\nYet another section.\nUse arrow keys to switch.';
-    default:
-      return 'Select a tab above';
-  }
-}
+import { Component, TabContainer, Tab, Text, Button, State } from '../index';
 
 export function TabsExample() {
-  // Selected tab
-  const tabsValue = new State('Tab 1');
+  const selectedIndex = new State(0);
+  const clickCount = new State(0);
+  const clickCountText = new State(`Button clicked: ${clickCount.value} times`);
 
-  // Derived content as its own State so <Text> can react
-  const tabContentState = new State<string>(contentForTab(tabsValue.value));
-
-  // Update derived state whenever the tab changes
-  tabsValue.subscribe((tab) => {
-    tabContentState.value = contentForTab(tab);
+  // Update text when click count changes
+  clickCount.subscribe((count) => {
+    clickCountText.value = `Button clicked: ${count} times`;
   });
 
   return (
-    <Component height="fill" border label="Tabs Example:">
-      <Tabs
-        tabs={['Tab 1', 'Tab 2', 'Tab 3']}
-        align="center"
-        selectedTab={tabsValue}
+    <Component height="fill" border label="TabContainer Example:">
+      <TabContainer 
+        selectedIndex={selectedIndex}
         gap={1}
-      />
-      <Component width={38} height={8} gap={1}>
-        <Text width={30} height={6} value={tabContentState} />
-      </Component>
+      >
+        <Tab label="Welcome">
+          <Text 
+            value="Welcome to TabContainer!\n\nThis demonstrates the new\ncomposition-based tab system.\n\nEach tab can contain any\ncomponent as its content."
+            width={40}
+            height={8}
+          />
+        </Tab>
+        
+        <Tab label="Interactive">
+          <Text 
+            value={clickCountText}
+            width={30}
+            height={2}
+            gap={1}
+          />
+          <Button
+            label="Click Me!"
+            onClick={() => clickCount.value++}
+          />
+        </Tab>
+        
+        <Tab label="Info">
+          <Text
+            width={40}
+            height={12}
+          >
+            TabContainer Features:
+             - Composition-based design
+             - Reuses existing Tabs component
+             - Clean separation of concerns
+             - Easy to extend and maintain
+
+            Compare this to the original
+            TabsExample to see the difference!
+          </Text>
+        </Tab>
+      </TabContainer>
     </Component>
   );
 }

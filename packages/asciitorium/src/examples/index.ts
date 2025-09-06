@@ -6,5 +6,4 @@ export { MultiSelectExample } from './MultiSelectExample';
 export { RelativeSizingExample } from './RelativeSizingExample';
 export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';
-export { TextInputExample } from './TextInputExample';
 export { AsciiMazeExample } from './AsciiMazeExample';

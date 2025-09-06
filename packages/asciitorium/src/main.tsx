@@ -14,7 +14,6 @@ import {
   FormExample,
   MultiSelectExample,
   RelativeSizingExample,
-  TextInputExample,
   TabsExample,
   AsciiArtExample,
   SlidersExample,
@@ -41,7 +40,6 @@ const componentList = [
   'RelativeSizing',
   'Sliders',
   'Tabs',
-  'TextInput',
 ];
 
 // Component mapping for dynamic content
@@ -55,7 +53,6 @@ const examples = {
   RelativeSizing: RelativeSizingExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
-  TextInput: TextInputExample,
 };
 
 const app = (
