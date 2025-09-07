@@ -24,6 +24,7 @@ export interface AsciiMazeOptions extends Omit<ComponentProps, 'children'> {
 }
 
 export class AsciiMaze extends Component {
+  focusable = true;
   private contentSource: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   private positionSource: Position | State<Position>;
   private fogOfWar: boolean;
@@ -225,6 +226,111 @@ export class AsciiMaze extends Component {
       case 'east': return '→';
       case 'west': return '←';
       default: return '@';
+    }
+  }
+
+  handleEvent(event: string): boolean {
+    // Handle arrow keys and WASD movement
+    let dx = 0, dy = 0;
+    
+    switch (event) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        dy = -2;
+        break;
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        dy = 2;
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        dx = -2;
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        dx = 2;
+        break;
+      default:
+        return false;
+    }
+
+    this.movePlayer(dx, dy);
+    return true;
+  }
+
+  private movePlayer(dx: number, dy: number): void {
+    const current = this.position;
+    const map = this.mapData;
+    
+    if (!map || !map.map || map.map.length === 0) return;
+    
+    const mapLines = map.map;
+    const mapWidth = mapLines.length > 0 ? mapLines[0].length : 0;
+    const mapHeight = mapLines.length;
+    
+    const newX = Math.max(0, Math.min(mapWidth - 1, current.x + dx));
+    const newY = Math.max(0, Math.min(mapHeight - 1, current.y + dy));
+    
+    // Check for collision with walls along the path
+    const isWall = (x: number, y: number) => {
+      if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length) return true;
+      const char = mapLines[y][x];
+      // Check for box drawing characters used in the maze
+      const wallChars = ['╭', '╮', '╯', '╰', '─', '│', '┬', '┴', '├', '┤', '┼', '╷', '╵', '╴', '╶'];
+      return wallChars.includes(char);
+    };
+    
+    // Check intermediate positions when moving 2 spaces
+    const stepX = dx === 0 ? 0 : (dx > 0 ? 1 : -1);
+    const stepY = dy === 0 ? 0 : (dy > 0 ? 1 : -1);
+    
+    // Check first step
+    const midX = current.x + stepX;
+    const midY = current.y + stepY;
+    if (isWall(midX, midY)) {
+      // Hit a wall on first step, don't move but update direction
+      let direction: Direction = current.direction;
+      if (dx > 0) direction = 'east';
+      else if (dx < 0) direction = 'west';
+      else if (dy > 0) direction = 'south';
+      else if (dy < 0) direction = 'north';
+      
+      this.updatePosition(current.x, current.y, direction);
+      return;
+    }
+    
+    // Check final destination
+    if (isWall(newX, newY)) {
+      // Hit a wall at destination, don't move but update direction
+      let direction: Direction = current.direction;
+      if (dx > 0) direction = 'east';
+      else if (dx < 0) direction = 'west';
+      else if (dy > 0) direction = 'south';
+      else if (dy < 0) direction = 'north';
+      
+      this.updatePosition(current.x, current.y, direction);
+      return;
+    }
+    
+    let direction: Direction = current.direction;
+    if (dx > 0) direction = 'east';
+    else if (dx < 0) direction = 'west';
+    else if (dy > 0) direction = 'south';
+    else if (dy < 0) direction = 'north';
+    
+    this.updatePosition(newX, newY, direction);
+  }
+
+  private updatePosition(x: number, y: number, direction: Direction): void {
+    if (isState(this.positionSource)) {
+      (this.positionSource as State<Position>).value = { x, y, direction };
+    } else {
+      // If it's not a State, we can't update it - this would be a programming error
+      console.warn('AsciiMaze position is not a State object, cannot update position');
     }
   }
 }

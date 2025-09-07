@@ -471,18 +471,36 @@ export abstract class Component {
       const w = this.width;
       const h = this.height;
 
-      drawChar(0, 0, '╭');
-      drawChar(w - 1, 0, '╮');
-      drawChar(0, h - 1, '╰');
-      drawChar(w - 1, h - 1, '╯');
+      if (this.focusable && this.hasFocus) {
+        // Double-line border when focused
+        drawChar(0, 0, '╔');
+        drawChar(w - 1, 0, '╗');
+        drawChar(0, h - 1, '╚');
+        drawChar(w - 1, h - 1, '╝');
 
-      for (let x = 1; x < w - 1; x++) {
-        drawChar(x, 0, '─');
-        drawChar(x, h - 1, '─');
-      }
-      for (let y = 1; y < h - 1; y++) {
-        drawChar(0, y, '│');
-        drawChar(w - 1, y, '│');
+        for (let x = 1; x < w - 1; x++) {
+          drawChar(x, 0, '═');
+          drawChar(x, h - 1, '═');
+        }
+        for (let y = 1; y < h - 1; y++) {
+          drawChar(0, y, '║');
+          drawChar(w - 1, y, '║');
+        }
+      } else {
+        // Single-line border when not focused
+        drawChar(0, 0, '╭');
+        drawChar(w - 1, 0, '╮');
+        drawChar(0, h - 1, '╰');
+        drawChar(w - 1, h - 1, '╯');
+
+        for (let x = 1; x < w - 1; x++) {
+          drawChar(x, 0, '─');
+          drawChar(x, h - 1, '─');
+        }
+        for (let y = 1; y < h - 1; y++) {
+          drawChar(0, y, '│');
+          drawChar(w - 1, y, '│');
+        }
       }
     }
 

@@ -98,6 +98,32 @@ export class TabContainer extends Component {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
     const tabY = Math.floor(3 / 2);
+    const isDoubleBorder = this.focusable && this.hasFocus;
+
+    // Define border characters based on focus state
+    const chars = isDoubleBorder ? {
+      horizontal: '═',
+      vertical: '║',
+      topLeft: '╔',
+      topRight: '╗',
+      bottomLeft: '╚',
+      bottomRight: '╝',
+      teeDown: '╦',
+      teeUp: '╩',
+      teeLeft: '╣',
+      teeRight: '╠'
+    } : {
+      horizontal: '─',
+      vertical: '│',
+      topLeft: '╭',
+      topRight: '╮',
+      bottomLeft: '╰',
+      bottomRight: '╯',
+      teeDown: '┬',
+      teeUp: '┴',
+      teeLeft: '┤',
+      teeRight: '├'
+    };
 
     // Calculate total width of all tabs and separators
     let totalTabWidth = 0;
@@ -120,45 +146,45 @@ export class TabContainer extends Component {
       // remove top border where tabs will be drawn
       for (let j = 0; j < this.width; j++) {
         buffer[tabY-1][j] = ' ';
-        buffer[tabY][j] = '─';
+        buffer[tabY][j] = chars.horizontal;
       }
-      if (this.border) buffer[tabY][0] = '╭';
+      if (this.border) buffer[tabY][0] = chars.topLeft;
 
     // Draw tabs
     let x = startX;
-    buffer[tabY-1][x-1] = '╭';
-    buffer[tabY][x-1] = '┤';
-    buffer[tabY+1][x-1] = '╰';
+    buffer[tabY-1][x-1] = chars.topLeft;
+    buffer[tabY][x-1] = chars.teeLeft;
+    buffer[tabY+1][x-1] = chars.bottomLeft;
     for (let i = 0; i < this.tabLabels.length; i++) {
       const label = this.tabLabels[i];
       const isSelected = i === this.selectedIndex.value && this.hasFocus;
       const text = isSelected ? `>${label}<` : ` ${label} `;
 
       for (let j = 0; j < text.length && x + j < this.width - borderPad; j++) {
-        buffer[tabY-1][x + j] = '─';
+        buffer[tabY-1][x + j] = chars.horizontal;
         buffer[tabY][x + j] = text[j];
-        buffer[tabY+1][x + j] = '─';
+        buffer[tabY+1][x + j] = chars.horizontal;
       }
 
       x += text.length;
 
       // Separator, unless it's the last tab
       if (i < this.tabLabels.length - 1 && x < this.width - borderPad - 1) {
-        buffer[tabY - 1][x] = '┬';
-        buffer[tabY][x] = '│';
-        buffer[tabY + 1][x] = '┴';
+        buffer[tabY - 1][x] = chars.teeDown;
+        buffer[tabY][x] = chars.vertical;
+        buffer[tabY + 1][x] = chars.teeUp;
         x += 1;
       }
     }
-    buffer[tabY-1][x] = '╮';
-    buffer[tabY][x] = '├';
-    buffer[tabY+1][x] = '╯';
+    buffer[tabY-1][x] = chars.topRight;
+    buffer[tabY][x] = chars.teeRight;
+    buffer[tabY+1][x] = chars.bottomRight;
     for (let j = x + 1; j < this.width - borderPad; j++) {
       buffer[tabY-1][j] = ' ';
-      buffer[tabY][j] = '─';
+      buffer[tabY][j] = chars.horizontal;
     }
     buffer[tabY-1][this.width - borderPad] = ' ';
-    if (this.border)buffer[tabY][this.width - borderPad] = '╮';
+    if (this.border)buffer[tabY][this.width - borderPad] = chars.topRight;
 
     this.buffer = buffer;
     return buffer;
