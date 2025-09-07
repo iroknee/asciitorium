@@ -25,7 +25,7 @@ const titleArt = await loadArt('./art/asciitorium.txt');
 
 // Main state for component selection with persistence
 const selectedComponent = new PersistentState(
-  'Button',
+  'AsciiArt',
   'demo-selected-component'
 );
 
