@@ -109,33 +109,69 @@ export class Select extends Component {
       const isFocused = itemIndex === this.focusedIndex;
       const isSelected = itemIndex === this.selectedIndex;
 
-      let prefix = '  ';
-      if (isFocused && this.hasFocus) {
-        prefix = ' >'; // Focused but not selected
-      } else if (isSelected && this.hasFocus) {
-        prefix = ' ◆'; // selected, and component has focus
-      } else if (isSelected) {
-        prefix = ' ◇'; // Selected but not focused or component doesn't have focus
+      // Draw box around selected item instead of using prefixes
+      if (isSelected) {
+        // Draw top border of box
+        if (y > borderPad) {
+          const topY = y - 1;
+          buffer[topY][x + 2] = '╭';
+          for (let j = 3; j < item.length + 5; j++) {
+            if (x + j < this.width - borderPad) {
+              buffer[topY][x + j] = '─';
+            }
+          }
+          if (x + item.length + 3 < this.width - borderPad) {
+            buffer[topY][x + item.length + 5] = '╮';
+          }
+        }
+
+        // Draw sides of box and item text
+        let prefix = ' > ';
+        if (!isFocused || !this.hasFocus) {
+          prefix = '   ';
+        }
+        buffer[y][x] = prefix[0];
+        buffer[y][x + 1] = prefix[1];
+        buffer[y][x + 2] = prefix[2];
+        const itemText = `  ${item} `;
+        for (let j = 0; j < itemText.length; j++) {
+          if (x + 2 + j < this.width - borderPad) {
+            buffer[y][x + 2 + j] = itemText[j];
+          }
+        }
+        buffer[y][x + 2] = '│';
+        if (x + 3 + itemText.length < this.width - borderPad) {
+          buffer[y][x + 2 + itemText.length] = '│';
+        }
+
+        // Draw bottom border of box
+        if (y + 1 < this.height - borderPad) {
+          const bottomY = y + 1;
+          buffer[bottomY][x + 2] = '╰';
+          for (let j = 3; j < item.length + 5; j++) {
+            if (x + j < this.width - borderPad) {
+              buffer[bottomY][x + j] = '─';
+            }
+          }
+          if (x + item.length + 4 < this.width - borderPad) {
+            buffer[bottomY][x + item.length + 5] = '╯';
+          }
+        }
+      } else {
+        // Draw regular item (with focus indicator if focused)
+        let prefix = '   ';
+        if (isFocused && this.hasFocus) {
+          prefix = ' > ';
+        }
+
+        const line = `${prefix} ${item}`
+          .slice(0, this.width - 2 * borderPad)
+          .padEnd(this.width - 2 * borderPad, ' ');
+
+        for (let j = 0; j < line.length; j++) {
+          buffer[y][x + j] = line[j];
+        }
       }
-
-      const line = `${prefix} ${item}`
-        .slice(0, this.width - 2 * borderPad)
-        .padEnd(this.width - 2 * borderPad, ' ');
-
-      for (let j = 0; j < line.length; j++) {
-        buffer[y][x + j] = line[j];
-      }
-
-      // Add underline for selected items
-      // if (isSelected && y + 1 < this.height - borderPad) {
-      //   const underlineY = y + 1;
-      //   const underlineLength = Math.min(item.length + 2, this.width - 2 * borderPad);
-      //   for (let j = 0; j < underlineLength; j++) {
-      //     if (x + j < this.width - borderPad) {
-      //       buffer[underlineY][x + j] = '─';
-      //     }
-      //   }
-      // }
     });
 
     // Scroll down indicator
