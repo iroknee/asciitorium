@@ -1,4 +1,4 @@
-import { AsciiArt, Component, loadArt, State } from '../index';
+import { AsciiArt, Component, loadArt, State, Text } from '../index';
 
 const computer = new State<string>('Loading...');
 
@@ -12,8 +12,13 @@ loadArt('./art/computer.txt')
 
 export function AsciiArtExample() {
   return (
-    <Component height="fill" layout="aligned" label="ASCII Art Example:" border>
-      <AsciiArt content={computer} align="center" />
+    <Component height="fill" layout="column" label="ASCII Art Example:" border>
+      <Component height="fill" layout="aligned">
+        <AsciiArt content={computer} align="center" />
+      </Component>
+      <Text width="75%" align="center" gap={{bottom: 1}}
+      content="The AsciiArt component can load and display ASCII art from files using the loadArt() function. Art is loaded asynchronously and can be centered or aligned as needed." />
+
     </Component>
   );
 }
