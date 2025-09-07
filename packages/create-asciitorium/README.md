@@ -53,6 +53,18 @@ List available FIGlet fonts:
 npm run figlet:fonts
 ```
 
+Generate ASCII maze files (placed in public/art/mazes):
+
+```bash
+node scripts/maze-builder.js <width> <height> <filename> [--smooth]
+
+# Examples:
+node scripts/maze-builder.js 10 10 dungeon-level-1.txt
+node scripts/maze-builder.js 15 20 castle-maze.txt --smooth
+```
+
+The `--smooth` flag uses Unicode box drawing characters for improved visual appearance.
+
 ## Generated Project Structure
 
 A typical generated project will look like:
@@ -60,8 +72,12 @@ A typical generated project will look like:
 ```
 my-asciitorium-app/
   ├── public/
-  │   ├── art/              # ASCII art assets
+  │   ├── art/
+  │   │   └── mazes/        # Generated maze files
   │   └── fonts/            # Custom fonts
+  ├── scripts/
+  │   ├── gen-figlet-art.js # FIGlet art generator
+  │   └── maze-builder.js   # ASCII maze generator
   ├── src/
   │   ├── main.tsx          # Main application entry
   │   └── vite-env.d.ts     # TypeScript definitions

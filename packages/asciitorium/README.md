@@ -50,12 +50,12 @@ await app.start();
 
 ### UI Elements
 
-- `Text` - Static and dynamic text display
-- `Button` - Interactive buttons
-- `TextInput` - Text input fields
-- `Select` / `MultiSelect` - Selection lists
-- `Tabs` - Tabbed interfaces
-- `Sliders` - Various slider components
+- `Text` - Static and dynamic text display with word wrapping
+- `Button` - Interactive buttons with press effects
+- `TextInput` - Text input fields with Enter key handling
+- `Select` / `MultiSelect` - Selection lists with improved focus indicators
+- `Tab` / `TabContainer` - Individual tabs and tabbed interface containers
+- `Sliders` - Various slider components (ProgressBar, Gauge, Dot, Vertical)
 - `PerfMonitor` - Performance monitoring display
 
 ### Decorative

@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Component Improvements:**
+  - Enhanced `Tab` component by defining label property for better type safety and clarity
+  - Refactored `Tab` and `Text` components for improved clarity and consistency  
+  - Updated `TabsExample` to enhance content presentation and remove deprecated properties
+  - Refactored `Tabs` component into separate `Tab` and `TabContainer` components for improved structure
+
+- **Code Quality:**
+  - Removed debug logging from `Text` and `TerminalRenderer` components for cleaner code
+  - Refactored component examples to improve layout handling and remove unnecessary properties
+  - Updated `FormExample` layout by removing unnecessary gap properties for improved UI consistency
+  - Enhanced `Row` and `RowLayout` components for improved alignment handling and code clarity
+  - Fixed comment for height default in `TextInput` constructor for clarity
+
+- **Example Updates:**
+  - Added `FormExample` to demonstrate form layouts and validation
+  - Updated examples to include new `FormExample` component
+  - Removed `TextInputExample` in favor of consolidated examples
+
+### Technical Details
+
+- **Key Files Modified:** Tab/Tabs components, Text component, TerminalRenderer, examples
+- **Architecture:** Better component separation with Tab/TabContainer pattern
+- **Code Quality:** Removed debug logging, improved comments and consistency
+
 ## [0.1.26] - 2025-09-01
 
 ### Added
