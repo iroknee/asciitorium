@@ -55,9 +55,20 @@ function isComponentCtor(v: any): v is new (...args: any[]) => Component {
   );
 }
 
-function makeComponent(entry: any): Component {
+function isComponentLike(obj: any): obj is Component {
+  return obj && 
+         typeof obj === 'object' &&
+         typeof obj.draw === 'function' &&
+         typeof obj.setParent === 'function' &&
+         typeof obj.handleEvent === 'function';
+}
+
+function makeComponent(entry: any): Component | undefined {
   // Allow: pre-built instance
   if (entry instanceof Component) return entry;
+  
+  // Allow: component-like objects (duck typing for cross-bundle compatibility)
+  if (isComponentLike(entry)) return entry;
 
   // Allow: class constructor
   if (isComponentCtor(entry)) return new entry({});
@@ -66,11 +77,14 @@ function makeComponent(entry: any): Component {
   if (typeof entry === 'function') {
     const out = entry();
     if (out instanceof Component) return out;
+    if (isComponentLike(out)) return out;
   }
 
-  throw new Error(
-    'dynamicContent entries must be a Component instance, a Component class, or a factory that returns a Component.'
-  );
+  return undefined;
+
+  // throw new Error(
+  //   'dynamicContent entries must be a Component instance, a Component class, or a factory that returns a Component.'
+  // );
 }
 
 // ---------------------------------------------------------------------------
@@ -348,10 +362,14 @@ export abstract class Component {
 
       if (entry) {
         const component = makeComponent(entry);
-        this.addChild(component);
+        if (component) {
+          this.addChild(component);
+        }
       } else if (dynamicContent.fallback) {
         const fallbackComponent = makeComponent(dynamicContent.fallback);
-        this.addChild(fallbackComponent);
+        if (fallbackComponent) {
+          this.addChild(fallbackComponent);
+        }
       }
 
       // Notify app of focus changes
