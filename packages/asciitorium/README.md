@@ -1,6 +1,6 @@
 # asciitorium
 
-A UI framework for building retro terminal interfaces that run in both web browsers and CLI environments. Designed to help develop cli interfaces quickly.  
+A UI framework for building retro terminal interfaces that run in both web browsers and CLI environments. Designed to help develop cli interfaces quickly.
 
 ## Installation
 
@@ -23,7 +23,7 @@ const message = new State('Hello, World!');
 
 const app = (
   <App>
-    <Text content="Enter your message:" />
+    <Text>Enter your message:</Text>
     <TextInput value={message} width={40} />
     <Text content={message} />
   </App>
@@ -64,6 +64,59 @@ await app.start();
 - `AsciiMaze` - ASCII maze display
 - `CelticBorder` - Decorative borders
 - `HR` / `VR` - Horizontal/vertical rules
+
+## Styling Components
+
+All components support both individual styling properties and a consolidated `style` prop for cleaner code organization.
+
+### Style Property
+
+Use the `style` prop to group related styling properties:
+
+```tsx
+// Using style object
+<Text
+  style={{
+    width: 200,
+    height: 50,
+    border: true,
+    align: "center",
+    fill: '·'
+  }}>
+  centered text
+</Text>
+
+// Individual properties
+<Text
+  width={200}
+  height={50}
+  border
+  align="center"
+  fill='·'
+  content="Styled text"
+/>
+
+// Mixing both (individual props take precedence)
+const formText = {
+    width: 10, 
+    border: true
+};
+
+<Text
+  style={formText}
+  align="center"
+  content="Mixed styling"
+/>
+```
+
+### Available Style Properties
+
+- `width` / `height` - Size values (number, percentage, 'auto', 'fill')
+- `border` - Show border around component
+- `fill` - Fill character for component background
+- `align` - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
+- `x` / `y` / `z` - Positioning coordinates and layer depth
+- `gap` - Spacing around component (number or object with top/bottom/left/right)
 
 ## Development
 

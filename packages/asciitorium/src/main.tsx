@@ -57,19 +57,25 @@ const examples = {
 
 const app = (
   <App>
-    <AsciiArt content={titleArt} align="center" gap={{ bottom: 2 }} />
-    <Row height="fill">
+    <AsciiArt 
+      content={titleArt} 
+      style={{ align: "center", gap: { bottom: 2 } }} 
+    />
+    <Row style={{ height: "fill" }}>
       <Select
         label="Components:"
-        width="30%"
-        height="fill"
+        style={{ 
+          width: "30%",
+          height: "fill"
+        }} 
         items={componentList}
         selectedItem={selectedComponent}
-        border
       />
       <Component
-        width="fill"
-        height="fill"
+        style={{ 
+          width: "fill",
+          height: "fill"
+        }}
         dynamicContent={{
           selectedKey: selectedComponent,
           componentMap: examples,

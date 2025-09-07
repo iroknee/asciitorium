@@ -36,3 +36,29 @@ export interface SizeContext {
   availableWidth: number;
   availableHeight: number;
 }
+
+// Gap configuration type
+export type GapValue =
+  | number
+  | {
+      top?: number;
+      bottom?: number;
+      left?: number;
+      right?: number;
+      x?: number; // shorthand for left + right
+      y?: number; // shorthand for top + bottom
+    }
+  | number[]; // CSS-style shorthand
+
+// Style interface for component styling properties
+export interface ComponentStyle {
+  width?: SizeValue;
+  height?: SizeValue;
+  border?: boolean;
+  fill?: string;
+  align?: Alignment;
+  x?: number;
+  y?: number;
+  z?: number;
+  gap?: GapValue;
+}

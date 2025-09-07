@@ -16,8 +16,8 @@ export class MultiSelect extends Component {
   hasFocus = false;
 
   constructor(options: MultiSelectOptions) {
-    const height = options.height ?? 3;
-    const border = options.border ?? true;
+    const height = options.height ?? options.style?.height ?? 3;
+    const border = options.border ?? options.style?.border ?? true;
 
     super({ ...options, height, border });
 

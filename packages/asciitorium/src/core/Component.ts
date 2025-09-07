@@ -1,4 +1,4 @@
-import { Alignment, SizeValue, SizeContext } from './types';
+import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue } from './types';
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
@@ -6,29 +6,23 @@ import { resolveSize, createSizeContext } from './utils/sizeUtils';
 
 export interface ComponentProps {
   label?: string;
-  comment?: string; // Comment to describe the component's purpose.  This isn't used for anything yet.
+  comment?: string; // Comment to describe the component's purpose.  This isn't used for anything.
   showLabel?: boolean; // Whether to show the label or not
+  
+  // Style properties (can be provided individually or via style object)
+  style?: ComponentStyle; // Consolidated style properties
   width?: SizeValue; // Width of the component
   height?: SizeValue; // Height of the component
   border?: boolean; // Whether to show a border around the component
   fill?: string; // Fill character for the component
   align?: Alignment; // Alignment of the component
-  bind?: State<any> | ((state: State<any>) => void);
-  fixed?: boolean;
   x?: number;
   y?: number;
   z?: number;
-  gap?:
-    | number
-    | {
-        top?: number;
-        bottom?: number;
-        left?: number;
-        right?: number;
-        x?: number; // shorthand for left + right
-        y?: number; // shorthand for top + bottom
-      }
-    | number[]; // CSS-style shorthand
+  gap?: GapValue;
+  
+  bind?: State<any> | ((state: State<any>) => void);
+  fixed?: boolean;
   children?: Component[]; // Child components
   layout?: LayoutType; // Layout to use for children
   layoutOptions?: LayoutOptions; // Configuration for the layout
@@ -87,6 +81,24 @@ function makeComponent(entry: any): Component | undefined {
   // );
 }
 
+// Helper function to merge style properties
+function mergeStyles(props: ComponentProps): ComponentStyle {
+  const style = props.style || {};
+  
+  // Individual props take precedence over style object
+  return {
+    width: props.width ?? style.width,
+    height: props.height ?? style.height,
+    border: props.border ?? style.border,
+    fill: props.fill ?? style.fill,
+    align: props.align ?? style.align,
+    x: props.x ?? style.x,
+    y: props.y ?? style.y,
+    z: props.z ?? style.z,
+    gap: props.gap ?? style.gap,
+  };
+}
+
 // ---------------------------------------------------------------------------
 
 export abstract class Component {
@@ -106,17 +118,7 @@ export abstract class Component {
   public x = 0;
   public y = 0;
   public z = 0;
-  public gap:
-    | number
-    | {
-        top?: number;
-        bottom?: number;
-        left?: number;
-        right?: number;
-        x?: number;
-        y?: number;
-      }
-    | number[] = 0;
+  public gap: GapValue = 0;
 
   public focusable: boolean = false;
   public hasFocus: boolean = false;
@@ -133,20 +135,23 @@ export abstract class Component {
   private layout?: any;
 
   constructor(props: ComponentProps) {
+    // Merge style properties (individual props take precedence over style object)
+    const mergedStyle = mergeStyles(props);
+    
     // Store original size values for relative sizing - default to undefined for auto-sizing
-    this.originalWidth = props.width;
-    this.originalHeight = props.height;
+    this.originalWidth = mergedStyle.width;
+    this.originalHeight = mergedStyle.height;
 
     // Initialize with explicit values or temporary defaults (will be recalculated after layout)
-    if (typeof props.width === 'number') {
-      this.width = props.width;
+    if (typeof mergedStyle.width === 'number') {
+      this.width = mergedStyle.width;
     } else {
       // Temporary size - will be recalculated after children are added
       this.width = 1;
     }
 
-    if (typeof props.height === 'number') {
-      this.height = props.height;
+    if (typeof mergedStyle.height === 'number') {
+      this.height = mergedStyle.height;
     } else {
       // Temporary size - will be recalculated after children are added
       this.height = 1;
@@ -154,14 +159,14 @@ export abstract class Component {
     this.label = props.label;
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
-    this.border = props.border ?? false;
-    this.fill = props.fill ?? ' ';
-    this.align = props.align;
+    this.border = mergedStyle.border ?? false;
+    this.fill = mergedStyle.fill ?? ' ';
+    this.align = mergedStyle.align;
     this.fixed = props.fixed ?? false;
-    this.x = props.x ?? 0;
-    this.y = props.y ?? 0;
-    this.z = props.z ?? 0;
-    this.gap = props.gap ?? 0;
+    this.x = mergedStyle.x ?? 0;
+    this.y = mergedStyle.y ?? 0;
+    this.z = mergedStyle.z ?? 0;
+    this.gap = mergedStyle.gap ?? 0;
     this.buffer = [];
 
     // Setup children and layout

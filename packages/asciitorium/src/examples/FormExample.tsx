@@ -50,6 +50,38 @@ const validateName = (name: string): ValidationResult => {
 };
 
 export const FormExample = () => {
+  // Style dictionary for reusable component styles
+  const styles = {
+    fieldLabel: {
+      align: 'left' as const,
+      width: 10,
+    },
+    inputField: {
+      width: 32,
+    },
+    errorText: {
+      align: 'center' as const,
+      gap: { left: 1 },
+    },
+    formRow: {
+      gap: { left: 1 },
+    },
+    formRowWithTopGap: {
+      gap: { left: 1, top: 1 },
+    },
+    actionButton: {
+      gap: { right: 1 },
+    },
+    statusContainer: {
+      // No specific styles, but demonstrates empty style object
+    },
+    resultsDisplay: {
+      label: 'Results:',
+      border: true,
+      height: 6,
+    },
+  };
+
   // Form field states
   const name = new State('');
   const email = new State('');
@@ -154,41 +186,40 @@ export const FormExample = () => {
   return (
     <Column label="Form Example:" height="fill" border>
       {/* Name */}
-      {nameErrorDisplay}
-      <Row gap={{ left: 1, top: 1 }}>
-        <Text align="left" width={10}>
+      <Row {...styles.formRowWithTopGap}>
+        <Text {...styles.fieldLabel}>
           Name:
         </Text>
         <TextInput
           value={name}
           placeholder="Enter your full name"
-          width={32}
+          {...styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text align="center" gap={{ left: 1 }}>
+        <Text {...styles.errorText}>
           {nameErrorDisplay}
         </Text>
       </Row>
 
       {/* Email */}
-      <Row gap={{ left: 1 }}>
-        <Text align="left" width={10}>
+      <Row {...styles.formRow}>
+        <Text {...styles.fieldLabel}>
           Email:
         </Text>
         <TextInput
           value={email}
           placeholder="your.email@example.com"
-          width={32}
+          {...styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text align="center" gap={{ left: 1 }}>
+        <Text {...styles.errorText}>
           {emailErrorDisplay}
         </Text>
       </Row>
 
       {/* Age */}
-      <Row gap={{ left: 1 }}>
-        <Text align="left" width={10}>
+      <Row {...styles.formRow}>
+        <Text {...styles.fieldLabel}>
           Age:
         </Text>
         <GaugeSlider
@@ -197,16 +228,19 @@ export const FormExample = () => {
           min={18}
           max={100}
           step={1}
-          width={32}
+          {...styles.inputField}
         />
         <Text gap={1} width={3}>
           {age}
         </Text>
+        <Text {...styles.errorText}>
+          {ageErrorDisplay}
+        </Text>
       </Row>
 
       {/* Country */}
-      <Row gap={{ left: 1 }}>
-        <Text align="left" width={10}>
+      <Row {...styles.formRow}>
+        <Text {...styles.fieldLabel}>
           Country:
         </Text>
         <Select selectedItem={country} items={countryOptions} width={25} />
@@ -214,21 +248,21 @@ export const FormExample = () => {
 
       {/* Actions */}
       <Row align="right">
-        <Button onClick={handleSubmit} gap={{ right: 1 }}>
+        <Button onClick={handleSubmit} {...styles.actionButton}>
           Submit
         </Button>
-        <Button onClick={handleClear} gap={{ right: 1 }}>
+        <Button onClick={handleClear} {...styles.actionButton}>
           Clear
         </Button>
       </Row>
 
       {/* Status */}
-      <Row>
+      <Row {...styles.statusContainer}>
         <Text>Form Status: </Text>
         <Text>{formStatusText}</Text>
       </Row>
       {/* Results */}
-      <Text label="Results:" border height={6}>
+      <Text {...styles.resultsDisplay}>
         {submissionResult}
       </Text>
     </Column>
