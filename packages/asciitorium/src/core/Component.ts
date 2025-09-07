@@ -109,8 +109,8 @@ export abstract class Component {
   public height: number;
 
   // Store original size values for relative sizing
-  private originalWidth?: SizeValue;
-  private originalHeight?: SizeValue;
+  protected originalWidth?: SizeValue;
+  protected originalHeight?: SizeValue;
   public border: boolean;
   public fill: string;
   public align?: Alignment;

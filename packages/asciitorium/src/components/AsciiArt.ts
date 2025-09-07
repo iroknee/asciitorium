@@ -1,10 +1,13 @@
+import { request } from 'http';
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 import { State } from '../core/State';
+import { loadArt } from '../core/environment';
 
 export interface ArtOptions
   extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .txt (UTF-8) or reactive state
+  src?: string; // URL or file path to load ASCII art from
   children?: string | string[];
 }
 
@@ -33,42 +36,53 @@ export class AsciiArt extends Component {
   private timer: ReturnType<typeof setTimeout> | null = null;
   private contentState?: State<string>;
   private unsubscribe?: () => void;
+  private isLoading = false;
+  private loadError?: string;
+  private src?: string;
 
   constructor(options: ArtOptions) {
-    // Support both content prop and JSX children
     let actualContent = options.content;
     let contentValue: string;
-
-    if (!actualContent && options.children) {
-      const children = Array.isArray(options.children)
-        ? options.children
-        : [options.children];
-      if (children.length > 0) {
-        actualContent = children[0];
-      }
-    }
-
-    if (!actualContent) {
-      throw new Error(
-        'AsciiArt component requires either content prop or children'
-      );
-    }
-
-    // Handle State<string> or string content - determine initial value
-    if (actualContent instanceof State) {
-      contentValue = actualContent.value;
+    const borderPadding = options.border ? 2 : 0;
+    let parsed: ReturnType<typeof parseSprite>;
+    let isLoadingSrc = false;
+    
+    // Handle src prop for async loading
+    if (options.src) {
+      isLoadingSrc = true;
+      contentValue = 'Loading...';
+      parsed = parseSprite(contentValue);
     } else {
-      contentValue = actualContent;
-    }
+      // Fallback to existing content/children logic
+      if (!actualContent && options.children) {
+        const children = Array.isArray(options.children)
+          ? options.children
+          : [options.children];
+        if (children.length > 0) {
+          actualContent = children[0];
+        }
+      }
 
-    // Parse content (supports §/¶ JSON; falls back to single still)
-    const parsed = parseSprite(contentValue);
+      if (!actualContent) {
+        throw new Error(
+          'AsciiArt component requires either src, content prop, or children'
+        );
+      }
+
+      // Handle State<string> or string content - determine initial value
+      if (actualContent instanceof State) {
+        contentValue = actualContent.value;
+      } else {
+        contentValue = actualContent;
+      }
+
+      parsed = parseSprite(contentValue);
+    }
 
     // Compute width/height from max of all frames (unless provided)
     const { maxW, maxH } = measureFrames(parsed.frames);
-    const borderPadding = options.border ? 2 : 0;
 
-    const { children, content, ...componentProps } = options;
+    const { children, content, src, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width ?? Math.max(1, maxW + borderPadding),
@@ -78,21 +92,40 @@ export class AsciiArt extends Component {
     this.frames = parsed.frames;
     this.loop = parsed.defaults.loop || false;
 
-    // Set up state subscription after super() call
-    if (actualContent instanceof State) {
-      this.contentState = actualContent;
+    // Handle src loading after super() call
+    if (isLoadingSrc && options.src) {
+      this.src = options.src;
+      this.isLoading = true;
       
-      // Subscribe to state changes
-      const updateContent = (newValue: string) => {
-        this.updateContent(newValue);
-      };
-      this.contentState.subscribe(updateContent);
-      this.unsubscribe = () => this.contentState!.unsubscribe(updateContent);
-    }
+      // Start async loading
+      loadArt(this.src)
+        .then((loadedContent) => {
+          this.isLoading = false;
+          this.loadError = undefined;
+          this.updateContent(loadedContent);
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          this.loadError = error.message || 'Failed to load ASCII art';
+          this.updateContent(`Error: ${this.loadError}`);
+        });
+    } else {
+      // Set up state subscription for non-src content
+      if (actualContent instanceof State) {
+        this.contentState = actualContent;
+        
+        // Subscribe to state changes
+        const updateContent = (newValue: string) => {
+          this.updateContent(newValue);
+        };
+        this.contentState.subscribe(updateContent);
+        this.unsubscribe = () => this.contentState!.unsubscribe(updateContent);
+      }
 
-    // If we have animation (2+ frames), start it
-    if (this.frames.length > 1) {
-      this.startAnimation();
+      // If we have animation (2+ frames), start it
+      if (this.frames.length > 1) {
+        this.startAnimation();
+      }
     }
   }
 
@@ -150,12 +183,15 @@ export class AsciiArt extends Component {
   }
 
   private updateContent(newContent: string): void {
-    // Re-parse the new content
-    const parsed = parseSprite(newContent);
-    
     // Stop current animation
     this.clearTimer();
-    
+
+    // Re-parse the new content
+    const parsed = parseSprite(newContent);
+    const { maxW, maxH } = measureFrames(parsed.frames);
+    this.originalHeight = maxH + (this.border ? 2 : 0);
+    this.originalWidth = maxW + (this.border ? 2 : 0);
+
     // Update frames and reset animation state
     this.frames = parsed.frames;
     this.loop = parsed.defaults.loop || false;
