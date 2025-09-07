@@ -59,7 +59,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 **Core Classes:**
 
 - `App` - Main application class that handles rendering, focus management, and performance monitoring
-- `Component` - Abstract base class for all UI components with properties like position (x,y,z), dimensions, borders, focus handling
+- `Component` - Abstract base class for all UI components with properties like position (x,y,z), dimensions, borders, focus handling with visual focus indicators (double-line borders)
 - `State<T>` - Reactive state management system with subscribe/unsubscribe pattern
 - `PersistentState<T>` - State management with localStorage persistence
 - `FocusManager` - Handles keyboard navigation between focusable components
@@ -71,6 +71,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Character-based rendering using 2D string arrays as buffers
 - Z-index based layering system for component ordering
 - Transparent character system for overlay effects
+- Focus-based visual indicators: Components with borders automatically switch from single-line (`╭╮╰╯─│`) to double-line (`╔╗╚╝═║`) borders when focused
 
 **JSX Runtime:**
 
@@ -85,7 +86,17 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Support for relative sizing and alignment options
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`
+Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`
+
+**Keyboard Navigation:**
+
+- Focusable components support keyboard navigation and show visual focus indicators
+- `AsciiMaze` - Supports arrow keys and WASD for player movement with collision detection and fog of war
+- `Button` - Enter/Space to activate
+- `TabContainer` - Arrow keys to switch between tabs
+- `Select`/`MultiSelect` - Arrow keys for navigation, Enter to select
+- `TextInput` - Standard text input with cursor navigation
+- `Sliders` - Arrow keys to adjust values
 
 ### Project Scaffolder (packages/create-asciitorium)
 
