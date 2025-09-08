@@ -1,6 +1,6 @@
 # asciitorium
 
-A UI framework for building retro terminal interfaces that run in both web browsers and CLI environments. Designed to help develop cli interfaces quickly.
+**asciitorium** (pronounced ascii-arium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Designed to help develop cli interfaces quickly. Originally it was purposed to allow an 80's kid to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ## Installation
 
@@ -98,7 +98,7 @@ Use the `style` prop to group related styling properties:
 
 // Mixing both (individual props take precedence)
 const formText = {
-    width: 10, 
+    width: 10,
     border: true
 };
 
@@ -138,7 +138,7 @@ Renders directly to terminal
 
 ## Documentation
 
-- [Examples](src/examples/) - Component examples and demos
+- [Examples](https://github.com/iroknee/asciitorium/tree/main/packages/asciitorium/src/examples) - Component examples and demos
 - [GitHub Repository](https://github.com/iroknee/asciitorium)
 
 ## License

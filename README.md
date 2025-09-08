@@ -1,6 +1,6 @@
 # asciitorium
 
-**asciitorium** is an ASCII-based ui framework that runs in both the web and cli, along with related tooling such as the `create-asciitorium` project scaffolder.
+**asciitorium** (pronounced ascii-arium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Designed to help develop cli interfaces quickly. Originally it was purposed to allow an 80's kid to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ![example](asciitorium.png)
 
@@ -59,7 +59,7 @@ See the [package README](packages/asciitorium/README.md) for full usage details.
 
 ## Installation
 
-> NOTE: if you intend to build projects leveraging asciitorium you should use: [`create-asciitorium`](packages/create-asciitorium).  It's a CLI tool to scaffold new projects using **Vite + TypeScript** preconfigured:
+> NOTE: if you intend to build projects leveraging asciitorium you should use: [`create-asciitorium`](packages/create-asciitorium). It's a CLI tool to scaffold new projects using **Vite + TypeScript** preconfigured:
 
 Usage:
 
