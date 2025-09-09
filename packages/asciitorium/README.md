@@ -1,6 +1,6 @@
 # asciitorium
 
-**asciitorium** (pronounced ascii-or-ium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Designed to help develop cli interfaces quickly. Originally it was purposed to allow an 80's kid to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
+**asciitorium** (pronounced ascii-or-ium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Designed to help develop cli interfaces quickly. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ## Installation
 
@@ -17,15 +17,25 @@ npm install asciitorium
 ## Quick Start
 
 ```tsx
-import { App, Text, TextInput, State } from 'asciitorium';
+import { App, Text, State, AsciiArt, TextInput, HR } from 'asciitorium';
 
-const message = new State('Hello, World!');
+// Reactive state for user input
+const userInput = new State('Hello, World!');
 
 const app = (
   <App>
-    <Text>Enter your message:</Text>
-    <TextInput value={message} width={40} />
-    <Text content={message} />
+    <AsciiArt src="./art/asciitorium.txt" align="center" />
+    <HR style={{ width: 60, align: 'center' }} />
+    <Text style={{ align: 'center', gap: { bottom: 3 } }}>
+      A UI framework for CLI and web
+    </Text>
+
+    <TextInput
+      style={{ width: 40, align: 'center', gap: { bottom: 2 } }}
+      value={userInput}
+    />
+
+    <Text align="center">{userInput}</Text>
   </App>
 );
 
@@ -71,43 +81,7 @@ All components support both individual styling properties and a consolidated `st
 
 ### Style Property
 
-Use the `style` prop to group related styling properties:
-
-```tsx
-// Using style object
-<Text
-  style={{
-    width: 200,
-    height: 50,
-    border: true,
-    align: "center",
-    fill: '·'
-  }}>
-  centered text
-</Text>
-
-// Individual properties
-<Text
-  width={200}
-  height={50}
-  border
-  align="center"
-  fill='·'
-  content="Styled text"
-/>
-
-// Mixing both (individual props take precedence)
-const formText = {
-    width: 10,
-    border: true
-};
-
-<Text
-  style={formText}
-  align="center"
-  content="Mixed styling"
-/>
-```
+Use the `style` prop to group related styling properties using either the style object, individual jsx properties, or both (individual props take precedence).
 
 ### Available Style Properties
 

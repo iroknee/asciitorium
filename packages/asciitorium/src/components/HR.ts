@@ -6,9 +6,13 @@ export interface HROptions extends ComponentProps {
 export class HR extends Component {
 
   constructor(options: HROptions = {}) {
+    // Extract width from style object if present, with precedence order:
+    // 1. Direct width prop 2. Style width 3. Default value
+    const resolvedWidth = options.width ?? options.style?.width ?? 12;
+    
     super({
       ...options,
-      width: options.width ?? 12, // Default width if not specified
+      width: resolvedWidth,
       height: 1, // Always one line tall
     });
 

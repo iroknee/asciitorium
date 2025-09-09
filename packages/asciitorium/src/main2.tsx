@@ -1,0 +1,23 @@
+import { App, Text, State, AsciiArt, TextInput, HR } from './index';
+
+// Reactive state for user input
+const userInput = new State('Hello, World!');
+
+const app = (
+  <App>
+    <AsciiArt src="./art/asciitorium.txt" align="center"/>
+    <HR style={{ width: 60, align: 'center' }} />
+    <Text style={{ align: 'center', gap: { bottom: 3 } }}>
+      A UI framework for CLI and web
+    </Text>
+
+    <TextInput
+      style={{ width: 40, align: 'center', gap: { bottom: 2 } }}
+      value={userInput}
+    />
+
+    <Text align="center">{userInput}</Text>
+  </App>
+);
+
+await app.start();

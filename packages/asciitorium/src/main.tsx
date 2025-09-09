@@ -85,7 +85,7 @@ const app = (
     </Row>
     <Text
       content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus"
-      style={{ gap: { top: 1 } }}
+      style={{ align: 'center', gap: { top: 1 } }}
     />
   </App>
 );

@@ -6,8 +6,9 @@ export interface VROptions extends Omit<ComponentProps, 'width'> {
 
 export class VR extends Component {
   constructor(options: VROptions) {
-    // Support both height and legacy length prop, with height taking priority
-    const resolvedHeight = options.height ?? options.length ?? 12;
+    // Extract height from style object if present, with precedence order:
+    // 1. Direct height prop 2. Style height 3. Legacy length prop 4. Default value
+    const resolvedHeight = options.height ?? options.style?.height ?? options.length ?? 12;
 
     super({
       ...options,

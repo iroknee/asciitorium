@@ -52,11 +52,12 @@ export class ColumnLayout implements Layout {
       // Calculate available width after accounting for left/right gaps
       const availableWidth = innerWidth - gap.left - gap.right;
       
-      // For column layout, children should fill width if not specified
+      // For column layout, children should fill width only if explicitly set to 'fill'
       const originalWidth = child.getOriginalWidth();
-      if (originalWidth === undefined || originalWidth === 'fill') {
+      if (originalWidth === 'fill') {
         child.width = Math.max(1, availableWidth);
       }
+      // If originalWidth is undefined, let the component handle its own auto-sizing
 
       // Handle height="fill" - fill remaining vertical space
       const originalHeight = child.getOriginalHeight();

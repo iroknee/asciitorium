@@ -61,4 +61,5 @@ export interface ComponentStyle {
   y?: number;
   z?: number;
   gap?: GapValue;
+  font?: string;
 }

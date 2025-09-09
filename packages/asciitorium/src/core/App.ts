@@ -9,6 +9,7 @@ import { createSizeContext } from './utils/sizeUtils';
 
 export interface AppProps extends ComponentProps {
   // App-specific props can be added here
+  font?: string;
 }
 
 export class App extends Component {
@@ -23,17 +24,26 @@ export class App extends Component {
   private lastCPUUsage?: any;
 
   constructor(props: AppProps) {
+    // Extract font from props or style object
+    const fontFromStyle = props.style?.font;
+    const selectedFont = props.font ?? fontFromStyle;
+    
     // Initialize renderer first to get screen size
-    const renderer = getDefaultRenderer();
+    const renderer = getDefaultRenderer(selectedFont);
     const screenSize = renderer.getScreenSize();
 
+    // Extract dimensions from style object if present
+    const widthFromStyle = props.style?.width;
+    const heightFromStyle = props.style?.height;
+    const layoutFromStyle = props.style?.layout;
+    
     // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
     const asciitoriumProps = {
       ...props,
-      width: props.width ?? screenSize.width,
-      height: props.height ?? screenSize.height,
-      layout: props.layout ?? 'column',
+      width: props.width ?? widthFromStyle ?? screenSize.width,
+      height: props.height ?? heightFromStyle ?? screenSize.height,
+      layout: props.layout ?? layoutFromStyle ?? 'column',
       layoutOptions: props.layoutOptions ?? {},
     };
 
@@ -248,11 +258,11 @@ export class App extends Component {
   }
 }
 
-function getDefaultRenderer(): Renderer {
+function getDefaultRenderer(font?: string): Renderer {
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const screen = document.getElementById('screen');
     if (!screen) throw new Error('No #screen element found for DOM rendering');
-    return new DomRenderer(screen);
+    return new DomRenderer(screen, font);
   } else {
     return new TerminalRenderer();
   }

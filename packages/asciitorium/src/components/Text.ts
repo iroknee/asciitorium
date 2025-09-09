@@ -41,36 +41,23 @@ export class Text extends Component {
     });
 
     this.source = actualContent;
+    // Don't override align - let the Component base class handle it through mergeStyles
   }
 
   // Override resolveSize to handle width and height auto-sizing
   public resolveSize(context: any): void {
+    // First, let the base class resolve any explicitly set dimensions
+    super.resolveSize(context);
+    
     // Handle width auto-sizing if not explicitly set
     if (this.getOriginalWidth() === undefined) {
       const contentLength = this.getContentAsString().length;
-
       const borderAdjustment = this.border ? 2 : 0;
       
-      // Check if we have a layout context that provides available width
-      const availableWidth = context?.availableWidth;
-      
-      if (availableWidth !== undefined) {
-        const maxInnerWidth = availableWidth - borderAdjustment;
-        
-        // Only use fill behavior if content would actually wrap
-        if (contentLength > maxInnerWidth && maxInnerWidth > 0) {
-          this.width = availableWidth;
-        } else {
-          // Content fits on one line, use content length
-          this.width = Math.max(1, contentLength + borderAdjustment);
-        }
-      } else {
-        // No layout context, use content length
-        this.width = Math.max(1, contentLength + borderAdjustment);
-      }
+      // Always use content-based sizing for Text components unless width is explicitly set
+      // This prevents unwanted fill behavior in layout contexts
+      this.width = Math.max(1, contentLength + borderAdjustment);
     }
-    // First, let the base class resolve the width (e.g., 'fill' -> actual pixel width)
-    super.resolveSize(context);
     
     // Then calculate height based on the resolved width if height is not explicitly set
     if (this.getOriginalHeight() === undefined) {

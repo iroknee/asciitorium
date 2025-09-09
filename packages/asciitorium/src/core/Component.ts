@@ -96,6 +96,7 @@ function mergeStyles(props: ComponentProps): ComponentStyle {
     y: props.y ?? style.y,
     z: props.z ?? style.z,
     gap: props.gap ?? style.gap,
+    font: style.font,
   };
 }
 
