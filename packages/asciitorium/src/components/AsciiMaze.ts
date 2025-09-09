@@ -18,7 +18,7 @@ export interface AsciiMazeOptions extends Omit<ComponentProps, 'children'> {
   content?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   map?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>; // deprecated, use content
   position: Position | State<Position>;
-  fogOfWar?: boolean;
+  fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
   fogCharacter?: string;
 }
@@ -27,7 +27,7 @@ export class AsciiMaze extends Component {
   focusable = true;
   private contentSource: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   private positionSource: Position | State<Position>;
-  private fogOfWar: boolean;
+  private fogOfWarSource: boolean | State<boolean>;
   private exploredTilesSource?: Set<string> | State<Set<string>>;
   private fogCharacter: string;
 
@@ -51,7 +51,7 @@ export class AsciiMaze extends Component {
 
     this.contentSource = actualContent;
     this.positionSource = position;
-    this.fogOfWar = fogOfWar ?? false;
+    this.fogOfWarSource = fogOfWar ?? false;
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
   }
@@ -94,6 +94,12 @@ export class AsciiMaze extends Component {
     return isState(this.exploredTilesSource)
       ? (this.exploredTilesSource as State<Set<string>>).value
       : (this.exploredTilesSource as Set<string>);
+  }
+
+  get fogOfWar(): boolean {
+    return isState(this.fogOfWarSource)
+      ? (this.fogOfWarSource as State<boolean>).value
+      : (this.fogOfWarSource as boolean);
   }
 
   private isPositionVisible(x: number, y: number, playerX: number, playerY: number): boolean {

@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.27] - 2025-09-07
 
 ### Changed
 
 - **Component Improvements:**
   - Enhanced `Tab` component by defining label property for better type safety and clarity
-  - Refactored `Tab` and `Text` components for improved clarity and consistency  
+  - Refactored `Tab` and `Text` components for improved clarity and consistency
   - Updated `TabsExample` to enhance content presentation and remove deprecated properties
   - Refactored `Tabs` component into separate `Tab` and `TabContainer` components for improved structure
 
@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Technical Details
 
 - **Key Files Modified:** Core components, JSX runtime, layout system, examples
-- **Breaking Changes:** 
+- **Breaking Changes:**
   - Size value `'fit'` renamed to `'fill'` - update all references
 - **New Features:** Maze navigation with collision detection, Enter key handling in text inputs
 - **Architecture:** Enhanced JSX runtime flexibility, improved layout calculations
@@ -168,7 +168,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Technical Details
 
 - **Key Files Modified:** Core component architecture, slider system, layout terminology, examples
-- **Breaking Changes:** 
+- **Breaking Changes:**
   - Layout props changed from `horizontal/vertical` to `row/column`
   - `Box` component removed - use `Component` base class instead
 - **Performance:** Better code reuse through `SliderBase` abstraction
@@ -180,7 +180,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **New Components and Examples:**
   - `AsciiArtExample` component with ASCII art rendering
-  - Comprehensive component examples: `ButtonExample`, `MultiSelectExample`, `ProgressBarExample`, `SelectExample`, `TabsExample`,  `TextInputExample`
+  - Comprehensive component examples: `ButtonExample`, `MultiSelectExample`, `ProgressBarExample`, `SelectExample`, `TabsExample`, `TextInputExample`
   - `LayoutExample` demonstrating layout functionality
   - `PersistentState` utility for component selection persistence
   - Gap resolution utility (`gapUtils`) for consistent layout spacing
@@ -345,28 +345,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 To upgrade from 0.1.11 to 0.1.12:
 
 1. **Update imports:**
+
    ```tsx
    // Before
    import { Asciitorium, bootstrap } from 'asciitorium';
-   
+
    // After
    import { App } from 'asciitorium';
    ```
 
 2. **Update JSX usage:**
+
    ```tsx
    // Before
    const app = <Asciitorium>...</Asciitorium>;
-   
+
    // After
    const app = <App>...</App>;
    ```
 
 3. **Update startup:**
+
    ```tsx
    // Before
    await bootstrap(app);
-   
+
    // After
    await app.start();
    ```

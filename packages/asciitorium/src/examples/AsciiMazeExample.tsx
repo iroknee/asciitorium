@@ -1,5 +1,5 @@
 import {
-  Component,
+  Column,
   AsciiMaze,
   State,
   Text,
@@ -31,10 +31,10 @@ const playerPosition = new State({
 const exploredTiles = new State(new Set<string>());
 
 // Fog of war toggle state
-const fogOfWarEnabled = new State(true);
+const fogOfWarEnabled = new State(false);
 
 export const AsciiMazeExample = () => (
-  <Component layout="aligned" height="fill" border label="AsciiMaze Example:">
+  <Column height="fill" border label="AsciiMaze Example:">
     <AsciiMaze
       width="50%"
       height={20}
@@ -61,5 +61,5 @@ export const AsciiMazeExample = () => (
       Click button to toggle fog of war.
     `}
     </Text>
-  </Component>
+  </Column>
 );
