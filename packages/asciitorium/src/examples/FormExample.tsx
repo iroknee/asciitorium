@@ -3,6 +3,7 @@ import {
   State,
   Button,
   Row,
+  HR,
   Column,
   TextInput,
   GaugeSlider,
@@ -77,9 +78,9 @@ export const FormExample = () => {
       // No specific styles, but demonstrates empty style object
     },
     resultsDisplay: {
-      label: 'Results:',
       border: true,
-      height: 6,
+      width: 'fill',
+      height: 'fill',
     },
   };
 
@@ -187,40 +188,40 @@ export const FormExample = () => {
   return (
     <Column style={BaseStyle} label="Form Example:">
       {/* Name */}
-      <Row {...styles.formRowWithTopGap}>
-        <Text {...styles.fieldLabel}>
+      <Row style={styles.formRowWithTopGap}>
+        <Text style={styles.fieldLabel}>
           Name:
         </Text>
         <TextInput
           value={name}
           placeholder="Enter your full name"
-          {...styles.inputField}
+          style={styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text {...styles.errorText}>
+        <Text style={styles.errorText}>
           {nameErrorDisplay}
         </Text>
       </Row>
 
       {/* Email */}
-      <Row {...styles.formRow}>
-        <Text {...styles.fieldLabel}>
+      <Row style={styles.formRow}>
+        <Text style={styles.fieldLabel}>
           Email:
         </Text>
         <TextInput
           value={email}
           placeholder="your.email@example.com"
-          {...styles.inputField}
+          style={styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text {...styles.errorText}>
+        <Text style={styles.errorText}>
           {emailErrorDisplay}
         </Text>
       </Row>
 
       {/* Age */}
-      <Row {...styles.formRow}>
-        <Text {...styles.fieldLabel}>
+      <Row style={styles.formRow}>
+        <Text style={styles.fieldLabel}>
           Age:
         </Text>
         <GaugeSlider
@@ -229,19 +230,19 @@ export const FormExample = () => {
           min={18}
           max={100}
           step={1}
-          {...styles.inputField}
+          style={styles.inputField}
         />
         <Text gap={1} width={3}>
           {age}
         </Text>
-        <Text {...styles.errorText}>
+        <Text style={styles.errorText}>
           {ageErrorDisplay}
         </Text>
       </Row>
 
       {/* Country */}
-      <Row {...styles.formRow}>
-        <Text {...styles.fieldLabel}>
+      <Row style={styles.formRow}>
+        <Text style={styles.fieldLabel}>
           Country:
         </Text>
         <Select selectedItem={country} items={countryOptions} width={25} />
@@ -249,21 +250,22 @@ export const FormExample = () => {
 
       {/* Actions */}
       <Row align="right">
-        <Button onClick={handleSubmit} {...styles.actionButton}>
+        <Button onClick={handleSubmit} style={styles.actionButton}>
           Submit
         </Button>
-        <Button onClick={handleClear} {...styles.actionButton}>
+        <Button onClick={handleClear} style={styles.actionButton}>
           Clear
         </Button>
       </Row>
 
       {/* Status */}
-      <Row {...styles.statusContainer}>
+      <HR width="fill"/>
+      <Row style={styles.statusContainer}>
         <Text>Form Status: </Text>
         <Text>{formStatusText}</Text>
       </Row>
       {/* Results */}
-      <Text {...styles.resultsDisplay}>
+      <Text style={styles.resultsDisplay}>
         {submissionResult}
       </Text>
     </Column>
