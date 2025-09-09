@@ -1,8 +1,9 @@
-import { Text, Component, Column, CelticBorder } from '../index';
+import { Component, CelticBorder } from '../index';
+import { BaseStyle } from './constants';
 
 export const CelticBorderExample = () => {
   return (
-    <Component height="fill" layout="aligned" label="CelticBorder Example:" border>
+    <Component style={BaseStyle} layout="aligned" label="CelticBorder Example:">
         <CelticBorder align="top-left" />
         <CelticBorder align="bottom-left" />
         <CelticBorder align="top-right" />

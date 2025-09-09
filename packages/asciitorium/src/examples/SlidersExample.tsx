@@ -1,4 +1,5 @@
 import { Text, State, Component, Row } from '../index';
+import { BaseStyle } from './constants';
 import {
   ProgressBarSlider,
   GaugeSlider,
@@ -11,7 +12,7 @@ export const SlidersExample = () => {
   const volumeValue = new State(75);
 
   return (
-    <Component height="fill" label="Sliders:" border>
+    <Component style={BaseStyle} label="Sliders:">
       <Text height={2} align="center" gap={{ top: 1, bottom: 1 }}>
         All sliders share the same value for comparison
       </Text>

@@ -1,4 +1,5 @@
 import { Component, TabContainer, Tab, Text, Button, State } from '../index';
+import { BaseStyle } from './constants';
 
 export function TabsExample() {
   const selectedIndex = new State(0);
@@ -11,7 +12,7 @@ export function TabsExample() {
   });
 
   return (
-    <Component height="fill" border label="TabContainer Example:">
+    <Component style={BaseStyle} label="TabContainer Example:">
       <TabContainer 
         selectedIndex={selectedIndex}
       >

@@ -8,6 +8,7 @@ import {
   GaugeSlider,
   Select,
 } from '../index';
+import { BaseStyle } from './constants';
 
 /** derive a State<T> from other states */
 function computed<T>(sources: State<any>[], calc: () => T): State<T> {
@@ -184,7 +185,7 @@ export const FormExample = () => {
 
   // UI
   return (
-    <Column label="Form Example:" height="fill" border>
+    <Column style={BaseStyle} label="Form Example:">
       {/* Name */}
       <Row {...styles.formRowWithTopGap}>
         <Text {...styles.fieldLabel}>

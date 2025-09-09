@@ -1,24 +1,5 @@
-import {
-  Column,
-  AsciiMaze,
-  State,
-  Text,
-  Direction,
-  loadArt,
-  Button,
-} from '../index';
-
-let dungeonMap: string | null = null;
-
-// Load map asynchronously
-loadArt('./art/mazes/example.txt')
-  .then((art) => {
-    dungeonMap = art;
-  })
-  .catch((err) => {
-    console.warn('Failed to load example map:', err);
-    dungeonMap = 'Failed to load map';
-  });
+import { Column, AsciiMaze, State, Text, Direction, Button } from '../index';
+import { BaseStyle } from './constants';
 
 // Player position state - start in the open area
 const playerPosition = new State({
@@ -34,12 +15,12 @@ const exploredTiles = new State(new Set<string>());
 const fogOfWarEnabled = new State(false);
 
 export const AsciiMazeExample = () => (
-  <Column height="fill" border label="AsciiMaze Example:">
+  <Column label="AsciiMaze Example:" style={BaseStyle}>
     <AsciiMaze
       width="50%"
       height={20}
       align="top"
-      content={dungeonMap || 'Loading map...'}
+      src="./art/mazes/example.txt"
       position={playerPosition}
       fogOfWar={fogOfWarEnabled}
       exploredTiles={exploredTiles}

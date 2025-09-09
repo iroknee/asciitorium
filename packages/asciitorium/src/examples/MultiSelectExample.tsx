@@ -1,4 +1,5 @@
 import { Text, State, MultiSelect, Component, Row } from '../index';
+import { BaseStyle } from './constants';
 
 export const MultiSelectExample = () => {
   const multiValue = new State(['Suspension', 'Brakes']);
@@ -27,7 +28,7 @@ export const MultiSelectExample = () => {
   ];
 
   return (
-    <Component label="MultiSelect Example:" height="fill" border>
+    <Component style={BaseStyle} label="MultiSelect Example:">
       <MultiSelect
         label="Car Parts:"
         align="center"

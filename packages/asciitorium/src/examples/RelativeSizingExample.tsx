@@ -1,7 +1,8 @@
 import { Text, Component, Row } from '../index';
+import { BaseStyle } from './constants';
 
 export const RelativeSizingExample = () => (
-  <Component height="fill" border label="Relative Sizing Example:">
+  <Component style={BaseStyle} label="Relative Sizing Example:">
     <Text width="80%" height={3} border gap={1}>
       This text component uses 80% of parent width
     </Text>

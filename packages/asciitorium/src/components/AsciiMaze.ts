@@ -1,6 +1,7 @@
 import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
-import { isState } from '../core/environment';
+import { isState, loadArt } from '../core/environment';
+import { requestRender } from '../core/RenderScheduler';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
@@ -17,6 +18,7 @@ export interface MapData {
 export interface AsciiMazeOptions extends Omit<ComponentProps, 'children'> {
   content?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
   map?: MapData | string[] | string | State<MapData> | State<string[]> | State<string>; // deprecated, use content
+  src?: string; // URL or file path to load maze from
   position: Position | State<Position>;
   fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
@@ -30,14 +32,27 @@ export class AsciiMaze extends Component {
   private fogOfWarSource: boolean | State<boolean>;
   private exploredTilesSource?: Set<string> | State<Set<string>>;
   private fogCharacter: string;
+  private isLoading = false;
+  private loadError?: string;
+  private src?: string;
 
   constructor(options: AsciiMazeOptions) {
-    const { content, map, position, fogOfWar, exploredTiles, fogCharacter, ...componentProps } = options;
+    const { content, map, src, position, fogOfWar, exploredTiles, fogCharacter, ...componentProps } = options;
     
-    // Use content if provided, fall back to map for backward compatibility
-    const actualContent = content ?? map;
-    if (!actualContent) {
-      throw new Error('AsciiMaze requires either content or map parameter');
+    // Handle src prop for async loading
+    let actualContent: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
+    let isLoadingSrc = false;
+    
+    if (src) {
+      isLoadingSrc = true;
+      actualContent = 'Loading...';
+    } else {
+      // Use content if provided, fall back to map for backward compatibility
+      const contentOrMap = content ?? map;
+      if (!contentOrMap) {
+        throw new Error('AsciiMaze requires either src, content, or map parameter');
+      }
+      actualContent = contentOrMap;
     }
 
     // Default dimensions if not specified
@@ -54,6 +69,25 @@ export class AsciiMaze extends Component {
     this.fogOfWarSource = fogOfWar ?? false;
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
+
+    // Handle src loading after super() call
+    if (isLoadingSrc && src) {
+      this.src = src;
+      this.isLoading = true;
+      
+      // Start async loading
+      loadArt(this.src)
+        .then((loadedContent) => {
+          this.isLoading = false;
+          this.loadError = undefined;
+          this.updateContent(loadedContent);
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          this.loadError = error.message || 'Failed to load maze';
+          this.updateContent(`Error: ${this.loadError}`);
+        });
+    }
   }
 
   get mapData(): MapData {
@@ -338,5 +372,13 @@ export class AsciiMaze extends Component {
       // If it's not a State, we can't update it - this would be a programming error
       console.warn('AsciiMaze position is not a State object, cannot update position');
     }
+  }
+
+  private updateContent(newContent: string): void {
+    // Update the content source with the loaded data
+    this.contentSource = newContent;
+    
+    // Request a re-render
+    requestRender();
   }
 }
