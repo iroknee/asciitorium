@@ -4,6 +4,7 @@ import {
   Select,
   Component,
   Row,
+  Text,
   PersistentState,
   loadArt,
 } from './index';
@@ -57,24 +58,24 @@ const examples = {
 
 const app = (
   <App>
-    <AsciiArt 
-      content={titleArt} 
-      style={{ align: "center", gap: { bottom: 2 } }} 
+    <AsciiArt
+      content={titleArt}
+      style={{ align: 'center', gap: { bottom: 2 } }}
     />
-    <Row style={{ height: "fill" }}>
+    <Row style={{ height: 'fill' }}>
       <Select
         label="Components:"
-        style={{ 
-          width: "30%",
-          height: "fill"
-        }} 
+        style={{
+          width: '30%',
+          height: 'fill',
+        }}
         items={componentList}
         selectedItem={selectedComponent}
       />
       <Component
-        style={{ 
-          width: "fill",
-          height: "fill"
+        style={{
+          width: 'fill',
+          height: 'fill',
         }}
         dynamicContent={{
           selectedKey: selectedComponent,
@@ -82,6 +83,10 @@ const app = (
         }}
       />
     </Row>
+    <Text
+      content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus"
+      style={{ gap: { top: 1 } }}
+    />
   </App>
 );
 
