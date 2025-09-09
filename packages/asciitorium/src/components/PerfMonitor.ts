@@ -16,6 +16,8 @@ export class PerfMonitor extends Component {
   private showFPS: boolean;
 
   constructor(options: PerfMonitorOptions) {
+    const { style, ...componentProps } = options;
+    
     const showRT = options.time ?? true;
     const showCPU = options.cpu ?? true;
     const showMem = options.memory ?? false;
@@ -28,13 +30,17 @@ export class PerfMonitor extends Component {
     if (showMem) lines++;
     if (showFPS) lines++;
 
-    const height = Math.max(1, lines) + (options.border ? 2 : 0);
+    // Extract style properties with proper precedence
+    const width = options.width ?? style?.width ?? 15;
+    const border = options.border ?? style?.border ?? true;
+    const height = Math.max(1, lines) + (border ? 2 : 0);
 
     super({
-      ...options,
-      width: options.width ?? 15,
+      ...componentProps,
+      style,
+      width,
       height,
-      border: true,
+      border,
       label: 'Stats',
     });
 

@@ -37,7 +37,7 @@ export class AsciiMaze extends Component {
   private src?: string;
 
   constructor(options: AsciiMazeOptions) {
-    const { content, map, src, position, fogOfWar, exploredTiles, fogCharacter, ...componentProps } = options;
+    const { content, map, src, position, fogOfWar, exploredTiles, fogCharacter, style, ...componentProps } = options;
     
     // Handle src prop for async loading
     let actualContent: MapData | string[] | string | State<MapData> | State<string[]> | State<string>;
@@ -58,10 +58,17 @@ export class AsciiMaze extends Component {
     // Default dimensions if not specified
     const defaultHeight = 10;
 
+    // Extract style properties with proper precedence
+    const width = options.width ?? style?.width ?? "fill";
+    const height = options.height ?? style?.height ?? "fill";
+    const border = options.border ?? style?.border ?? true;
+
     super({
       ...componentProps,
-      width: options.width ?? "fill",
-      height: options.height ?? "fill",
+      style,
+      width,
+      height,
+      border,
     });
 
     this.contentSource = actualContent;

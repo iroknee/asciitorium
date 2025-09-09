@@ -17,14 +17,11 @@ const fogOfWarEnabled = new State(false);
 export const AsciiMazeExample = () => (
   <Column label="AsciiMaze Example:" style={BaseStyle}>
     <AsciiMaze
-      width="50%"
-      height={20}
-      align="top"
+      style={{ width: '50%', height: 20, align: 'center' }}
       src="./art/mazes/example.txt"
       position={playerPosition}
       fogOfWar={fogOfWarEnabled}
       exploredTiles={exploredTiles}
-      border
     />
 
     <Button
