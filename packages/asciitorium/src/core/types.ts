@@ -1,4 +1,5 @@
 import { Component } from './Component';
+import { LayoutOptions, LayoutType } from './layouts/Layout';
 
 export type HorizontalAlign = 'left' | 'center' | 'right' | number;
 export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
@@ -62,4 +63,5 @@ export interface ComponentStyle {
   z?: number;
   gap?: GapValue;
   font?: string;
+  layout?: LayoutType;
 }

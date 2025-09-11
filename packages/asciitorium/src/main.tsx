@@ -1,12 +1,11 @@
 import {
   App,
-  AsciiArt,
+  Art,
   Select,
   Component,
   Row,
   Text,
   PersistentState,
-  loadArt,
 } from './index';
 
 import {
@@ -16,27 +15,24 @@ import {
   MultiSelectExample,
   RelativeSizingExample,
   TabsExample,
-  AsciiArtExample,
+  ArtExample,
   SlidersExample,
-  AsciiMazeExample,
+  MazeExample,
 } from './examples';
-
-// Load the title ASCII art
-const titleArt = await loadArt('./art/asciitorium.txt');
 
 // Main state for component selection with persistence
 const selectedComponent = new PersistentState(
-  'AsciiArt',
+  'Art',
   'demo-selected-component'
 );
 
 // Component list for navigation
 const componentList = [
-  'AsciiArt',
-  'AsciiMaze',
+  'Art',
   'Button',
   'CelticBorder',
   'Form',
+  'Maze',
   'MultiSelect',
   'RelativeSizing',
   'Sliders',
@@ -45,11 +41,11 @@ const componentList = [
 
 // Component mapping for dynamic content
 const examples = {
-  AsciiArt: AsciiArtExample,
-  AsciiMaze: AsciiMazeExample,
+  Art: ArtExample,
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
   Form: FormExample,
+  Maze: MazeExample,
   MultiSelect: MultiSelectExample,
   RelativeSizing: RelativeSizingExample,
   Sliders: SlidersExample,
@@ -58,10 +54,7 @@ const examples = {
 
 const app = (
   <App>
-    <AsciiArt
-      content={titleArt}
-      style={{ align: 'center', gap: { bottom: 2 } }}
-    />
+    <Art src={'./art/asciitorium.txt'} style={{ align: 'center', gap: { bottom: 2 } }} />
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components:"

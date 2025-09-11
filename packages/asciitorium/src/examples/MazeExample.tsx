@@ -1,4 +1,4 @@
-import { Column, AsciiMaze, State, Text, Direction, Button } from '../index';
+import { Column, Maze, State, Text, Direction, Button } from '../index';
 import { BaseStyle } from './constants';
 
 // Player position state - start in the open area
@@ -14,9 +14,9 @@ const exploredTiles = new State(new Set<string>());
 // Fog of war toggle state
 const fogOfWarEnabled = new State(false);
 
-export const AsciiMazeExample = () => (
+export const MazeExample = () => (
   <Column label="AsciiMaze Example:" style={BaseStyle}>
-    <AsciiMaze
+    <Maze
       style={{ width: '50%', height: 20, align: 'center' }}
       src="./art/mazes/example.txt"
       position={playerPosition}

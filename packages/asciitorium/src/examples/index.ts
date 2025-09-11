@@ -1,5 +1,5 @@
-export { AsciiArtExample } from './AsciiArtExample';
-export { AsciiMazeExample } from './AsciiMazeExample';
+export { ArtExample } from './ArtExample';
+export { MazeExample } from './MazeExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';

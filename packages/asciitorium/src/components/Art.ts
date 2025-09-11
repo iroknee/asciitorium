@@ -1,11 +1,9 @@
-import { request } from 'http';
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 import { State } from '../core/State';
 import { loadArt } from '../core/environment';
 
-export interface ArtOptions
-  extends Omit<ComponentProps, 'children'> {
+export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .txt (UTF-8) or reactive state
   src?: string; // URL or file path to load ASCII art from
   children?: string | string[];
@@ -29,7 +27,7 @@ type SpriteDefaults = {
   loop?: boolean;
 };
 
-export class AsciiArt extends Component {
+export class Art extends Component {
   private frames: SpriteFrame[] = [];
   private frameIndex = 0;
   private loop = false;
@@ -46,12 +44,19 @@ export class AsciiArt extends Component {
     const borderPadding = options.border ? 2 : 0;
     let parsed: ReturnType<typeof parseSprite>;
     let isLoadingSrc = false;
-    
+
     // Handle src prop for async loading
     if (options.src) {
       isLoadingSrc = true;
-      contentValue = 'Loading...';
-      parsed = parseSprite(contentValue);
+      // Skip parsing - will be done in updateContent after load
+      parsed = { 
+        frames: [{ 
+          lines: [['L','o','a','d','i','n','g','.','.','.']], 
+          meta: { duration: 0 } 
+        }], 
+        defaults: { loop: false },
+        errors: []
+      };
     } else {
       // Fallback to existing content/children logic
       if (!actualContent && options.children) {
@@ -96,13 +101,14 @@ export class AsciiArt extends Component {
     if (isLoadingSrc && options.src) {
       this.src = options.src;
       this.isLoading = true;
-      
+
       // Start async loading
       loadArt(this.src)
         .then((loadedContent) => {
           this.isLoading = false;
           this.loadError = undefined;
           this.updateContent(loadedContent);
+          requestRender();
         })
         .catch((error) => {
           this.isLoading = false;
@@ -113,7 +119,7 @@ export class AsciiArt extends Component {
       // Set up state subscription for non-src content
       if (actualContent instanceof State) {
         this.contentState = actualContent;
-        
+
         // Subscribe to state changes
         const updateContent = (newValue: string) => {
           this.updateContent(newValue);
@@ -196,12 +202,12 @@ export class AsciiArt extends Component {
     this.frames = parsed.frames;
     this.loop = parsed.defaults.loop || false;
     this.frameIndex = 0;
-    
+
     // Restart animation if needed
     if (this.frames.length > 1) {
       this.startAnimation();
     }
-    
+
     // Request a re-render
     requestRender();
   }

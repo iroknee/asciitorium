@@ -2,7 +2,7 @@ import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue } from './t
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
-import { resolveSize, createSizeContext } from './utils/sizeUtils';
+import { resolveSize } from './utils/sizeUtils';
 
 export interface ComponentProps {
   label?: string;

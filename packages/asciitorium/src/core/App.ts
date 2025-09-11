@@ -234,6 +234,8 @@ export class App extends Component {
     validateWebEnvironment();
     await setupKeyboardHandling((key, event) => this.handleKey(key, event));
     setRenderCallback(() => this.render());
+    // Trigger initial render to ensure all components are displayed
+    this.render();
   }
 
   private resolveSizesRecursively(): void {
