@@ -1,5 +1,5 @@
 import { State } from '../../core/State';
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
 
 /**
  * Helper utilities for testing State<T> objects and reactive behavior
@@ -9,7 +9,7 @@ export class StateTestHelper {
    * Create a mock listener function that can be used to test state subscriptions
    */
   static createMockListener<T>() {
-    return vi.fn<[T], void>();
+    return vi.fn<(value: T) => void>();
   }
 
   /**

@@ -1,5 +1,6 @@
 import { Component } from '../../core/Component';
 import { State } from '../../core/State';
+import { createSizeContext } from '../../core/utils/sizeUtils';
 
 /**
  * A headless renderer for testing components without DOM or terminal output
@@ -14,10 +15,13 @@ export class ComponentTestRenderer {
   render(component: Component): string[][] {
     this.component = component;
     
-    // Force component to calculate its size and layout
-    this.component.calculateLayout();
+    // Create a reasonable default size context for testing (80x24 terminal)
+    const defaultContext = createSizeContext(80, 24, 0);
     
-    // Draw the component to its internal buffer
+    // Resolve component size before drawing
+    this.component.resolveSize(defaultContext);
+    
+    // Draw the component to its internal buffer (this will recalculate layout)
     return this.component.draw();
   }
 

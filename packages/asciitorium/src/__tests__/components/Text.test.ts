@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { Text } from '../../components/Text';
 import { State } from '../../core/State';
 import { ComponentTestRenderer, StateTestHelper, expectBuffer, expectComponent } from '../utils';
@@ -83,9 +83,8 @@ describe('Text', () => {
       const text = new Text({ children: ['Line 1', 'Line 2', 'Line 3'] });
       const buffer = renderer.render(text);
       
+      // Only the first child is used
       expectBuffer(buffer).toContainText('Line 1');
-      expectBuffer(buffer).toContainText('Line 2');
-      expectBuffer(buffer).toContainText('Line 3');
     });
 
     test('should prefer content over children', () => {

@@ -79,8 +79,8 @@ export const FormExample = () => {
     },
     resultsDisplay: {
       border: true,
-      width: 'fill',
-      height: 'fill',
+      width: 'fill' as const,
+      height: 'fill' as const,
     },
   };
 
@@ -189,41 +189,31 @@ export const FormExample = () => {
     <Column style={BaseStyle} label="Form Example:">
       {/* Name */}
       <Row style={styles.formRowWithTopGap}>
-        <Text style={styles.fieldLabel}>
-          Name:
-        </Text>
+        <Text style={styles.fieldLabel}>Name:</Text>
         <TextInput
           value={name}
           placeholder="Enter your full name"
           style={styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text style={styles.errorText}>
-          {nameErrorDisplay}
-        </Text>
+        <Text style={styles.errorText}>{nameErrorDisplay}</Text>
       </Row>
 
       {/* Email */}
       <Row style={styles.formRow}>
-        <Text style={styles.fieldLabel}>
-          Email:
-        </Text>
+        <Text style={styles.fieldLabel}>Email:</Text>
         <TextInput
           value={email}
           placeholder="your.email@example.com"
           style={styles.inputField}
           onEnter={handleSubmit}
         />
-        <Text style={styles.errorText}>
-          {emailErrorDisplay}
-        </Text>
+        <Text style={styles.errorText}>{emailErrorDisplay}</Text>
       </Row>
 
       {/* Age */}
       <Row style={styles.formRow}>
-        <Text style={styles.fieldLabel}>
-          Age:
-        </Text>
+        <Text style={styles.fieldLabel}>Age:</Text>
         <GaugeSlider
           height={3}
           value={age}
@@ -235,16 +225,12 @@ export const FormExample = () => {
         <Text gap={1} width={3}>
           {age}
         </Text>
-        <Text style={styles.errorText}>
-          {ageErrorDisplay}
-        </Text>
+        <Text style={styles.errorText}>{ageErrorDisplay}</Text>
       </Row>
 
       {/* Country */}
       <Row style={styles.formRow}>
-        <Text style={styles.fieldLabel}>
-          Country:
-        </Text>
+        <Text style={styles.fieldLabel}>Country:</Text>
         <Select selectedItem={country} items={countryOptions} width={25} />
       </Row>
 
@@ -259,15 +245,13 @@ export const FormExample = () => {
       </Row>
 
       {/* Status */}
-      <HR width="fill"/>
+      <HR width="fill" />
       <Row style={styles.statusContainer}>
         <Text>Form Status: </Text>
         <Text>{formStatusText}</Text>
       </Row>
       {/* Results */}
-      <Text style={styles.resultsDisplay}>
-        {submissionResult}
-      </Text>
+      <Text style={styles.resultsDisplay}>{submissionResult}</Text>
     </Column>
   );
 };

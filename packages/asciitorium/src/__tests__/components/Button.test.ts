@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Button } from '../../components/Button';
 import { ComponentTestRenderer, EventTestHelper, expectBuffer, expectComponent } from '../utils';
 
@@ -206,7 +206,7 @@ describe('Button', () => {
   });
 
   describe('visual states', () => {
-    test('should show press effect temporarily', (done) => {
+    test('should show press effect temporarily', async () => {
       const button = new Button({ content: 'Press Test' });
       
       // Simulate press
@@ -217,11 +217,9 @@ describe('Button', () => {
       // the actual press state or visual changes
       
       // Wait for press effect to end
-      setTimeout(() => {
-        const buffer = renderer.render(button);
-        expectBuffer(buffer).toContainText('Press Test');
-        done();
-      }, 200);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      const buffer = renderer.render(button);
+      expectBuffer(buffer).toContainText('Press Test');
     });
   });
 });

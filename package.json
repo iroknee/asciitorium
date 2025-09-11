@@ -7,8 +7,7 @@
     "web": "cd packages/asciitorium && npm run web",
     "cli": "cd packages/asciitorium && npm run cli",
     "build": "npm run build --workspaces",
-    "test": "cd packages/asciitorium && npm run test",
-    "test-scaffolding": "scripts/test-create.sh && cd tmp/asciitorium/example && npm run web",
+    "test": "scripts/test-create.sh && cd tmp/asciitorium/example && npm run web",
     "version": "node scripts/update-version.js",
     "release": "npm publish --workspaces"
   },

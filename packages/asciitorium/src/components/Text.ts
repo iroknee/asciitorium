@@ -2,7 +2,7 @@ import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState } from '../core/environment';
 import { resolveAlignment } from '../core/utils/index';
-import { Alignment } from 'core/types';
+import { Alignment, SizeContext } from '../core/types';
 
 export interface TextOptions
   extends Omit<ComponentProps, 'children'> {
@@ -27,10 +27,9 @@ export class Text extends Component {
       }
     }
 
+    // Default to empty string if no content provided
     if (!actualContent) {
-      throw new Error(
-        'Text component requires either content prop or children'
-      );
+      actualContent = '';
     }
 
     const { children, content, ...componentProps } = options;
@@ -45,7 +44,7 @@ export class Text extends Component {
   }
 
   // Override resolveSize to handle width and height auto-sizing
-  public resolveSize(context: any): void {
+  public resolveSize(context: SizeContext): void {
     // First, let the base class resolve any explicitly set dimensions
     super.resolveSize(context);
     
@@ -73,9 +72,11 @@ export class Text extends Component {
   }
 
   getContentAsString(): string {
-    return isState(this.source)
-      ? String((this.source as State<any>).value)
-      : String(this.source);
+    if (isState(this.source)) {
+      const value = (this.source as State<any>).value;
+      return value == null ? '' : String(value);
+    }
+    return this.source == null ? '' : String(this.source);
   }
 
   draw(): string[][] {

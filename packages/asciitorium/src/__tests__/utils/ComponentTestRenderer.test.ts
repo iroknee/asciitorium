@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { ComponentTestRenderer } from './ComponentTestRenderer';
 import { Button } from '../../components/Button';
 import { Text } from '../../components/Text';
