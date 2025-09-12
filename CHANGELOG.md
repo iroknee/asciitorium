@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.28] - 2025-09-11
+
+### Changed
+
+- **Component Refactoring:**
+  - **Breaking Change:** Renamed `AsciiArt` component to `Art` for improved naming consistency
+  - **Breaking Change:** Renamed `AsciiMaze` component to `Maze` for improved naming consistency
+  - Updated all examples and main application to reflect new component names
+  - Enhanced component constructors to support consolidated style properties
+
+- **Code Quality and Structure:**
+  - Refactored test files to improve structure and consistency
+  - Updated component imports throughout examples and test cases
+  - Enhanced test cases for better coverage and reliability
+  - Improved layout handling in examples for better consistency
+
+- **Application Improvements:**
+  - Added initial render trigger in App for improved startup behavior
+  - Removed unused imports and cleaned up codebase
+  - Enhanced `FormExample` component with improved style handling and layout consistency
+
+- **Performance and UX:**
+  - Enhanced `Maze` component with async loading support for better performance
+  - Updated styles for improved visual consistency across components
+  - Improved layout handling and navigation instructions
+
+### Technical Details
+
+- **Key Files Modified:** Art/AsciiArt component, Maze/AsciiMaze component, examples, test files, main application
+- **Breaking Changes:**
+  - `AsciiArt` component renamed to `Art` - update all imports and references
+  - `AsciiMaze` component renamed to `Maze` - update all imports and references
+- **Architecture:** Better component naming consistency, improved style property handling
+- **Code Quality:** Enhanced test structure, removed unused code, improved imports
+
 ## [0.1.27] - 2025-09-07
 
 ### Changed
