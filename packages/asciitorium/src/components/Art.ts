@@ -109,11 +109,16 @@ export class Art extends Component {
           this.loadError = undefined;
           this.updateContent(loadedContent);
           requestRender();
+          // Also try to directly render via the app if available
+          this.forceRenderIfNeeded();
         })
         .catch((error) => {
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load ASCII art';
           this.updateContent(`Error: ${this.loadError}`);
+          requestRender();
+          // Also try to directly render via the app if available
+          this.forceRenderIfNeeded();
         });
     } else {
       // Set up state subscription for non-src content
@@ -210,6 +215,19 @@ export class Art extends Component {
 
     // Request a re-render
     requestRender();
+  }
+
+  private forceRenderIfNeeded(): void {
+    // Walk up the parent chain to find the App instance
+    let current = this.parent;
+    while (current) {
+      if ((current as any).isApp) {
+        // Found the app - call render directly as a fallback
+        (current as any).render();
+        return;
+      }
+      current = current.parent;
+    }
   }
 
   override destroy(): void {
