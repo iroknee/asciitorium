@@ -16,7 +16,12 @@ export function jsx(type: any, props: any, _key?: string): any {
       : [props.children];
   }
 
-  return new type(props);
+  // Check if it's a function component (not a class constructor)
+  if (typeof type === 'function' && !type.prototype?.constructor) {
+    return type(props); // Call as function
+  }
+  
+  return new type(props); // Instantiate as class
 }
 
 export const jsxs = jsx;
