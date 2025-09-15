@@ -66,8 +66,8 @@ async function main() {
   if (doInstall) {
     try {
       const { execa } = await import('execa');
-      const installCmd = pm === 'yarn' ? 'install' : 'i';
-      await execa(pm, [installCmd], { cwd: projectDir, stdio: 'inherit' });
+      const installCmd = pm === 'yarn' ? ['install'] : pm === 'npm' ? ['i', '--no-audit', '--no-fund'] : ['i'];
+      await execa(pm, installCmd, { cwd: projectDir, stdio: 'inherit' });
     } catch {
       console.log(dim(`…skipping install (unable to run ${pm})`));
     }

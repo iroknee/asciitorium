@@ -106,7 +106,7 @@ export async function pinLatestAsciitorium(appDir: string) {
 
 async function runInstall(appDir: string, pm: 'pnpm' | 'npm' | 'yarn') {
   const cmd =
-    pm === 'pnpm' ? ['install'] : pm === 'npm' ? ['install'] : ['install']; // yarn
+    pm === 'pnpm' ? ['install'] : pm === 'npm' ? ['install', '--no-audit', '--no-fund'] : ['install']; // yarn
 
   try {
     await execa(pm, cmd, { cwd: appDir, stdio: 'inherit' });
