@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.29] - 2025-09-15
+
+### Added
+
+- **New Components:**
+  - `Fragment` component for grouping child components without visual rendering
+  - `Switch`, `Case`, and `Option` components for conditional rendering and selection logic
+  - Conditional rendering capabilities with simplified dynamic component handling
+
+### Changed
+
+- **Renderer Improvements:**
+  - **Breaking Change:** Renamed `DomRenderer` to `DOMRenderer` for naming consistency
+  - Enhanced `TTYRenderer` with color formatting support for improved terminal output
+  - Updated all imports and references to use new renderer naming
+
+- **Component Architecture:**
+  - Refactored conditional rendering from `ConditionalRenderer` to `Switch` component
+  - Simplified dynamic component handling throughout the framework
+  - Enhanced component exports and organization
+
+- **Documentation:**
+  - Updated README with simplified project description
+  - Revised installation instructions for better clarity
+  - Enhanced FIGlet examples and component descriptions
+  - Improved clarity in installation and usage documentation
+
+### Technical Details
+
+- **Key Files Modified:** Renderer classes, conditional components, examples, documentation
+- **Breaking Changes:**
+  - `DomRenderer` renamed to `DOMRenderer` - update all imports
+  - `ConditionalRenderer` replaced with `Switch` component - update usage patterns
+- **New Features:** Fragment grouping, improved conditional rendering, enhanced terminal colors
+- **Architecture:** Better component organization, simplified conditional logic
+
 ## [0.1.28] - 2025-09-11
 
 ### Changed
