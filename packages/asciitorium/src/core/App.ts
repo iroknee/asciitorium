@@ -1,7 +1,7 @@
 import { Component, ComponentProps } from './Component';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './renderers/Renderer';
-import { DomRenderer } from './renderers/DomRenderer';
+import { DOMRenderer } from './renderers/DOMRenderer';
 import { TTYRenderer } from './renderers/TTYRenderer';
 import { setRenderCallback } from './RenderScheduler';
 import { setupKeyboardHandling, validateWebEnvironment } from './environment';
@@ -264,7 +264,7 @@ function getDefaultRenderer(font?: string): Renderer {
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const screen = document.getElementById('screen');
     if (!screen) throw new Error('No #screen element found for DOM rendering');
-    return new DomRenderer(screen, font);
+    return new DOMRenderer(screen, font);
   } else {
     return new TTYRenderer();
   }

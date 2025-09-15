@@ -8,8 +8,6 @@
 import {
   App,
   Component,
-  Row,
-  Column,
   Text,
   State,
   AsciiArt,

@@ -3,7 +3,7 @@
  */
 import { Renderer } from './Renderer';
 
-export class DomRenderer implements Renderer {
+export class DOMRenderer implements Renderer {
   private charWidth: number = 0;
   private charHeight: number = 0;
 
