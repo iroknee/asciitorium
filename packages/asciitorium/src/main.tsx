@@ -13,7 +13,7 @@ import {
   CelticBorderExample,
   FormExample,
   MultiSelectExample,
-  RelativeSizingExample,
+  LayoutSizingExample,
   TabsExample,
   ArtExample,
   SlidersExample,
@@ -34,7 +34,7 @@ const componentList = [
   'Form',
   'Maze',
   'MultiSelect',
-  'RelativeSizing',
+  'LayoutSizing',
   'Sliders',
   'Tabs',
 ];
@@ -47,7 +47,7 @@ const examples = {
   Form: FormExample,
   Maze: MazeExample,
   MultiSelect: MultiSelectExample,
-  RelativeSizing: RelativeSizingExample,
+  LayoutSizing: LayoutSizingExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
 };

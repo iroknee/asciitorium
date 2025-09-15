@@ -4,6 +4,6 @@ export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';
 export { MultiSelectExample } from './MultiSelectExample';
-export { RelativeSizingExample } from './RelativeSizingExample';
+export { LayoutSizingExample } from './LayoutSizingExample';
 export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';

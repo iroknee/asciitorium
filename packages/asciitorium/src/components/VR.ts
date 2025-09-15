@@ -8,7 +8,7 @@ export class VR extends Component {
   constructor(options: VROptions) {
     // Extract height from style object if present, with precedence order:
     // 1. Direct height prop 2. Style height 3. Legacy length prop 4. Default value
-    const resolvedHeight = options.height ?? options.style?.height ?? options.length ?? 12;
+    const resolvedHeight = options.height ?? options.style?.height ?? 'fill';
 
     super({
       ...options,
@@ -20,7 +20,7 @@ export class VR extends Component {
   draw(): string[][] {
     super.draw(); // Prepares buffer, border, label, etc.
 
-    const lineChar = '│';
+    const lineChar = '|';
     const x = 0;
     const yStart = this.border ? 1 : 0;
     const yEnd = this.border ? this.height - 1 : this.height;
