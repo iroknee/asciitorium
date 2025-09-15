@@ -14,10 +14,10 @@
 
 ### Installation
 
-The recommended way to start a new project is with the npm create command:
+To start a new asciitorium project:
 
 ```bash
-npm create asciitorium@latest my-app
+npm create asciitorium my-app
 ```
 
 This will create a new directory with the specified project name, scaffold the project, and install dependencies.
@@ -41,19 +41,54 @@ npm run build
 
 ### Other Scripts
 
-Generate FIGlet ASCII art assets (placed in public/art):
+Asciitorium supports viewing ascii art files. There are a few easy ways to create some specific ascii art, including FIGlet fonts and mazes/maps.
+
+To generate FIGlet ASCII art assets (automatically placed in public/art):
 
 ```bash
 npm run figlet font "a phrase"
 ```
 
-List available FIGlet fonts:
+#### FIGlet Examples
+
+Here are some practical examples for generating ASCII art:
+
+```bash
+# Generate a game title
+npm run figlet big "DUNGEON QUEST"
+
+# Create a welcome message
+npm run figlet standard "Welcome"
+
+# Generate stylized text for menus
+npm run figlet small "Main Menu"
+
+# Create decorative headers
+npm run figlet banner "Level 1"
+
+# Generate large title text
+npm run figlet block "GAME OVER"
+```
+
+#### Popular FIGlet Fonts
+
+Some commonly used fonts include:
+
+- `big` - Large, bold letters
+- `standard` - Default FIGlet font
+- `small` - Compact text
+- `banner` - Wide banner-style text
+- `block` - Solid block letters
+- `slant` - Italicized appearance
+- `shadow` - Text with shadow effect
+
+You may also list all available FIGlet fonts supported:
 
 ```bash
 npm run figlet:fonts
 ```
 
-Generate ASCII maze files (placed in public/art/mazes):
+To generate ASCII maze files (placed in public/art/mazes):
 
 ```bash
 node scripts/maze-builder.js <width> <height> <filename> [--smooth]
@@ -69,7 +104,7 @@ The `--smooth` flag uses Unicode box drawing characters for improved visual appe
 
 A typical generated project will look like:
 
-```
+```bash
 my-asciitorium-app/
   ├── public/
   │   ├── art/
@@ -95,10 +130,6 @@ my-asciitorium-app/
 ## Learn More
 
 - [Asciitorium Documentation](https://github.com/iroknee/asciitorium)
-
-## 📝 Changelog
-
-See [CHANGELOG.md](https://github.com/iroknee/asciitorium/CHANGELOG.md) for detailed release notes and migration guides.
 
 ## License
 
