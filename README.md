@@ -57,6 +57,10 @@ await app.start();
 
 See the [package README](packages/asciitorium/README.md) for full usage details.
 
+## Documentation
+
+- **[Component Architecture](Component.md)** - Comprehensive guide to the Component base class, covering rendering, layout management, focus handling, and creating custom components
+
 ## Installation
 
 > NOTE: if you intend to build projects leveraging asciitorium you should use: [`create-asciitorium`](packages/create-asciitorium). It's a CLI tool to scaffold new projects using **Vite + TypeScript** preconfigured:

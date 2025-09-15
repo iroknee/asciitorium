@@ -3,12 +3,12 @@
  */
 import { Renderer } from './Renderer';
 
-export class TerminalRenderer implements Renderer {
+export class TTYRenderer implements Renderer {
   getScreenSize(): { width: number; height: number } {
     // Use process.stdout.columns and rows if available (Node.js terminal)
-    let width = 80;  // Default fallback
+    let width = 80; // Default fallback
     let height = 24; // Default fallback
-    
+
     if (process.stdout.isTTY) {
       width = process.stdout.columns || 80;
       height = process.stdout.rows || 24;
@@ -16,7 +16,8 @@ export class TerminalRenderer implements Renderer {
       // Try to get terminal size from environment variables or tty
       try {
         const tty = require('tty');
-        if (tty.isatty(1)) { // Check if stdout is a TTY
+        if (tty.isatty(1)) {
+          // Check if stdout is a TTY
           const size = tty.getWindowSize();
           if (size && size.length >= 2) {
             width = size[0];

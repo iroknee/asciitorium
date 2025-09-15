@@ -33,7 +33,6 @@ export class Art extends Component {
   private loop = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
   private contentState?: State<string>;
-  private unsubscribe?: () => void;
   private isLoading = false;
   private loadError?: string;
   private src?: string;
@@ -125,12 +124,10 @@ export class Art extends Component {
       if (actualContent instanceof State) {
         this.contentState = actualContent;
 
-        // Subscribe to state changes
-        const updateContent = (newValue: string) => {
+        // Use Component.bind() for automatic subscription management
+        this.bind(this.contentState, (newValue: string) => {
           this.updateContent(newValue);
-        };
-        this.contentState.subscribe(updateContent);
-        this.unsubscribe = () => this.contentState!.unsubscribe(updateContent);
+        });
       }
 
       // If we have animation (2+ frames), start it
@@ -218,24 +215,14 @@ export class Art extends Component {
   }
 
   private forceRenderIfNeeded(): void {
-    // Walk up the parent chain to find the App instance
-    let current = this.parent;
-    while (current) {
-      if ((current as any).isApp) {
-        // Found the app - call render directly as a fallback
-        (current as any).render();
-        return;
-      }
-      current = current.parent;
-    }
+    // Use the base class method for focus refresh (which also triggers render)
+    this.notifyAppOfFocusRefresh();
   }
 
   override destroy(): void {
     super.destroy();
     this.clearTimer();
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
+    // Note: Component.destroy() automatically handles state unsubscriptions
   }
 
   override draw(): string[][] {

@@ -4,36 +4,90 @@ import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
 import { resolveSize } from './utils/sizeUtils';
 
-export interface ComponentProps {
-  label?: string;
-  comment?: string; // Comment to describe the component's purpose.  This isn't used for anything.
-  showLabel?: boolean; // Whether to show the label or not
-  
-  // Style properties (can be provided individually or via style object)
-  style?: ComponentStyle; // Consolidated style properties
-  width?: SizeValue; // Width of the component
-  height?: SizeValue; // Height of the component
-  border?: boolean; // Whether to show a border around the component
-  fill?: string; // Fill character for the component
-  align?: Alignment; // Alignment of the component
-  x?: number;
-  y?: number;
-  z?: number;
-  gap?: GapValue;
-  
-  bind?: State<any> | ((state: State<any>) => void);
-  fixed?: boolean;
-  children?: Component[]; // Child components
-  layout?: LayoutType; // Layout to use for children
-  layoutOptions?: LayoutOptions; // Configuration for the layout
+// Border character sets for focused and normal states
+const SINGLE_BORDER_CHARS = {
+  topLeft: '╭', topRight: '╮', bottomLeft: '╰', bottomRight: '╯',
+  horizontal: '─', vertical: '│'
+};
 
-  // 🔧 Dynamic content switching support (now accepts instance | class | factory)
+const DOUBLE_BORDER_CHARS = {
+  topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝',
+  horizontal: '═', vertical: '║'
+};
+
+/**
+ * Configuration interface for Component initialization.
+ * Supports both individual style properties and consolidated style objects.
+ */
+export interface ComponentProps {
+  /** Optional label displayed at the top of the component */
+  label?: string;
+
+  /** Optional comment for documentation purposes (not displayed) */
+  comment?: string;
+
+  /** Whether to display the label when provided */
+  showLabel?: boolean;
+
+  // Style properties (individual props take precedence over style object)
+  /** Consolidated style properties object */
+  style?: ComponentStyle;
+
+  /** Component width (number, percentage string, or 'auto') */
+  width?: SizeValue;
+
+  /** Component height (number, percentage string, or 'auto') */
+  height?: SizeValue;
+
+  /** Whether to render a border around the component */
+  border?: boolean;
+
+  /** Character used to fill the component background */
+  fill?: string;
+
+  /** Text/content alignment within the component */
+  align?: Alignment;
+
+  /** Absolute X position */
+  x?: number;
+
+  /** Absolute Y position */
+  y?: number;
+
+  /** Z-index for layering (higher values render on top) */
+  z?: number;
+
+  /** Spacing around the component */
+  gap?: GapValue;
+
+  /** State binding for reactive updates (deprecated) */
+  bind?: State<any> | ((state: State<any>) => void);
+
+  /** Whether the component has fixed positioning */
+  fixed?: boolean;
+
+  /** Child components to be managed by this component */
+  children?: Component[];
+
+  /** Layout algorithm to use for positioning children */
+  layout?: LayoutType;
+
+  /** Configuration options for the selected layout */
+  layoutOptions?: LayoutOptions;
+
+  /**
+   * Dynamic content switching system that allows runtime swapping of child components
+   * based on a reactive state key. Supports component instances, classes, or factory functions.
+   */
   dynamicContent?: {
+    /** State that determines which component to display */
     selectedKey: State<string>;
+    /** Map of keys to components (instances, classes, or factories) */
     componentMap: Record<
       string,
       Component | (() => Component) | (new (...args: any[]) => Component)
     >;
+    /** Fallback component when selectedKey doesn't match any map entry */
     fallback?:
       | Component
       | (() => Component)
@@ -41,51 +95,17 @@ export interface ComponentProps {
   };
 }
 
-// -- Helpers for dynamic content ---------------------------------------------
 
-function isComponentCtor(v: any): v is new (...args: any[]) => Component {
-  return (
-    typeof v === 'function' && v.prototype && v.prototype instanceof Component
-  );
-}
-
-function isComponentLike(obj: any): obj is Component {
-  return obj && 
-         typeof obj === 'object' &&
-         typeof obj.draw === 'function' &&
-         typeof obj.setParent === 'function' &&
-         typeof obj.handleEvent === 'function';
-}
-
-function makeComponent(entry: any): Component | undefined {
-  // Allow: pre-built instance
-  if (entry instanceof Component) return entry;
-  
-  // Allow: component-like objects (duck typing for cross-bundle compatibility)
-  if (isComponentLike(entry)) return entry;
-
-  // Allow: class constructor
-  if (isComponentCtor(entry)) return new entry({});
-
-  // Allow: factory function
-  if (typeof entry === 'function') {
-    const out = entry();
-    if (out instanceof Component) return out;
-    if (isComponentLike(out)) return out;
-  }
-
-  return undefined;
-
-  // throw new Error(
-  //   'dynamicContent entries must be a Component instance, a Component class, or a factory that returns a Component.'
-  // );
-}
-
-// Helper function to merge style properties
+/**
+ * Merges individual style properties with a style object.
+ * Individual properties take precedence over style object properties.
+ *
+ * @param props Component properties containing individual and/or consolidated styles
+ * @returns Merged style configuration
+ */
 function mergeStyles(props: ComponentProps): ComponentStyle {
   const style = props.style || {};
-  
-  // Individual props take precedence over style object
+
   return {
     width: props.width ?? style.width,
     height: props.height ?? style.height,
@@ -100,63 +120,136 @@ function mergeStyles(props: ComponentProps): ComponentStyle {
   };
 }
 
-// ---------------------------------------------------------------------------
+// ============================================================================
+// Component Base Class
+// ============================================================================
 
+/**
+ * Abstract base class for all UI components in the asciitorium framework.
+ *
+ * Provides core functionality including:
+ * - Position and size management with support for absolute and relative sizing
+ * - Child component management with automatic layout calculation
+ * - Focus handling with visual indicators (single/double-line borders)
+ * - State binding and reactive updates
+ * - ASCII-based rendering with transparency support
+ * - Dynamic content switching for runtime component replacement
+ *
+ * Components use a character-based rendering system where each component
+ * renders to a 2D string array buffer. The transparent character '‽' allows
+ * for overlay effects and complex compositions.
+ *
+ * Focus-enabled components automatically switch between single-line borders
+ * (╭╮╰╯─│) and double-line borders (╔╗╚╝═║) when focused.
+ */
 export abstract class Component {
+  // ========================================================================
+  // Public Properties
+  // ========================================================================
+
+  /** Optional label displayed at the top of the component */
   public label: string | undefined;
+
+  /** Optional comment for documentation (not rendered) */
   public comment: string | undefined;
+
+  /** Whether to display the label when provided */
   public showLabel: boolean = true;
+
+  /** Current rendered width in characters */
   public width: number;
+
+  /** Current rendered height in characters */
   public height: number;
 
-  // Store original size values for relative sizing
-  protected originalWidth?: SizeValue;
-  protected originalHeight?: SizeValue;
+  /** Whether to render a border around the component */
   public border: boolean;
+
+  /** Character used to fill the component background */
   public fill: string;
+
+  /** Content alignment within the component */
   public align?: Alignment;
+
+  /** Whether the component uses fixed positioning */
   public fixed: boolean = false;
+
+  /** Absolute X position */
   public x = 0;
+
+  /** Absolute Y position */
   public y = 0;
+
+  /** Z-index for rendering order (higher values on top) */
   public z = 0;
+
+  /** Spacing around the component */
   public gap: GapValue = 0;
 
+  /** Whether this component can receive keyboard focus */
   public focusable: boolean = false;
-  public hasFocus: boolean = false;
-  public transparentChar = '‽'; // ‽ = transparent character
 
-  protected buffer: string[][];
-  private unbindFns: (() => void)[] = [];
+  /** Whether this component currently has focus */
+  public hasFocus: boolean = false;
+
+  /** Character used for transparency in rendering ('‽' allows overlays) */
+  public transparentChar = '‽';
+
+  /** Reference to parent component in the hierarchy */
   public parent?: Component;
 
-  // Children support
+  // ========================================================================
+  // Protected/Private Properties
+  // ========================================================================
+
+  /** Original size values for relative sizing calculations */
+  protected originalWidth?: SizeValue;
+  protected originalHeight?: SizeValue;
+
+  /** Current render buffer (2D character array) */
+  protected buffer: string[][];
+
+  /** Cleanup functions for state subscriptions */
+  private unbindFns: (() => void)[] = [];
+
+  /** Child components managed by this component */
   protected children: Component[] = [];
+
+  /** Layout algorithm used for positioning children */
   protected layoutType: LayoutType;
+
+  /** Configuration for the layout algorithm */
   protected layoutOptions?: LayoutOptions;
+
+  /** Cached layout instance for performance */
   private layout?: any;
 
+  /**
+   * Initializes a new Component with the provided properties.
+   *
+   * @param props Configuration object containing style, layout, and behavior options
+   */
   constructor(props: ComponentProps) {
-    // Merge style properties (individual props take precedence over style object)
     const mergedStyle = mergeStyles(props);
-    
-    // Store original size values for relative sizing - default to undefined for auto-sizing
+
+    // Store original size values for relative sizing calculations
     this.originalWidth = mergedStyle.width;
     this.originalHeight = mergedStyle.height;
 
-    // Initialize with explicit values or temporary defaults (will be recalculated after layout)
+    // Initialize dimensions - use explicit values or temporary defaults
     if (typeof mergedStyle.width === 'number') {
       this.width = mergedStyle.width;
     } else {
-      // Temporary size - will be recalculated after children are added
-      this.width = 1;
+      this.width = 1; // Temporary - recalculated after layout
     }
 
     if (typeof mergedStyle.height === 'number') {
       this.height = mergedStyle.height;
     } else {
-      // Temporary size - will be recalculated after children are added
-      this.height = 1;
+      this.height = 1; // Temporary - recalculated after layout
     }
+
+    // Initialize basic properties
     this.label = props.label;
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
@@ -170,37 +263,45 @@ export abstract class Component {
     this.gap = mergedStyle.gap ?? 0;
     this.buffer = [];
 
-    // Setup children and layout
-    this.layoutType = props.layout ?? 'column'; // Default to column layout (matches Box behavior)
+    // Initialize layout system
+    this.layoutType = props.layout ?? 'column';
     this.layoutOptions = props.layoutOptions;
 
-    // Store children for later addition (to avoid calling addChild during construction)
-    if (props.children) {
-      const childList = Array.isArray(props.children)
-        ? props.children
-        : [props.children];
-      for (const child of childList) {
-        // Only call setParent on Component instances, not strings or other values
-        if (
-          child &&
-          typeof child === 'object' &&
-          typeof (child as any).setParent === 'function'
-        ) {
-          child.setParent(this);
-          this.children.push(child);
-        }
-      }
-      this.recalculateLayout();
-    }
+    // Initialize children if provided
+    this.initializeChildren(props);
 
-    // Setup dynamic content if provided
-    if (props.dynamicContent) {
-      this.setupDynamicContent(props.dynamicContent);
-    }
   }
 
   setParent(parent: Component) {
     this.parent = parent;
+  }
+
+  /**
+   * Initializes child components from props and sets up layout.
+   *
+   * @param props Component properties containing potential children
+   */
+  private initializeChildren(props: ComponentProps): void {
+    if (!props.children) return;
+
+    const childList = Array.isArray(props.children) ? props.children : [props.children];
+    for (const child of childList) {
+      if (this.isValidChild(child)) {
+        child.setParent(this);
+        this.children.push(child);
+      }
+    }
+    this.recalculateLayout();
+  }
+
+  /**
+   * Validates that a potential child is a valid Component.
+   *
+   * @param child Potential child component to validate
+   * @returns True if the child is a valid Component
+   */
+  private isValidChild(child: any): child is Component {
+    return child && typeof child === 'object' && typeof child.setParent === 'function';
   }
 
   // Child management methods
@@ -295,7 +396,7 @@ export abstract class Component {
     this.unbindFns = [];
   }
 
-  // Auto-sizing methods (moved from Box)
+  // Auto-sizing methods
   private static calculateAutoWidth(
     children?: Component[],
     layout?: LayoutType
@@ -342,68 +443,6 @@ export abstract class Component {
     }
   }
 
-  // Dynamic content support
-  private setupDynamicContent(dynamicContent: {
-    selectedKey: State<string>;
-    componentMap: Record<
-      string,
-      Component | (() => Component) | (new (...args: any[]) => Component)
-    >;
-    fallback?:
-      | Component
-      | (() => Component)
-      | (new (...args: any[]) => Component);
-  }): void {
-    const updateContent = () => {
-      // Clear existing children
-      const childrenToRemove = [...this.children];
-      for (const child of childrenToRemove) {
-        child.destroy();
-        this.removeChild(child);
-      }
-
-      // Get the current entry (instance | class | factory)
-      const key = dynamicContent.selectedKey.value;
-      const entry = dynamicContent.componentMap[key];
-
-      if (entry) {
-        const component = makeComponent(entry);
-        if (component) {
-          this.addChild(component);
-        }
-      } else if (dynamicContent.fallback) {
-        const fallbackComponent = makeComponent(dynamicContent.fallback);
-        if (fallbackComponent) {
-          this.addChild(fallbackComponent);
-        }
-      }
-
-      // Notify app of focus changes
-      this.notifyAppOfFocusChange();
-    };
-
-    // Initially set the current content
-    updateContent();
-
-    // Subscribe to changes in selectedKey
-    const listener = () => updateContent();
-    dynamicContent.selectedKey.subscribe(listener);
-    this.unbindFns.push(() => dynamicContent.selectedKey.unsubscribe(listener));
-  }
-
-  private notifyAppOfFocusChange(): void {
-    // Walk up the parent chain to find the App
-    let current: Component | undefined = this;
-    while (current && !(current as any).isApp) {
-      current = current.parent;
-    }
-
-    // If we found the App, reset its focus manager
-    if (current && (current as any).focus) {
-      (current as any).focus.reset(current);
-    }
-  }
-
   protected notifyAppOfFocusRefresh(): void {
     // Walk up the parent chain to find the App
     let current: Component | undefined = this;
@@ -414,6 +453,23 @@ export abstract class Component {
     // If we found the App, refresh its focus manager (preserves current focus)
     if (current && (current as any).focus) {
       (current as any).focus.refresh(current);
+    }
+  }
+
+  /**
+   * Notifies the application's focus manager that the component tree has changed
+   * and focus needs to be completely reset (e.g., when swapping out child components).
+   */
+  protected notifyAppOfFocusReset(): void {
+    // Walk up the parent chain to find the App
+    let current: Component | undefined = this;
+    while (current && !(current as any).isApp) {
+      current = current.parent;
+    }
+
+    // If we found the App, reset its focus manager
+    if (current && (current as any).focus) {
+      (current as any).focus.reset(current);
     }
   }
 
@@ -451,6 +507,71 @@ export abstract class Component {
     return false;
   }
 
+  /**
+   * Draws the border around the component using focus-aware styling.
+   *
+   * @param drawChar Helper function for safe character drawing within bounds
+   */
+  private drawBorder(drawChar: (x: number, y: number, char: string) => void): void {
+    const w = this.width;
+    const h = this.height;
+    const focused = this.focusable && this.hasFocus;
+    const chars = focused ? DOUBLE_BORDER_CHARS : SINGLE_BORDER_CHARS;
+
+    // Draw corners
+    drawChar(0, 0, chars.topLeft);
+    drawChar(w - 1, 0, chars.topRight);
+    drawChar(0, h - 1, chars.bottomLeft);
+    drawChar(w - 1, h - 1, chars.bottomRight);
+
+    // Draw horizontal lines
+    for (let x = 1; x < w - 1; x++) {
+      drawChar(x, 0, chars.horizontal);
+      drawChar(x, h - 1, chars.horizontal);
+    }
+
+    // Draw vertical lines
+    for (let y = 1; y < h - 1; y++) {
+      drawChar(0, y, chars.vertical);
+      drawChar(w - 1, y, chars.vertical);
+    }
+  }
+
+  /**
+   * Renders all child components sorted by z-index and composites them into the buffer.
+   */
+  private renderChildren(): void {
+    // Sort children by z-index (lower values render first, higher on top)
+    const sorted = [...this.children].sort((a, b) => a.z - b.z);
+
+    for (const child of sorted) {
+      this.compositeChildBuffer(child);
+    }
+  }
+
+  /**
+   * Composites a single child component's buffer into this component's buffer.
+   *
+   * @param child The child component to composite
+   */
+  private compositeChildBuffer(child: Component): void {
+    const childBuffer = child.draw();
+
+    for (let j = 0; j < childBuffer.length; j++) {
+      for (let i = 0; i < childBuffer[j].length; i++) {
+        const px = child.x + i;
+        const py = child.y + j;
+
+        if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
+          const char = childBuffer[j][i];
+          if (char !== child.transparentChar) {
+            this.buffer[py][px] = char;
+          }
+        }
+      }
+    }
+  }
+
   draw(): string[][] {
     // Recalculate layout for children
     this.recalculateLayout();
@@ -462,47 +583,16 @@ export abstract class Component {
       )
     );
 
+    // Helper function for safe character drawing within bounds
     const drawChar = (x: number, y: number, char: string) => {
       if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
         this.buffer[y][x] = char;
       }
     };
 
+    // Draw border if enabled
     if (this.border) {
-      const w = this.width;
-      const h = this.height;
-
-      if (this.focusable && this.hasFocus) {
-        // Double-line border when focused
-        drawChar(0, 0, '╔');
-        drawChar(w - 1, 0, '╗');
-        drawChar(0, h - 1, '╚');
-        drawChar(w - 1, h - 1, '╝');
-
-        for (let x = 1; x < w - 1; x++) {
-          drawChar(x, 0, '═');
-          drawChar(x, h - 1, '═');
-        }
-        for (let y = 1; y < h - 1; y++) {
-          drawChar(0, y, '║');
-          drawChar(w - 1, y, '║');
-        }
-      } else {
-        // Single-line border when not focused
-        drawChar(0, 0, '╭');
-        drawChar(w - 1, 0, '╮');
-        drawChar(0, h - 1, '╰');
-        drawChar(w - 1, h - 1, '╯');
-
-        for (let x = 1; x < w - 1; x++) {
-          drawChar(x, 0, '─');
-          drawChar(x, h - 1, '─');
-        }
-        for (let y = 1; y < h - 1; y++) {
-          drawChar(0, y, '│');
-          drawChar(w - 1, y, '│');
-        }
-      }
+      this.drawBorder(drawChar);
     }
 
     if (this.label && this.showLabel) {
@@ -513,23 +603,8 @@ export abstract class Component {
       }
     }
 
-    // Render children sorted by z-index
-    const sorted = [...this.children].sort((a, b) => a.z - b.z);
-    for (const child of sorted) {
-      const buf = child.draw();
-      for (let j = 0; j < buf.length; j++) {
-        for (let i = 0; i < buf[j].length; i++) {
-          const px = child.x + i;
-          const py = child.y + j;
-          if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
-            const char = buf[j][i];
-            if (char !== child.transparentChar) {
-              this.buffer[py][px] = char;
-            }
-          }
-        }
-      }
-    }
+    // Render child components
+    this.renderChildren();
 
     return this.buffer;
   }

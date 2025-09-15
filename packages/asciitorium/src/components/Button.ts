@@ -60,16 +60,10 @@ export class Button extends Component {
       this.isPressed = false;
       this.pressTimer = undefined;
       
-      // Find App and render directly (reliable fallback)
-      let current = this.parent;
-      while (current && !(current as any).isApp) {
-        current = current.parent;
-      }
-      if (current && (current as any).render) {
-        (current as any).render();
-      }
-      
-      // Also try RenderScheduler (may work in some environments)
+      // Use base class method for focus refresh (which also triggers render)
+      this.notifyAppOfFocusRefresh();
+
+      // Also try RenderScheduler as additional fallback
       requestRender();
     }, 100);
   }

@@ -2,7 +2,7 @@ import { Component, ComponentProps } from './Component';
 import { FocusManager } from './FocusManager';
 import type { Renderer } from './renderers/Renderer';
 import { DomRenderer } from './renderers/DomRenderer';
-import { TerminalRenderer } from './renderers/TerminalRenderer';
+import { TTYRenderer } from './renderers/TTYRenderer';
 import { setRenderCallback } from './RenderScheduler';
 import { setupKeyboardHandling, validateWebEnvironment } from './environment';
 import { createSizeContext } from './utils/sizeUtils';
@@ -27,7 +27,7 @@ export class App extends Component {
     // Extract font from props or style object
     const fontFromStyle = props.style?.font;
     const selectedFont = props.font ?? fontFromStyle;
-    
+
     // Initialize renderer first to get screen size
     const renderer = getDefaultRenderer(selectedFont);
     const screenSize = renderer.getScreenSize();
@@ -36,7 +36,7 @@ export class App extends Component {
     const widthFromStyle = props.style?.width;
     const heightFromStyle = props.style?.height;
     const layoutFromStyle = props.style?.layout;
-    
+
     // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
     const asciitoriumProps = {
@@ -76,7 +76,7 @@ export class App extends Component {
         ? performance.now()
         : Date.now();
     this.fpsCounter++;
-    
+
     const screenBuffer = Array.from({ length: this.height }, () =>
       Array.from({ length: this.width }, () => ' ')
     );
@@ -241,7 +241,7 @@ export class App extends Component {
   private resolveSizesRecursively(): void {
     // Create size context for the app (root component)
     const sizeContext = createSizeContext(this.width, this.height, 0);
-    
+
     // Resolve sizes for all components in the tree
     const allComponents = this.getAllDescendants().concat([this]);
     for (const component of allComponents) {
@@ -250,8 +250,8 @@ export class App extends Component {
       if (component.parent) {
         const borderPad = component.parent.border ? 1 : 0;
         componentContext = createSizeContext(
-          component.parent.width, 
-          component.parent.height, 
+          component.parent.width,
+          component.parent.height,
           borderPad
         );
       }
@@ -266,6 +266,6 @@ function getDefaultRenderer(font?: string): Renderer {
     if (!screen) throw new Error('No #screen element found for DOM rendering');
     return new DomRenderer(screen, font);
   } else {
-    return new TerminalRenderer();
+    return new TTYRenderer();
   }
 }

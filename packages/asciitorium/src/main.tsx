@@ -2,7 +2,7 @@ import {
   App,
   Art,
   Select,
-  Component,
+  ConditionalRenderer,
   Row,
   Text,
   PersistentState,
@@ -65,15 +65,13 @@ const app = (
         items={componentList}
         selectedItem={selectedComponent}
       />
-      <Component
+      <ConditionalRenderer
         style={{
           width: 'fill',
           height: 'fill',
         }}
-        dynamicContent={{
-          selectedKey: selectedComponent,
-          componentMap: examples,
-        }}
+        selectedKey={selectedComponent}
+        componentMap={examples}
       />
     </Row>
     <Text

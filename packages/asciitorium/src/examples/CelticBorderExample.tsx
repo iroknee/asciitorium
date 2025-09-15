@@ -6,7 +6,7 @@ export const CelticBorderExample = () => {
     <Component style={BaseStyle} layout="aligned" label="CelticBorder Example:">
         <CelticBorder align="top-left" />
         <CelticBorder align="bottom-left" />
-        <Text align="center">CelticBorder Component is an example of how to create decorative borders in ASCII art.</Text>
+        <Text align="center" width={30} >CelticBorder Component is an example of how to create decorative borders in ASCII art.</Text>
         <CelticBorder align="top-right" />
         <CelticBorder align="bottom-right" />
     </Component>

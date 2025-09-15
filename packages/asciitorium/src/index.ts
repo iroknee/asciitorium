@@ -7,6 +7,7 @@ export * from './core/PersistentState';
 export * from './components/Art';
 export * from './components/Button';
 export * from './components/CelticBorder';
+export * from './components/ConditionalRenderer';
 export * from './components/PerfMonitor';
 export * from './components/HR';
 export * from './components/VR';

@@ -17,8 +17,4 @@ export class Row extends Component {
     });
   }
 
-  draw(): string[][] {
-    super.draw();
-    return this.buffer;
-  }
 }
