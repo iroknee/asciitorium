@@ -105,13 +105,13 @@ component.bind(counter, (value) => {
 
 ### 6. Conditional Rendering
 
-For dynamic content switching, use the dedicated `ConditionalRenderer` component:
+For dynamic content switching, use the dedicated `Switch` component:
 
 ```typescript
 const selectedView = new State('home');
 
 const container = (
-  <ConditionalRenderer
+  <Switch
     selectedKey={selectedView}
     componentMap={{
       'home': HomeComponent,
@@ -185,24 +185,24 @@ destroy() {
 
 The framework includes many pre-built components that extend the base `Component` class:
 
-- **Layout**: `Row`, `Column`, `Box`, `ConditionalRenderer`
+- **Layout**: `Row`, `Column`, `Box`, `Switch`
 - **Text**: `Text`, `TextInput`
 - **Controls**: `Button`, `Select`, `MultiSelect`, `Tabs`
 - **Visual**: `AsciiArt`, `AsciiMaze`, `CelticBorder`, `HR`, `VR`
 - **Interactive**: `Sliders`, `GaugeSlider`
 - **System**: `PerfMonitor`
 
-## ConditionalRenderer Component
+## Switch Component
 
-The `ConditionalRenderer` component provides React-inspired conditional rendering for dynamic content switching:
+The `Switch` component provides React-inspired conditional rendering for dynamic content switching:
 
 ```typescript
-import { ConditionalRenderer, State } from 'asciitorium';
+import { Switch, State } from 'asciitorium';
 
 const currentView = new State('dashboard');
 
 const app = (
-  <ConditionalRenderer
+  <Switch
     selectedKey={currentView}
     componentMap={{
       'dashboard': DashboardComponent,
@@ -218,7 +218,7 @@ const app = (
 - **Reactive Updates**: Automatically switches content when state changes
 - **Multiple Component Types**: Supports instances, classes, and factory functions
 - **Fallback Support**: Optional fallback component for missing keys
-- **React-like API**: Familiar conditional rendering patterns
+- **Intuitive API**: Familiar switch/case-like conditional rendering
 
 ## Creating Custom Components
 

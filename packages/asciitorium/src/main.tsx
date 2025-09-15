@@ -2,7 +2,7 @@ import {
   App,
   Art,
   Select,
-  ConditionalRenderer,
+  Switch,
   Row,
   Text,
   PersistentState,
@@ -65,7 +65,7 @@ const app = (
         items={componentList}
         selectedItem={selectedComponent}
       />
-      <ConditionalRenderer
+      <Switch
         style={{
           width: 'fill',
           height: 'fill',
