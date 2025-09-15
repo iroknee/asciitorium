@@ -1,6 +1,6 @@
 # asciitorium
 
-**asciitorium** (pronounced ascii-or-ium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Designed to help develop cli interfaces quickly. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
+**asciitorium** (pronounced ascii-or-ium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ![example](asciitorium.png)
 
@@ -133,8 +133,6 @@ Use the `style` prop to group related styling properties using either the style 
 ### Focus Indicators
 
 Components with borders automatically switch from single-line (`╭╮╰╯─│`) to double-line (`╔╗╚╝═║`) borders when focused, providing clear visual feedback for keyboard navigation.
-
-
 
 ## 🛠 Development
 
