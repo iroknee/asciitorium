@@ -36,6 +36,8 @@ export class TTYRenderer implements Renderer {
   render(buffer: string[][]): void {
     const lines = buffer.map((row) => row.join('')).join('\n');
     process.stdout.write('\x1Bc'); // Clear screen (ANSI)
+    process.stdout.write('\x1b[38;2;63;255;0m'); // Set text color to bright green (#3fff00)
     process.stdout.write(lines + '\n');
+    process.stdout.write('\x1b[0m'); // Reset color
   }
 }
