@@ -47,39 +47,94 @@ await app.start();
 
 ## Key features
 
-- Works in both Web (DOM) and CLI (Terminal)
-- Pure TypeScript, lightweight, no external framework dependencies
-- Built-in components (`Text`, `Button`, `Select`, `GaugeSlider`, `MultiSelect`, `Row`, `Column`, etc.)
-- Stateful rendering with reactive `State<T>` objects
-- Custom JSX runtime for declarative UI
+- **Cross-platform**: Runs identically in web browsers and terminals
+- **Responsive**: Auto-detects screen size and supports percentage-based sizing
+- **Zero dependencies**: Lightweight with no runtime dependencies
+- **TypeScript**: Full TypeScript support with custom JSX runtime
+- **Component-based**: Supports JSX and React-like component architecture
 
-See the [package README](packages/asciitorium/README.md) for full usage details.
-
-## Documentation
-
-- **[Component Architecture](Component.md)** - Comprehensive guide to the Component base class, covering rendering, layout management, focus handling, and creating custom components
-
-## Installation
-
-> NOTE: if you intend to build projects leveraging asciitorium you should use: [`create-asciitorium`](packages/create-asciitorium). It's a CLI tool to scaffold new projects using **Vite + TypeScript** preconfigured:
-
-Usage:
+## Getting Started
 
 ```bash
-# Create a new project
-npm create asciitorium my-app
-
-# Move into your new project
-cd my-app
-
-# Start the dev server (web)
-npm run web
-
-# Run in the terminal (CLI)
-npm run cli
+npm install asciitorium@latest
 ```
 
-> Otherwise if you want to extend, just fork the repo:
+## Built-in Components
+
+### Core Components
+
+- **App** - Root application container with screen detection and rendering management
+- **Component** - Base component class with positioning, borders, focus handling, and layout support
+- **Fragment** - Container for grouping child components without additional rendering
+
+### Layout Components
+
+- **Row** - Horizontal layout container for arranging components side-by-side
+- **Column** - Vertical layout container for stacking components
+
+### Input Components
+
+- **Button** - Interactive clickable button with focus indicators and press effects
+- **TextInput** - Text input field with cursor navigation and keyboard handling
+- **Select** - Single-selection dropdown list with keyboard navigation
+- **MultiSelect** - Multi-selection list allowing multiple item selection
+- **Switch** - Conditional rendering component for dynamic content switching
+- **Tab** - Individual tab component for tabbed interfaces
+- **TabContainer** - Container managing multiple tabs with keyboard navigation
+
+### Display Components
+
+- **Text** - Static and dynamic text display with word wrapping and alignment
+- **Art** - ASCII art display component for images and animations
+- **Maze** - Interactive ASCII maze with player movement and collision detection
+- **PerfMonitor** - Real-time performance monitoring display
+
+### UI Elements
+
+- **HR** - Horizontal rule/divider line
+- **VR** - Vertical rule/divider line
+- **CelticBorder** - Decorative Celtic-style border elements
+- **Sliders** - Collection of slider components (ProgressBar, Gauge, Dot, Vertical)
+
+### State Management
+
+- **State<T>** - Reactive state management with subscribe/unsubscribe pattern
+- **PersistentState<T>** - State management with localStorage persistence
+
+## Styling Components
+
+All components support both individual styling properties and a consolidated `style` prop for cleaner code organization.
+
+### Style Property
+
+Use the `style` prop to group related styling properties using either the style object, individual jsx properties, or both (individual props take precedence).
+
+```tsx
+// Using style prop
+<Text style={{ width: 40, align: 'center', gap: { bottom: 2 } }}>
+  Hello World
+</Text>
+
+// Using individual props (takes precedence over style prop)
+<Button width={30} align="center" border>
+  Click Me
+</Button>
+```
+
+### Available Style Properties
+
+- **width** / **height** - Size values (number, percentage, 'auto', 'fill')
+- **border** - Show border around component (automatically shows focus indicators)
+- **fill** - Fill character for component background
+- **align** - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
+- **x** / **y** / **z** - Positioning coordinates and layer depth
+- **gap** - Spacing around component (number or object with top/bottom/left/right)
+
+### Focus Indicators
+
+Components with borders automatically switch from single-line (`╭╮╰╯─│`) to double-line (`╔╗╚╝═║`) borders when focused, providing clear visual feedback for keyboard navigation.
+
+
 
 ## 🛠 Development
 
