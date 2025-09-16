@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.31] - 2025-09-16
+
+### Changed
+
+- **Component Architecture:**
+  - Refactored component constructors to prioritize style properties for width, height, and border settings
+  - Enhanced constructor organization across all components for improved style property handling
+  - Streamlined property assignment logic in component base class
+
+- **Package Updates:**
+  - Updated packages for create-asciitorium template generation
+  - Enhanced template dependencies and configuration
+
+### Technical Details
+
+- **Key Files Modified:** Component constructors, core Component class, create-asciitorium packages
+- **Improvements:** Better style property prioritization, cleaner constructor patterns across components
+- **Architecture:** Enhanced property handling in component initialization
+
 ## [0.1.30] - 2025-09-15
 
 ### Added
