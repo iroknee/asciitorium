@@ -89,8 +89,8 @@ export class Art extends Component {
     const { children, content, src, ...componentProps } = options;
     super({
       ...componentProps,
-      width: options.width ?? Math.max(1, maxW + borderPadding),
-      height: options.height ?? Math.max(1, maxH + borderPadding),
+      width: options.width ?? options.style?.width ?? Math.max(1, maxW + borderPadding),
+      height: options.height ?? options.style?.height ?? Math.max(1, maxH + borderPadding),
     });
 
     this.frames = parsed.frames;

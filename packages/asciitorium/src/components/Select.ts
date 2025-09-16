@@ -16,13 +16,11 @@ export class Select extends Component {
   hasFocus = false;
 
   constructor(options: SelectOptions) {
-    // Check if height is provided either directly or in style object
-    const hasHeight = options.height !== undefined || options.style?.height !== undefined;
-    const border = options.border ?? options.style?.border ?? true;
-    // Only set default height if no height was provided at all (either directly or in style)
-    const height = hasHeight ? options.height : 3;
-
-    super({ ...options, height, border });
+    super({
+      ...options,
+      height: options.height ?? options.style?.height ?? 3,
+      border: options.border ?? options.style?.border ?? true
+    });
 
     this.items = options.items;
     this.selectedItem = options.selectedItem;

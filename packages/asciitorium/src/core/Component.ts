@@ -565,7 +565,14 @@ export abstract class Component {
         if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
           const char = childBuffer[j][i];
           if (char !== child.transparentChar) {
-            this.buffer[py][px] = char;
+            // Prevent children from overwriting border positions
+            const isBorderPosition = this.border && (
+              py === 0 || py === this.height - 1 ||
+              px === 0 || px === this.width - 1
+            );
+            if (!isBorderPosition) {
+              this.buffer[py][px] = char;
+            }
           }
         }
       }

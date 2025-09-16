@@ -17,17 +17,17 @@ export class TabContainer extends Component {
   hasFocus = false;
 
   constructor(options: TabContainerOptions) {
-    const { children, selectedIndex, style, ...componentProps } = options;
-    
+    const { children, selectedIndex, ...componentProps } = options;
+
     const tabComponents = children || [];
     const tabLabels = tabComponents.map(tab => tab.label);
-    
-    // Extract style properties with proper precedence
-    const width = options.width ?? style?.width ?? 'fill';
-    const height = options.height ?? style?.height ?? 'fill';
-    const border = options.border ?? style?.border ?? true;
 
-    super({ ...componentProps, style, width, height, border });
+    super({
+      ...componentProps,
+      width: options.width ?? options.style?.width ?? 'fill',
+      height: options.height ?? options.style?.height ?? 'fill',
+      border: options.border ?? options.style?.border ?? true
+    });
 
     this.tabComponents = tabComponents;
     this.tabLabels = tabLabels;

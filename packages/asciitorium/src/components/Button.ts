@@ -30,15 +30,12 @@ export class Button extends Component {
 
     const buttonText = actualContent ?? 'Button';
     const showLabel = false; // Buttons don't show label in border
-    const width = options.width ?? options.style?.width ?? buttonText.length + 7; // padding + shadow
-    const height = options.height ?? options.style?.height ?? 4; // height + shadow
-    const border = options.border ?? options.style?.border ?? true;
     const { children, content, ...componentProps } = options;
     super({
       ...componentProps,
-      width,
-      height,
-      border,
+      width: options.width ?? options.style?.width ?? buttonText.length + 7, // padding + shadow
+      height: options.height ?? options.style?.height ?? 4, // height + shadow
+      border: options.border ?? options.style?.border ?? true,
       label: buttonText,
       showLabel,
     });

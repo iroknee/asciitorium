@@ -36,13 +36,13 @@ export class TextInput extends Component {
   hasFocus = false;
 
   constructor(options: TextInputOptions) {
-    const { style, ...componentProps } = options;
-    
-    // Extract style properties with proper precedence
-    const height = options.height ?? style?.height ?? 3; // Default to 3 for backwards compatibility
-    const border = options.border ?? style?.border ?? true;
-    
-    super({ ...componentProps, style, height, border });
+    const height = options.height ?? options.style?.height ?? 3; // Default to 3 for backwards compatibility
+
+    super({
+      ...options,
+      height,
+      border: options.border ?? options.style?.border ?? true
+    });
 
     this.fixedHeight = typeof height === 'number' ? height : undefined;
 

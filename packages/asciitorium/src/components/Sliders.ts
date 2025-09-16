@@ -18,14 +18,12 @@ abstract class SliderBase extends Component {
   hasFocus = false;
 
   constructor(options: SliderVariantOptions, defaultWidth: number, defaultHeight: number) {
-    const { style, ...componentProps } = options;
-    
-    // Extract style properties with proper precedence
-    const width = options.width ?? style?.width ?? defaultWidth;
-    const height = options.height ?? style?.height ?? defaultHeight;
-    const border = options.border ?? style?.border ?? false;
-
-    super({ ...componentProps, style, width, height, border });
+    super({
+      ...options,
+      width: options.width ?? options.style?.width ?? defaultWidth,
+      height: options.height ?? options.style?.height ?? defaultHeight,
+      border: options.border ?? options.style?.border ?? false
+    });
 
     this.valueState = options.value;
     this.min = options.min ?? 0;

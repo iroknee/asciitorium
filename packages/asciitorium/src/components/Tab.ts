@@ -10,12 +10,12 @@ export class Tab extends Component {
   constructor(options: TabOptions) {
     super({
       ...options,
-      width: options.width || 'fill',
-      height: options.height || 'fill',
-      gap: options.gap || { top: 3 },
+      width: options.width ?? options.style?.width ?? 'fill',
+      height: options.height ?? options.style?.height ?? 'fill',
+      gap: options.gap ?? options.style?.gap ?? { top: 3 },
       showLabel: false,
     });
-    
+
     this.label = options.label;
   }
 }

@@ -94,17 +94,11 @@ export class Maze extends Component {
     // Default dimensions if not specified
     const defaultHeight = 10;
 
-    // Extract style properties with proper precedence
-    const width = options.width ?? style?.width ?? 'fill';
-    const height = options.height ?? style?.height ?? 'fill';
-    const border = options.border ?? style?.border ?? true;
-
     super({
       ...componentProps,
-      style,
-      width,
-      height,
-      border,
+      width: options.width ?? options.style?.width ?? 'fill',
+      height: options.height ?? options.style?.height ?? 'fill',
+      border: options.border ?? options.style?.border ?? true,
     });
 
     this.contentSource = actualContent;

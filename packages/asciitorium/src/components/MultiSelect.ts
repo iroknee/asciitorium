@@ -16,13 +16,11 @@ export class MultiSelect extends Component {
   hasFocus = false;
 
   constructor(options: MultiSelectOptions) {
-    const { style, ...componentProps } = options;
-    
-    // Extract style properties with proper precedence
-    const height = options.height ?? style?.height ?? 3;
-    const border = options.border ?? style?.border ?? true;
-
-    super({ ...componentProps, style, height, border });
+    super({
+      ...options,
+      height: options.height ?? options.style?.height ?? 3,
+      border: options.border ?? options.style?.border ?? true
+    });
 
     this.items = options.items;
     this.selectedItems = options.selectedItems;
