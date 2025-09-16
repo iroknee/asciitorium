@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "cli": "tsx src/main.tsx",
     "figlet": "node scripts/gen-figlet-art.js",
-    "figlet:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))'"
+    "figlet:fonts": "node -e 'require(\"figlet\").fonts((_, f) => console.log(f.join(\"\\n\")))\"",
+    "maze-builder": "node scripts/maze-builder.js"
   },
   "devDependencies": {
     "typescript": "^5.6.0",
