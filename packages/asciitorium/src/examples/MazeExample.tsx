@@ -15,7 +15,7 @@ const exploredTiles = new State(new Set<string>());
 const fogOfWarEnabled = new State(false);
 
 export const MazeExample = () => (
-  <Column label="AsciiMaze Example:" style={BaseStyle}>
+  <Column label="AsciiMaze Example" style={BaseStyle}>
     <Maze
       style={{ width: '50%', height: 20, align: 'center' }}
       src="./art/mazes/example.txt"

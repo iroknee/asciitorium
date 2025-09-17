@@ -604,7 +604,7 @@ export abstract class Component {
 
     if (this.label && this.showLabel) {
       const label = ` ${this.label} `;
-      const start = 1;
+      const start = Math.max(1, Math.floor((this.width - label.length) / 2));
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
         drawChar(i + start, 0, label[i]);
       }

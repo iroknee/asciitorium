@@ -60,7 +60,7 @@ const app = (
     <Art src={'./art/asciitorium.txt'} style={{ align: 'center', gap: { bottom: 2 } }} />
     <Row style={{ height: 'fill' }}>
       <Select
-        label="Components:"
+        label="Components"
         style={{
           width: '30%',
           height: 'fill',

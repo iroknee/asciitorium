@@ -6,7 +6,7 @@ export const ButtonExample = () => {
   const buttonClickCount = new State(0);
 
   return (
-    <Component style={BaseStyle} label="Button Example:">
+    <Component style={BaseStyle} label="Button Example">
       <Button
         label="I'm a Button!"
         align="center"

@@ -2,7 +2,7 @@ import { Text, Component, Row, Column, HR, VR } from '../index';
 import { BaseStyle } from './constants';
 
 export const LayoutSizingExample = () => (
-  <Component style={BaseStyle} label="Layout & Sizing Examples:">
+  <Component style={BaseStyle} label="Layout & Sizing Examples">
       <Text width="100%" align="center" height={5} label="Header" border>
         100% width, fixed 5 height
       </Text>

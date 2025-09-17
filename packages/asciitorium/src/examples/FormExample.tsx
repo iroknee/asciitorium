@@ -186,7 +186,7 @@ export const FormExample = () => {
 
   // UI
   return (
-    <Column style={BaseStyle} label="Form Example:">
+    <Column style={BaseStyle} label="Form Example">
       {/* Name */}
       <Row style={styles.formRowWithTopGap}>
         <Text style={styles.fieldLabel}>Name:</Text>

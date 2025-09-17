@@ -12,8 +12,8 @@ export function TabsExample() {
   });
 
   return (
-    <Component style={BaseStyle} label="TabContainer Example:">
-      <TabContainer 
+    <Component style={BaseStyle} label="TabContainer Example">
+      <TabContainer gap={4}
         selectedIndex={selectedIndex}
       >
         <Tab label="Welcome">

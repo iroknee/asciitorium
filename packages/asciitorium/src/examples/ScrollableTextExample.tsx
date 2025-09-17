@@ -1,4 +1,4 @@
-import { Column, Text, State } from '../index';
+import { Column, Text } from '../index';
 import { BaseStyle } from './constants';
 
 // Long text content to demonstrate scrolling
@@ -25,7 +25,7 @@ You can scroll through this text using the arrow keys or WASD when this componen
 This is the end of the demonstration text. Try scrolling up and down to see the scroll indicators in action!`;
 
 export const ScrollableTextExample = () => (
-  <Column label="Scrollable Text Example:" style={BaseStyle}>
+  <Column label="Scrollable Text Example" style={BaseStyle}>
     <Text
       gap={2}
       align="center"
