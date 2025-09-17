@@ -162,7 +162,7 @@ export class Button extends Component {
     const contentHeight = buttonHeight - padY * 2;
 
     // Calculate label placement (centered)
-    const label = this.label ?? 'Button';
+    const label = this.getDisplayLabel() || 'Button';
     const totalLabelWidth = label.length + 4; // label + 2 indicators + 2 spaces
     const labelStartX = offsetX + padX + Math.max(Math.floor((contentWidth - totalLabelWidth) / 2), 0);
     const labelX = labelStartX + 2; // space for left indicator + space

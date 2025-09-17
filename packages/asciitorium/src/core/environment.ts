@@ -34,6 +34,10 @@ export async function setupKeyboardHandling(
   if (isWebEnvironment()) {
     // Web environment
     window.addEventListener('keydown', (event) => {
+      // Prevent default behavior for F1 to avoid browser help
+      if (event.key === 'F1') {
+        event.preventDefault();
+      }
       handleKey(event.key, event);
     });
   } else {

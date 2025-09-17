@@ -93,6 +93,9 @@ export interface ComponentProps {
       | (() => Component)
       | (new (...args: any[]) => Component);
   };
+
+  /** Hotkey for quick access to this component. If not provided, one will be auto-assigned. */
+  hotkey?: string;
 }
 
 
@@ -198,6 +201,9 @@ export abstract class Component {
   /** Reference to parent component in the hierarchy */
   public parent?: Component;
 
+  /** Hotkey assigned to this component for quick access */
+  public hotkey?: string;
+
   // ========================================================================
   // Protected/Private Properties
   // ========================================================================
@@ -261,6 +267,7 @@ export abstract class Component {
     this.y = mergedStyle.y ?? 0;
     this.z = mergedStyle.z ?? 0;
     this.gap = mergedStyle.gap ?? 0;
+    this.hotkey = props.hotkey;
     this.buffer = [];
 
     // Initialize layout system
@@ -579,6 +586,51 @@ export abstract class Component {
     }
   }
 
+  /**
+   * Get the display label with hotkey hints if hotkey visibility is enabled
+   */
+  protected getDisplayLabel(): string {
+    if (!this.label) return '';
+
+    // Check if hotkey visibility is enabled by walking up to find the App
+    const hotkeyVisible = this.isHotkeyVisibilityEnabled();
+
+    if (!hotkeyVisible || !this.hotkey) {
+      return this.label;
+    }
+
+
+    // Find the hotkey character in the label and wrap it with brackets
+    const hotkey = this.hotkey.toLowerCase();
+    const label = this.label;
+    const hotkeyIndex = label.toLowerCase().indexOf(hotkey);
+
+    if (hotkeyIndex !== -1) {
+      return label.slice(0, hotkeyIndex) +
+             '[' + label[hotkeyIndex] + ']' +
+             label.slice(hotkeyIndex + 1);
+    }
+
+    // If hotkey character not found in label, append it
+    return `${label} [${this.hotkey.toUpperCase()}]`;
+  }
+
+  /**
+   * Check if hotkey visibility is enabled by finding the App's HotkeyManager
+   */
+  protected isHotkeyVisibilityEnabled(): boolean {
+    let current: Component | undefined = this;
+    while (current && !(current as any).isApp) {
+      current = current.parent;
+    }
+
+    if (current && (current as any).hotkeyManager) {
+      return (current as any).hotkeyManager.hotkeyVisibilityState.value;
+    }
+
+    return false;
+  }
+
   draw(): string[][] {
     // Recalculate layout for children
     this.recalculateLayout();
@@ -603,7 +655,8 @@ export abstract class Component {
     }
 
     if (this.label && this.showLabel) {
-      const label = ` ${this.label} `;
+      const displayLabel = this.getDisplayLabel();
+      const label = ` ${displayLabel} `;
       const start = Math.max(1, Math.floor((this.width - label.length) / 2));
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
         drawChar(i + start, 0, label[i]);

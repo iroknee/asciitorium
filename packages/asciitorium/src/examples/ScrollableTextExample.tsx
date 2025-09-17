@@ -33,6 +33,7 @@ export const ScrollableTextExample = () => (
       height={15}
       border
       scrollable
+      hotkey="T"
       label="Scrollable Text (press Tab to focus)"
     >
       {longText}
