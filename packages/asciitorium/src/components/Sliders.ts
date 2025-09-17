@@ -1,11 +1,13 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
+import { SizeValue } from '../core/types';
 
 export interface SliderVariantOptions extends ComponentProps {
   value: State<number>;
   min?: number;
   max?: number;
   step?: number;
+  readonly?: boolean;
 }
 
 abstract class SliderBase extends Component {
@@ -17,7 +19,7 @@ abstract class SliderBase extends Component {
   focusable = true;
   hasFocus = false;
 
-  constructor(options: SliderVariantOptions, defaultWidth: number, defaultHeight: number) {
+  constructor(options: SliderVariantOptions, defaultWidth: SizeValue, defaultHeight: SizeValue) {
     super({
       ...options,
       width: options.width ?? options.style?.width ?? defaultWidth,
@@ -29,6 +31,7 @@ abstract class SliderBase extends Component {
     this.min = options.min ?? 0;
     this.max = options.max ?? 100;
     this.step = options.step ?? 1;
+    this.focusable = !options.readonly;
 
     this.bind(this.valueState, () => {});
   }
@@ -67,7 +70,7 @@ abstract class SliderBase extends Component {
 
 export class ProgressBarSlider extends SliderBase {
   constructor(options: SliderVariantOptions) {
-    super(options, 25, 3);
+    super(options, 'fill', 3);
   }
 
   override handleEvent(event: string): boolean {
@@ -122,7 +125,7 @@ export class ProgressBarSlider extends SliderBase {
 
 export class GaugeSlider extends SliderBase {
   constructor(options: SliderVariantOptions) {
-    super(options, 25, 1);
+    super(options, 'fill', 1);
   }
 
   override handleEvent(event: string): boolean {
@@ -166,7 +169,7 @@ export class GaugeSlider extends SliderBase {
 
 export class DotSlider extends SliderBase {
   constructor(options: SliderVariantOptions) {
-    super(options, 25, 1);
+    super(options, 'fill', 1);
   }
 
   override handleEvent(event: string): boolean {
@@ -206,7 +209,7 @@ export class DotSlider extends SliderBase {
 
 export class VerticalSlider extends SliderBase {
   constructor(options: SliderVariantOptions) {
-    super(options, 3, 10);
+    super(options, 3, 'fill');
   }
 
   override handleEvent(event: string): boolean {

@@ -14,6 +14,7 @@ import {
   FormExample,
   MultiSelectExample,
   LayoutSizingExample,
+  ScrollableTextExample,
   TabsExample,
   ArtExample,
   SlidersExample,
@@ -35,6 +36,7 @@ const componentList = [
   'Maze',
   'MultiSelect',
   'LayoutSizing',
+  'ScrollableText',
   'Sliders',
   'Tabs',
 ];
@@ -48,6 +50,7 @@ const examples = {
   Maze: MazeExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
+  ScrollableText: ScrollableTextExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
 };

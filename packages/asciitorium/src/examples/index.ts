@@ -5,5 +5,6 @@ export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';
 export { MultiSelectExample } from './MultiSelectExample';
 export { LayoutSizingExample } from './LayoutSizingExample';
+export { ScrollableTextExample } from './ScrollableTextExample';
 export { SlidersExample } from './SlidersExample';
 export { TabsExample } from './TabsExample';

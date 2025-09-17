@@ -1,5 +1,6 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
+import { ScrollableViewport } from '../core/ScrollableViewport';
 
 export interface MultiSelectOptions extends ComponentProps {
   items: string[];
@@ -7,6 +8,7 @@ export interface MultiSelectOptions extends ComponentProps {
 }
 
 export class MultiSelect extends Component {
+  private scrollableViewport = new ScrollableViewport();
   private readonly items: string[];
   private readonly selectedItems: State<string[]>;
   private focusedIndex: number = 0;
@@ -44,17 +46,16 @@ export class MultiSelect extends Component {
     const prevFocusedIndex = this.focusedIndex;
     const prevSelectedSet = new Set(this.selectedSet);
 
-    // Navigation (arrow keys move the focus cursor)
-    if ((event === 'ArrowUp' || event === 'w') && this.focusedIndex > 0) {
-      this.focusedIndex--;
-    } else if (
-      (event === 'ArrowDown' || event === 's') &&
-      this.focusedIndex < this.items.length - 1
-    ) {
-      this.focusedIndex++;
-    }
+    // Use ScrollableViewport for navigation
+    const newFocusedIndex = this.scrollableViewport.handleScrollEvent(
+      event,
+      this.focusedIndex,
+      this.items.length
+    );
+    this.focusedIndex = newFocusedIndex;
+
     // Selection toggle (space/enter toggles selection of focused item)
-    else if (event === ' ' || event === 'Enter') {
+    if (event === ' ' || event === 'Enter') {
       const focusedItem = this.items[this.focusedIndex];
       if (this.selectedSet.has(focusedItem)) {
         this.selectedSet.delete(focusedItem);
@@ -89,27 +90,16 @@ export class MultiSelect extends Component {
     const innerHeight = this.height - 3 * borderPad - paddingTop;
 
     const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
-    const itemCount = this.items.length;
 
-    // Calculate scroll position based on focused item
-    const focusedStartIdx = Math.max(
-      0,
-      Math.min(
-        this.focusedIndex - Math.floor(maxVisible / 2),
-        Math.max(0, itemCount - maxVisible)
-      )
-    );
-    const focusedVisibleItems = this.items.slice(
-      focusedStartIdx,
-      focusedStartIdx + maxVisible
-    );
+    // Use ScrollableViewport to calculate scroll window
+    const scrollWindow = this.scrollableViewport.calculateScrollWindow({
+      items: this.items,
+      totalCount: this.items.length,
+      maxVisible,
+      focusedIndex: this.focusedIndex
+    });
 
-    // Scroll up indicator
-    if (focusedStartIdx > 0) {
-      const y = borderPad;
-      const x = this.width - 2;
-      buffer[y][x] = '↑';
-    }
+    const { startIdx: focusedStartIdx, visibleItems: focusedVisibleItems } = scrollWindow;
 
     // Draw items
     focusedVisibleItems.forEach((item, i) => {
@@ -140,12 +130,15 @@ export class MultiSelect extends Component {
       }
     });
 
-    // Scroll down indicator
-    if (focusedStartIdx + maxVisible < itemCount) {
-      const y = this.height - 1 - borderPad;
-      const x = this.width - 2;
-      buffer[y][x] = '↓';
-    }
+    // Draw scroll indicators using ScrollableViewport
+    this.scrollableViewport.drawScrollIndicators(
+      buffer,
+      this.width,
+      this.height,
+      borderPad,
+      scrollWindow.showUpArrow,
+      scrollWindow.showDownArrow
+    );
 
     this.buffer = buffer;
     return buffer;

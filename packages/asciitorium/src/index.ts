@@ -4,6 +4,7 @@ export * from './core/App';
 export * from './core/Component';
 export * from './core/State';
 export * from './core/PersistentState';
+export * from './core/ScrollableViewport';
 export * from './components/Art';
 export * from './components/Button';
 export * from './components/CelticBorder';
