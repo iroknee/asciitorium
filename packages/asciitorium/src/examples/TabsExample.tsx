@@ -15,6 +15,7 @@ export function TabsExample() {
     <Component style={BaseStyle} label="TabContainer Example">
       <TabContainer gap={4}
         selectedIndex={selectedIndex}
+        hotkey='t'
       >
         <Tab label="Welcome">
           <Text align="center" width="60%">

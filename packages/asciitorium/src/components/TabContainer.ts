@@ -186,6 +186,14 @@ export class TabContainer extends Component {
     buffer[tabY-1][this.width - borderPad] = ' ';
     if (this.border)buffer[tabY][this.width - borderPad] = chars.topRight;
 
+    // Draw hotkey indicator at position (1, 1) if hotkey visibility is on
+    if (this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        buffer[1][i + 1] = hotkeyDisplay[i];
+      }
+    }
+
     this.buffer = buffer;
     return buffer;
   }

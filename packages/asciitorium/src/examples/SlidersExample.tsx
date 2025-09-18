@@ -18,8 +18,8 @@ export const SlidersExample = () => {
       </Text>
 
       <Row gap={{ left: 1, bottom: 2 }} height={3} align="left">
-        <Text width={8} gap={{ top: 1 }}>
-          Progress
+        <Text width={14} gap={{ top: 1 }}>
+          Progress:
         </Text>
         <ProgressBarSlider
           value={sharedValue}
@@ -27,6 +27,7 @@ export const SlidersExample = () => {
           max={100}
           step={5}
           width={24}
+          hotkey="p"
         />
         <Text width={3} height={3} gap={{ top: 1 }}>
           {sharedValue}
@@ -34,25 +35,26 @@ export const SlidersExample = () => {
       </Row>
 
       <Row height={3} gap={{ left: 1, bottom: 1 }}>
-        <Text width={8}>Gauge Style:</Text>
+        <Text width={14}>Gauge Style:</Text>
         <GaugeSlider
           value={sharedValue}
           min={0}
           max={100}
           step={5}
           width={24}
+          hotkey="g"
         />
         <Text width={3}>{sharedValue}</Text>
       </Row>
 
       <Row height={1} gap={{ left: 1, bottom: 1 }} align="left">
-        <Text width={8}>Dot Pattern:</Text>
-        <DotSlider value={sharedValue} min={0} max={100} step={5} width={24} />
+        <Text width={14}>Dot Pattern:</Text>
+        <DotSlider value={sharedValue} min={0} max={100} step={5} width={24} hotkey='d' />
         <Text width={3} align="right">{sharedValue}</Text>
       </Row>
 
       <Row height="fill" gap={{ left: 1, top: 2 }} align="left">
-        <Text width={10}>Vertical:</Text>
+        <Text width={14}>Vertical:</Text>
         <VerticalSlider
           value={volumeValue}
           min={0}
@@ -60,6 +62,7 @@ export const SlidersExample = () => {
           step={10}
           width={3}
           height="fill"
+          hotkey="v"
         />
         <Text width={6}>{volumeValue}</Text>
 

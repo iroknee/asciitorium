@@ -17,17 +17,19 @@ const fogOfWarEnabled = new State(false);
 export const MazeExample = () => (
   <Column label="AsciiMaze Example" style={BaseStyle}>
     <Maze
-      style={{ width: '50%', height: 20, align: 'center' }}
+      style={{ width: '50%', height: 14, align: 'center' }}
       src="./art/mazes/example.txt"
       position={playerPosition}
       fogOfWar={fogOfWarEnabled}
       exploredTiles={exploredTiles}
+      hotkey="m"
     />
 
     <Button
       onClick={() => (fogOfWarEnabled.value = !fogOfWarEnabled.value)}
       align="center"
       width={25}
+      hotkey="f"
     >
       Fog of War
     </Button>

@@ -119,6 +119,14 @@ export class ProgressBarSlider extends SliderBase {
     }
     this.drawChar(this.width - 1, 2, '┘');
 
+    // Draw hotkey indicator at position (1, 0) if hotkey visibility is on
+    if (this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        this.drawChar(i + 1, 0, hotkeyDisplay[i]);
+      }
+    }
+
     return this.buffer;
   }
 }
@@ -163,6 +171,14 @@ export class GaugeSlider extends SliderBase {
 
     this.drawChar(this.width - 1, y, '┤');
 
+    // Draw hotkey indicator at position (1, 0) if hotkey visibility is on
+    if (this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        this.drawChar(i, 0, hotkeyDisplay[i]);
+      }
+    }
+
     return this.buffer;
   }
 }
@@ -200,6 +216,14 @@ export class DotSlider extends SliderBase {
         this.drawChar(x, y, this.hasFocus ? '◆' : '◆');
       } else {
         this.drawChar(x, y, '◇');
+      }
+    }
+
+    // Draw hotkey indicator at position (1, 0) if hotkey visibility is on
+    if (this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        this.drawChar(i, 0, hotkeyDisplay[i]);
       }
     }
 
@@ -252,6 +276,14 @@ export class VerticalSlider extends SliderBase {
     this.drawChar(0, this.height - 1, '└');
     this.drawChar(1, this.height - 1, '─');
     this.drawChar(2, this.height - 1, '┘');
+
+    // Draw hotkey indicator at position (0, 0) if hotkey visibility is on
+    if (this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i < this.width; i++) {
+        this.drawChar(i, 0, hotkeyDisplay[i]);
+      }
+    }
 
     return this.buffer;
   }

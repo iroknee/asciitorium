@@ -37,6 +37,7 @@ export const MultiSelectExample = () => {
         items={carParts}
         selectedItems={multiValue}
         gap={{ top: 2, bottom: 2 }}
+        hotkey='m'
       />
       <Row align="center">
         <Text align="top">Selected: </Text>

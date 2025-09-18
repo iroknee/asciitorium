@@ -1,8 +1,7 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 
-export interface ButtonOptions
-  extends Omit<ComponentProps, 'children'> {
+export interface ButtonOptions extends Omit<ComponentProps, 'children'> {
   content?: string;
   onClick?: () => void;
   children?: string | string[];
@@ -10,6 +9,7 @@ export interface ButtonOptions
 
 export class Button extends Component {
   public readonly onClick?: () => void;
+  private privateOnClick?: () => void;
   focusable = true;
   hasFocus = false;
   private isPressed = false;
@@ -39,8 +39,11 @@ export class Button extends Component {
       label: buttonText,
       showLabel,
     });
-
-    this.onClick = onClick;
+    this.privateOnClick = onClick;
+    this.onClick = () => {
+      this.privateOnClick?.();
+      this.press();
+    };
   }
 
   private press(): void {
@@ -164,7 +167,10 @@ export class Button extends Component {
     // Calculate label placement (centered)
     const label = this.label || 'Button';
     const totalLabelWidth = label.length + 4; // label + 2 indicators + 2 spaces
-    const labelStartX = offsetX + padX + Math.max(Math.floor((contentWidth - totalLabelWidth) / 2), 0);
+    const labelStartX =
+      offsetX +
+      padX +
+      Math.max(Math.floor((contentWidth - totalLabelWidth) / 2), 0);
     const labelX = labelStartX + 2; // space for left indicator + space
     const labelY = offsetY + padY + Math.floor(contentHeight / 2);
 
@@ -186,7 +192,6 @@ export class Button extends Component {
     } else if (this.hasFocus) {
       leftIndicator = '>';
       rightIndicator = '<';
-
     } else {
       leftIndicator = ' ';
       rightIndicator = ' ';
@@ -194,7 +199,7 @@ export class Button extends Component {
 
     // Draw left indicator
     drawChar(labelStartX, labelY, leftIndicator);
-    
+
     // Draw right indicator with space after label
     const rightIndicatorX = labelX + label.length + 1;
     if (rightIndicatorX < offsetX + buttonWidth - padX) {
