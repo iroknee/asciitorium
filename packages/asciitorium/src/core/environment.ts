@@ -38,7 +38,13 @@ export async function setupKeyboardHandling(
       if (event.key === 'F1') {
         event.preventDefault();
       }
-      handleKey(event.key, event);
+
+      // Handle Shift+Tab as a special case
+      if (event.key === 'Tab' && event.shiftKey) {
+        handleKey('Shift+Tab', event);
+      } else {
+        handleKey(event.key, event);
+      }
     });
   } else {
     // Terminal environment
@@ -74,7 +80,7 @@ function normalizeKey(key: {
     case 'backspace':
       return 'Backspace';
     case 'tab':
-      return 'Tab';
+      return key.shift ? 'Shift+Tab' : 'Tab';
     case 'up':
       return 'ArrowUp';
     case 'down':

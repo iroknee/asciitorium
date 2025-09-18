@@ -101,6 +101,11 @@ export class FocusManager {
       return true;
     }
 
+    if (key === 'Shift+Tab') {
+      this.focusPrevious();
+      return true;
+    }
+
     // Pass other keys to focused component
     const current = this.currentContext[this.index];
     const handled = current?.handleEvent?.(key);
