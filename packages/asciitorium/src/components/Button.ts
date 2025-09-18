@@ -124,37 +124,22 @@ export class Button extends Component {
     if (this.border) {
       const bw = buttonWidth;
       const bh = buttonHeight;
+      const focused = this.focusable && this.hasFocus;
 
-      if (this.focusable && this.hasFocus) {
-        // Double-line border when focused
-        drawChar(offsetX + 0, offsetY + 0, '╔');
-        drawChar(offsetX + bw - 1, offsetY + 0, '╗');
-        drawChar(offsetX + 0, offsetY + bh - 1, '╚');
-        drawChar(offsetX + bw - 1, offsetY + bh - 1, '╝');
+      // Draw corners
+      drawChar(offsetX + 0, offsetY + 0, '╭');
+      drawChar(offsetX + bw - 1, offsetY + 0, '╮');
+      drawChar(offsetX + 0, offsetY + bh - 1, '╰');
+      drawChar(offsetX + bw - 1, offsetY + bh - 1, '╯');
 
-        for (let x = 1; x < bw - 1; x++) {
-          drawChar(offsetX + x, offsetY + 0, '═');
-          drawChar(offsetX + x, offsetY + bh - 1, '═');
-        }
-        for (let y = 1; y < bh - 1; y++) {
-          drawChar(offsetX + 0, offsetY + y, '║');
-          drawChar(offsetX + bw - 1, offsetY + y, '║');
-        }
-      } else {
-        // Single-line border when not focused
-        drawChar(offsetX + 0, offsetY + 0, '╭');
-        drawChar(offsetX + bw - 1, offsetY + 0, '╮');
-        drawChar(offsetX + 0, offsetY + bh - 1, '╰');
-        drawChar(offsetX + bw - 1, offsetY + bh - 1, '╯');
-
-        for (let x = 1; x < bw - 1; x++) {
-          drawChar(offsetX + x, offsetY + 0, '─');
-          drawChar(offsetX + x, offsetY + bh - 1, '─');
-        }
-        for (let y = 1; y < bh - 1; y++) {
-          drawChar(offsetX + 0, offsetY + y, '│');
-          drawChar(offsetX + bw - 1, offsetY + y, '│');
-        }
+      // Draw horizontal and vertical lines
+      for (let x = 1; x < bw - 1; x++) {
+        drawChar(offsetX + x, offsetY + 0, '─');
+        drawChar(offsetX + x, offsetY + bh - 1, '─');
+      }
+      for (let y = 1; y < bh - 1; y++) {
+        drawChar(offsetX + 0, offsetY + y, '│');
+        drawChar(offsetX + bw - 1, offsetY + y, '│');
       }
     }
 
@@ -190,20 +175,25 @@ export class Button extends Component {
       leftIndicator = '◆';
       rightIndicator = '◆';
     } else if (this.hasFocus) {
-      leftIndicator = '>';
-      rightIndicator = '<';
+      leftIndicator = '█';
+      rightIndicator = '█';
     } else {
       leftIndicator = ' ';
       rightIndicator = ' ';
     }
 
-    // Draw left indicator
-    drawChar(labelStartX, labelY, leftIndicator);
+    // Draw left indicator spanning full height at left edge
+    if (this.hasFocus || this.isPressed) {
+      for (let y = offsetY + padY; y < offsetY + buttonHeight - padY; y++) {
+        drawChar(offsetX + padX, y, leftIndicator);
+      }
+    }
 
-    // Draw right indicator with space after label
-    const rightIndicatorX = labelX + label.length + 1;
-    if (rightIndicatorX < offsetX + buttonWidth - padX) {
-      drawChar(rightIndicatorX, labelY, rightIndicator);
+    // Draw right indicator spanning full height at right edge
+    if (this.hasFocus || this.isPressed) {
+      for (let y = offsetY + padY; y < offsetY + buttonHeight - padY; y++) {
+        drawChar(offsetX + buttonWidth - padX - 1, y, rightIndicator);
+      }
     }
 
     // Draw hotkey indicator at position (1, 0) if border is enabled and hotkey visibility is on

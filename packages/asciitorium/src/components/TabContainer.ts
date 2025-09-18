@@ -98,21 +98,10 @@ export class TabContainer extends Component {
     const buffer = super.draw();
     const borderPad = this.border ? 1 : 0;
     const tabY = Math.floor(3 / 2);
-    const isDoubleBorder = this.focusable && this.hasFocus;
+    const focused = this.focusable && this.hasFocus;
 
-    // Define border characters based on focus state
-    const chars = isDoubleBorder ? {
-      horizontal: '═',
-      vertical: '║',
-      topLeft: '╔',
-      topRight: '╗',
-      bottomLeft: '╚',
-      bottomRight: '╝',
-      teeDown: '╦',
-      teeUp: '╩',
-      teeLeft: '╣',
-      teeRight: '╠'
-    } : {
+    // Border characters for tabs
+    const chars = {
       horizontal: '─',
       vertical: '│',
       topLeft: '╭',
@@ -130,7 +119,7 @@ export class TabContainer extends Component {
     for (let i = 0; i < this.tabLabels.length; i++) {
       const label = this.tabLabels[i];
       const isSelected = i === this.selectedIndex.value && this.hasFocus;
-      const text = isSelected ? `>${label}<` : ` ${label} `;
+      const text = isSelected ? `█${label}█` : ` ${label} `;
       totalTabWidth += text.length;
       
       // Add separator width (except for last tab)
@@ -158,7 +147,7 @@ export class TabContainer extends Component {
     for (let i = 0; i < this.tabLabels.length; i++) {
       const label = this.tabLabels[i];
       const isSelected = i === this.selectedIndex.value && this.hasFocus;
-      const text = isSelected ? `>${label}<` : ` ${label} `;
+      const text = isSelected ? `█${label}█` : ` ${label} `;
 
       for (let j = 0; j < text.length && x + j < this.width - borderPad; j++) {
         buffer[tabY-1][x + j] = chars.horizontal;
@@ -185,6 +174,13 @@ export class TabContainer extends Component {
     }
     buffer[tabY-1][this.width - borderPad] = ' ';
     if (this.border)buffer[tabY][this.width - borderPad] = chars.topRight;
+
+    // Make left border full block when focused
+    if (focused && this.border) {
+      for (let y = 2; y < this.height - 1; y++) {
+        buffer[y][0] = '█';
+      }
+    }
 
     // Draw hotkey indicator at position (1, 1) if hotkey visibility is on
     if (this.hotkey && this.isHotkeyVisibilityEnabled()) {

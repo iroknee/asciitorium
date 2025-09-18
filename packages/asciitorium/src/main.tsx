@@ -56,7 +56,7 @@ const examples = {
 };
 
 const app = (
-  <App>
+  <App font="PrintChar21">
     <Art src={'./art/asciitorium.txt'} style={{ align: 'center', gap: { bottom: 2 } }} />
     <Row style={{ height: 'fill' }}>
       <Select

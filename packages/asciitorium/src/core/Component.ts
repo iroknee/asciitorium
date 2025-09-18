@@ -4,15 +4,10 @@ import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
 import { resolveSize } from './utils/sizeUtils';
 
-// Border character sets for focused and normal states
+// Border character set
 const SINGLE_BORDER_CHARS = {
   topLeft: '╭', topRight: '╮', bottomLeft: '╰', bottomRight: '╯',
   horizontal: '─', vertical: '│'
-};
-
-const DOUBLE_BORDER_CHARS = {
-  topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝',
-  horizontal: '═', vertical: '║'
 };
 
 /**
@@ -515,7 +510,7 @@ export abstract class Component {
   }
 
   /**
-   * Draws the border around the component using focus-aware styling.
+   * Draws the border around the component with diamond corners for focus indication.
    *
    * @param drawChar Helper function for safe character drawing within bounds
    */
@@ -523,24 +518,23 @@ export abstract class Component {
     const w = this.width;
     const h = this.height;
     const focused = this.focusable && this.hasFocus;
-    const chars = focused ? DOUBLE_BORDER_CHARS : SINGLE_BORDER_CHARS;
 
     // Draw corners
-    drawChar(0, 0, chars.topLeft);
-    drawChar(w - 1, 0, chars.topRight);
-    drawChar(0, h - 1, chars.bottomLeft);
-    drawChar(w - 1, h - 1, chars.bottomRight);
+    drawChar(0, 0, SINGLE_BORDER_CHARS.topLeft);
+    drawChar(w - 1, 0, SINGLE_BORDER_CHARS.topRight);
+    drawChar(0, h - 1, SINGLE_BORDER_CHARS.bottomLeft);
+    drawChar(w - 1, h - 1, SINGLE_BORDER_CHARS.bottomRight);
 
     // Draw horizontal lines
     for (let x = 1; x < w - 1; x++) {
-      drawChar(x, 0, chars.horizontal);
-      drawChar(x, h - 1, chars.horizontal);
+      drawChar(x, 0, SINGLE_BORDER_CHARS.horizontal);
+      drawChar(x, h - 1, SINGLE_BORDER_CHARS.horizontal);
     }
 
-    // Draw vertical lines
+    // Draw vertical lines - use heavy line on left when focused
     for (let y = 1; y < h - 1; y++) {
-      drawChar(0, y, chars.vertical);
-      drawChar(w - 1, y, chars.vertical);
+      drawChar(0, y, focused ? '█' : SINGLE_BORDER_CHARS.vertical);
+      drawChar(w - 1, y, SINGLE_BORDER_CHARS.vertical);
     }
   }
 

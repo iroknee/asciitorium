@@ -132,7 +132,7 @@ Use the `style` prop to group related styling properties using either the style 
 
 ### Focus Indicators
 
-Components with borders automatically switch from single-line (`╭╮╰╯─│`) to double-line (`╔╗╚╝═║`) borders when focused, providing clear visual feedback for keyboard navigation.
+Components with borders display a full block left border (`█`) when focused, providing clear visual feedback for keyboard navigation while maintaining clean single-line borders elsewhere.
 
 ### Keyboard Navigation
 
