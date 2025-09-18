@@ -195,7 +195,6 @@ export const FormExample = () => {
           placeholder="Enter your full name"
           style={styles.inputField}
           onEnter={handleSubmit}
-          hotkey="n"
         />
         <Text style={styles.errorText}>{nameErrorDisplay}</Text>
       </Row>
@@ -237,7 +236,7 @@ export const FormExample = () => {
 
       {/* Actions */}
       <Row align="right">
-        <Button onClick={handleSubmit} style={styles.actionButton} hotkey="s">
+        <Button onClick={handleSubmit} style={styles.actionButton} hotkey="e">
           Submit
         </Button>
         <Button onClick={handleClear} style={styles.actionButton} hotkey="c">
@@ -252,7 +251,7 @@ export const FormExample = () => {
         <Text>{formStatusText}</Text>
       </Row>
       <Text align="center" gap={{ top: 1 }}>
-        Press ` (backtick) or F1 to toggle hotkey display, Tab to navigate, or use hotkeys for quick access
+        Press ` (backtick) to toggle hotkey display, Tab to navigate, or use hotkeys for quick access
       </Text>
       {/* Results */}
       <Text style={styles.resultsDisplay}>{submissionResult}</Text>

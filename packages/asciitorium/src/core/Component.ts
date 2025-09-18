@@ -586,37 +586,9 @@ export abstract class Component {
     }
   }
 
-  /**
-   * Get the display label with hotkey hints if hotkey visibility is enabled
-   */
-  protected getDisplayLabel(): string {
-    if (!this.label) return '';
-
-    // Check if hotkey visibility is enabled by walking up to find the App
-    const hotkeyVisible = this.isHotkeyVisibilityEnabled();
-
-    if (!hotkeyVisible || !this.hotkey) {
-      return this.label;
-    }
-
-
-    // Find the hotkey character in the label and wrap it with brackets
-    const hotkey = this.hotkey.toLowerCase();
-    const label = this.label;
-    const hotkeyIndex = label.toLowerCase().indexOf(hotkey);
-
-    if (hotkeyIndex !== -1) {
-      return label.slice(0, hotkeyIndex) +
-             '[' + label[hotkeyIndex] + ']' +
-             label.slice(hotkeyIndex + 1);
-    }
-
-    // If hotkey character not found in label, append it
-    return `${label} [${this.hotkey.toUpperCase()}]`;
-  }
 
   /**
-   * Check if hotkey visibility is enabled by finding the App's HotkeyManager
+   * Check if hotkey visibility is enabled by finding the App's FocusManager
    */
   protected isHotkeyVisibilityEnabled(): boolean {
     let current: Component | undefined = this;
@@ -624,8 +596,8 @@ export abstract class Component {
       current = current.parent;
     }
 
-    if (current && (current as any).hotkeyManager) {
-      return (current as any).hotkeyManager.hotkeyVisibilityState.value;
+    if (current && (current as any).focus) {
+      return (current as any).focus.hotkeyVisibilityState.value;
     }
 
     return false;
@@ -655,11 +627,18 @@ export abstract class Component {
     }
 
     if (this.label && this.showLabel) {
-      const displayLabel = this.getDisplayLabel();
-      const label = ` ${displayLabel} `;
+      const label = ` ${this.label} `;
       const start = Math.max(1, Math.floor((this.width - label.length) / 2));
       for (let i = 0; i < label.length && i + start < this.width - 1; i++) {
         drawChar(i + start, 0, label[i]);
+      }
+    }
+
+    // Draw hotkey indicator at position (1, 0) if border is enabled and hotkey visibility is on
+    if (this.border && this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        drawChar(i + 1, 0, hotkeyDisplay[i]);
       }
     }
 

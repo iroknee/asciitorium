@@ -32,12 +32,6 @@ export class DOMRenderer implements Renderer {
     this.charHeight = rect.height;
     document.body.removeChild(measureElement);
 
-    console.log('Character measurement:', {
-      charWidth: this.charWidth,
-      charHeight: this.charHeight,
-      font: measureElement.style.fontFamily,
-      fontSize: measureElement.style.fontSize,
-    });
 
     // Fallback values if measurement fails
     if (this.charWidth === 0) this.charWidth = 8;
@@ -56,15 +50,6 @@ export class DOMRenderer implements Renderer {
     const width = Math.floor(availableWidth / this.charWidth);
     const height = Math.floor(availableHeight / this.charHeight);
 
-    console.log('Screen size calculation:', {
-      screenRect: { width: rect.width, height: rect.height },
-      availableWidth,
-      availableHeight,
-      charWidth: this.charWidth,
-      charHeight: this.charHeight,
-      calculatedWidth: width,
-      calculatedHeight: height,
-    });
 
     // Minimum size fallback
     const result = {

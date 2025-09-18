@@ -1,4 +1,4 @@
-import { Text, State, Button, Component, Row } from '../index';
+import { Text, State, Button, Component, Column } from '../index';
 import { BaseStyle } from './constants';
 
 export const ButtonExample = () => {
@@ -13,11 +13,12 @@ export const ButtonExample = () => {
         onClick={() => (buttonClickCount.value = buttonClickCount.value + 1)}
         gap={2}
         height={10}
+        hotkey="B"
       />
-      <Row align="center">
+      <Column align="center">
         <Text>Click Count:</Text>
-        <Text width={4}>{buttonClickCount}</Text>
-      </Row>
+        <Text width={2}>{buttonClickCount}</Text>
+      </Column>
     </Component>
   );
 };

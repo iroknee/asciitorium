@@ -56,7 +56,7 @@ export class Button extends Component {
     this.pressTimer = setTimeout(() => {
       this.isPressed = false;
       this.pressTimer = undefined;
-      
+
       // Use base class method for focus refresh (which also triggers render)
       this.notifyAppOfFocusRefresh();
 
@@ -162,7 +162,7 @@ export class Button extends Component {
     const contentHeight = buttonHeight - padY * 2;
 
     // Calculate label placement (centered)
-    const label = this.getDisplayLabel() || 'Button';
+    const label = this.label || 'Button';
     const totalLabelWidth = label.length + 4; // label + 2 indicators + 2 spaces
     const labelStartX = offsetX + padX + Math.max(Math.floor((contentWidth - totalLabelWidth) / 2), 0);
     const labelX = labelStartX + 2; // space for left indicator + space
@@ -199,6 +199,14 @@ export class Button extends Component {
     const rightIndicatorX = labelX + label.length + 1;
     if (rightIndicatorX < offsetX + buttonWidth - padX) {
       drawChar(rightIndicatorX, labelY, rightIndicator);
+    }
+
+    // Draw hotkey indicator at position (1, 0) if border is enabled and hotkey visibility is on
+    if (this.border && this.hotkey && this.isHotkeyVisibilityEnabled()) {
+      const hotkeyDisplay = `[${this.hotkey.toUpperCase()}]`;
+      for (let i = 0; i < hotkeyDisplay.length && i + 1 < this.width - 1; i++) {
+        drawChar(offsetX + i + 1, offsetY + 0, hotkeyDisplay[i]);
+      }
     }
 
     return this.buffer;

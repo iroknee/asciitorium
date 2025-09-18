@@ -17,6 +17,7 @@ import {
   TabsExample,
   ArtExample,
   SlidersExample,
+  ScrollableTextExample,
   MazeExample,
 } from 'asciitorium/examples';
 
@@ -32,6 +33,7 @@ const componentList = [
   'Maze',
   'MultiSelect',
   'LayoutSizing',
+  'ScrollableText',
   'Sliders',
   'Tabs',
 ];
@@ -45,6 +47,7 @@ const examples = {
   Maze: MazeExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
+  ScrollableText: ScrollableTextExample,
   Sliders: SlidersExample,
   Tabs: TabsExample,
 };
@@ -57,7 +60,7 @@ const app = (
     />
     <Row style={{ height: 'fill' }}>
       <Select
-        label="Components:"
+        label="Components"
         style={{
           width: '30%',
           height: 'fill',

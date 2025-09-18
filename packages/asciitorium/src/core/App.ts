@@ -1,6 +1,5 @@
 import { Component, ComponentProps } from './Component';
 import { FocusManager } from './FocusManager';
-import { HotkeyManager } from './HotkeyManager';
 import type { Renderer } from './renderers/Renderer';
 import { DOMRenderer } from './renderers/DOMRenderer';
 import { TTYRenderer } from './renderers/TTYRenderer';
@@ -16,7 +15,6 @@ export interface AppProps extends ComponentProps {
 export class App extends Component {
   readonly isApp = true; // Reliable identifier for App class
   readonly focus: FocusManager;
-  readonly hotkeyManager: HotkeyManager;
   private readonly renderer: Renderer;
   private fpsCounter: number = 0;
   private totalRenderTime: number = 0;
@@ -53,16 +51,14 @@ export class App extends Component {
 
     this.renderer = renderer;
     this.focus = new FocusManager();
-    this.hotkeyManager = new HotkeyManager();
 
     // Setup resize handling
     this.setupResizeHandling();
 
     this.focus.reset(this);
-    this.registerComponentHotkeys();
 
     // Subscribe to hotkey visibility changes to trigger re-renders
-    this.hotkeyManager.hotkeyVisibilityState.subscribe(() => {
+    this.focus.hotkeyVisibilityState.subscribe(() => {
       this.render();
     });
 
@@ -127,14 +123,12 @@ export class App extends Component {
 
   addChild(component: Component): void {
     super.addChild(component);
-    this.registerComponentHotkeys();
     this.focus?.reset(this); // avoid crashing
     this.render();
   }
 
   removeChild(component: Component): void {
     super.removeChild(component);
-    this.registerComponentHotkeys();
     this.focus.reset(this);
     this.render();
   }
@@ -197,50 +191,11 @@ export class App extends Component {
     }
   }
 
-  /**
-   * Register hotkeys for components with explicit hotkey assignments
-   */
-  private registerComponentHotkeys(): void {
-    // Clear existing registrations
-    this.hotkeyManager.clear();
-
-    // Get all descendants including this component
-    const allComponents = this.getAllDescendants().concat([this]);
-
-    // Filter to focusable components with explicit hotkeys
-    const componentsWithHotkeys = allComponents.filter(component =>
-      component.focusable && component.hotkey
-    );
-
-    for (const component of componentsWithHotkeys) {
-      this.hotkeyManager.registerComponent(component, component.hotkey);
-    }
-  }
 
   handleKey(key: string, event?: KeyboardEvent): void {
-    // Try hotkey handler first
-    if (this.hotkeyManager.handleHotkey(key)) {
-      this.render();
-      event?.preventDefault();
-      return;
-    }
-
-    if (key === 'Tab') {
-      this.focus.focusNext();
-      this.render();
-      event?.preventDefault();
-      return;
-    }
-
-    // if (key === 'Shift') {
-    //   this.focus.focusPrevious();
-    //   this.render();
-    //   event?.preventDefault();
-    //   return;
-    // }
-
     if (this.focus.handleKey(key)) {
       this.render();
+      event?.preventDefault();
     }
   }
 
