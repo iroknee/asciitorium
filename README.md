@@ -55,9 +55,49 @@ await app.start();
 
 ## Getting Started
 
+### Create New Project (Recommended)
+
+The fastest way to get started is with the project scaffolder:
+
+```bash
+npm create asciitorium@latest my-app
+cd my-app
+npm install
+npm run web  # or npm run cli
+```
+
+This creates a complete project with examples, TypeScript configuration, and both web and CLI support.
+
+### NPM Installation
+
+Add asciitorium to an existing project:
+
 ```bash
 npm install asciitorium@latest
 ```
+
+### CDN Usage (Zero Setup)
+
+For quick prototyping or browser-only usage without npm:
+
+```html
+<script type="module">
+  import { App, Text, Button } from 'https://unpkg.com/asciitorium/dist/asciitorium.es.js';
+
+  const app = (
+    <App width={40} height={10}>
+      <Text align="center">Hello from CDN!</Text>
+      <Button align="center" gap={{ top: 2 }}>Click Me</Button>
+    </App>
+  );
+
+  await app.start();
+</script>
+```
+
+Alternative CDN providers:
+- **unpkg**: `https://unpkg.com/asciitorium/dist/asciitorium.es.js`
+- **jsDelivr**: `https://cdn.jsdelivr.net/npm/asciitorium/dist/asciitorium.es.js`
 
 ## Built-in Components
 
