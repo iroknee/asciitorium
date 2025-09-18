@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.32] - 2025-09-18
+
+### Changed
+
+- **Focus Indicators:**
+  - Simplified focus indicators to use only full block left border (`█`) for all components with borders
+  - Removed filled square corners (`■`) from focus indicators for cleaner appearance
+  - Updated Button component to use full block indicators (`█`) instead of `>` and `<` arrows
+  - Updated TabContainer to use full block indicators (`█`) instead of `>` and `<` arrows for selected tabs
+  - Enhanced Button focus indicators to span entire inner height and position at left/right edges
+
+- **Component Visual Design:**
+  - Standardized focus indication across all components for consistency
+  - Improved Button focus visualization with edge-positioned full block indicators
+  - Maintained clean single-line borders for unfocused components
+
+### Technical Details
+
+- **Key Files Modified:** Component.ts, Button.ts, TabContainer.ts, README.md, CLAUDE.md
+- **Improvements:** Consistent focus indicator design, cleaner visual feedback, simplified border styling
+- **Architecture:** Unified focus indication system across all bordered components
+
 ## [0.1.31] - 2025-09-16
 
 ### Changed
