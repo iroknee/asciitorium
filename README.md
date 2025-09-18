@@ -47,7 +47,7 @@ await app.start();
 
 ## Key features
 
-- **Cross-platform**: Runs identically in web browsers and terminals
+- **Cross-platform**: Runs similarly in web browsers and terminals
 - **Responsive**: Auto-detects screen size and supports percentage-based sizing
 - **Zero dependencies**: Lightweight with no runtime dependencies
 - **TypeScript**: Full TypeScript support with custom JSX runtime
@@ -133,6 +133,38 @@ Use the `style` prop to group related styling properties using either the style 
 ### Focus Indicators
 
 Components with borders automatically switch from single-line (`╭╮╰╯─│`) to double-line (`╔╗╚╝═║`) borders when focused, providing clear visual feedback for keyboard navigation.
+
+### Keyboard Navigation
+
+asciitorium provides keyboard navigation for all focusable components:
+
+#### Navigation Keys
+
+- **Tab** - Move focus to the next focusable component
+- **Shift+Tab** - Move focus to the previous focusable component
+
+#### Hotkey System
+
+Components can be assigned explicit hotkeys for instant access:
+
+```tsx
+<Button hotkey="s" onClick={handleSave}>Save</Button>
+<Button hotkey="c" onClick={handleCancel}>Cancel</Button>
+```
+
+- **F1** or **`** (backtick) - Toggle hotkey visibility
+- **[Letter Key]** - Jump directly to component with that hotkey
+
+When hotkey visibility is enabled, components display their assigned keys in brackets (e.g., `[S]` for Save button) at position (1,0) within their boundaries.
+
+#### Component-Specific Controls
+
+- **Button** - Enter/Space to activate
+- **TextInput** - Standard text editing with cursor navigation
+- **Select/MultiSelect** - Arrow keys for navigation, Enter to select
+- **TabContainer** - Arrow keys to switch between tabs
+- **Sliders** - Arrow keys to adjust values
+- **Maze** - Arrow keys or WASD for player movement
 
 ## 🛠 Development
 

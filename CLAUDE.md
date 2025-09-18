@@ -93,13 +93,20 @@ Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`,
 
 **Keyboard Navigation:**
 
-- Focusable components support keyboard navigation and show visual focus indicators
-- `AsciiMaze` - Supports arrow keys and WASD for player movement with collision detection and fog of war
-- `Button` - Enter/Space to activate
-- `TabContainer` - Arrow keys to switch between tabs
-- `Select`/`MultiSelect` - Arrow keys for navigation, Enter to select
-- `TextInput` - Standard text input with cursor navigation
-- `Sliders` - Arrow keys to adjust values
+- Unified navigation system managed by `FocusManager` class
+- **Tab/Shift+Tab**: Navigate between focusable components (forward/backward)
+- **Hotkey System**: Components support explicit hotkey assignment (`hotkey="x"` prop)
+  - **F1** or **`** (backtick): Toggle hotkey visibility
+  - **Letter keys**: Jump directly to components with matching hotkeys
+  - Hotkey indicators displayed as `[X]` at position (1,0) when visibility enabled
+- **Focus indicators**: Components with borders switch from single-line to double-line borders when focused
+- **Component-specific controls:**
+  - `AsciiMaze` - Arrow keys and WASD for player movement with collision detection and fog of war
+  - `Button` - Enter/Space to activate
+  - `TabContainer` - Arrow keys to switch between tabs
+  - `Select`/`MultiSelect` - Arrow keys for navigation, Enter to select
+  - `TextInput` - Standard text input with cursor navigation
+  - `Sliders` - Arrow keys to adjust values
 
 ### Project Scaffolder (packages/create-asciitorium)
 
