@@ -31,8 +31,25 @@ export class Text extends Component {
       const children = Array.isArray(options.children)
         ? options.children
         : [options.children];
+
+      // Process all children and concatenate them
       if (children.length > 0) {
-        actualContent = children[0];
+        // If there's only one child, use it directly (preserves State objects)
+        if (children.length === 1) {
+          actualContent = children[0];
+        } else {
+          // Multiple children: create a computed string by concatenating
+          // For now, concatenate at construction time (static)
+          actualContent = children.map(child => {
+            if (typeof child === 'string') {
+              return child;
+            } else if (isState(child)) {
+              return child.value;
+            } else {
+              return String(child);
+            }
+          }).join('');
+        }
       }
     }
 

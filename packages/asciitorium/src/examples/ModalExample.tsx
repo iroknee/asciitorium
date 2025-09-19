@@ -6,6 +6,14 @@ export const ModalExample = () => {
   const modalMessage = new State('Modal is now visible!');
   const modalStyle: ComponentStyle = { width: 40, x: 8, y: 8, border: true, align: "center" };
 
+  // Create a computed State for the modal status display
+  const modalStatus = new State('Modal visible: NO');
+
+  // Update modalStatus whenever showModal changes
+  showModal.subscribe(value => {
+    modalStatus.value = `Modal visible: ${value ? 'YES' : 'NO'}`;
+  });
+
   // Simple modal component with high z-index
   const Modal = () => (
     <Component visible={showModal} style={modalStyle} fixed>
@@ -34,7 +42,7 @@ export const ModalExample = () => {
       <Button
         align="center"
         hotkey="t"
-        gap={{ top: 1 }}
+        gap={{ top: 6, bottom: 7 }}
         onClick={() => {
           if (!showModal.value) {
             // Opening the modal - set timestamped message
@@ -46,8 +54,8 @@ export const ModalExample = () => {
         Toggle Modal (T)
       </Button>
 
-      <Text align="center" gap={{ top: 3 }}>
-        Modal visible: {showModal.value ? 'YES' : 'NO'}
+      <Text align="center">
+        {modalStatus}
       </Text>
 
       <Text align="center" gap={{ top: 1 }}>
