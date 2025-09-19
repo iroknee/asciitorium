@@ -3,6 +3,7 @@ export { MazeExample } from './MazeExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';
+export { ModalExample } from './ModalExample';
 export { MultiSelectExample } from './MultiSelectExample';
 export { LayoutSizingExample } from './LayoutSizingExample';
 export { ScrollableTextExample } from './ScrollableTextExample';

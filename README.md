@@ -1,6 +1,6 @@
 # asciitorium
 
-**asciitorium** (pronounced ascii-or-ium ,similar to plane-arium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-based ui framework that runs in both the web and cli. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
+**asciitorium** (pronounced ASS-kee-TOR-ee-um, unlike plane-a-rium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-only framework that runs in both the web and terminal. It was designed to create CLUIs (Command Line User Interfaces), and having a web build component speeds development. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ![example](asciitorium.png)
 

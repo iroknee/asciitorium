@@ -152,12 +152,16 @@ export class FocusManager {
     this.hotkeyMap.clear();
 
     for (const component of focusableComponents) {
-      if (component.hotkey && !this.isReservedKey(component.hotkey)) {
-        const key = component.hotkey.toLowerCase();
-        if (this.hotkeyMap.has(key)) {
-          console.warn(`Hotkey '${component.hotkey}' is already assigned to another component`);
+      if (component.hotkey) {
+        if (this.isReservedKey(component.hotkey)) {
+          console.error(`ERROR: Hotkey '${component.hotkey}' is reserved for system navigation and cannot be used. Reserved keys: ${Array.from(FocusManager.RESERVED_KEYS).join(', ')}`);
         } else {
-          this.hotkeyMap.set(key, component);
+          const key = component.hotkey.toLowerCase();
+          if (this.hotkeyMap.has(key)) {
+            console.warn(`Hotkey '${component.hotkey}' is already assigned to another component`);
+          } else {
+            this.hotkeyMap.set(key, component);
+          }
         }
       }
     }
@@ -171,6 +175,9 @@ export class FocusManager {
     const focusables: Component[] = [];
 
     for (const child of parent.getChildren()) {
+      // Skip invisible components for focus navigation
+      if (!child.visible) continue;
+
       if (child.focusable) {
         focusables.push(child);
       }

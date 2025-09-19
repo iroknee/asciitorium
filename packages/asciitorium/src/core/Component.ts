@@ -91,6 +91,9 @@ export interface ComponentProps {
 
   /** Hotkey for quick access to this component. If not provided, one will be auto-assigned. */
   hotkey?: string;
+
+  /** Whether the component is visible (default: true). Must be a State object for reactive binding. */
+  visible?: State<boolean>;
 }
 
 
@@ -199,6 +202,9 @@ export abstract class Component {
   /** Hotkey assigned to this component for quick access */
   public hotkey?: string;
 
+  /** State object controlling component visibility */
+  private visibleState?: State<boolean>;
+
   // ========================================================================
   // Protected/Private Properties
   // ========================================================================
@@ -265,6 +271,9 @@ export abstract class Component {
     this.hotkey = props.hotkey;
     this.buffer = [];
 
+    // Store visibility state reference (defaults to always visible if not provided)
+    this.visibleState = props.visible;
+
     // Initialize layout system
     this.layoutType = props.layout ?? 'column';
     this.layoutOptions = props.layoutOptions;
@@ -276,6 +285,14 @@ export abstract class Component {
 
   setParent(parent: Component) {
     this.parent = parent;
+  }
+
+  /**
+   * Gets the current visibility state of the component.
+   * @returns True if the component is visible (default), false if explicitly hidden
+   */
+  get visible(): boolean {
+    return this.visibleState?.value ?? true;
   }
 
   /**
@@ -598,6 +615,10 @@ export abstract class Component {
   }
 
   draw(): string[][] {
+    if (!this.visible) {
+      // If not visible, return empty buffer
+      return [];
+    }
     // Recalculate layout for children
     this.recalculateLayout();
 

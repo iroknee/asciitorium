@@ -92,6 +92,9 @@ export class App extends Component {
     allComponents.sort((a, b) => (a.z ?? 0) - (b.z ?? 0));
 
     for (const component of allComponents) {
+      // Skip rendering invisible components
+      if (!component.visible) continue;
+
       const buffer = component.draw();
       const x = component.x;
       const y = component.y;
