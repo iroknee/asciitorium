@@ -82,12 +82,18 @@ For quick prototyping or browser-only usage without npm:
 
 ```html
 <script type="module">
-  import { App, Text, Button } from 'https://unpkg.com/asciitorium/dist/asciitorium.es.js';
+  import {
+    App,
+    Text,
+    Button,
+  } from 'https://unpkg.com/asciitorium/dist/asciitorium.es.js';
 
   const app = (
     <App width={40} height={10}>
       <Text align="center">Hello from CDN!</Text>
-      <Button align="center" gap={{ top: 2 }}>Click Me</Button>
+      <Button align="center" gap={{ top: 2 }}>
+        Click Me
+      </Button>
     </App>
   );
 
@@ -96,6 +102,7 @@ For quick prototyping or browser-only usage without npm:
 ```
 
 Alternative CDN providers:
+
 - **unpkg**: `https://unpkg.com/asciitorium/dist/asciitorium.es.js`
 - **jsDelivr**: `https://cdn.jsdelivr.net/npm/asciitorium/dist/asciitorium.es.js`
 
@@ -169,6 +176,22 @@ Use the `style` prop to group related styling properties using either the style 
 - **align** - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
 - **x** / **y** / **z** - Positioning coordinates and layer depth
 - **gap** - Spacing around component (number or object with top/bottom/left/right)
+- **visible** - Component visibility (State<boolean> for reactive show/hide)
+
+### Component Visibility
+
+Components support reactive visibility control through the `visible` prop, which accepts a `State<boolean>` for dynamic show/hide functionality:
+
+```tsx
+const showModal = new State(false);
+
+// Component is hidden when showModal.value is false
+<Component visible={showModal}>Modal content here</Component>;
+
+// Toggle visibility
+showModal.value = true; // Show component
+showModal.value = false; // Hide component
+```
 
 ### Focus Indicators
 
@@ -188,7 +211,7 @@ asciitorium provides keyboard navigation for all focusable components:
 Components can be assigned explicit hotkeys for instant access:
 
 ```tsx
-<Button hotkey="s" onClick={handleSave}>Save</Button>
+<Button hotkey="u" onClick={handleUpdate}>Update</Button>
 <Button hotkey="c" onClick={handleCancel}>Cancel</Button>
 ```
 
