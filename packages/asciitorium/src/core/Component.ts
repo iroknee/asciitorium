@@ -118,6 +118,7 @@ function mergeStyles(props: ComponentProps): ComponentStyle {
     z: props.z ?? style.z,
     gap: props.gap ?? style.gap,
     font: style.font,
+    fixed: props.fixed ?? style.fixed,
   };
 }
 
@@ -263,7 +264,7 @@ export abstract class Component {
     this.border = mergedStyle.border ?? false;
     this.fill = mergedStyle.fill ?? ' ';
     this.align = mergedStyle.align;
-    this.fixed = props.fixed ?? false;
+    this.fixed = mergedStyle.fixed ?? false;
     this.x = mergedStyle.x ?? 0;
     this.y = mergedStyle.y ?? 0;
     this.z = mergedStyle.z ?? 0;

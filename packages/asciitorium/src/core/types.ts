@@ -64,4 +64,5 @@ export interface ComponentStyle {
   gap?: GapValue;
   font?: string;
   layout?: LayoutType;
+  fixed?: boolean;
 }

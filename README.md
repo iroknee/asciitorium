@@ -176,6 +176,7 @@ Use the `style` prop to group related styling properties using either the style 
 - **align** - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
 - **x** / **y** / **z** - Positioning coordinates and layer depth
 - **gap** - Spacing around component (number or object with top/bottom/left/right)
+- **fixed** - Override relative positioning (true for absolute positioning)
 - **visible** - Component visibility (State<boolean> for reactive show/hide)
 
 ### Component Visibility
@@ -192,6 +193,41 @@ const showModal = new State(false);
 showModal.value = true; // Show component
 showModal.value = false; // Hide component
 ```
+
+### Fixed Positioning
+
+Components can use fixed positioning to override the layout system and position themselves absolutely:
+
+```tsx
+// Modal positioned at specific screen coordinates
+<Component
+  fixed
+  x={10}
+  y={5}
+  border
+>
+  Modal content positioned absolutely
+</Component>
+
+// Using style object
+<Component
+  style={{
+    fixed: true,
+    x: 10,
+    y: 5,
+    border: true
+  }}
+>
+  Modal content
+</Component>
+```
+
+**Key Features:**
+
+- **Overrides layout**: Fixed components ignore parent layout algorithms
+- **Absolute coordinates**: x/y values are relative to the screen, not parent
+- **Perfect for overlays**: Modals, tooltips, and floating elements
+- **High z-index support**: Layer above other content with z property
 
 ### Focus Indicators
 

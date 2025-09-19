@@ -4,7 +4,7 @@ import { BaseStyle } from './constants';
 export const ModalExample = () => {
   const showModal = new State(false);
   const modalMessage = new State('Modal is now visible!');
-  const modalStyle: ComponentStyle = { width: 40, x: 8, y: 8, border: true, align: "center" };
+  const modalStyle: ComponentStyle = { width: 40, x: 8, y: 8, border: true, align: "center", fixed: true };
 
   // Create a computed State for the modal status display
   const modalStatus = new State('Modal visible: NO');
@@ -16,7 +16,7 @@ export const ModalExample = () => {
 
   // Simple modal component with high z-index
   const Modal = () => (
-    <Component visible={showModal} style={modalStyle} fixed>
+    <Component visible={showModal} style={modalStyle}>
       <Text align="center" gap={{ bottom: 1 }}>Modal Window</Text>
       <Text align="center" gap={{ bottom: 1 }}>{modalMessage}</Text>
       <Text align="center">Click [C]lose or [T]oggle to close</Text>
