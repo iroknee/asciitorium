@@ -4,7 +4,7 @@ import { BaseStyle } from './constants';
 export const ModalExample = () => {
   const showModal = new State(false);
   const modalMessage = new State('Modal is now visible!');
-  const modalStyle: ComponentStyle = { width: 40, x: 8, y: 8, border: true, align: "center", fixed: true };
+  const modalStyle: ComponentStyle = { width: 40, position: { x: 8, y: 8 }, border: true, align: "center", background: '.' };
 
   // Create a computed State for the modal status display
   const modalStatus = new State('Modal visible: NO');

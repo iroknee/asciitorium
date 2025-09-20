@@ -172,11 +172,10 @@ Use the `style` prop to group related styling properties using either the style 
 
 - **width** / **height** - Size values (number, percentage, 'auto', 'fill')
 - **border** - Show border around component (automatically shows focus indicators)
-- **fill** - Fill character for component background
+- **background** - Fill character for component background
 - **align** - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
-- **x** / **y** / **z** - Positioning coordinates and layer depth
+- **position** - Positioning coordinates object `{ x?: number, y?: number, z?: number }` (enables absolute positioning)
 - **gap** - Spacing around component (number or object with top/bottom/left/right)
-- **fixed** - Override relative positioning (true for absolute positioning)
 - **visible** - Component visibility (State<boolean> for reactive show/hide)
 
 ### Component Visibility
@@ -194,16 +193,14 @@ showModal.value = true; // Show component
 showModal.value = false; // Hide component
 ```
 
-### Fixed Positioning
+### Absolute Positioning
 
-Components can use fixed positioning to override the layout system and position themselves absolutely:
+Components can use absolute positioning to override the layout system and position themselves at specific coordinates:
 
 ```tsx
 // Modal positioned at specific screen coordinates
 <Component
-  fixed
-  x={10}
-  y={5}
+  position={{ x: 10, y: 5 }}
   border
 >
   Modal content positioned absolutely
@@ -212,22 +209,28 @@ Components can use fixed positioning to override the layout system and position 
 // Using style object
 <Component
   style={{
-    fixed: true,
-    x: 10,
-    y: 5,
+    position: { x: 10, y: 5 },
     border: true
   }}
 >
   Modal content
 </Component>
+
+// With z-index layering
+<Component
+  position={{ x: 10, y: 5, z: 10 }}
+  border
+>
+  Modal content with high z-index
+</Component>
 ```
 
 **Key Features:**
 
-- **Overrides layout**: Fixed components ignore parent layout algorithms
+- **Overrides layout**: Components with `position` property ignore parent layout algorithms
 - **Absolute coordinates**: x/y values are relative to the screen, not parent
 - **Perfect for overlays**: Modals, tooltips, and floating elements
-- **High z-index support**: Layer above other content with z property
+- **Z-index layering**: Control stacking order with the z property
 
 ### Focus Indicators
 

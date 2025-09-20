@@ -1,4 +1,4 @@
-import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue } from './types';
+import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue, PositionValue } from './types';
 import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
@@ -37,29 +37,20 @@ export interface ComponentProps {
   /** Whether to render a border around the component */
   border?: boolean;
 
-  /** Character used to fill the component background */
-  fill?: string;
+  /** Character used for component background */
+  background?: string;
 
   /** Text/content alignment within the component */
   align?: Alignment;
 
-  /** Absolute X position */
-  x?: number;
-
-  /** Absolute Y position */
-  y?: number;
-
-  /** Z-index for layering (higher values render on top) */
-  z?: number;
+  /** Exact coordinate placement - overrides layout positioning */
+  position?: PositionValue;
 
   /** Spacing around the component */
   gap?: GapValue;
 
   /** State binding for reactive updates (deprecated) */
   bind?: State<any> | ((state: State<any>) => void);
-
-  /** Whether the component has fixed positioning */
-  fixed?: boolean;
 
   /** Child components to be managed by this component */
   children?: Component[];
@@ -111,14 +102,12 @@ function mergeStyles(props: ComponentProps): ComponentStyle {
     width: props.width ?? style.width,
     height: props.height ?? style.height,
     border: props.border ?? style.border,
-    fill: props.fill ?? style.fill,
+    background: props.background ?? style.background,
     align: props.align ?? style.align,
-    x: props.x ?? style.x,
-    y: props.y ?? style.y,
-    z: props.z ?? style.z,
+    position: props.position ?? style.position,
     gap: props.gap ?? style.gap,
     font: style.font,
-    fixed: props.fixed ?? style.fixed,
+    layout: style.layout,
   };
 }
 
@@ -262,12 +251,22 @@ export abstract class Component {
     this.comment = props.comment;
     this.showLabel = props.showLabel ?? true;
     this.border = mergedStyle.border ?? false;
-    this.fill = mergedStyle.fill ?? ' ';
+    this.fill = mergedStyle.background ?? ' ';
     this.align = mergedStyle.align;
-    this.fixed = mergedStyle.fixed ?? false;
-    this.x = mergedStyle.x ?? 0;
-    this.y = mergedStyle.y ?? 0;
-    this.z = mergedStyle.z ?? 0;
+
+    // Handle positioning
+    if (mergedStyle.position) {
+      this.x = mergedStyle.position.x ?? 0;
+      this.y = mergedStyle.position.y ?? 0;
+      this.z = mergedStyle.position.z ?? 0;
+      this.fixed = true; // position property implies fixed positioning
+    } else {
+      this.x = 0;
+      this.y = 0;
+      this.z = 0;
+      this.fixed = false;
+    }
+
     this.gap = mergedStyle.gap ?? 0;
     this.hotkey = props.hotkey;
     this.buffer = [];

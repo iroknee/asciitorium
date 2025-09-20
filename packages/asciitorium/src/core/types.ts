@@ -51,18 +51,22 @@ export type GapValue =
     }
   | number[]; // CSS-style shorthand
 
+// Position configuration type for exact coordinate placement
+export type PositionValue = {
+  x?: number;
+  y?: number;
+  z?: number;
+};
+
 // Style interface for component styling properties
 export interface ComponentStyle {
   width?: SizeValue;
   height?: SizeValue;
   border?: boolean;
-  fill?: string;
+  background?: string;
   align?: Alignment;
-  x?: number;
-  y?: number;
-  z?: number;
+  position?: PositionValue;
   gap?: GapValue;
   font?: string;
   layout?: LayoutType;
-  fixed?: boolean;
 }

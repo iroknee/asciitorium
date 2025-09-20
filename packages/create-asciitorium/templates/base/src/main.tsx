@@ -14,6 +14,7 @@ import {
   FormExample,
   MultiSelectExample,
   LayoutSizingExample,
+  ModalExample,
   TabsExample,
   ArtExample,
   SlidersExample,
@@ -30,6 +31,7 @@ const componentList = [
   'Button',
   'CelticBorder',
   'Form',
+  'Modal',
   'Maze',
   'MultiSelect',
   'LayoutSizing',
@@ -44,6 +46,7 @@ const examples = {
   Button: ButtonExample,
   CelticBorder: CelticBorderExample,
   Form: FormExample,
+  Modal: ModalExample,
   Maze: MazeExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
@@ -53,7 +56,7 @@ const examples = {
 };
 
 const app = (
-  <App>
+  <App font="PrintChar21">
     <Art
       src={'./art/asciitorium.txt'}
       style={{ align: 'center', gap: { bottom: 2 } }}
