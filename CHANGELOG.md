@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Component Visibility System:**
+  - Added `visible` property support for all components using `State<boolean>` for reactive show/hide functionality
+  - Components with `visible={state}` automatically hide/show when state changes
+  - Focus management automatically skips invisible components
+  - Rendering optimizations skip invisible components for better performance
+
+- **CDN Support:**
+  - Added comprehensive CDN usage documentation for unpkg and jsDelivr
+  - Zero-setup browser usage examples with ES module imports
+  - Alternative CDN provider options documented
+
+### Changed
+
+- **API Improvements - Property Naming:**
+  - **Breaking Change:** Renamed `at` property to `position` for better consistency with other component properties
+  - **Breaking Change:** Removed deprecated properties: `fill`, `x`, `y`, `z`, `fixed`
+  - `background` property replaces `fill` for component background styling
+  - `position` property takes object `{ x?: number, y?: number, z?: number }` and automatically enables absolute positioning
+  - Eliminated backward compatibility for cleaner, more intuitive API
+
+- **Component Architecture:**
+  - Simplified mergeStyles function without complex property precedence logic
+  - Cleaner Component constructor using only current property names
+  - Updated ComponentStyle and ComponentProps interfaces to remove deprecated properties
+  - Enhanced modal example demonstrates new `position` and `background` properties
+
+- **Text Component:**
+  - Fixed multi-children processing to properly handle JSX expressions with multiple elements
+  - Text components now correctly render complex expressions like `Modal visible: {state ? 'YES' : 'NO'}`
+
+- **Focus Management:**
+  - Enhanced reserved hotkey error handling with detailed error messages
+  - Added visibility checks in focus navigation to skip hidden components
+
+### Technical Details
+
+- **Key Files Modified:** Component.ts, types.ts, ModalExample.tsx, README.md, App.ts, FocusManager.ts
+- **Breaking Changes:**
+  - Property renaming: `at` → `position`, `fill` → `background`
+  - Removed deprecated properties: `x`, `y`, `z`, `fixed`
+  - No backward compatibility - clean API transition
+- **New Features:** Reactive visibility system, CDN support, improved property naming
+- **Architecture:** Cleaner interfaces, simplified property handling, better component organization
+
 ## [0.1.32] - 2025-09-18
 
 ### Changed
