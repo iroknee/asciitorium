@@ -6,6 +6,9 @@ import {
   Row,
   Text,
   PersistentState,
+  PerfMonitor,
+  State,
+  Keybind,
 } from './index';
 
 import {
@@ -23,10 +26,10 @@ import {
 } from './examples';
 
 // Main state for component selection with persistence
-const selectedComponent = new PersistentState(
-  'Art',
-  'demo-selected-component'
-);
+const selectedComponent = new PersistentState('Art', 'demo-selected-component');
+
+// State for PerfMonitor visibility (F12 toggle)
+const showPerfMonitor = new State(false);
 
 // Component list for navigation
 const componentList = [
@@ -58,9 +61,23 @@ const examples = {
   Tabs: TabsExample,
 };
 
+// toggle PerfMonitor with "P" key
+const togglePerfMonitor = () => {
+  showPerfMonitor.value = !showPerfMonitor.value;
+};
+
 const app = (
-  <App font="PrintChar21">
-    <Art src={'./art/asciitorium.txt'} style={{ align: 'center', gap: { bottom: 2 } }} />
+  <App>
+    <Keybind
+      keyBinding="p"
+      action={togglePerfMonitor}
+      global
+    />
+
+    <Art
+      src={'./art/asciitorium.txt'}
+      style={{ align: 'center', gap: { bottom: 2 } }}
+    />
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components"
@@ -81,9 +98,11 @@ const app = (
       />
     </Row>
     <Text
-      content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus"
-      style={{ align: 'center', gap: { top: 1 } }}
+      content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus • [P] toggles stats"
+      style={{ align: 'center', gap: 1 }}
     />
+    <Text style={{ align: 'center', gap: 1 }}>{showPerfMonitor}</Text>
+    <PerfMonitor visible={showPerfMonitor} />
   </App>
 );
 

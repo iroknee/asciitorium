@@ -10,6 +10,7 @@ export * from './components/Button';
 export * from './components/CelticBorder';
 export * from './components/Switch';
 export * from './components/Fragment';
+export * from './components/Keybind';
 export * from './components/PerfMonitor';
 export * from './components/HR';
 export * from './components/VR';

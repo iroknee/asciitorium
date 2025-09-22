@@ -22,6 +22,7 @@ export class App extends Component {
   private currentCPU: number = 0;
   private currentMemory: number = 0;
   private lastCPUUsage?: any;
+  private keybindRegistry = new Map<string, any>();
 
   constructor(props: AppProps) {
     // Extract font from props or style object
@@ -195,11 +196,38 @@ export class App extends Component {
   }
 
 
+  // Add keybind registration methods
+  registerKeybind(keybind: any) {
+    this.keybindRegistry.set(keybind.keyBinding, keybind);
+  }
+
+  unregisterKeybind(keybind: any) {
+    this.keybindRegistry.delete(keybind.keyBinding);
+  }
+
   handleKey(key: string, event?: KeyboardEvent): void {
+    // Check for app-level keybinds first
+    const keybind = this.keybindRegistry.get(key);
+    if (keybind && !keybind.disabled) {
+      // Execute if global or no component has focus
+      if (keybind.global || !this.hasComponentWithFocus()) {
+        keybind.action();
+        this.render();
+        event?.preventDefault();
+        return;
+      }
+    }
+
+    // Continue with existing focus manager delegation
     if (this.focus.handleKey(key)) {
       this.render();
       event?.preventDefault();
     }
+  }
+
+  private hasComponentWithFocus(): boolean {
+    // Check if any component currently has focus
+    return this.getAllDescendants().some(c => c.hasFocus);
   }
 
   private setupResizeHandling(): void {
