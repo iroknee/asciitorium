@@ -19,7 +19,7 @@ export const MazeExample = () => (
     <Maze
       style={{ width: '50%', height: 14, align: 'center' }}
       src="./art/mazes/example.txt"
-      position={playerPosition}
+      player={playerPosition}
       fogOfWar={fogOfWarEnabled}
       exploredTiles={exploredTiles}
       hotkey="m"

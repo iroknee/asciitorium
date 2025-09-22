@@ -102,7 +102,6 @@ export class CelticBorder extends Component {
     super({
       width,
       height,
-      fill: ' ',
       border: false,
       ...options,
     });

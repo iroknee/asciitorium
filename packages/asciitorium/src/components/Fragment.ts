@@ -33,7 +33,7 @@ export class Fragment extends Component {
       height: 'auto',
       ...props,
       border: false,
-      fill: undefined,
+      background: undefined,
     });
     this.focusable = false;
   }

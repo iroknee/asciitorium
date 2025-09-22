@@ -17,7 +17,9 @@ export const ButtonExample = () => {
       />
       <Column align="center">
         <Text>Click Count:</Text>
-        <Text width={2}>{buttonClickCount}</Text>
+        <Text width={2} gap={1} align="center">
+          {buttonClickCount}
+        </Text>
       </Column>
     </Component>
   );

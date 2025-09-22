@@ -5,7 +5,7 @@ import { requestRender } from '../core/RenderScheduler';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
-export interface Position {
+export interface Player {
   x: number;
   y: number;
   direction: Direction;
@@ -31,7 +31,7 @@ export interface MazeOptions extends Omit<ComponentProps, 'children'> {
     | State<string[]>
     | State<string>; // deprecated, use content
   src?: string; // URL or file path to load maze from
-  position: Position | State<Position>;
+  player: Player | State<Player>;
   fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
   fogCharacter?: string;
@@ -46,7 +46,7 @@ export class Maze extends Component {
     | State<MapData>
     | State<string[]>
     | State<string>;
-  private positionSource: Position | State<Position>;
+  private playerSource: Player | State<Player>;
   private fogOfWarSource: boolean | State<boolean>;
   private exploredTilesSource?: Set<string> | State<Set<string>>;
   private fogCharacter: string;
@@ -59,7 +59,7 @@ export class Maze extends Component {
       content,
       map,
       src,
-      position,
+      player,
       fogOfWar,
       exploredTiles,
       fogCharacter,
@@ -102,7 +102,7 @@ export class Maze extends Component {
     });
 
     this.contentSource = actualContent;
-    this.positionSource = position;
+    this.playerSource = player;
     this.fogOfWarSource = fogOfWar ?? false;
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
@@ -152,10 +152,10 @@ export class Maze extends Component {
     }
   }
 
-  get position(): Position {
-    return isState(this.positionSource)
-      ? (this.positionSource as State<Position>).value
-      : (this.positionSource as Position);
+  get player(): Player {
+    return isState(this.playerSource)
+      ? (this.playerSource as State<Player>).value
+      : (this.playerSource as Player);
   }
 
   get exploredTiles(): Set<string> {
@@ -223,9 +223,9 @@ export class Maze extends Component {
     super.draw(); // fills buffer, draws borders, etc.
 
     const map = this.mapData;
-    const pos = this.position;
+    const player = this.player;
 
-    if (!map || !map.map || !pos) {
+    if (!map || !map.map || !player) {
       return this.buffer;
     }
 
@@ -249,7 +249,7 @@ export class Maze extends Component {
 
     // If fog of war is enabled, mark visible positions as explored
     if (this.fogOfWar) {
-      const visiblePositions = this.getVisiblePositions(pos.x, pos.y);
+      const visiblePositions = this.getVisiblePositions(player.x, player.y);
       for (const visPos of visiblePositions) {
         if (
           visPos.x >= 0 &&
@@ -263,10 +263,10 @@ export class Maze extends Component {
     }
 
     // Calculate the starting position in the map based on player position
-    const startMapY = Math.max(0, pos.y - centerY);
+    const startMapY = Math.max(0, player.y - centerY);
     const endMapY = Math.min(mapHeight, startMapY + innerHeight);
 
-    const startMapX = Math.max(0, pos.x - centerX);
+    const startMapX = Math.max(0, player.x - centerX);
     const endMapX = Math.min(mapWidth, startMapX + innerWidth);
 
     // Draw the map portion
@@ -285,14 +285,14 @@ export class Maze extends Component {
         if (bufferX >= this.width) break;
 
         // Check if this is the player position
-        if (mapX === pos.x && mapY === pos.y) {
+        if (mapX === player.x && mapY === player.y) {
           // Draw player based on direction
-          const directionChar = this.getDirectionChar(pos.direction);
+          const directionChar = this.getDirectionChar(player.direction);
           this.buffer[bufferY][bufferX] = directionChar;
         } else {
           // Apply fog of war logic
           if (this.fogOfWar) {
-            const isVisible = this.isPositionVisible(mapX, mapY, pos.x, pos.y);
+            const isVisible = this.isPositionVisible(mapX, mapY, player.x, player.y);
             const isExplored = this.isPositionExplored(mapX, mapY);
 
             if (isVisible || isExplored) {
@@ -360,7 +360,7 @@ export class Maze extends Component {
   }
 
   private movePlayer(dx: number, dy: number): void {
-    const current = this.position;
+    const current = this.player;
     const map = this.mapData;
 
     if (!map || !map.map || map.map.length === 0) return;
@@ -440,12 +440,12 @@ export class Maze extends Component {
   }
 
   private updatePosition(x: number, y: number, direction: Direction): void {
-    if (isState(this.positionSource)) {
-      (this.positionSource as State<Position>).value = { x, y, direction };
+    if (isState(this.playerSource)) {
+      (this.playerSource as State<Player>).value = { x, y, direction };
     } else {
       // If it's not a State, we can't update it - this would be a programming error
       console.warn(
-        'AsciiMaze position is not a State object, cannot update position'
+        'AsciiMaze player is not a State object, cannot update player position'
       );
     }
   }
