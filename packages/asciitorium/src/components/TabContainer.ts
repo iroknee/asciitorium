@@ -175,10 +175,11 @@ export class TabContainer extends Component {
     buffer[tabY-1][this.width - borderPad] = ' ';
     if (this.border)buffer[tabY][this.width - borderPad] = chars.topRight;
 
-    // Make left border full block when focused
+    // Add focus indicators on left and right borders when focused
     if (focused && this.border) {
       for (let y = 2; y < this.height - 1; y++) {
-        buffer[y][0] = '█';
+        buffer[y][0] = '>';
+        buffer[y][this.width - 1] = '<';
       }
     }
 

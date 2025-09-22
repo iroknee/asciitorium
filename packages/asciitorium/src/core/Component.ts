@@ -534,7 +534,6 @@ export abstract class Component {
   private drawBorder(drawChar: (x: number, y: number, char: string) => void): void {
     const w = this.width;
     const h = this.height;
-    const focused = this.focusable && this.hasFocus;
 
     // Draw corners
     drawChar(0, 0, SINGLE_BORDER_CHARS.topLeft);
@@ -548,9 +547,9 @@ export abstract class Component {
       drawChar(x, h - 1, SINGLE_BORDER_CHARS.horizontal);
     }
 
-    // Draw vertical lines - use heavy line on left when focused
+    // Draw vertical lines
     for (let y = 1; y < h - 1; y++) {
-      drawChar(0, y, focused ? '█' : SINGLE_BORDER_CHARS.vertical);
+      drawChar(0, y, SINGLE_BORDER_CHARS.vertical);
       drawChar(w - 1, y, SINGLE_BORDER_CHARS.vertical);
     }
   }

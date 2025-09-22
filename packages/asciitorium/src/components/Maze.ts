@@ -307,6 +307,11 @@ export class Maze extends Component {
       }
     }
 
+    // Add focus indicator at position (0,0) if focused and has border
+    if (this.hasFocus && this.border) {
+      this.buffer[0][0] = '>';
+    }
+
     return this.buffer;
   }
 

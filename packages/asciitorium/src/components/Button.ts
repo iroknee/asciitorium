@@ -175,8 +175,8 @@ export class Button extends Component {
       leftIndicator = '◆';
       rightIndicator = '◆';
     } else if (this.hasFocus) {
-      leftIndicator = '█';
-      rightIndicator = '█';
+      leftIndicator = '>';
+      rightIndicator = '<';
     } else {
       leftIndicator = ' ';
       rightIndicator = ' ';
