@@ -4,8 +4,9 @@ import {
   Select,
   Switch,
   Row,
-  PersistentState,
   Text,
+  PerfMonitor,
+  State,
 } from 'asciitorium';
 
 import {
@@ -23,7 +24,10 @@ import {
 } from 'asciitorium/examples';
 
 // Main state for component selection with persistence
-const selectedComponent = new PersistentState('Art', 'demo-selected-component');
+const selectedComponent = new State('Art');
+
+// State for PerfMonitor visibility (P toggle)
+const showPerfMonitor = new State(false);
 
 // Component list for navigation
 const componentList = [
@@ -55,8 +59,15 @@ const examples = {
   Tabs: TabsExample,
 };
 
+// toggle PerfMonitor with "P" key
+const togglePerfMonitor = () => {
+  showPerfMonitor.value = !showPerfMonitor.value;
+};
+
 const app = (
-  <App font="PrintChar21">
+  <App>
+    <Keybind keyBinding="p" action={togglePerfMonitor} global />
+
     <Art
       src={'./art/asciitorium.txt'}
       style={{ align: 'center', gap: { bottom: 2 } }}
@@ -81,9 +92,10 @@ const app = (
       />
     </Row>
     <Text
-      content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus"
-      style={{ align: 'center', gap: { top: 1 } }}
+      content="Navigation: ↑↓ • [Space]/[Enter] to select • [Tab]/[Tab+Shift] to switch focus • [P] toggles performance monitor"
+      style={{ align: 'center', gap: 1 }}
     />
+    <PerfMonitor visible={showPerfMonitor} />
   </App>
 );
 
