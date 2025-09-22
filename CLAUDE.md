@@ -62,7 +62,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 **Core Classes:**
 
 - `App` - Main application class that handles rendering, focus management, and performance monitoring
-- `Component` - Abstract base class for all UI components with properties like position (x,y,z), dimensions, borders, focus handling with full block left border focus indicators
+- `Component` - Abstract base class for all UI components with properties like position (x,y,z), dimensions, borders, focus handling with component-specific focus indicators
 - `State<T>` - Reactive state management system with subscribe/unsubscribe pattern
 - `PersistentState<T>` - State management with localStorage persistence
 - `FocusManager` - Handles keyboard navigation between focusable components
@@ -74,7 +74,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Character-based rendering using 2D string arrays as buffers
 - Z-index based layering system for component ordering
 - Transparent character system for overlay effects
-- Focus-based visual indicators: Components with borders display full block left border (`█`) when focused
+- Focus-based visual indicators: Each component type implements context-appropriate focus indicators
 
 **JSX Runtime:**
 
@@ -99,7 +99,13 @@ Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`,
   - **F1** or **`** (backtick): Toggle hotkey visibility
   - **Letter keys**: Jump directly to components with matching hotkeys
   - Hotkey indicators displayed as `[X]` at position (1,0) when visibility enabled
-- **Focus indicators**: Components with borders display full block left border (`█`) when focused
+- **Focus indicators**: Component-specific visual indicators when focused:
+  - `Button` - `>` and `<` brackets around content
+  - `TabContainer` - `>` and `<` on left/right borders
+  - `Maze` - `>` in top-left corner
+  - `TextInput` - Cursor `▉` and prefix changes
+  - `Select`/`MultiSelect` - `>` prefix for focused items
+  - `Sliders` - Contextual indicator highlighting (varies by type)
 - **Component-specific controls:**
   - `AsciiMaze` - Arrow keys and WASD for player movement with collision detection and fog of war
   - `Button` - Enter/Space to activate

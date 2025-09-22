@@ -22,8 +22,6 @@ const titleArt = 'Your ASCII Art Here';
 
 const app = (
   <App width={64} height={20} layout="aligned">
-    <CelticBorder edge="top-left" align="top-left" />
-    <CelticBorder edge="top-right" align="top-right" />
 
     <Component align="top" layout="column" gap={2}>
       <AsciiArt content={titleArt} align="top" />
@@ -37,8 +35,6 @@ const app = (
       {helloWorld}
     </Text>
 
-    <CelticBorder edge="bottom-left" align="bottom-left" />
-    <CelticBorder edge="bottom-right" align="bottom-right" />
   </App>
 );
 
@@ -171,7 +167,7 @@ Use the `style` prop to group related styling properties using either the style 
 ### Available Style Properties
 
 - **width** / **height** - Size values (number, percentage, 'auto', 'fill')
-- **border** - Show border around component (automatically shows focus indicators)
+- **border** - Show border around component
 - **background** - Fill character for component background
 - **align** - Alignment ('left', 'center', 'right', 'top', 'bottom', etc.)
 - **position** - Positioning coordinates object `{ x?: number, y?: number, z?: number }` (enables absolute positioning)
@@ -234,7 +230,7 @@ Components can use absolute positioning to override the layout system and positi
 
 ### Focus Indicators
 
-Components with borders display a full block left border (`█`) when focused, providing clear visual feedback for keyboard navigation while maintaining clean single-line borders elsewhere.
+Leaf components display context-appropriate focus indicators when focused, typically using `>` and `<` characters, providing clear visual feedback for keyboard navigation while maintaining elegant design.
 
 ### Keyboard Navigation
 
