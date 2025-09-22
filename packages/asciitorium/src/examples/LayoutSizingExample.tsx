@@ -1,4 +1,4 @@
-import { Text, Component, Row, Column, HR, VR } from '../index';
+import { Text, Component, Row, Column, Line } from '../index';
 import { BaseStyle } from './constants';
 
 export const LayoutSizingExample = () => (
@@ -6,7 +6,7 @@ export const LayoutSizingExample = () => (
       <Text width="100%" align="center" height={5} label="Header" border>
         100% width, fixed 5 height
       </Text>
-      <HR />
+      <Line direction="horizontal" />
       <Row width="fill" height="fill">
         <Text label="Sidebar" width="25%" height="fill" border>
           {`
@@ -14,12 +14,12 @@ export const LayoutSizingExample = () => (
           • fill height
           `}
         </Text>
-        <VR />
+        <Line direction="vertical" />
         <Column width="fill" height="fill">
           <Text width="fill" height="80%" label="Main" border>
             width fill to expand, height 80% of remaining space
           </Text>
-          <HR width="fill" />
+          <Line direction="horizontal" width="fill" />
           <Text width="fill" height="fill" label="Footer" border>
             fill remaining space
           </Text>

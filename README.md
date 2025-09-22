@@ -5,23 +5,25 @@
 ![example](asciitorium.png)
 
 ```jsx
-import { App, Art, Text, State, TextInput, Component, HR } from 'asciitorium';
+import { App, Text, State, Art, TextInput, Line } from './index';
 
-const helloWorld = new State('Hello, World!');
+// Reactive state for user input
+const userInput = new State('Hello, World!');
 
 const app = (
-  <App width={64} height={20} layout="aligned">
-    <Component align="top" layout="column" gap={2}>
-      <AsciiArt src="./asciitorium.txt" align="top" />
-      <HR length={48} align="center" />
-      <Text value="a ui framework for cli and web" align="top" gap={3} />
-    </Component>
-
-    <TextInput width={30} value={helloWorld} gap={5} align="bottom" />
-
-    <Text width={24} align="bottom" gap={2}>
-      {helloWorld}
+  <App>
+    <Art src="./art/asciitorium.txt" align="center" />
+    <Line style={{ width: 60, align: 'center' }} />
+    <Text style={{ align: 'center', gap: { bottom: 3 } }}>
+      A UI framework for CLI and web
     </Text>
+
+    <TextInput
+      style={{ width: 40, align: 'center', gap: { bottom: 2 } }}
+      value={userInput}
+    />
+
+    <Text align="center">{userInput}</Text>
   </App>
 );
 
@@ -121,8 +123,7 @@ Alternative CDN providers:
 
 ### UI Elements
 
-- **HR** - Horizontal rule/divider line
-- **VR** - Vertical rule/divider line
+- **Line** - Horizontal or vertical divider lines with configurable direction
 - **CelticBorder** - Decorative Celtic-style border elements
 - **Sliders** - Collection of slider components (ProgressBar, Gauge, Dot, Vertical)
 

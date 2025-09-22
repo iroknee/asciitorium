@@ -3,11 +3,11 @@ import {
   State,
   Button,
   Row,
-  HR,
   Column,
   TextInput,
   GaugeSlider,
   Select,
+  Line,
 } from '../index';
 import { BaseStyle } from './constants';
 
@@ -245,7 +245,7 @@ export const FormExample = () => {
       </Row>
 
       {/* Status */}
-      <HR width="fill" />
+      <Line />
       <Row style={styles.statusContainer}>
         <Text>Form Status: </Text>
         <Text>{formStatusText}</Text>

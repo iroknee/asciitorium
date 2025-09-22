@@ -89,7 +89,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Support for relative sizing and alignment options
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`, `Keybind`
+Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `Line`, `Row`, `Column`, `Sliders`, `PerfMonitor`, `Keybind`
 
 **Keyboard Navigation:**
 
