@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.34] - 2025-09-22
+
 ### Added
+
+- **New Keybind System:**
+  - `Keybind` component for declarative global keyboard shortcuts
+  - App-level keybind registration and management system
+  - Support for global keybinds that override component focus
+  - Reactive enabling/disabling with `State<boolean>`
+  - Auto-registration and cleanup with component lifecycle
 
 - **Component Visibility System:**
   - Added `visible` property support for all components using `State<boolean>` for reactive show/hide functionality
@@ -21,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Alternative CDN provider options documented
 
 ### Changed
+
+- **Component Consolidation:**
+  - **Breaking Change:** Replaced `HR` and `VR` components with unified `Line` component
+  - `Line` component supports both horizontal and vertical orientations via `direction` prop
+  - Updated all examples and documentation to use new `Line` component
+  - Simplified line rendering with consistent API across orientations
 
 - **API Improvements - Property Naming:**
   - **Breaking Change:** Renamed `at` property to `position` for better consistency with other component properties
@@ -42,16 +57,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Focus Management:**
   - Enhanced reserved hotkey error handling with detailed error messages
   - Added visibility checks in focus navigation to skip hidden components
+  - Keybind system integration with focus management
+
+- **Navigation and Performance:**
+  - Enhanced `PerfMonitor` functionality with improved metrics
+  - Updated navigation instructions to remove deprecated WASD references
+  - Improved component-specific focus indicators
 
 ### Technical Details
 
-- **Key Files Modified:** Component.ts, types.ts, ModalExample.tsx, README.md, App.ts, FocusManager.ts
+- **Key Files Modified:** Component.ts, types.ts, ModalExample.tsx, README.md, App.ts, FocusManager.ts, Line.ts, Keybind.ts, PerfMonitor.ts
 - **Breaking Changes:**
   - Property renaming: `at` → `position`, `fill` → `background`
+  - Component consolidation: `HR` and `VR` → `Line` with `direction` prop
   - Removed deprecated properties: `x`, `y`, `z`, `fixed`
   - No backward compatibility - clean API transition
-- **New Features:** Reactive visibility system, CDN support, improved property naming
-- **Architecture:** Cleaner interfaces, simplified property handling, better component organization
+- **New Features:** Declarative keybind system, reactive visibility system, CDN support, unified Line component
+- **Architecture:** Cleaner interfaces, simplified property handling, better component organization, app-level keybind management
 
 ## [0.1.32] - 2025-09-18
 
