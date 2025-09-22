@@ -5,26 +5,14 @@
 ![example](asciitorium.png)
 
 ```jsx
-import {
-  App,
-  Component,
-  Text,
-  State,
-  AsciiArt,
-  TextInput,
-  CelticBorder,
-  HR,
-} from 'asciitorium';
+import { App, Art, Text, State, TextInput, Component, HR } from 'asciitorium';
 
 const helloWorld = new State('Hello, World!');
-// Load ASCII art from public/art directory
-const titleArt = 'Your ASCII Art Here';
 
 const app = (
   <App width={64} height={20} layout="aligned">
-
     <Component align="top" layout="column" gap={2}>
-      <AsciiArt content={titleArt} align="top" />
+      <AsciiArt src="./asciitorium.txt" align="top" />
       <HR length={48} align="center" />
       <Text value="a ui framework for cli and web" align="top" gap={3} />
     </Component>
@@ -34,7 +22,6 @@ const app = (
     <Text width={24} align="bottom" gap={2}>
       {helloWorld}
     </Text>
-
   </App>
 );
 
@@ -253,7 +240,42 @@ Components can be assigned explicit hotkeys for instant access:
 - **F1** or **`** (backtick) - Toggle hotkey visibility
 - **[Letter Key]** - Jump directly to component with that hotkey
 
-When hotkey visibility is enabled, components display their assigned keys in brackets (e.g., `[S]` for Save button) at position (1,0) within their boundaries.
+When hotkey visibility is enabled, components display their assigned keys in brackets (e.g., `[U]` for Update button) at position (1,0) within their boundaries.
+
+#### Global Keybindings
+
+For application-level shortcuts that work regardless of component focus, use the `Keybind` component:
+
+```tsx
+import { Keybind, State } from 'asciitorium';
+
+const showDebugPanel = new State(false);
+
+<App>
+  <Keybind
+    keyBinding="F12"
+    action={() => (showDebugPanel.value = !showDebugPanel.value)}
+    global
+  />
+  <Keybind
+    keyBinding="Ctrl+s"
+    action={() => saveApplication()}
+    description="Save application state"
+  />
+
+  {/* Your app content */}
+</App>;
+```
+
+**Keybind Props:**
+
+- `keyBinding` - Key combination (e.g., "F12", "Ctrl+s", "Escape")
+- `action` - Function to execute when key is pressed
+- `global` - If true, overrides focused component handling (default: false)
+- `disabled` - Static boolean or reactive `State<boolean>` to conditionally disable
+- `description` - Optional description for documentation
+
+**Precedence:** Component focus takes priority over keybinds unless `global={true}` is specified.
 
 #### Component-Specific Controls
 
@@ -262,7 +284,7 @@ When hotkey visibility is enabled, components display their assigned keys in bra
 - **Select/MultiSelect** - Arrow keys for navigation, Enter to select
 - **TabContainer** - Arrow keys to switch between tabs
 - **Sliders** - Arrow keys to adjust values
-- **Maze** - Arrow keys or WASD for player movement
+- **Maze** - Arrow keys for player movement
 
 ## 🛠 Development
 

@@ -89,7 +89,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Support for relative sizing and alignment options
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`
+Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `HR`, `VR`, `Row`, `Column`, `Sliders`, `PerfMonitor`, `Keybind`
 
 **Keyboard Navigation:**
 
@@ -99,6 +99,11 @@ Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`,
   - **F1** or **`** (backtick): Toggle hotkey visibility
   - **Letter keys**: Jump directly to components with matching hotkeys
   - Hotkey indicators displayed as `[X]` at position (1,0) when visibility enabled
+- **Global Keybind System**: Application-level keyboard shortcuts using `Keybind` component
+  - Invisible components that register keybindings with the App
+  - Support for global shortcuts that override component focus
+  - Reactive enabling/disabling with `State<boolean>`
+  - Auto-registration/cleanup with component lifecycle
 - **Focus indicators**: Component-specific visual indicators when focused:
   - `Button` - `>` and `<` brackets around content
   - `TabContainer` - `>` and `<` on left/right borders
@@ -107,12 +112,32 @@ Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`,
   - `Select`/`MultiSelect` - `>` prefix for focused items
   - `Sliders` - Contextual indicator highlighting (varies by type)
 - **Component-specific controls:**
-  - `AsciiMaze` - Arrow keys and WASD for player movement with collision detection and fog of war
+  - `AsciiMaze` - Arrow keys for player movement with collision detection and fog of war
   - `Button` - Enter/Space to activate
   - `TabContainer` - Arrow keys to switch between tabs
   - `Select`/`MultiSelect` - Arrow keys for navigation, Enter to select
   - `TextInput` - Standard text input with cursor navigation
   - `Sliders` - Arrow keys to adjust values
+
+**Keybind Component Implementation:**
+
+The `Keybind` component provides a declarative way to register global keyboard shortcuts:
+
+```tsx
+<Keybind
+  keyBinding="F12"
+  action={() => toggleDebugMode()}
+  global
+  disabled={someCondition}
+/>
+```
+
+- **Architecture**: Invisible component (0x0 size, never renders) that extends base Component
+- **Registration**: Auto-discovers App parent and registers keybinding on `setParent()`
+- **Lifecycle**: Auto-unregisters when component is destroyed
+- **Precedence**: App-level keybinds checked before FocusManager delegation
+- **Global Override**: Optional `global` prop bypasses focused component handling
+- **Reactive State**: Supports `State<boolean>` for dynamic enabling/disabling
 
 ### Project Scaffolder (packages/create-asciitorium)
 

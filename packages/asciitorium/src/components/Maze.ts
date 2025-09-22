@@ -331,29 +331,21 @@ export class Maze extends Component {
   }
 
   handleEvent(event: string): boolean {
-    // Handle arrow keys and WASD movement
+    // Handle arrow keys movement
     let dx = 0,
       dy = 0;
 
     switch (event) {
       case 'ArrowUp':
-      case 'w':
-      case 'W':
         dy = -2;
         break;
       case 'ArrowDown':
-      case 's':
-      case 'S':
         dy = 2;
         break;
       case 'ArrowLeft':
-      case 'a':
-      case 'A':
         dx = -2;
         break;
       case 'ArrowRight':
-      case 'd':
-      case 'D':
         dx = 2;
         break;
       default:

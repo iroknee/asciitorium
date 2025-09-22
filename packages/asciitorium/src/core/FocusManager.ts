@@ -9,7 +9,6 @@ export class FocusManager {
 
   // Reserved keys that should not be used for hotkeys
   private static readonly RESERVED_KEYS = new Set([
-    'w', 'a', 's', 'd', // WASD movement
     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Arrow keys
     'Tab', 'Enter', ' ', 'Escape', // Navigation and control
     'Backspace', 'Delete', 'Home', 'End', // Text editing

@@ -36,7 +36,7 @@ export const MazeExample = () => (
 
     <Text align="bottom" width="60%">
       {`
-      Navigate using arrow keys or WASD. 
+      Navigate using arrow keys. 
       The player is shown as an arrow (↑↓←→). 
       Click button to toggle fog of war.
     `}

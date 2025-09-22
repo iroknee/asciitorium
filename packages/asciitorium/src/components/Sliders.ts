@@ -239,9 +239,9 @@ export class VerticalSlider extends SliderBase {
   override handleEvent(event: string): boolean {
     const prevValue = this.valueState.value;
 
-    if (event === 'ArrowUp' || event === 'w') {
+    if (event === 'ArrowUp') {
       this.incrementValue();
-    } else if (event === 'ArrowDown' || event === 's') {
+    } else if (event === 'ArrowDown') {
       this.decrementValue();
     } else {
       return false;

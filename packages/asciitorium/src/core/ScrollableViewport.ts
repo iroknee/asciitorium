@@ -42,10 +42,10 @@ export class ScrollableViewport {
   ): number {
     let newFocusedIndex = currentFocusedIndex;
 
-    if ((event === 'ArrowUp' || event === 'w') && currentFocusedIndex > 0) {
+    if ((event === 'ArrowUp') && currentFocusedIndex > 0) {
       newFocusedIndex = currentFocusedIndex - 1;
     } else if (
-      (event === 'ArrowDown' || event === 's') &&
+      (event === 'ArrowDown') &&
       currentFocusedIndex < totalCount - 1
     ) {
       newFocusedIndex = currentFocusedIndex + 1;

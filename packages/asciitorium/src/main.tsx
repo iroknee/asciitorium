@@ -98,10 +98,9 @@ const app = (
       />
     </Row>
     <Text
-      content="Navigation: ↑↓ or W/S to browse • [Space]/[Enter] to select • [Tab] to switch focus • [P] toggles stats"
+      content="Navigation: ↑↓ • [Space]/[Enter] to select • [Tab]/[Tab+Shift] to switch focus • [P] toggles performance monitor"
       style={{ align: 'center', gap: 1 }}
     />
-    <Text style={{ align: 'center', gap: 1 }}>{showPerfMonitor}</Text>
     <PerfMonitor visible={showPerfMonitor} />
   </App>
 );
