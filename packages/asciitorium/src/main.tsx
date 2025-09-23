@@ -23,6 +23,7 @@ import {
   ArtExample,
   SlidersExample,
   MazeExample,
+  FirstPersonViewExample,
 } from './examples';
 
 // Main state for component selection with persistence
@@ -39,6 +40,7 @@ const componentList = [
   'Form',
   'Modal',
   'Maze',
+  'FirstPersonView',
   'MultiSelect',
   'LayoutSizing',
   'ScrollableText',
@@ -54,6 +56,7 @@ const examples = {
   Form: FormExample,
   Modal: ModalExample,
   Maze: MazeExample,
+  FirstPersonView: FirstPersonViewExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
   ScrollableText: ScrollableTextExample,
@@ -67,7 +70,7 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App>
+  <App font="PrintChar21">
     <Keybind
       keyBinding="p"
       action={togglePerfMonitor}

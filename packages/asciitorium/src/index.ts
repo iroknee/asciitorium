@@ -23,3 +23,5 @@ export * from './components/Sliders';
 export * from './components/Row';
 export * from './components/Column';
 export * from './components/Maze';
+export * from './components/FirstPersonView';
+export * from './components/FirstPersonCompositor';
