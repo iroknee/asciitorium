@@ -76,11 +76,11 @@ const app = (
       action={togglePerfMonitor}
       global
     />
-
+{/* 
     <Art
       src={'./art/asciitorium.txt'}
       style={{ align: 'center', gap: { bottom: 2 } }}
-    />
+    /> */}
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components"

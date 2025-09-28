@@ -4,7 +4,46 @@ import { isState, loadArt } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
 import { Direction, Player, MapData } from './Maze';
 import { FirstPersonCompositor } from './FirstPersonCompositor';
-import { SceneryTheme } from '../sprites/ScenerySprites';
+
+interface RaycastOffset {
+  dx: number;
+  dy: number;
+}
+
+interface RaycastCube {
+  here: { left: RaycastOffset; center: RaycastOffset; right: RaycastOffset };
+  near: { left: RaycastOffset; center: RaycastOffset; right: RaycastOffset };
+  middle: { left: RaycastOffset; center: RaycastOffset; right: RaycastOffset };
+  far: { left: RaycastOffset; center: RaycastOffset; right: RaycastOffset };
+}
+
+// Predefined raycast cubes for each direction
+const RAYCAST_CUBES: Record<Direction, RaycastCube> = {
+  north: {
+    here: { left: { dx: -2, dy: 0 }, center: { dx: 0, dy: 0 }, right: { dx: 2, dy: 0 } },
+    near: { left: { dx: -2, dy: -1 }, center: { dx: 0, dy: -1 }, right: { dx: 2, dy: -1 } },
+    middle: { left: { dx: -2, dy: -2 }, center: { dx: 0, dy: -2 }, right: { dx: 2, dy: -2 } },
+    far: { left: { dx: -2, dy: -3 }, center: { dx: 0, dy: -3 }, right: { dx: 2, dy: -3 } }
+  },
+  south: {
+    here: { left: { dx: 2, dy: 0 }, center: { dx: 0, dy: 0 }, right: { dx: -2, dy: 0 } },
+    near: { left: { dx: 2, dy: 1 }, center: { dx: 0, dy: 1 }, right: { dx: -2, dy: 1 } },
+    middle: { left: { dx: 2, dy: 2 }, center: { dx: 0, dy: 2 }, right: { dx: -2, dy: 2 } },
+    far: { left: { dx: 2, dy: 3 }, center: { dx: 0, dy: 3 }, right: { dx: -2, dy: 3 } }
+  },
+  east: {
+    here: { left: { dx: 0, dy: -1 }, center: { dx: 0, dy: 0 }, right: { dx: 0, dy: 1 } },
+    near: { left: { dx: 2, dy: -1 }, center: { dx: 2, dy: 0 }, right: { dx: 2, dy: 1 } },
+    middle: { left: { dx: 4, dy: -1 }, center: { dx: 4, dy: 0 }, right: { dx: 4, dy: 1 } },
+    far: { left: { dx: 6, dy: -1 }, center: { dx: 6, dy: 0 }, right: { dx: 6, dy: 1 } }
+  },
+  west: {
+    here: { left: { dx: 0, dy: 1 }, center: { dx: 0, dy: 0 }, right: { dx: 0, dy: -1 } },
+    near: { left: { dx: -2, dy: 1 }, center: { dx: -2, dy: 0 }, right: { dx: -2, dy: -1 } },
+    middle: { left: { dx: -4, dy: 1 }, center: { dx: -4, dy: 0 }, right: { dx: -4, dy: -1 } },
+    far: { left: { dx: -6, dy: 1 }, center: { dx: -6, dy: 0 }, right: { dx: -6, dy: -1 } }
+  }
+};
 
 export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'> {
   content?:
@@ -16,7 +55,8 @@ export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'>
     | State<string>;
   src?: string; // URL or file path to load maze from
   player: Player | State<Player>;
-  sceneryTheme?: SceneryTheme | State<SceneryTheme>; // Scenery theme
+  sceneryTheme?: string | State<string>; // Scenery theme
+  transparency?: boolean; // When true, spaces won't overwrite existing content (useful for debugging)
 }
 
 export class FirstPersonView extends Component {
@@ -30,10 +70,11 @@ export class FirstPersonView extends Component {
     | State<string>;
   private playerSource: Player | State<Player>;
   private compositor: FirstPersonCompositor;
-  private sceneryThemeSource: SceneryTheme | State<SceneryTheme>;
+  private sceneryThemeSource: string | State<string>;
   private isLoading = false;
   private loadError?: string;
   private src?: string;
+  private transparency: boolean;
 
   constructor(options: FirstPersonViewOptions) {
     const {
@@ -41,6 +82,7 @@ export class FirstPersonView extends Component {
       src,
       player,
       sceneryTheme,
+      transparency,
       style,
       ...componentProps
     } = options;
@@ -70,18 +112,19 @@ export class FirstPersonView extends Component {
     super({
       ...componentProps,
       width: 28, // Fixed width for consistent ASCII sprite positioning
-      height: 27, // Fixed height for consistent ASCII sprite positioning
+      height: 28, // Fixed height for consistent ASCII sprite positioning
       border: options.border ?? options.style?.border ?? true,
     });
 
     this.contentSource = actualContent;
     this.playerSource = player;
-    this.sceneryThemeSource = sceneryTheme ?? 'brick';
+    this.sceneryThemeSource = sceneryTheme ?? 'wireframe';
+    this.transparency = transparency ?? false;
 
     // Get initial theme value
     const initialSceneryTheme = isState(this.sceneryThemeSource)
-      ? (this.sceneryThemeSource as State<SceneryTheme>).value
-      : (this.sceneryThemeSource as SceneryTheme);
+      ? (this.sceneryThemeSource as State<string>).value
+      : (this.sceneryThemeSource as string);
 
     this.compositor = new FirstPersonCompositor(initialSceneryTheme);
 
@@ -94,7 +137,7 @@ export class FirstPersonView extends Component {
 
     // Subscribe to theme changes
     if (isState(this.sceneryThemeSource)) {
-      (this.sceneryThemeSource as State<SceneryTheme>).subscribe((newTheme) => {
+      (this.sceneryThemeSource as State<string>).subscribe((newTheme) => {
         this.compositor.setSceneryTheme(newTheme);
         requestRender();
       });
@@ -172,22 +215,35 @@ export class FirstPersonView extends Component {
       '╵',
       '╴',
       '╶',
+      'o', // Include 'o' as a wall character
     ];
     return wallChars.includes(char);
   }
 
+  /**
+   * Converts a cardinal direction into a unit vector for coordinate calculations
+   *
+   * Coordinate System:
+   * - X axis: Horizontal (left/right) - positive X goes east (right)
+   * - Y axis: Vertical (up/down) - positive Y goes south (down)
+   *
+   * This matches typical 2D array indexing where:
+   * - map[y][x] means row Y, column X
+   * - Moving "down" increases Y (going to higher row indices)
+   * - Moving "right" increases X (going to higher column indices)
+   */
   private getDirectionVector(direction: Direction): { dx: number; dy: number } {
     switch (direction) {
       case 'north':
-        return { dx: 0, dy: -1 };
+        return { dx: 0, dy: -1 };   // Move up: decrease Y (go to earlier rows)
       case 'south':
-        return { dx: 0, dy: 1 };
+        return { dx: 0, dy: 1 };    // Move down: increase Y (go to later rows)
       case 'east':
-        return { dx: 1, dy: 0 };
+        return { dx: 1, dy: 0 };    // Move right: increase X (go to later columns)
       case 'west':
-        return { dx: -1, dy: 0 };
+        return { dx: -1, dy: 0 };   // Move left: decrease X (go to earlier columns)
       default:
-        return { dx: 0, dy: -1 };
+        return { dx: 0, dy: -1 };   // Default to north
     }
   }
 
@@ -221,67 +277,54 @@ export class FirstPersonView extends Component {
     }
   }
 
+
+
+
+  /**
+   * Cast rays using predefined offset cubes to determine what's visible in the first-person view
+   *
+   * Uses direction-specific raycast cubes with predefined relative offsets for each position.
+   * This eliminates coordinate calculation errors and provides complete control over
+   * which exact positions are checked for each direction.
+   */
   private castRays(): {
-    far: { left: boolean | null; center: boolean | null; right: boolean | null };
-    middle: { left: boolean | null; center: boolean | null; right: boolean | null };
+    here: { left: boolean | null; center: boolean | null; right: boolean | null };
     near: { left: boolean | null; center: boolean | null; right: boolean | null };
+    middle: { left: boolean | null; center: boolean | null; right: boolean | null };
+    far: { left: boolean | null; center: boolean | null; right: boolean | null };
   } {
     const map = this.mapData;
     const player = this.player;
     const mapLines = map.map;
 
+    // If no map data, assume all walls (fallback)
     if (!mapLines || mapLines.length === 0) {
       return {
-        far: { left: true, center: true, right: true },
-        middle: { left: true, center: true, right: true },
+        here: { left: true, center: true, right: true },
         near: { left: true, center: true, right: true },
+        middle: { left: true, center: true, right: true },
+        far: { left: true, center: true, right: true },
       };
     }
 
-    const forwardDir = this.getDirectionVector(player.direction);
-    const leftDir = this.getDirectionVector(this.getLeftDirection(player.direction));
-    const rightDir = this.getDirectionVector(this.getRightDirection(player.direction));
+    // Get the raycast cube for the player's current direction
+    const cube = RAYCAST_CUBES[player.direction];
 
+    // Initialize all positions as passages (false = passage, true = wall, null = occluded)
     const result = {
-      far: { left: false, center: false, right: false },
-      middle: { left: false, center: false, right: false },
-      near: { left: false, center: false, right: false },
+      here: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
+      near: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
+      middle: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
+      far: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
     };
 
-    // Cast rays at each distance
-    for (let distance = 1; distance <= 3; distance++) {
-      const depth = distance === 1 ? 'near' : distance === 2 ? 'middle' : 'far';
-
-      // Forward ray (center)
-      const centerX = player.x + forwardDir.dx * distance;
-      const centerY = player.y + forwardDir.dy * distance;
-      result[depth].center = this.isWall(centerX, centerY, mapLines);
-
-      if (distance === 1) {
-        // For near distance, check immediately to the left and right of player
-        const leftX = player.x + leftDir.dx;
-        const leftY = player.y + leftDir.dy;
-        result[depth].left = this.isWall(leftX, leftY, mapLines);
-
-        const rightX = player.x + rightDir.dx;
-        const rightY = player.y + rightDir.dy;
-        result[depth].right = this.isWall(rightX, rightY, mapLines);
-      } else {
-        // For middle and far distances, check if view is blocked by near center wall
-        if (result.near.center) {
-          // Near center wall blocks view of middle and far left/right
-          result[depth].left = null;
-          result[depth].right = null;
-        } else {
-          // Check diagonally forward if not blocked
-          const leftX = player.x + leftDir.dx + forwardDir.dx * distance;
-          const leftY = player.y + leftDir.dy + forwardDir.dy * distance;
-          result[depth].left = this.isWall(leftX, leftY, mapLines);
-
-          const rightX = player.x + rightDir.dx + forwardDir.dx * distance;
-          const rightY = player.y + rightDir.dy + forwardDir.dy * distance;
-          result[depth].right = this.isWall(rightX, rightY, mapLines);
-        }
+    // Cast rays using predefined offsets from the cube
+    for (const depth of ['here', 'near', 'middle', 'far'] as const) {
+      for (const position of ['left', 'center', 'right'] as const) {
+        const offset = cube[depth][position];
+        const checkX = player.x + offset.dx;
+        const checkY = player.y + offset.dy;
+        result[depth][position] = this.isWall(checkX, checkY, mapLines);
       }
     }
 
@@ -307,7 +350,7 @@ export class FirstPersonView extends Component {
     const raycast = this.castRays();
 
     // Use compositor to generate the view
-    const composedView = this.compositor.compose(raycast, innerWidth, innerHeight);
+    const composedView = this.compositor.compose(raycast, innerWidth, innerHeight, this.transparency);
 
     // Copy composed view into our buffer with border offset
     for (let y = 0; y < composedView.length && y < innerHeight; y++) {
@@ -331,13 +374,13 @@ export class FirstPersonView extends Component {
   }
 
   // Method to change theme dynamically
-  setSceneryTheme(theme: SceneryTheme): void {
+  setSceneryTheme(theme: string): void {
     this.compositor.setSceneryTheme(theme);
     requestRender();
   }
 
   // Get available themes
-  static getAvailableSceneryThemes(): SceneryTheme[] {
+  static getAvailableSceneryThemes(): Promise<string[]> {
     return FirstPersonCompositor.getAvailableSceneryThemes();
   }
 }

@@ -292,7 +292,12 @@ export class Maze extends Component {
         } else {
           // Apply fog of war logic
           if (this.fogOfWar) {
-            const isVisible = this.isPositionVisible(mapX, mapY, player.x, player.y);
+            const isVisible = this.isPositionVisible(
+              mapX,
+              mapY,
+              player.x,
+              player.y
+            );
             const isExplored = this.isPositionExplored(mapX, mapY);
 
             if (isVisible || isExplored) {
@@ -331,29 +336,151 @@ export class Maze extends Component {
   }
 
   handleEvent(event: string): boolean {
-    // Handle arrow keys movement
-    let dx = 0,
-      dy = 0;
+    const current = this.player;
 
     switch (event) {
       case 'ArrowUp':
-        dy = -2;
+        // Move forward in current direction
+        this.movePlayerInDirection(current.direction);
         break;
       case 'ArrowDown':
-        dy = 2;
+        // Move backward (opposite direction) while maintaining facing direction
+        this.movePlayerBackward();
         break;
       case 'ArrowLeft':
-        dx = -2;
+        // Turn left
+        this.turnPlayer('left');
         break;
       case 'ArrowRight':
-        dx = 2;
+        // Turn right
+        this.turnPlayer('right');
         break;
       default:
         return false;
     }
 
-    this.movePlayer(dx, dy);
     return true;
+  }
+
+  private movePlayerInDirection(direction: Direction): void {
+    const { dx, dy } = this.getDirectionVector(direction);
+    this.movePlayer(dx, dy);
+  }
+
+  private movePlayerBackward(): void {
+    const current = this.player;
+    const oppositeDirection = this.getOppositeDirection(current.direction);
+    const { dx, dy } = this.getDirectionVector(oppositeDirection);
+    // Move backward but keep facing the same direction
+    const newX = current.x + dx;
+    const newY = current.y + dy;
+    this.movePlayerToPosition(newX, newY, current.direction);
+  }
+
+  private turnPlayer(turn: 'left' | 'right'): void {
+    const current = this.player;
+    const newDirection = this.getNewDirection(current.direction, turn);
+    this.updatePosition(current.x, current.y, newDirection);
+  }
+
+  private getDirectionVector(direction: Direction): { dx: number; dy: number } {
+    switch (direction) {
+      case 'north':
+        return { dx: 0, dy: -1 };
+      case 'south':
+        return { dx: 0, dy: 1 };
+      case 'east':
+        return { dx: 2, dy: 0 };
+      case 'west':
+        return { dx: -2, dy: 0 };
+    }
+  }
+
+  private getOppositeDirection(direction: Direction): Direction {
+    switch (direction) {
+      case 'north':
+        return 'south';
+      case 'south':
+        return 'north';
+      case 'east':
+        return 'west';
+      case 'west':
+        return 'east';
+    }
+  }
+
+  private getNewDirection(
+    current: Direction,
+    turn: 'left' | 'right'
+  ): Direction {
+    const directions: Direction[] = ['north', 'east', 'south', 'west'];
+    const currentIndex = directions.indexOf(current);
+    const offset = turn === 'left' ? -1 : 1;
+    const newIndex = (currentIndex + offset + 4) % 4;
+    return directions[newIndex];
+  }
+
+  private movePlayerToPosition(
+    newX: number,
+    newY: number,
+    direction: Direction
+  ): void {
+    const map = this.mapData;
+
+    if (!map || !map.map || map.map.length === 0) return;
+
+    const mapLines = map.map;
+    const mapWidth = mapLines.length > 0 ? mapLines[0].length : 0;
+    const mapHeight = mapLines.length;
+
+    const clampedX = Math.max(0, Math.min(mapWidth - 1, newX));
+    const clampedY = Math.max(0, Math.min(mapHeight - 1, newY));
+
+    // Check for collision with walls along the path
+    const isWall = (x: number, y: number) => {
+      if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
+        return true;
+      const char = mapLines[y][x];
+      const wallChars = [
+        '╭',
+        '╮',
+        '╯',
+        '╰',
+        '─',
+        '│',
+        '┬',
+        '┴',
+        '├',
+        '┤',
+        '┼',
+        '╷',
+        '╵',
+        '╴',
+        '╶',
+      ];
+      return wallChars.includes(char);
+    };
+
+    const current = this.player;
+    const dx = clampedX - current.x;
+    const dy = clampedY - current.y;
+
+    // Check intermediate positions - only for X movement (2 steps)
+    if (Math.abs(dx) === 2) {
+      const stepX = dx > 0 ? 1 : -1;
+      const midX = current.x + stepX;
+      const midY = current.y;
+      if (isWall(midX, midY)) {
+        return; // Can't move, stay in place
+      }
+    }
+
+    // Check final destination
+    if (isWall(clampedX, clampedY)) {
+      return; // Can't move, stay in place
+    }
+
+    this.updatePosition(clampedX, clampedY, direction);
   }
 
   private movePlayer(dx: number, dy: number): void {
@@ -395,38 +522,22 @@ export class Maze extends Component {
       return wallChars.includes(char);
     };
 
-    // Check intermediate positions when moving 2 spaces
-    const stepX = dx === 0 ? 0 : dx > 0 ? 1 : -1;
-    const stepY = dy === 0 ? 0 : dy > 0 ? 1 : -1;
-
-    // Check first step
-    const midX = current.x + stepX;
-    const midY = current.y + stepY;
-    if (isWall(midX, midY)) {
-      // Hit a wall on first step, don't move but update direction
-      let direction: Direction = current.direction;
-      if (dx > 0) direction = 'east';
-      else if (dx < 0) direction = 'west';
-      else if (dy > 0) direction = 'south';
-      else if (dy < 0) direction = 'north';
-
-      this.updatePosition(current.x, current.y, direction);
-      return;
+    // Check intermediate positions - only for X movement (2 steps)
+    if (Math.abs(dx) === 2) {
+      const stepX = dx > 0 ? 1 : -1;
+      const midX = current.x + stepX;
+      const midY = current.y;
+      if (isWall(midX, midY)) {
+        return; // Can't move, stay in place
+      }
     }
 
     // Check final destination
     if (isWall(newX, newY)) {
-      // Hit a wall at destination, don't move but update direction
-      let direction: Direction = current.direction;
-      if (dx > 0) direction = 'east';
-      else if (dx < 0) direction = 'west';
-      else if (dy > 0) direction = 'south';
-      else if (dy < 0) direction = 'north';
-
-      this.updatePosition(current.x, current.y, direction);
-      return;
+      return; // Can't move, stay in place
     }
 
+    // Determine direction based on movement for forward movement
     let direction: Direction = current.direction;
     if (dx > 0) direction = 'east';
     else if (dx < 0) direction = 'west';

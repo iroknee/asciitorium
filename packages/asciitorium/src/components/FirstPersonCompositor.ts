@@ -1,45 +1,132 @@
-import { ScenerySprites, SceneryTheme, ScenerySpriteSet } from '../sprites/ScenerySprites';
+import { loadArt } from '../core/environment';
 
 export interface RaycastData {
-  far: { left: boolean | null; center: boolean | null; right: boolean | null };
-  middle: { left: boolean | null; center: boolean | null; right: boolean | null };
+  here: { left: boolean | null; center: boolean | null; right: boolean | null };
   near: { left: boolean | null; center: boolean | null; right: boolean | null };
+  middle: { left: boolean | null; center: boolean | null; right: boolean | null };
+  far: { left: boolean | null; center: boolean | null; right: boolean | null };
 }
 
-export class FirstPersonCompositor {
-  private scenerySprites: ScenerySpriteSet;
+interface SceneSprite {
+  layer: 'here' | 'near' | 'middle' | 'far';
+  position: 'left' | 'center' | 'right';
+  x?: number; // Optional x coordinate from metadata
+  lines: string[];
+}
 
-  constructor(sceneryTheme: SceneryTheme = 'brick') {
-    this.scenerySprites = ScenerySprites[sceneryTheme];
+type SceneTheme = string;
+
+// Default sprite positions extracted from wireframe.txt
+const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
+  'here-left': -1,
+  'here-right': 19,
+  'near-center': 6,
+  'near-left': -1,
+  'near-right': 16,
+  'middle-center': 9,
+  'middle-left': -1,
+  'middle-right': 14,
+  'far-left': 6,
+  'far-center': 11,
+  'far-right': 14,
+};
+
+export class FirstPersonCompositor {
+  private sceneSprites: Map<string, SceneSprite> = new Map();
+  private currentTheme: SceneTheme = 'wireframe';
+  private isLoaded = false;
+
+  constructor(sceneryTheme: SceneTheme = 'wireframe') {
+    this.currentTheme = sceneryTheme;
+    this.loadSceneData();
   }
 
   // Change theme dynamically
-  setSceneryTheme(theme: SceneryTheme): void {
-    this.scenerySprites = ScenerySprites[theme];
+  async setSceneryTheme(theme: SceneTheme): Promise<void> {
+    this.currentTheme = theme;
+    await this.loadSceneData();
+  }
+
+  private async loadSceneData(): Promise<void> {
+    try {
+      const sceneData = await loadArt(`art/scenes/${this.currentTheme}.txt`);
+      this.parseSceneData(sceneData);
+      this.isLoaded = true;
+    } catch (error) {
+      console.error('Failed to load scene data:', error);
+      this.isLoaded = false;
+    }
+  }
+
+  private parseSceneData(data: string): void {
+    this.sceneSprites.clear();
+    const sections = data.split(/[§¶]\s*/);
+
+    for (const section of sections) {
+      if (!section.trim()) continue;
+
+      const lines = section.split('\n');
+      if (lines.length === 0) continue;
+
+      // Parse metadata from first line
+      const metadataLine = lines[0].trim();
+      if (!metadataLine.startsWith('{')) continue;
+
+      try {
+        const metadata = JSON.parse(metadataLine);
+        if (metadata.layer && metadata.position) {
+          const key = `${metadata.layer}-${metadata.position}`;
+          const spriteLines = lines.slice(1);
+
+          this.sceneSprites.set(key, {
+            layer: metadata.layer,
+            position: metadata.position,
+            x: metadata.x, // Extract x coordinate if provided
+            lines: spriteLines
+          });
+        }
+      } catch (error) {
+        console.warn('Failed to parse metadata:', metadataLine, error);
+      }
+    }
+  }
+
+  private getSpriteKey(layer: string, position: string): string {
+    return `${layer}-${position}`;
   }
 
   // Main composition method
   compose(
     raycast: RaycastData,
     viewWidth: number,
-    viewHeight: number
+    viewHeight: number,
+    transparency: boolean = false
   ): string[][] {
     // Create empty buffer
     const buffer: string[][] = Array(viewHeight)
       .fill(null)
       .map(() => Array(viewWidth).fill(' '));
 
-    // Render in proper stacking order: near-left, mid-left, far-left, center, far-right, mid-right, near-right
+    if (!this.isLoaded) {
+      // Return empty buffer if scene data not loaded
+      return buffer;
+    }
+
+    // Render in back-to-front order: far -> middle -> near -> here
+    // Within each layer: left -> right -> center (so center overlays left/right)
     const renderOrder = [
-      { layer: 'near' as const, position: 'left' as const },
-      { layer: 'middle' as const, position: 'left' as const },
       { layer: 'far' as const, position: 'left' as const },
-      { layer: 'far' as const, position: 'center' as const },
-      { layer: 'middle' as const, position: 'center' as const },
-      { layer: 'near' as const, position: 'center' as const },
       { layer: 'far' as const, position: 'right' as const },
+      { layer: 'far' as const, position: 'center' as const },
+      { layer: 'middle' as const, position: 'left' as const },
       { layer: 'middle' as const, position: 'right' as const },
+      { layer: 'middle' as const, position: 'center' as const },
+      { layer: 'near' as const, position: 'left' as const },
       { layer: 'near' as const, position: 'right' as const },
+      { layer: 'near' as const, position: 'center' as const },
+      { layer: 'here' as const, position: 'left' as const },
+      { layer: 'here' as const, position: 'right' as const },
+      { layer: 'here' as const, position: 'center' as const },
     ];
 
     for (const { layer, position } of renderOrder) {
@@ -52,33 +139,38 @@ export class FirstPersonCompositor {
 
       const isWall = rayResult;
 
-      // Skip rendering center passages - they should be transparent
-      if (!isWall && position === 'center') {
+      // For passages, don't paint anything (skip)
+      if (!isWall) {
         continue;
       }
 
-      // Select appropriate sprite from theme
-      const sprite = isWall
-        ? this.scenerySprites.walls[layer][position]
-        : this.scenerySprites.passages[layer][position];
+      // For walls, paint the scenery sprite
+      const spriteKey = this.getSpriteKey(layer, position);
+      const sprite = this.sceneSprites.get(spriteKey);
 
-      // Calculate sprite position based on layer and position
+      if (!sprite) {
+        continue; // No sprite defined for this layer/position
+      }
+
+      // Calculate sprite position based on position and metadata
       const spritePos = this.calculateSpritePosition(
         layer,
         position,
-        sprite,
+        sprite.lines,
+        sprite.x,
+        viewWidth,
         viewHeight
       );
 
-      // Render sprite to buffer with proper width allocation
+      // Render sprite to buffer
       this.renderSprite(
         buffer,
-        sprite,
+        sprite.lines,
         spritePos.x,
         spritePos.y,
-        spritePos.width,
         viewWidth,
-        viewHeight
+        viewHeight,
+        transparency
       );
     }
 
@@ -86,52 +178,43 @@ export class FirstPersonCompositor {
   }
 
   private calculateSpritePosition(
-    layer: 'far' | 'middle' | 'near',
+    layer: 'here' | 'near' | 'middle' | 'far',
     position: 'left' | 'center' | 'right',
     sprite: string[],
+    metadataX: number | undefined,
+    viewWidth: number,
     viewHeight: number
-  ): { x: number; y: number; width: number } {
-    let x = 0;
-    let width = 0;
-
-    // Flattened positioning lookup - sprites nest within each other
-    // All lefts first
-    if (layer === 'near' && position === 'left') {
-      x = 0;
-      width = 7;
-    } else if (layer === 'middle' && position === 'left') {
-      x = 7;  // Inside near-left area (0-6)
-      width = 3;
-    } else if (layer === 'far' && position === 'left') {
-      x = 10;  // Inside near-left area (0-6)
-      width = 2;
-    // All rights
-    } else if (layer === 'near' && position === 'right') {
-      x = 19;
-      width = 7;
-    } else if (layer === 'middle' && position === 'right') {
-      x = 16;
-      width = 3;
-    } else if (layer === 'far' && position === 'right') {
-      x = 14;
-      width = 2;
-    // All centers
-    } else if (layer === 'near' && position === 'center') {
-      x = 7;
-      width = 12;
-    } else if (layer === 'middle' && position === 'center') {
-      x = 10;
-      width = 6;
-    } else if (layer === 'far' && position === 'center') {
-      x = 12;
-      width = 2;
-    }
-
-    // Center sprite vertically in the available height
+  ): { x: number; y: number } {
     const spriteHeight = sprite.length;
     const y = Math.floor((viewHeight - spriteHeight) / 2);
 
-    return { x, y, width };
+    let x: number;
+
+    // Use metadata x coordinate if provided
+    if (metadataX !== undefined) {
+      x = metadataX;
+    } else {
+      // First try to use default wireframe positions
+      const defaultKey = `${layer}-${position}`;
+      const defaultX = DEFAULT_SPRITE_POSITIONS[defaultKey];
+
+      if (defaultX !== undefined) {
+        x = defaultX;
+      } else {
+        // Final fallback to position-based calculation
+        const spriteWidth = Math.max(...sprite.map(line => line.length));
+
+        if (position === 'left') {
+          x = 0;
+        } else if (position === 'right') {
+          x = viewWidth - spriteWidth;
+        } else { // center
+          x = Math.floor((viewWidth - spriteWidth) / 2);
+        }
+      }
+    }
+
+    return { x, y };
   }
 
   private renderSprite(
@@ -139,9 +222,9 @@ export class FirstPersonCompositor {
     sprite: string[],
     startX: number,
     startY: number,
-    allocatedWidth: number,
     viewWidth: number,
-    viewHeight: number
+    viewHeight: number,
+    transparency: boolean = false
   ): void {
     for (let y = 0; y < sprite.length; y++) {
       const bufferY = startY + y;
@@ -149,25 +232,43 @@ export class FirstPersonCompositor {
 
       const line = sprite[y] || '';
 
-      // Render the sprite line, padding to center within allocated width
-      for (let x = 0; x < allocatedWidth; x++) {
+      for (let x = 0; x < line.length; x++) {
         const bufferX = startX + x;
         if (bufferX >= viewWidth || bufferX < 0) continue;
 
-        let char = ' '; // Default to space (padding)
-
-        if (x < line.length) {
-          char = line[x];
+        const char = line[x];
+        // In transparency mode, don't overwrite existing content with spaces
+        if (transparency && char === ' ') {
+          continue; // Skip rendering spaces in transparency mode
         }
-
-        // Always render to fill the allocated width (including spaces for padding)
+        // Render all characters including spaces to properly overwrite farther sprites
         buffer[bufferY][bufferX] = char;
       }
     }
   }
 
-  // Helper method to get available theme names
-  static getAvailableSceneryThemes(): SceneryTheme[] {
-    return Object.keys(ScenerySprites) as SceneryTheme[];
+  // Helper method to get available theme names by scanning scene files
+  static async getAvailableSceneryThemes(): Promise<SceneTheme[]> {
+    try {
+      // In browser environment, we can't scan directories, so return known themes
+      if (typeof window !== 'undefined') {
+        return ['wireframe', 'brick'];
+      }
+
+      // In Node.js environment, scan the scenes directory
+      const fs = await import('fs/promises');
+      const path = await import('path');
+
+      const scenesDir = path.join(process.cwd(), 'packages/asciitorium/public/art/scenes');
+      const files = await fs.readdir(scenesDir);
+
+      return files
+        .filter(file => file.endsWith('.txt'))
+        .map(file => file.replace('.txt', ''))
+        .sort();
+    } catch (error) {
+      console.warn('Could not scan scene themes, falling back to defaults:', error);
+      return ['wireframe', 'brick'];
+    }
   }
 }
