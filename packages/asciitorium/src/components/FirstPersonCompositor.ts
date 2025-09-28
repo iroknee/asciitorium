@@ -14,7 +14,7 @@ interface SceneSprite {
   lines: string[];
 }
 
-type SceneTheme = string;
+type Scene = string;
 
 // Default sprite positions extracted from wireframe.txt
 const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
@@ -33,23 +33,23 @@ const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
 
 export class FirstPersonCompositor {
   private sceneSprites: Map<string, SceneSprite> = new Map();
-  private currentTheme: SceneTheme = 'wireframe';
+  private currentScene: Scene = 'wireframe';
   private isLoaded = false;
 
-  constructor(sceneryTheme: SceneTheme = 'wireframe') {
-    this.currentTheme = sceneryTheme;
+  constructor(scene: Scene = 'wireframe') {
+    this.currentScene = scene;
     this.loadSceneData();
   }
 
-  // Change theme dynamically
-  async setSceneryTheme(theme: SceneTheme): Promise<void> {
-    this.currentTheme = theme;
+  // Change scene dynamically
+  async setScene(scene: Scene): Promise<void> {
+    this.currentScene = scene;
     await this.loadSceneData();
   }
 
   private async loadSceneData(): Promise<void> {
     try {
-      const sceneData = await loadArt(`art/scenes/${this.currentTheme}.txt`);
+      const sceneData = await loadArt(`art/scenes/${this.currentScene}.txt`);
       this.parseSceneData(sceneData);
       this.isLoaded = true;
     } catch (error) {
@@ -247,10 +247,10 @@ export class FirstPersonCompositor {
     }
   }
 
-  // Helper method to get available theme names by scanning scene files
-  static async getAvailableSceneryThemes(): Promise<SceneTheme[]> {
+  // Helper method to get available scene names by scanning scene files
+  static async getAvailableScenes(): Promise<Scene[]> {
     try {
-      // In browser environment, we can't scan directories, so return known themes
+      // In browser environment, we can't scan directories, so return known scenes
       if (typeof window !== 'undefined') {
         return ['wireframe', 'brick'];
       }
@@ -267,7 +267,7 @@ export class FirstPersonCompositor {
         .map(file => file.replace('.txt', ''))
         .sort();
     } catch (error) {
-      console.warn('Could not scan scene themes, falling back to defaults:', error);
+      console.warn('Could not scan scenes, falling back to defaults:', error);
       return ['wireframe', 'brick'];
     }
   }

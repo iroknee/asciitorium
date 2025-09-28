@@ -55,7 +55,7 @@ export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'>
     | State<string>;
   src?: string; // URL or file path to load maze from
   player: Player | State<Player>;
-  sceneryTheme?: string | State<string>; // Scenery theme
+  scene?: string | State<string>; // Scene name
   transparency?: boolean; // When true, spaces won't overwrite existing content (useful for debugging)
 }
 
@@ -70,7 +70,7 @@ export class FirstPersonView extends Component {
     | State<string>;
   private playerSource: Player | State<Player>;
   private compositor: FirstPersonCompositor;
-  private sceneryThemeSource: string | State<string>;
+  private sceneSource: string | State<string>;
   private isLoading = false;
   private loadError?: string;
   private src?: string;
@@ -81,7 +81,7 @@ export class FirstPersonView extends Component {
       content,
       src,
       player,
-      sceneryTheme,
+      scene,
       transparency,
       style,
       ...componentProps
@@ -118,15 +118,15 @@ export class FirstPersonView extends Component {
 
     this.contentSource = actualContent;
     this.playerSource = player;
-    this.sceneryThemeSource = sceneryTheme ?? 'wireframe';
+    this.sceneSource = scene ?? 'wireframe';
     this.transparency = transparency ?? false;
 
-    // Get initial theme value
-    const initialSceneryTheme = isState(this.sceneryThemeSource)
-      ? (this.sceneryThemeSource as State<string>).value
-      : (this.sceneryThemeSource as string);
+    // Get initial scene value
+    const initialScene = isState(this.sceneSource)
+      ? (this.sceneSource as State<string>).value
+      : (this.sceneSource as string);
 
-    this.compositor = new FirstPersonCompositor(initialSceneryTheme);
+    this.compositor = new FirstPersonCompositor(initialScene);
 
     // Subscribe to player state changes
     if (isState(this.playerSource)) {
@@ -135,10 +135,10 @@ export class FirstPersonView extends Component {
       });
     }
 
-    // Subscribe to theme changes
-    if (isState(this.sceneryThemeSource)) {
-      (this.sceneryThemeSource as State<string>).subscribe((newTheme) => {
-        this.compositor.setSceneryTheme(newTheme);
+    // Subscribe to scene changes
+    if (isState(this.sceneSource)) {
+      (this.sceneSource as State<string>).subscribe((newScene) => {
+        this.compositor.setScene(newScene);
         requestRender();
       });
     }
@@ -373,14 +373,14 @@ export class FirstPersonView extends Component {
     requestRender();
   }
 
-  // Method to change theme dynamically
-  setSceneryTheme(theme: string): void {
-    this.compositor.setSceneryTheme(theme);
+  // Method to change scene dynamically
+  setScene(scene: string): void {
+    this.compositor.setScene(scene);
     requestRender();
   }
 
-  // Get available themes
-  static getAvailableSceneryThemes(): Promise<string[]> {
-    return FirstPersonCompositor.getAvailableSceneryThemes();
+  // Get available scenes
+  static getAvailableScenes(): Promise<string[]> {
+    return FirstPersonCompositor.getAvailableScenes();
   }
 }
