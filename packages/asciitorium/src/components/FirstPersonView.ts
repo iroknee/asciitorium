@@ -2,7 +2,7 @@ import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState, loadArt } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
-import { Direction, Player, MapData } from './Maze';
+import { Direction, Player, MapData } from './MapView';
 import { FirstPersonCompositor } from './FirstPersonCompositor';
 
 interface RaycastOffset {

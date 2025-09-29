@@ -5,36 +5,49 @@ import path from 'path'
 function parseArgs() {
   const args = process.argv.slice(2)
   
-  if (args.length !== 3) {
-    console.error('Usage: node map-builder.js <width> <height> <filename>')
-    console.error('Example: node map-builder.js 10 10 dungeon-level-1.txt')
-    console.error('Maps will be saved to public/art/maps/ directory')
+  // Check for flags
+  let smooth = false
+  let filteredArgs = []
+  
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--smooth' || args[i] === '--unicode') {
+      smooth = true
+    } else {
+      filteredArgs.push(args[i])
+    }
+  }
+  
+  if (filteredArgs.length !== 3) {
+    console.error('Usage: node map-builder.js <width> <height> <directory-name> [--smooth]')
+    console.error('Example: node map-builder.js 10 10 dungeon-level-1 --smooth')
+    console.error('Maps will be saved to public/art/maps/<directory-name>/map.txt')
+    console.error('Use --smooth flag to enable Unicode box drawing characters')
     process.exit(1)
   }
   
-  const width = parseInt(args[0])
-  const height = parseInt(args[1])
-  const filename = args[2]
-  
+  const width = parseInt(filteredArgs[0])
+  const height = parseInt(filteredArgs[1])
+  const directoryName = filteredArgs[2]
+
   if (isNaN(width) || width <= 0) {
     console.error('Width must be a positive integer')
     process.exit(1)
   }
-  
+
   if (isNaN(height) || height <= 0) {
     console.error('Height must be a positive integer')
     process.exit(1)
   }
-  
-  // Construct the full path to the maps directory
-  const mapsDir = path.join(process.cwd(), '../public/art/maps')
-  const fullPath = path.join(mapsDir, filename)
-  
-  return { width, height, filename: fullPath, mapsDir }
+
+  // Construct the full path to the map directory
+  const mapDir = path.join(process.cwd(), '../public/art/maps', directoryName)
+  const fullPath = path.join(mapDir, 'map.txt')
+
+  return { width, height, filename: fullPath, mapDir, smooth }
 }
 
-class MapBuilder {
-  // Map is a 2D array of chars.
+class MazeBuilder {
+  // Maze is a 2D array of chars.
   // example 10x10 grid = [
   //      0123456789012345678
   //    0'+-0-+---+---+---+---+',
@@ -53,38 +66,45 @@ class MapBuilder {
   // conversion: y = y, x = x*2
   // only place items and creatures on odd values of y and x
 
-  constructor(width, height, fileName, mapsDir) {
+  constructor(width, height, fileName, mapDir, smooth = false) {
     this.fileName = fileName
-    this.mapsDir = mapsDir
+    this.mapDir = mapDir
     this.width = width
     this.height = height
+    this.smooth = smooth
     this.map = []
   }
 
   async build() {
-    console.log(`--- building map (${this.width}x${this.height}) ---`)
+    console.log(`--- building maze (${this.width}x${this.height}) ---`)
 
     try {
       this.map = this.createMaze()
-      console.log(' - created base map')
+      console.log(' - created base maze')
 
       // Add rooms
       this.addRooms()
       console.log(' - added rooms')
 
-      // Save the map to text file
+      // Smooth the maze with Unicode box drawing characters (if requested)
+      if (this.smooth) {
+        this.mapUpdate(this.map)
+        console.log(' - smoothed maze appearance with Unicode characters')
+      }
+
+      // Save the maze to text file
       await this.saveToText()
-      console.log('--- map build complete ---')
+      console.log('--- maze build complete ---')
     } catch (error) {
-      console.error(`Error building map: ${error.message}`)
+      console.error(`Error building maze: ${error.message}`)
       console.error(error)
     }
   }
 
   async saveToText() {
     try {
-      // Ensure the maps directory exists
-      await fs.mkdir(this.mapsDir, { recursive: true })
+      // Ensure the map directory exists
+      await fs.mkdir(this.mapDir, { recursive: true })
       
       // Join the map array with newlines to create plain text
       const textOutput = this.map.join('\n')
@@ -139,6 +159,38 @@ class MapBuilder {
 
   replaceAt(string, index, replacement) {
     return string.substr(0, index) + replacement + string.substr(index + replacement.length)
+  }
+
+  mapUpdate(map) {
+    const copy = [...map]
+    for (let y = 0; y < copy.length; y++) {
+      for (let x = 0; x < copy[y].length; x++) {
+        if (copy[y][x] === '-') copy[y] = copy[y].substring(0, x) + '─' + copy[y].substring(x + 1)
+        if (copy[y][x] === '|') copy[y] = copy[y].substring(0, x) + '│' + copy[y].substring(x + 1)
+        if (copy[y][x] === '+') {
+          let north = y > 0 && copy[y - 1][x] !== ' '
+          let south = y < copy.length - 1 && copy[y + 1][x] !== ' '
+          let west = x > 0 && copy[y][x - 1] !== ' '
+          let east = x < copy[y].length - 1 && copy[y][x + 1] !== ' '
+          if (north && south && west && east) copy[y] = copy[y].substring(0, x) + '┼' + copy[y].substring(x + 1)
+          else if (north && south && west) copy[y] = copy[y].substring(0, x) + '┤' + copy[y].substring(x + 1)
+          else if (north && south && east) copy[y] = copy[y].substring(0, x) + '├' + copy[y].substring(x + 1)
+          else if (north && east && west) copy[y] = copy[y].substring(0, x) + '┴' + copy[y].substring(x + 1)
+          else if (south && east && west) copy[y] = copy[y].substring(0, x) + '┬' + copy[y].substring(x + 1)
+          else if (north && south) copy[y] = copy[y].substring(0, x) + '│' + copy[y].substring(x + 1)
+          else if (west && east) copy[y] = copy[y].substring(0, x) + '─' + copy[y].substring(x + 1)
+          else if (north && east) copy[y] = copy[y].substring(0, x) + '╰' + copy[y].substring(x + 1)
+          else if (north && west) copy[y] = copy[y].substring(0, x) + '╯' + copy[y].substring(x + 1)
+          else if (south && east) copy[y] = copy[y].substring(0, x) + '╭' + copy[y].substring(x + 1)
+          else if (south && west) copy[y] = copy[y].substring(0, x) + '╮' + copy[y].substring(x + 1)
+          else if (east) copy[y] = copy[y].substring(0, x) + '╶' + copy[y].substring(x + 1)
+          else if (west) copy[y] = copy[y].substring(0, x) + '╴' + copy[y].substring(x + 1)
+          else if (north) copy[y] = copy[y].substring(0, x) + '╵' + copy[y].substring(x + 1)
+          else if (south) copy[y] = copy[y].substring(0, x) + '╷' + copy[y].substring(x + 1)
+        }
+      }
+    }
+    this.map = copy
   }
 
   createMaze() {
@@ -237,6 +289,6 @@ class MapBuilder {
   }
 }
 
-const { width, height, filename, mapsDir } = parseArgs()
-const builder = new MapBuilder(width, height, filename, mapsDir)
+const { width, height, filename, mapDir, smooth } = parseArgs()
+const builder = new MazeBuilder(width, height, filename, mapDir, smooth)
 builder.build()

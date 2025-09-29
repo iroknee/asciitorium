@@ -22,7 +22,7 @@ import {
   TabsExample,
   ArtExample,
   SlidersExample,
-  MazeExample,
+  MapViewExample,
   FirstPersonViewExample,
 } from './examples';
 
@@ -39,7 +39,7 @@ const componentList = [
   'CelticBorder',
   'Form',
   'Modal',
-  'Maze',
+  'MapView',
   'FirstPersonView',
   'MultiSelect',
   'LayoutSizing',
@@ -55,7 +55,7 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Form: FormExample,
   Modal: ModalExample,
-  Maze: MazeExample,
+  MapView: MapViewExample,
   FirstPersonView: FirstPersonViewExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,

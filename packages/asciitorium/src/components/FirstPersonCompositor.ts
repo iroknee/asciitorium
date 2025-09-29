@@ -49,20 +49,49 @@ export class FirstPersonCompositor {
 
   private async loadSceneData(): Promise<void> {
     try {
-      const sceneData = await loadArt(`art/scenes/${this.currentScene}.txt`);
+      // Load material data from art/materials/ directory
+      const sceneData = await loadArt(`art/materials/${this.currentScene}.txt`);
       this.parseSceneData(sceneData);
       this.isLoaded = true;
     } catch (error) {
-      console.error('Failed to load scene data:', error);
+      console.error('Failed to load material data:', error);
       this.isLoaded = false;
     }
   }
 
   private parseSceneData(data: string): void {
     this.sceneSprites.clear();
-    const sections = data.split(/[§¶]\s*/);
 
-    for (const section of sections) {
+    // First, split by § to separate file header from content
+    const fileParts = data.split('§');
+    if (fileParts.length < 2) {
+      console.warn('Invalid material file format: missing § header');
+      return;
+    }
+
+    // Parse file header (after §)
+    const headerSection = fileParts[1];
+    const headerLines = headerSection.split('\n');
+    const headerMetadataLine = headerLines[0].trim();
+
+    try {
+      const fileMetadata = JSON.parse(headerMetadataLine);
+      if (fileMetadata.kind !== 'material') {
+        console.warn('File is not a material:', fileMetadata);
+        return;
+      }
+    } catch (error) {
+      console.warn('Failed to parse file metadata:', headerMetadataLine, error);
+      return;
+    }
+
+    // Get the content after the header (everything after the first newline following §)
+    const contentAfterHeader = headerSection.substring(headerLines[0].length + 1);
+
+    // Now split by ¶ to get individual layer sections
+    const layerSections = contentAfterHeader.split('¶');
+
+    for (const section of layerSections) {
       if (!section.trim()) continue;
 
       const lines = section.split('\n');
@@ -86,7 +115,7 @@ export class FirstPersonCompositor {
           });
         }
       } catch (error) {
-        console.warn('Failed to parse metadata:', metadataLine, error);
+        console.warn('Failed to parse layer metadata:', metadataLine, error);
       }
     }
   }

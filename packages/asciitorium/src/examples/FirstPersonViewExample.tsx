@@ -1,4 +1,4 @@
-import { Column, Row, Maze, FirstPersonView, State, Text, Direction, Button, Select } from '../index';
+import { Column, Row, MapView, FirstPersonView, State, Text, Direction, Button, Select } from '../index';
 import { BaseStyle } from './constants';
 
 // Player position state - start in the open area
@@ -15,7 +15,7 @@ const selectedScene = new State('wireframe');
 export const FirstPersonViewExample = () => (
   <Column label="FirstPersonView Example" style={BaseStyle}>
     <Row width="fill">
-      <Text>Scene:</Text>
+      <Text align="center">Scene:</Text>
       <Select
         items={['wireframe', 'brick']}
         selectedItem={selectedScene}
@@ -25,16 +25,16 @@ export const FirstPersonViewExample = () => (
     </Row>
 
     <Row gap={2}>
-      <Maze
+      <MapView
         style={{ width: 24, height: 27 }}
-        src="./art/mazes/example.txt"
+        src="./art/maps/example/map.txt"
         player={playerPosition}
         fogOfWar={false}
         hotkey="m"
       />
 
       <FirstPersonView
-        src="./art/mazes/example.txt"
+        src="./art/maps/example/map.txt"
         player={playerPosition}
         scene={selectedScene}
         transparency={false}

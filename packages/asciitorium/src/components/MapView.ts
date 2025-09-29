@@ -15,7 +15,7 @@ export interface MapData {
   map: string[];
 }
 
-export interface MazeOptions extends Omit<ComponentProps, 'children'> {
+export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
   content?:
     | MapData
     | string[]
@@ -37,7 +37,7 @@ export interface MazeOptions extends Omit<ComponentProps, 'children'> {
   fogCharacter?: string;
 }
 
-export class Maze extends Component {
+export class MapView extends Component {
   focusable = true;
   private contentSource:
     | MapData
@@ -54,7 +54,7 @@ export class Maze extends Component {
   private loadError?: string;
   private src?: string;
 
-  constructor(options: MazeOptions) {
+  constructor(options: MapViewOptions) {
     const {
       content,
       map,
@@ -85,7 +85,7 @@ export class Maze extends Component {
       const contentOrMap = content ?? map;
       if (!contentOrMap) {
         throw new Error(
-          'AsciiMaze requires either src, content, or map parameter'
+          'MapView requires either src, content, or map parameter'
         );
       }
       actualContent = contentOrMap;
@@ -553,7 +553,7 @@ export class Maze extends Component {
     } else {
       // If it's not a State, we can't update it - this would be a programming error
       console.warn(
-        'AsciiMaze player is not a State object, cannot update player position'
+        'MapView player is not a State object, cannot update player position'
       );
     }
   }

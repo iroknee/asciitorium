@@ -18,32 +18,32 @@ function parseArgs() {
   }
   
   if (filteredArgs.length !== 3) {
-    console.error('Usage: node maze-builder.js <width> <height> <filename> [--smooth]')
-    console.error('Example: node maze-builder.js 10 10 dungeon-level-1.txt --smooth')
-    console.error('Mazes will be saved to public/art/mazes/ directory')
+    console.error('Usage: node map-builder.js <width> <height> <directory-name> [--smooth]')
+    console.error('Example: node map-builder.js 10 10 dungeon-level-1 --smooth')
+    console.error('Maps will be saved to public/art/maps/<directory-name>/map.txt')
     console.error('Use --smooth flag to enable Unicode box drawing characters')
     process.exit(1)
   }
   
   const width = parseInt(filteredArgs[0])
   const height = parseInt(filteredArgs[1])
-  const filename = filteredArgs[2]
-  
+  const directoryName = filteredArgs[2]
+
   if (isNaN(width) || width <= 0) {
     console.error('Width must be a positive integer')
     process.exit(1)
   }
-  
+
   if (isNaN(height) || height <= 0) {
     console.error('Height must be a positive integer')
     process.exit(1)
   }
-  
-  // Construct the full path to the mazes directory
-  const mazesDir = path.join(process.cwd(), '../public/art/mazes')
-  const fullPath = path.join(mazesDir, filename)
-  
-  return { width, height, filename: fullPath, mazesDir, smooth }
+
+  // Construct the full path to the map directory
+  const mapDir = path.join(process.cwd(), '../public/art/maps', directoryName)
+  const fullPath = path.join(mapDir, 'map.txt')
+
+  return { width, height, filename: fullPath, mapDir, smooth }
 }
 
 class MazeBuilder {
@@ -66,9 +66,9 @@ class MazeBuilder {
   // conversion: y = y, x = x*2
   // only place items and creatures on odd values of y and x
 
-  constructor(width, height, fileName, mazesDir, smooth = false) {
+  constructor(width, height, fileName, mapDir, smooth = false) {
     this.fileName = fileName
-    this.mazesDir = mazesDir
+    this.mapDir = mapDir
     this.width = width
     this.height = height
     this.smooth = smooth
@@ -103,14 +103,14 @@ class MazeBuilder {
 
   async saveToText() {
     try {
-      // Ensure the mazes directory exists
-      await fs.mkdir(this.mazesDir, { recursive: true })
+      // Ensure the map directory exists
+      await fs.mkdir(this.mapDir, { recursive: true })
       
       // Join the map array with newlines to create plain text
       const textOutput = this.map.join('\n')
       
       await fs.writeFile(this.fileName, textOutput, 'utf-8')
-      console.log(` - successfully wrote maze data to ${this.fileName}`)
+      console.log(` - successfully wrote map data to ${this.fileName}`)
     } catch (error) {
       console.error(`Error writing text to file: ${error.message}`)
     }
@@ -289,6 +289,6 @@ class MazeBuilder {
   }
 }
 
-const { width, height, filename, mazesDir, smooth } = parseArgs()
-const builder = new MazeBuilder(width, height, filename, mazesDir, smooth)
+const { width, height, filename, mapDir, smooth } = parseArgs()
+const builder = new MazeBuilder(width, height, filename, mapDir, smooth)
 builder.build()

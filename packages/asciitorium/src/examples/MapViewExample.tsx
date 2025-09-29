@@ -1,4 +1,4 @@
-import { Column, Maze, State, Text, Direction, Button } from '../index';
+import { Column, MapView, State, Text, Direction, Button } from '../index';
 import { BaseStyle } from './constants';
 
 // Player position state - start in the open area
@@ -14,11 +14,11 @@ const exploredTiles = new State(new Set<string>());
 // Fog of war toggle state
 const fogOfWarEnabled = new State(false);
 
-export const MazeExample = () => (
-  <Column label="AsciiMaze Example" style={BaseStyle}>
-    <Maze
+export const MapViewExample = () => (
+  <Column label="MapView Example" style={BaseStyle}>
+    <MapView
       style={{ width: '50%', height: 14, align: 'center' }}
-      src="./art/mazes/example.txt"
+      src="./art/maps/example/map.txt"
       player={playerPosition}
       fogOfWar={fogOfWarEnabled}
       exploredTiles={exploredTiles}
