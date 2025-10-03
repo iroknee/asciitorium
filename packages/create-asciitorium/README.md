@@ -41,7 +41,7 @@ npm run build
 
 ### Other Scripts
 
-Asciitorium supports viewing ascii art files. There are a few easy ways to create some specific ascii art, including FIGlet fonts and mazes/maps.
+Asciitorium supports viewing ascii art files. There are a few easy ways to create some specific ascii art, including FIGlet fonts and maps.
 
 To generate FIGlet ASCII art assets (automatically placed in public/art):
 

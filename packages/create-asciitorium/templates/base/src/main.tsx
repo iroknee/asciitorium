@@ -21,7 +21,7 @@ import {
   ArtExample,
   SlidersExample,
   ScrollableTextExample,
-  MazeExample,
+  MapExample,
 } from 'asciitorium/examples';
 
 // Main state for component selection with persistence
@@ -37,7 +37,7 @@ const componentList = [
   'CelticBorder',
   'Form',
   'Modal',
-  'Maze',
+  'Map',
   'MultiSelect',
   'LayoutSizing',
   'ScrollableText',
@@ -52,7 +52,7 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Form: FormExample,
   Modal: ModalExample,
-  Maze: MazeExample,
+  Map: MapExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
   ScrollableText: ScrollableTextExample,

@@ -1,7 +1,7 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 import { State } from '../core/State';
-import { loadArt } from '../core/environment';
+import { AssetManager, type Asset, type SpriteAsset } from '../core/AssetManager';
 
 export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .txt (UTF-8) or reactive state
@@ -101,12 +101,16 @@ export class Art extends Component {
       this.src = options.src;
       this.isLoading = true;
 
-      // Start async loading
-      loadArt(this.src)
-        .then((loadedContent) => {
+      // Extract sprite name from src and start async loading using AssetManager
+      AssetManager.getAsset(this.src)
+        .then((asset) => {
           this.isLoading = false;
           this.loadError = undefined;
-          this.updateContent(loadedContent);
+          if (asset.kind === 'sprite') {
+            this.updateContentFromAsset(asset);
+          } else {
+            throw new Error(`Expected sprite but got ${asset.kind}`);
+          }
           requestRender();
           // Also try to directly render via the app if available
           this.forceRenderIfNeeded();
@@ -197,8 +201,14 @@ export class Art extends Component {
     // Re-parse the new content
     const parsed = parseSprite(newContent);
     const { maxW, maxH } = measureFrames(parsed.frames);
-    this.originalHeight = maxH + (this.border ? 2 : 0);
-    this.originalWidth = maxW + (this.border ? 2 : 0);
+    const newWidth = maxW + (this.border ? 2 : 0);
+    const newHeight = maxH + (this.border ? 2 : 0);
+
+    // Update component dimensions
+    this.originalHeight = newHeight;
+    this.originalWidth = newWidth;
+    this.width = newWidth;
+    this.height = newHeight;
 
     // Update frames and reset animation state
     this.frames = parsed.frames;
@@ -212,6 +222,50 @@ export class Art extends Component {
 
     // Request a re-render
     requestRender();
+  }
+
+  private updateContentFromAsset(asset: Asset): void {
+    // Stop current animation
+    this.clearTimer();
+
+    // Use AssetManager's pre-calculated dimensions (includes all frames)
+    const spriteAsset = asset.data as SpriteAsset;
+    const newWidth = asset.width + (this.border ? 2 : 0);
+    const newHeight = asset.height + (this.border ? 2 : 0);
+
+    // Update component dimensions
+    this.originalHeight = newHeight;
+    this.originalWidth = newWidth;
+    this.width = newWidth;
+    this.height = newHeight;
+
+    // Update frames and reset animation state
+    this.frames = spriteAsset.frames;
+    this.loop = spriteAsset.defaults.loop || false;
+    this.frameIndex = 0;
+
+    // Restart animation if needed
+    if (this.frames.length > 1) {
+      this.startAnimation();
+    }
+
+    // Request a re-render
+    requestRender();
+  }
+
+  private extractSpriteName(src: string): string {
+    // Handle old path format: "./art/sprites/player.txt" -> "player"
+    if (src.includes('/sprites/')) {
+      const parts = src.split('/sprites/');
+      if (parts.length > 1) {
+        const spritePart = parts[1];
+        const spriteName = spritePart.replace('.txt', '');
+        return spriteName;
+      }
+    }
+
+    // Handle direct asset name: "player" -> "player"
+    return src;
   }
 
   private forceRenderIfNeeded(): void {

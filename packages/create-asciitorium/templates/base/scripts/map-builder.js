@@ -46,8 +46,8 @@ function parseArgs() {
   return { width, height, filename: fullPath, mapDir, smooth }
 }
 
-class MazeBuilder {
-  // Maze is a 2D array of chars.
+class MapBuilder {
+  // Map is a 2D array of chars.
   // example 10x10 grid = [
   //      0123456789012345678
   //    0'+-0-+---+---+---+---+',
@@ -76,27 +76,27 @@ class MazeBuilder {
   }
 
   async build() {
-    console.log(`--- building maze (${this.width}x${this.height}) ---`)
+    console.log(`--- building Map (${this.width}x${this.height}) ---`)
 
     try {
-      this.map = this.createMaze()
-      console.log(' - created base maze')
+      this.map = this.createMap()
+      console.log(' - created base Map')
 
       // Add rooms
       this.addRooms()
       console.log(' - added rooms')
 
-      // Smooth the maze with Unicode box drawing characters (if requested)
+      // Smooth the Map with Unicode box drawing characters (if requested)
       if (this.smooth) {
         this.mapUpdate(this.map)
-        console.log(' - smoothed maze appearance with Unicode characters')
+        console.log(' - smoothed Map appearance with Unicode characters')
       }
 
-      // Save the maze to text file
+      // Save the Map to text file
       await this.saveToText()
-      console.log('--- maze build complete ---')
+      console.log('--- Map build complete ---')
     } catch (error) {
-      console.error(`Error building maze: ${error.message}`)
+      console.error(`Error building Map: ${error.message}`)
       console.error(error)
     }
   }
@@ -193,28 +193,28 @@ class MazeBuilder {
     this.map = copy
   }
 
-  createMaze() {
+  createMap() {
     // Establish variables and starting grid
     const totalCells = this.height * this.width
     const unvisited = [] // cells that are unvisited.
-    const maze = []
+    const map = []
     for (let y = 0; y < this.height; y++) {
       unvisited[y] = []
-      maze[y * 2] = ''
-      maze[y * 2 + 1] = ''
+      map[y * 2] = ''
+      map[y * 2 + 1] = ''
       for (let x = 0; x < this.width; x++) {
-        maze[y * 2] += '+---'
-        maze[y * 2 + 1] += '|   '
+        map[y * 2] += '+---'
+        map[y * 2 + 1] += '|   '
         unvisited[y][x] = true
       }
-      maze[y * 2] += '+'
-      maze[y * 2 + 1] += '|'
+      map[y * 2] += '+'
+      map[y * 2 + 1] += '|'
     }
-    maze[this.height * 2] = ''
+    map[this.height * 2] = ''
     for (let x = 0; x < this.width; x++) {
-      maze[this.height * 2] += '+---'
+      map[this.height * 2] += '+---'
     }
-    maze[this.height * 2] += '+'
+    map[this.height * 2] += '+'
 
     // Set a random position to start from
     let current = [Math.floor(Math.random() * this.height), Math.floor(Math.random() * this.width)]
@@ -250,20 +250,20 @@ class MazeBuilder {
         // Choose one of the neighbors at random
         const next = neighbors[Math.floor(Math.random() * neighbors.length)]
 
-        // Remove the wall between the current cell and the chosen neighboring cell in the maze view.
-        // split maze
+        // Remove the wall between the current cell and the chosen neighboring cell in the map view.
+        // split map
         let xBorderToRemove = 0
         let yBorderToRemove = 0
         if (next[2] == 'south') {
           yBorderToRemove = this.yOffset(next[0]) - 1
           xBorderToRemove = this.xOffset(next[1])
-          maze[yBorderToRemove] = this.replaceAt(maze[yBorderToRemove], xBorderToRemove - 1, ' ')
-          maze[yBorderToRemove] = this.replaceAt(maze[yBorderToRemove], xBorderToRemove + 1, ' ')
+          map[yBorderToRemove] = this.replaceAt(map[yBorderToRemove], xBorderToRemove - 1, ' ')
+          map[yBorderToRemove] = this.replaceAt(map[yBorderToRemove], xBorderToRemove + 1, ' ')
         } else if (next[2] == 'north') {
           yBorderToRemove = this.yOffset(next[0]) + 1
           xBorderToRemove = this.xOffset(next[1])
-          maze[yBorderToRemove] = this.replaceAt(maze[yBorderToRemove], xBorderToRemove - 1, ' ')
-          maze[yBorderToRemove] = this.replaceAt(maze[yBorderToRemove], xBorderToRemove + 1, ' ')
+          map[yBorderToRemove] = this.replaceAt(map[yBorderToRemove], xBorderToRemove - 1, ' ')
+          map[yBorderToRemove] = this.replaceAt(map[yBorderToRemove], xBorderToRemove + 1, ' ')
         } else if (next[2] == 'east') {
           yBorderToRemove = this.yOffset(next[0])
           xBorderToRemove = this.xOffset(next[1]) - 2
@@ -272,7 +272,7 @@ class MazeBuilder {
           xBorderToRemove = this.xOffset(next[1]) + 2
         }
 
-        maze[yBorderToRemove] = this.replaceAt(maze[yBorderToRemove], xBorderToRemove, ' ')
+        map[yBorderToRemove] = this.replaceAt(map[yBorderToRemove], xBorderToRemove, ' ')
 
         // Mark the neighbor as visited, and set it as the current cell
         current = next
@@ -285,10 +285,10 @@ class MazeBuilder {
         current = path.pop()
       }
     }
-    return maze
+    return map
   }
 }
 
 const { width, height, filename, mapDir, smooth } = parseArgs()
-const builder = new MazeBuilder(width, height, filename, mapDir, smooth)
+const builder = new MapBuilder(width, height, filename, mapDir, smooth)
 builder.build()

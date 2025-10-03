@@ -1,7 +1,8 @@
 import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
-import { isState, loadArt } from '../core/environment';
+import { isState } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
+import { AssetManager, type MapAsset } from '../core/AssetManager';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
@@ -30,7 +31,7 @@ export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
     | State<MapData>
     | State<string[]>
     | State<string>; // deprecated, use content
-  src?: string; // URL or file path to load maze from
+  src?: string; // Asset name to load map from (e.g., 'example' loads art/maps/example/)
   player: Player | State<Player>;
   fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
@@ -112,16 +113,19 @@ export class MapView extends Component {
       this.src = src;
       this.isLoading = true;
 
-      // Start async loading
-      loadArt(this.src)
-        .then((loadedContent) => {
+      // Extract map name from src (handle both old path format and new asset name format)
+      const mapName = this.extractMapName(this.src);
+
+      // Start async loading using AssetManager
+      AssetManager.getMap(mapName)
+        .then((mapAsset) => {
           this.isLoading = false;
           this.loadError = undefined;
-          this.updateContent(loadedContent);
+          this.updateContentFromAsset(mapAsset);
         })
         .catch((error) => {
           this.isLoading = false;
-          this.loadError = error.message || 'Failed to load maze';
+          this.loadError = error.message || 'Failed to load map';
           this.updateContent(`Error: ${this.loadError}`);
         });
     }
@@ -501,7 +505,7 @@ export class MapView extends Component {
       if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
         return true;
       const char = mapLines[y][x];
-      // Check for box drawing characters used in the maze
+      // Check for box drawing characters used in the map
       const wallChars = [
         '╭',
         '╮',
@@ -564,5 +568,31 @@ export class MapView extends Component {
 
     // Request a re-render
     requestRender();
+  }
+
+  private updateContentFromAsset(mapAsset: MapAsset): void {
+    // Update the content source with the loaded map data
+    this.contentSource = { map: mapAsset.mapData };
+
+    // Store legend for potential future use
+    // (Currently MapView doesn't use legend, but it's available)
+
+    // Request a re-render
+    requestRender();
+  }
+
+  private extractMapName(src: string): string {
+    // Handle old path format: "./art/maps/example/map.txt" -> "example"
+    if (src.includes('/maps/')) {
+      const parts = src.split('/maps/');
+      if (parts.length > 1) {
+        const mapPart = parts[1];
+        const mapName = mapPart.split('/')[0];
+        return mapName;
+      }
+    }
+
+    // Handle direct asset name: "example" -> "example"
+    return src;
   }
 }

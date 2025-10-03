@@ -53,7 +53,7 @@ export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'>
     | State<MapData>
     | State<string[]>
     | State<string>;
-  src?: string; // URL or file path to load maze from
+  src?: string; // URL or file path to load map from
   player: Player | State<Player>;
   scene?: string | State<string>; // Scene name
   transparency?: boolean; // When true, spaces won't overwrite existing content (useful for debugging)
@@ -157,7 +157,7 @@ export class FirstPersonView extends Component {
         })
         .catch((error) => {
           this.isLoading = false;
-          this.loadError = error.message || 'Failed to load maze';
+          this.loadError = error.message || 'Failed to load map';
           this.updateContent(`Error: ${this.loadError}`);
         });
     }
@@ -198,7 +198,7 @@ export class FirstPersonView extends Component {
     if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
       return true;
     const char = mapLines[y][x];
-    // Check for box drawing characters used in the maze
+    // Check for box drawing characters used in the map
     const wallChars = [
       '╭',
       '╮',

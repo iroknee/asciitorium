@@ -1,4 +1,4 @@
-import { loadArt } from '../core/environment';
+import { AssetManager, type MaterialAsset } from '../core/AssetManager';
 
 export interface RaycastData {
   here: { left: boolean | null; center: boolean | null; right: boolean | null };
@@ -49,9 +49,9 @@ export class FirstPersonCompositor {
 
   private async loadSceneData(): Promise<void> {
     try {
-      // Load material data from art/materials/ directory
-      const sceneData = await loadArt(`art/materials/${this.currentScene}.txt`);
-      this.parseSceneData(sceneData);
+      // Load material data using AssetManager
+      const materialAsset = await AssetManager.getMaterial(this.currentScene);
+      this.loadFromMaterialAsset(materialAsset);
       this.isLoaded = true;
     } catch (error) {
       console.error('Failed to load material data:', error);
@@ -59,64 +59,19 @@ export class FirstPersonCompositor {
     }
   }
 
-  private parseSceneData(data: string): void {
+  private loadFromMaterialAsset(materialAsset: MaterialAsset): void {
     this.sceneSprites.clear();
 
-    // First, split by § to separate file header from content
-    const fileParts = data.split('§');
-    if (fileParts.length < 2) {
-      console.warn('Invalid material file format: missing § header');
-      return;
-    }
+    // Convert MaterialAsset layers to SceneSprite format
+    for (const layer of materialAsset.layers) {
+      const key = `${layer.layer}-${layer.position}`;
 
-    // Parse file header (after §)
-    const headerSection = fileParts[1];
-    const headerLines = headerSection.split('\n');
-    const headerMetadataLine = headerLines[0].trim();
-
-    try {
-      const fileMetadata = JSON.parse(headerMetadataLine);
-      if (fileMetadata.kind !== 'material') {
-        console.warn('File is not a material:', fileMetadata);
-        return;
-      }
-    } catch (error) {
-      console.warn('Failed to parse file metadata:', headerMetadataLine, error);
-      return;
-    }
-
-    // Get the content after the header (everything after the first newline following §)
-    const contentAfterHeader = headerSection.substring(headerLines[0].length + 1);
-
-    // Now split by ¶ to get individual layer sections
-    const layerSections = contentAfterHeader.split('¶');
-
-    for (const section of layerSections) {
-      if (!section.trim()) continue;
-
-      const lines = section.split('\n');
-      if (lines.length === 0) continue;
-
-      // Parse metadata from first line
-      const metadataLine = lines[0].trim();
-      if (!metadataLine.startsWith('{')) continue;
-
-      try {
-        const metadata = JSON.parse(metadataLine);
-        if (metadata.layer && metadata.position) {
-          const key = `${metadata.layer}-${metadata.position}`;
-          const spriteLines = lines.slice(1);
-
-          this.sceneSprites.set(key, {
-            layer: metadata.layer,
-            position: metadata.position,
-            x: metadata.x, // Extract x coordinate if provided
-            lines: spriteLines
-          });
-        }
-      } catch (error) {
-        console.warn('Failed to parse layer metadata:', metadataLine, error);
-      }
+      this.sceneSprites.set(key, {
+        layer: layer.layer,
+        position: layer.position,
+        x: layer.x,
+        lines: layer.lines
+      });
     }
   }
 

@@ -55,7 +55,7 @@ export class EventTestHelper {
   }
 
   /**
-   * Simulate WASD movement (common in games like AsciiMaze)
+   * Simulate WASD movement (common in games like AsciiMap)
    */
   static move(component: Component, direction: 'w' | 'a' | 's' | 'd'): boolean {
     return this.pressKey(component, direction);
