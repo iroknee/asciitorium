@@ -1,5 +1,5 @@
 § {"kind":"material","usage":"first-person"}
-¶ {"layer":"here","position":"left","x":-1}
+¶ {"layer":"here","position":"left"}
 |╲      
 | ╲     
 |  ╲    
@@ -25,7 +25,7 @@
 |  ╱    
 | ╱     
 |╱      
-¶ {"layer":"near","position":"center","x":6}
+¶ {"layer":"near","position":"center"}
  ____________
 |            |
 |            |
@@ -38,7 +38,7 @@
 |            |
 |            |
 |____________|
-¶ {"layer":"here","position":"right","x":19}
+¶ {"layer":"here","position":"right"}
       ╱|
      ╱ |
     ╱  |
@@ -64,7 +64,7 @@
     ╲  |
      ╲ |
       ╲|
-¶ {"layer":"near","position":"left","x":-1}
+¶ {"layer":"near","position":"left"}
  ______    
 |      |╲  
 |      | ╲
@@ -77,14 +77,14 @@
 |      |  ╱
 |      | ╱ 
 |______|╱  
-¶ {"layer":"middle","position":"center","x":9}
+¶ {"layer":"middle","position":"center"}
  ______ 
 |      |
 |      |
 |      |
 |      |
 |______|
-¶ {"layer":"near","position":"right","x": 16}
+¶ {"layer":"near","position":"right"}
     ______ 
   ╱|      |
  ╱ |      |
@@ -97,31 +97,31 @@
 ╲  |      |
  ╲ |      |
   ╲|______|
-¶ {"layer":"middle","position":"left","x":-1}
+¶ {"layer":"middle","position":"left"}
  _________  
 |         |╲ 
 |         | |
 |         | |
 |         | |
 |_________|╱ 
-¶ {"layer":"middle","position":"right","x":14}
+¶ {"layer":"middle","position":"right"}
    _________ 
  ╱|         |
 | |         |
 | |         |
 | |         |
  ╲|_________| 
-¶ {"layer":"far","position":"left","x":6}
+¶ {"layer":"far","position":"left"}
  ____
 |    | 
 |    |
 |____|
-¶ {"layer":"far","position":"center","x":11}
+¶ {"layer":"far","position":"center"}
  __
-|  | 
+|  |
 |  |
 |__|
-¶ {"layer":"far","position":"right","x":14}
+¶ {"layer":"far","position":"right"}
  ____
 |    | 
 |    |

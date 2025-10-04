@@ -67,14 +67,14 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21">
+  <App font="PrintChar21" height={42}>
     <Keybind
       keyBinding="p"
       action={togglePerfMonitor}
       global
     />
 
-    <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/>
+    {/* <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/> */}
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components"

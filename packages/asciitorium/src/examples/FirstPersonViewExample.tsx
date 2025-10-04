@@ -1,4 +1,4 @@
-import { Column, Row, MapView, FirstPersonView, State, Text, Direction, Button, Select } from '../index';
+import { Column, Row, MapView, FirstPersonView, State, Text, Direction, Select } from '../index';
 import { BaseStyle } from './constants';
 
 // Player position state - start in the open area
@@ -9,15 +9,15 @@ const playerPosition = new State({
 });
 
 // Scene selection state - default to wireframe
-const selectedScene = new State('wireframe');
+const materialBackground = new State('brick-wall');
 
 export const FirstPersonViewExample = () => (
   <Column label="FirstPersonView Example" style={BaseStyle}>
     <Row width="fill">
-      <Text align="center">Scene:</Text>
+      <Text align="center">Material:</Text>
       <Select
-        items={['wireframe', 'brick']}
-        selectedItem={selectedScene}
+        items={['wireframe', 'brick-wall']}
+        selectedItem={materialBackground}
         hotkey="s"
         width="fill"
       />
@@ -35,7 +35,7 @@ export const FirstPersonViewExample = () => (
       <FirstPersonView
         src="./art/maps/example/map.txt"
         player={playerPosition}
-        scene={selectedScene}
+        scene={materialBackground}
         transparency={false}
       />
     </Row>
