@@ -1,5 +1,4 @@
 export { ArtExample } from './ArtExample';
-export { MapViewExample } from './MapViewExample';
 export { FirstPersonViewExample } from './FirstPersonViewExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';

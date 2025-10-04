@@ -11,7 +11,6 @@ const playerPosition = new State({
 // Scene selection state - default to wireframe
 const selectedScene = new State('wireframe');
 
-
 export const FirstPersonViewExample = () => (
   <Column label="FirstPersonView Example" style={BaseStyle}>
     <Row width="fill">

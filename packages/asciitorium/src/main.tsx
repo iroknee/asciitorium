@@ -22,7 +22,6 @@ import {
   TabsExample,
   ArtExample,
   SlidersExample,
-  MapViewExample,
   FirstPersonViewExample,
 } from './examples';
 
@@ -39,7 +38,6 @@ const componentList = [
   'CelticBorder',
   'Form',
   'Modal',
-  'MapView',
   'FirstPersonView',
   'MultiSelect',
   'LayoutSizing',
@@ -55,7 +53,6 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Form: FormExample,
   Modal: ModalExample,
-  MapView: MapViewExample,
   FirstPersonView: FirstPersonViewExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
@@ -77,7 +74,7 @@ const app = (
       global
     />
 
-    <Art src="asciitorium" style={{ align: 'center', gap: { bottom: 2 } }}/>
+    <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/>
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components"

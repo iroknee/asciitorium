@@ -39,25 +39,17 @@ export class Art extends Component {
 
   constructor(options: ArtOptions) {
     let actualContent = options.content;
-    let contentValue: string;
     const borderPadding = options.border ? 2 : 0;
-    let parsed: ReturnType<typeof parseSprite>;
-    let isLoadingSrc = false;
+    const isLoadingSrc = !!options.src;
 
-    // Handle src prop for async loading
-    if (options.src) {
-      isLoadingSrc = true;
-      // Skip parsing - will be done in updateContent after load
-      parsed = { 
-        frames: [{ 
-          lines: [['L','o','a','d','i','n','g','.','.','.']], 
-          meta: { duration: 0 } 
-        }], 
-        defaults: { loop: false },
-        errors: []
-      };
-    } else {
-      // Fallback to existing content/children logic
+    // Prepare content and dimensions before super() call
+    let parsedFrames: SpriteFrame[] = [];
+    let parsedLoop = false;
+    let calculatedWidth: number | undefined;
+    let calculatedHeight: number | undefined;
+
+    if (!isLoadingSrc) {
+      // Handle direct content/children (non-src)
       if (!actualContent && options.children) {
         const children = Array.isArray(options.children)
           ? options.children
@@ -74,35 +66,51 @@ export class Art extends Component {
       }
 
       // Handle State<string> or string content - determine initial value
+      let contentValue: string;
       if (actualContent instanceof State) {
         contentValue = actualContent.value;
       } else {
         contentValue = actualContent;
       }
 
-      parsed = parseSprite(contentValue);
+      // Parse the content directly and measure dimensions only if not provided
+      const parsed = parseSprite(contentValue);
+      const { maxW, maxH } = measureFrames(parsed.frames);
+
+      parsedFrames = parsed.frames;
+      parsedLoop = parsed.defaults.loop || false;
+      calculatedWidth = Math.max(1, maxW + borderPadding);
+      calculatedHeight = Math.max(1, maxH + borderPadding);
+    } else {
+      // For src loading, use placeholder
+      parsedFrames = [{
+        lines: [['L','o','a','d','i','n','g','.','.','.']],
+        meta: { duration: 0 }
+      }];
+      parsedLoop = false;
+      calculatedWidth = 12; // "Loading..." length + border
+      calculatedHeight = 1 + borderPadding;
     }
 
-    // Compute width/height from max of all frames (unless provided)
-    const { maxW, maxH } = measureFrames(parsed.frames);
-
+    // Call super() with calculated or provided dimensions
     const { children, content, src, ...componentProps } = options;
     super({
       ...componentProps,
-      width: options.width ?? options.style?.width ?? Math.max(1, maxW + borderPadding),
-      height: options.height ?? options.style?.height ?? Math.max(1, maxH + borderPadding),
+      width: options.width ?? options.style?.width ?? calculatedWidth,
+      height: options.height ?? options.style?.height ?? calculatedHeight,
     });
 
-    this.frames = parsed.frames;
-    this.loop = parsed.defaults.loop || false;
+    // Set initial state
+    this.frames = parsedFrames;
+    this.loop = parsedLoop;
 
-    // Handle src loading after super() call
     if (isLoadingSrc && options.src) {
+      // Set loading state
       this.src = options.src;
       this.isLoading = true;
 
-      // Extract sprite name from src and start async loading using AssetManager
-      AssetManager.getAsset(this.src)
+      // Start async loading using AssetManager - dimensions will come from AssetManager
+      AssetManager.getAsset(options.src)
         .then((asset) => {
           this.isLoading = false;
           this.loadError = undefined;
@@ -112,7 +120,6 @@ export class Art extends Component {
             throw new Error(`Expected sprite but got ${asset.kind}`);
           }
           requestRender();
-          // Also try to directly render via the app if available
           this.forceRenderIfNeeded();
         })
         .catch((error) => {
@@ -120,21 +127,18 @@ export class Art extends Component {
           this.loadError = error.message || 'Failed to load ASCII art';
           this.updateContent(`Error: ${this.loadError}`);
           requestRender();
-          // Also try to directly render via the app if available
           this.forceRenderIfNeeded();
         });
     } else {
-      // Set up state subscription for non-src content
+      // Set up state subscription for reactive content
       if (actualContent instanceof State) {
         this.contentState = actualContent;
-
-        // Use Component.bind() for automatic subscription management
         this.bind(this.contentState, (newValue: string) => {
           this.updateContent(newValue);
         });
       }
 
-      // If we have animation (2+ frames), start it
+      // Start animation if we have multiple frames
       if (this.frames.length > 1) {
         this.startAnimation();
       }
