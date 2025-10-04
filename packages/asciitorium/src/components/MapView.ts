@@ -3,6 +3,7 @@ import type { State } from '../core/State';
 import { isState } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
 import { AssetManager, type MapAsset } from '../core/AssetManager';
+import type { GameWorld } from '../core/GameWorld';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
@@ -17,6 +18,10 @@ export interface MapData {
 }
 
 export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
+  // New: GameWorld integration (preferred)
+  gameWorld?: GameWorld;
+
+  // Legacy: Direct map/player props (for backward compatibility)
   content?:
     | MapData
     | string[]
@@ -32,7 +37,9 @@ export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
     | State<string[]>
     | State<string>; // deprecated, use content
   src?: string; // Asset name to load map from (e.g., 'example' loads art/maps/example/)
-  player: Player | State<Player>;
+  player?: Player | State<Player>;
+
+  // Common options (work with both modes)
   fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
   fogCharacter?: string;
@@ -40,6 +47,7 @@ export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
 
 export class MapView extends Component {
   focusable = true;
+  private gameWorld?: GameWorld;
   private contentSource:
     | MapData
     | string[]
@@ -47,7 +55,7 @@ export class MapView extends Component {
     | State<MapData>
     | State<string[]>
     | State<string>;
-  private playerSource: Player | State<Player>;
+  private playerSource?: Player | State<Player>;
   private fogOfWarSource: boolean | State<boolean>;
   private exploredTilesSource?: Set<string> | State<Set<string>>;
   private fogCharacter: string;
@@ -57,6 +65,7 @@ export class MapView extends Component {
 
   constructor(options: MapViewOptions) {
     const {
+      gameWorld,
       content,
       map,
       src,
@@ -78,7 +87,10 @@ export class MapView extends Component {
       | State<string>;
     let isLoadingSrc = false;
 
-    if (src) {
+    if (gameWorld) {
+      // GameWorld mode: use empty content initially
+      actualContent = 'Loading...';
+    } else if (src) {
       isLoadingSrc = true;
       actualContent = 'Loading...';
     } else {
@@ -86,7 +98,7 @@ export class MapView extends Component {
       const contentOrMap = content ?? map;
       if (!contentOrMap) {
         throw new Error(
-          'MapView requires either src, content, or map parameter'
+          'MapView requires either gameWorld, src, content, or map parameter'
         );
       }
       actualContent = contentOrMap;
@@ -102,11 +114,19 @@ export class MapView extends Component {
       border: options.border ?? options.style?.border ?? true,
     });
 
+    this.gameWorld = gameWorld;
     this.contentSource = actualContent;
     this.playerSource = player;
     this.fogOfWarSource = fogOfWar ?? false;
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
+
+    // Subscribe to gameWorld player state if using GameWorld
+    if (this.gameWorld) {
+      this.gameWorld.getPlayerState().subscribe(() => {
+        requestRender();
+      });
+    }
 
     // Handle src loading after super() call
     if (isLoadingSrc && src) {
@@ -132,6 +152,12 @@ export class MapView extends Component {
   }
 
   get mapData(): MapData {
+    // GameWorld mode: get map from gameWorld
+    if (this.gameWorld) {
+      return { map: this.gameWorld.getMapData() };
+    }
+
+    // Legacy mode: get from contentSource
     let rawMapData: any;
 
     if (isState(this.contentSource)) {
@@ -157,6 +183,16 @@ export class MapView extends Component {
   }
 
   get player(): Player {
+    // GameWorld mode: get player from gameWorld
+    if (this.gameWorld) {
+      return this.gameWorld.getPlayer();
+    }
+
+    // Legacy mode: get from playerSource
+    if (!this.playerSource) {
+      return { x: 0, y: 0, direction: 'north' };
+    }
+
     return isState(this.playerSource)
       ? (this.playerSource as State<Player>).value
       : (this.playerSource as Player);
@@ -340,6 +376,12 @@ export class MapView extends Component {
   }
 
   handleEvent(event: string): boolean {
+    // If using GameWorld, don't handle movement here (it's handled by GameWorld)
+    if (this.gameWorld) {
+      return false;
+    }
+
+    // Legacy mode: handle movement directly
     const current = this.player;
 
     switch (event) {

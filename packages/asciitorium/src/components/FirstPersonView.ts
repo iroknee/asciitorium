@@ -4,6 +4,7 @@ import { isState, loadArt } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
 import { Direction, Player, MapData } from './MapView';
 import { FirstPersonCompositor } from './FirstPersonCompositor';
+import type { GameWorld } from '../core/GameWorld';
 
 interface RaycastOffset {
   dx: number;
@@ -46,6 +47,10 @@ const RAYCAST_CUBES: Record<Direction, RaycastCube> = {
 };
 
 export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'> {
+  // New: GameWorld integration (preferred)
+  gameWorld?: GameWorld;
+
+  // Legacy: Direct map/player props (for backward compatibility)
   content?:
     | MapData
     | string[]
@@ -54,13 +59,16 @@ export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'>
     | State<string[]>
     | State<string>;
   src?: string; // URL or file path to load map from
-  player: Player | State<Player>;
+  player?: Player | State<Player>;
+
+  // Common options (work with both modes)
   scene?: string | State<string>; // Scene name
   transparency?: boolean; // When true, spaces won't overwrite existing content (useful for debugging)
 }
 
 export class FirstPersonView extends Component {
   focusable = false; // First person view is display-only
+  private gameWorld?: GameWorld;
   private contentSource:
     | MapData
     | string[]
@@ -68,7 +76,7 @@ export class FirstPersonView extends Component {
     | State<MapData>
     | State<string[]>
     | State<string>;
-  private playerSource: Player | State<Player>;
+  private playerSource?: Player | State<Player>;
   private compositor: FirstPersonCompositor;
   private sceneSource: string | State<string>;
   private isLoading = false;
@@ -78,6 +86,7 @@ export class FirstPersonView extends Component {
 
   constructor(options: FirstPersonViewOptions) {
     const {
+      gameWorld,
       content,
       src,
       player,
@@ -97,13 +106,16 @@ export class FirstPersonView extends Component {
       | State<string>;
     let isLoadingSrc = false;
 
-    if (src) {
+    if (gameWorld) {
+      // GameWorld mode: use empty content initially
+      actualContent = 'Loading...';
+    } else if (src) {
       isLoadingSrc = true;
       actualContent = 'Loading...';
     } else {
       if (!content) {
         throw new Error(
-          'FirstPersonView requires either src or content parameter'
+          'FirstPersonView requires either gameWorld, src, or content parameter'
         );
       }
       actualContent = content;
@@ -116,6 +128,7 @@ export class FirstPersonView extends Component {
       border: options.border ?? options.style?.border ?? true,
     });
 
+    this.gameWorld = gameWorld;
     this.contentSource = actualContent;
     this.playerSource = player;
     this.sceneSource = scene ?? 'wireframe';
@@ -129,7 +142,11 @@ export class FirstPersonView extends Component {
     this.compositor = new FirstPersonCompositor(initialScene);
 
     // Subscribe to player state changes
-    if (isState(this.playerSource)) {
+    if (this.gameWorld) {
+      this.gameWorld.getPlayerState().subscribe(() => {
+        requestRender();
+      });
+    } else if (isState(this.playerSource)) {
       (this.playerSource as State<Player>).subscribe(() => {
         requestRender();
       });
@@ -164,6 +181,12 @@ export class FirstPersonView extends Component {
   }
 
   get mapData(): MapData {
+    // GameWorld mode: get map from gameWorld
+    if (this.gameWorld) {
+      return { map: this.gameWorld.getMapData() };
+    }
+
+    // Legacy mode: get from contentSource
     let rawMapData: any;
 
     if (isState(this.contentSource)) {
@@ -189,12 +212,28 @@ export class FirstPersonView extends Component {
   }
 
   get player(): Player {
+    // GameWorld mode: get player from gameWorld
+    if (this.gameWorld) {
+      return this.gameWorld.getPlayer();
+    }
+
+    // Legacy mode: get from playerSource
+    if (!this.playerSource) {
+      return { x: 0, y: 0, direction: 'north' };
+    }
+
     return isState(this.playerSource)
       ? (this.playerSource as State<Player>).value
       : (this.playerSource as Player);
   }
 
   private isWall(x: number, y: number, mapLines: string[]): boolean {
+    // GameWorld mode: use legend-based collision detection
+    if (this.gameWorld) {
+      return this.gameWorld.isSolid(x, y);
+    }
+
+    // Legacy mode: hardcoded wall detection
     if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
       return true;
     const char = mapLines[y][x];

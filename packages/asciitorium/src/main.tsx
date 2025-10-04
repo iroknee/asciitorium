@@ -22,7 +22,7 @@ import {
   TabsExample,
   ArtExample,
   SlidersExample,
-  FirstPersonViewExample,
+  GameWorldExample,
 } from './examples';
 
 // Main state for component selection with persistence
@@ -38,7 +38,7 @@ const componentList = [
   'CelticBorder',
   'Form',
   'Modal',
-  'FirstPersonView',
+  'GameWorld',
   'MultiSelect',
   'LayoutSizing',
   'ScrollableText',
@@ -53,7 +53,7 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Form: FormExample,
   Modal: ModalExample,
-  FirstPersonView: FirstPersonViewExample,
+  GameWorld: GameWorldExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
   ScrollableText: ScrollableTextExample,

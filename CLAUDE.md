@@ -67,6 +67,8 @@ The framework uses a component-based architecture with custom JSX runtime:
 - `PersistentState<T>` - State management with localStorage persistence
 - `FocusManager` - Handles keyboard navigation between focusable components
 - `RenderScheduler` - Manages render callbacks and scheduling
+- `GameWorld` - Game state coordinator managing maps, legends, player movement, and collision detection
+- `AssetManager` - Asset loading and parsing system for maps, materials, sprites, and legends
 
 **Rendering System:**
 
@@ -89,7 +91,7 @@ The framework uses a component-based architecture with custom JSX runtime:
 - Support for relative sizing and alignment options
 
 **Built-in Components:**
-Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `AsciiArt`, `AsciiMaze`, `CelticBorder`, `Line`, `Row`, `Column`, `Sliders`, `PerfMonitor`, `Keybind`
+Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`, `TextInput`, `Art`, `MapView`, `FirstPersonView`, `CelticBorder`, `Line`, `Row`, `Column`, `Sliders`, `PerfMonitor`, `Keybind`
 
 **Keyboard Navigation:**
 
@@ -107,12 +109,12 @@ Located in `src/components/`: `Text`, `Button`, `Select`, `MultiSelect`, `Tabs`,
 - **Focus indicators**: Component-specific visual indicators when focused:
   - `Button` - `>` and `<` brackets around content
   - `TabContainer` - `>` and `<` on left/right borders
-  - `Maze` - `>` in top-left corner
+  - `MapView` - `>` in top-left corner
   - `TextInput` - Cursor `▉` and prefix changes
   - `Select`/`MultiSelect` - `>` prefix for focused items
   - `Sliders` - Contextual indicator highlighting (varies by type)
 - **Component-specific controls:**
-  - `AsciiMaze` - Arrow keys for player movement with collision detection and fog of war
+  - `MapView` - Arrow keys for player movement (legacy mode when not using GameWorld)
   - `Button` - Enter/Space to activate
   - `TabContainer` - Arrow keys to switch between tabs
   - `Select`/`MultiSelect` - Arrow keys for navigation, Enter to select
@@ -138,6 +140,74 @@ The `Keybind` component provides a declarative way to register global keyboard s
 - **Precedence**: App-level keybinds checked before FocusManager delegation
 - **Global Override**: Optional `global` prop bypasses focused component handling
 - **Reactive State**: Supports `State<boolean>` for dynamic enabling/disabling
+
+**Game Development Architecture:**
+
+The framework includes specialized components for ASCII game development:
+
+- **GameWorld** (`src/core/GameWorld.ts`) - Central game state coordinator
+  - Manages map data, legend metadata, and player state
+  - Provides legend-based collision detection via `isSolid(x, y)`
+  - Handles player movement: `moveForward()`, `moveBackward()`, `turnLeft()`, `turnRight()`
+  - Loads assets asynchronously via AssetManager
+  - Exposes read-only accessors: `getMapData()`, `getPlayer()`, `getLegend()`, `isReady()`
+  - Designed to be extended with interaction systems, entity management, and event handling
+
+- **AssetManager** (`src/core/AssetManager.ts`) - Asset loading and parsing system
+  - Loads maps from `art/maps/{name}/map.txt` and `art/maps/{name}/legend.json`
+  - Loads materials from `art/materials/{name}.txt` (first-person wall textures)
+  - Loads sprites from `art/sprites/{name}.txt` (animated ASCII art)
+  - Parses metadata using `§` and `¶` separators
+  - Returns typed assets: `MapAsset`, `MaterialAsset`, `SpriteAsset`
+
+- **MapView** (`src/components/MapView.ts`) - Top-down map display
+  - Supports both GameWorld mode and legacy mode (direct src/player props)
+  - Automatic viewport centering on player position
+  - Fog of war with exploration tracking (`exploredTiles` State)
+  - Player direction indicators (↑ ↓ ← →)
+  - In GameWorld mode: display-only, movement handled by GameWorld
+  - In legacy mode: handles movement directly (deprecated pattern)
+
+- **FirstPersonView** (`src/components/FirstPersonView.ts`) - First-person perspective renderer
+  - Supports both GameWorld mode and legacy mode
+  - Raycasting using predefined offset cubes for each direction
+  - Uses `GameWorld.isSolid()` for wall detection (legend-based)
+  - Material composition via `FirstPersonCompositor`
+  - Multiple depth layers: here, near, middle, far
+  - Scene switching for different visual styles (wireframe, brick-wall, etc.)
+
+- **Legend System** - JSON-based tile metadata
+  - Each map character has a legend entry with properties:
+    - `kind`: "material" | "sprite"
+    - `name`: Human-readable name
+    - `solid`: Boolean for collision detection
+    - `tag`: Optional tag for entity type (e.g., "door", "treasure", "enemy")
+    - `asset`: Asset name to load for rendering
+  - GameWorld uses `solid` property for collision detection
+  - Tags enable extensible interaction systems
+
+**Typical Game Architecture Pattern:**
+
+```tsx
+// Create GameWorld (loads map + legend)
+const gameWorld = new GameWorld({
+  mapName: 'dungeon',
+  initialPosition: { x: 5, y: 5, direction: 'north' }
+});
+
+// Movement via global keybinds
+<Keybind keyBinding="ArrowUp" action={() => gameWorld.moveForward()} global />
+<Keybind keyBinding="ArrowLeft" action={() => gameWorld.turnLeft()} global />
+
+// Views subscribe to GameWorld's player State
+<MapView gameWorld={gameWorld} fogOfWar={true} exploredTiles={exploredTiles} />
+<FirstPersonView gameWorld={gameWorld} scene="brick-wall" />
+```
+
+This architecture separates concerns:
+- **GameWorld**: Game logic, state, collision detection
+- **MapView/FirstPersonView**: Display-only, automatically reactive to GameWorld changes
+- **Keybind**: Global input handling
 
 ### Project Scaffolder (packages/create-asciitorium)
 

@@ -118,7 +118,8 @@ Alternative CDN providers:
 
 - **Text** - Static and dynamic text display with word wrapping and alignment
 - **Art** - ASCII art display component for images and animations
-- **Maze** - Interactive ASCII maze with player movement and collision detection
+- **MapView** - Top-down map view with player position, fog of war, and automatic viewport centering
+- **FirstPersonView** - First-person perspective renderer using raycasting and material composition
 - **PerfMonitor** - Real-time performance monitoring display
 
 ### UI Elements
@@ -131,6 +132,11 @@ Alternative CDN providers:
 
 - **State<T>** - Reactive state management with subscribe/unsubscribe pattern
 - **PersistentState<T>** - State management with localStorage persistence
+
+### Game Development
+
+- **GameWorld** - Game state coordinator managing maps, legends, player movement, and collision detection
+- **AssetManager** - Asset loading system for maps, materials, sprites, and legends with JSON metadata support
 
 ## Styling Components
 
@@ -285,7 +291,116 @@ const showDebugPanel = new State(false);
 - **Select/MultiSelect** - Arrow keys for navigation, Enter to select
 - **TabContainer** - Arrow keys to switch between tabs
 - **Sliders** - Arrow keys to adjust values
-- **Maze** - Arrow keys for player movement
+- **MapView** - Arrow keys for player movement (when focused, legacy mode)
+
+## Game Development Features
+
+asciitorium includes specialized components and systems for building ASCII-based games, particularly first-person dungeon crawlers and exploration games.
+
+### GameWorld
+
+The `GameWorld` class centralizes game logic, managing maps, player state, and collision detection:
+
+```tsx
+import { GameWorld, MapView, FirstPersonView, Keybind } from 'asciitorium';
+
+// Create game world
+const gameWorld = new GameWorld({
+  mapName: 'dungeon',  // Loads from art/maps/dungeon/
+  initialPosition: { x: 5, y: 5, direction: 'north' }
+});
+
+// Movement controls
+<Keybind keyBinding="ArrowUp" action={() => gameWorld.moveForward()} global />
+<Keybind keyBinding="ArrowDown" action={() => gameWorld.moveBackward()} global />
+<Keybind keyBinding="ArrowLeft" action={() => gameWorld.turnLeft()} global />
+<Keybind keyBinding="ArrowRight" action={() => gameWorld.turnRight()} global />
+
+// Display views
+<MapView gameWorld={gameWorld} fogOfWar={true} />
+<FirstPersonView gameWorld={gameWorld} scene="brick-wall" />
+```
+
+**GameWorld Features:**
+
+- Legend-based collision detection using `solid` property from map metadata
+- Centralized player movement and state management
+- Async map and legend loading via AssetManager
+- Read-only accessors for views: `getMapData()`, `getPlayer()`, `getLegend()`
+- Extensible for game events, interactions, and entity management
+
+### AssetManager
+
+The `AssetManager` handles loading and parsing of game assets:
+
+**Supported Asset Types:**
+
+- **Maps** - Grid-based maps with legend.json metadata defining tile properties
+- **Materials** - First-person view wall textures with layer-based rendering
+- **Sprites** - Animated ASCII art with frame metadata
+
+**Map Structure:**
+
+```bash
+art/maps/dungeon/
+├── map.txt          # ASCII map grid
+└── legend.json      # Tile definitions
+```
+
+**Legend Format:**
+
+```json
+{
+  "╭": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
+  "o": {
+    "kind": "material",
+    "name": "door",
+    "solid": true,
+    "tag": "door",
+    "asset": "door"
+  },
+  " ": { "kind": "material", "name": "floor", "solid": false, "asset": "floor" }
+}
+```
+
+### MapView Component
+
+Displays a top-down view of the game map with player position and fog of war:
+
+```tsx
+<MapView
+  gameWorld={gameWorld}
+  fogOfWar={true}
+  exploredTiles={exploredTiles} // State<Set<string>>
+  fogCharacter=" "
+/>
+```
+
+**Features:**
+
+- Automatic viewport centering on player
+- Fog of war with persistent exploration tracking
+- Player direction indicator (↑ ↓ ← →)
+- Legend-based tile rendering
+
+### FirstPersonView Component
+
+Renders a first-person perspective using raycasting:
+
+```tsx
+<FirstPersonView
+  gameWorld={gameWorld}
+  scene="brick-wall" // Material name from art/materials/
+  transparency={false}
+/>
+```
+
+**Features:**
+
+- Raycasting-based wall detection using GameWorld collision
+- Material composition system for wall textures
+- Multiple depth levels (here, near, middle, far)
+- Scene switching for different visual styles
 
 ## 🛠 Development
 
