@@ -21,9 +21,6 @@ const gameWorld = new GameWorld({
   },
 });
 
-// Scene selection state - default to wireframe
-const materialBackground = new State('brick-wall');
-
 // Fog of war: track tiles that have been explored
 const exploredTiles = new State(new Set<string>());
 
@@ -60,7 +57,6 @@ export const GameWorldExample = () => (
       gap={{ top: 1 }}
       label="View"
       gameWorld={gameWorld}
-      scene={materialBackground}
       transparency={false}
     />
     <Column style={{ gap: 1 }}>

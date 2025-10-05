@@ -1,18 +1,19 @@
 {
-  "╭": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "╮": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "╯": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "╰": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "│": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "─": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "├": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "┤": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "┬": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "┴": { "kind": "material", "name": "wall", "solid": true, "asset": "wall" },
-  "╷": { "kind": "material", "name": "partial-wall", "solid": true, "asset": "wall" },
-  "╵": { "kind": "material", "name": "partial-wall", "solid": true, "asset": "wall" },
-  "╶": { "kind": "material", "name": "partial-wall", "solid": true, "asset": "wall" },
-  "╴": { "kind": "material", "name": "partial-wall", "solid": true, "asset": "wall" },
-  "o": { "kind": "material", "name": "door", "solid": true, "tag": "door", "asset": "door" },
-  " ": { "kind": "material", "name": "floor", "solid": false, "asset": "floor" }
+  "legend": [
+    {
+      "chars": ["╭", "╮", "╯", "╰", "│", "─", "├", "┤", "┬", "┴", "╷", "╵", "╶", "╴"],
+      "kind": "material",
+      "name": "wall",
+      "solid": true,
+      "asset": "material/brick-wall"
+    },
+    {
+      "chars": ["o"],
+      "kind": "material",
+      "name": "door",
+      "solid": false,
+      "tag": "door",
+      "asset": "material/wood-door-on-brick-wall"
+    }
+  ]
 }

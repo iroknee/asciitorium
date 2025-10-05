@@ -1,10 +1,10 @@
-import { AssetManager, type MaterialAsset } from '../core/AssetManager';
+import { AssetManager, type MaterialAsset, type LegendEntry } from '../core/AssetManager';
 
 export interface RaycastData {
-  here: { left: boolean | null; center: boolean | null; right: boolean | null };
-  near: { left: boolean | null; center: boolean | null; right: boolean | null };
-  middle: { left: boolean | null; center: boolean | null; right: boolean | null };
-  far: { left: boolean | null; center: boolean | null; right: boolean | null };
+  here: { left: string | null; center: string | null; right: string | null };
+  near: { left: string | null; center: string | null; right: string | null };
+  middle: { left: string | null; center: string | null; right: string | null };
+  far: { left: string | null; center: string | null; right: string | null };
 }
 
 interface SceneSprite {
@@ -32,69 +32,47 @@ const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
 };
 
 export class FirstPersonCompositor {
-  private sceneSprites: Map<string, SceneSprite> = new Map();
-  private currentScene: Scene = 'wireframe';
-  private isLoaded = false;
+  private materialCache: Map<string, MaterialAsset> = new Map();
 
-  constructor(scene: Scene = 'wireframe') {
-    this.currentScene = scene;
-    this.loadSceneData();
-  }
-
-  // Change scene dynamically
-  async setScene(scene: Scene): Promise<void> {
-    this.currentScene = scene;
-    await this.loadSceneData();
-  }
-
-  private async loadSceneData(): Promise<void> {
-    try {
-      // Load material data using AssetManager
-      const materialAsset = await AssetManager.getMaterial(this.currentScene);
-      this.loadFromMaterialAsset(materialAsset);
-      this.isLoaded = true;
-    } catch (error) {
-      console.error('Failed to load material data:', error);
-      this.isLoaded = false;
-    }
-  }
-
-  private loadFromMaterialAsset(materialAsset: MaterialAsset): void {
-    this.sceneSprites.clear();
-
-    // Convert MaterialAsset layers to SceneSprite format
-    for (const layer of materialAsset.layers) {
-      const key = `${layer.layer}-${layer.position}`;
-
-      this.sceneSprites.set(key, {
-        layer: layer.layer,
-        position: layer.position,
-        x: layer.x,
-        lines: layer.lines
-      });
-    }
+  constructor() {
+    // No longer needs a scene parameter
   }
 
   private getSpriteKey(layer: string, position: string): string {
     return `${layer}-${position}`;
   }
 
+  // Load a material asset by name and cache it
+  private async loadMaterial(assetName: string): Promise<MaterialAsset | null> {
+    // Check cache first
+    if (this.materialCache.has(assetName)) {
+      return this.materialCache.get(assetName)!;
+    }
+
+    try {
+      // Extract material name from asset path (e.g., "material/brick-wall" -> "brick-wall")
+      const materialName = assetName.replace(/^material\//, '');
+      const materialAsset = await AssetManager.getMaterial(materialName);
+      this.materialCache.set(assetName, materialAsset);
+      return materialAsset;
+    } catch (error) {
+      console.error(`Failed to load material "${assetName}":`, error);
+      return null;
+    }
+  }
+
   // Main composition method
-  compose(
+  async compose(
     raycast: RaycastData,
+    legend: Record<string, LegendEntry>,
     viewWidth: number,
     viewHeight: number,
     transparency: boolean = false
-  ): string[][] {
+  ): Promise<string[][]> {
     // Create empty buffer
     const buffer: string[][] = Array(viewHeight)
       .fill(null)
       .map(() => Array(viewWidth).fill(' '));
-
-    if (!this.isLoaded) {
-      // Return empty buffer if scene data not loaded
-      return buffer;
-    }
 
     // Render in back-to-front order: far -> middle -> near -> here
     // Within each layer: left -> right -> center (so center overlays left/right)
@@ -114,23 +92,36 @@ export class FirstPersonCompositor {
     ];
 
     for (const { layer, position } of renderOrder) {
-      const rayResult = raycast[layer][position];
+      const mapChar = raycast[layer][position];
 
-      // Skip rendering if position is occluded (null)
-      if (rayResult === null) {
+      // Skip rendering if position is occluded (null) or empty
+      if (mapChar === null || mapChar === ' ') {
         continue;
       }
 
-      const isWall = rayResult;
+      // Look up the legend entry for this character
+      const legendEntry = legend[mapChar];
+      if (!legendEntry) {
+        continue; // No legend entry for this character
+      }
 
-      // For passages, don't paint anything (skip)
-      if (!isWall) {
+      // Only render materials (not sprites) for now
+      // TODO: Add sprite support in the future
+      if (legendEntry.kind !== 'material') {
         continue;
       }
 
-      // For walls, paint the scenery sprite
+      // Load the material asset
+      const materialAsset = await this.loadMaterial(legendEntry.asset);
+      if (!materialAsset) {
+        continue; // Failed to load material
+      }
+
+      // Find the sprite for this layer/position in the material
       const spriteKey = this.getSpriteKey(layer, position);
-      const sprite = this.sceneSprites.get(spriteKey);
+      const sprite = materialAsset.layers.find(
+        l => l.layer === layer && l.position === position
+      );
 
       if (!sprite) {
         continue; // No sprite defined for this layer/position
@@ -231,28 +222,4 @@ export class FirstPersonCompositor {
     }
   }
 
-  // Helper method to get available scene names by scanning scene files
-  static async getAvailableScenes(): Promise<Scene[]> {
-    try {
-      // In browser environment, we can't scan directories, so return known scenes
-      if (typeof window !== 'undefined') {
-        return ['wireframe', 'brick'];
-      }
-
-      // In Node.js environment, scan the scenes directory
-      const fs = await import('fs/promises');
-      const path = await import('path');
-
-      const scenesDir = path.join(process.cwd(), 'packages/asciitorium/public/art/scenes');
-      const files = await fs.readdir(scenesDir);
-
-      return files
-        .filter(file => file.endsWith('.txt'))
-        .map(file => file.replace('.txt', ''))
-        .sort();
-    } catch (error) {
-      console.warn('Could not scan scenes, falling back to defaults:', error);
-      return ['wireframe', 'brick'];
-    }
-  }
 }

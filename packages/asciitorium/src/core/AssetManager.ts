@@ -3,7 +3,17 @@ import { loadArt } from './environment';
 // Asset type definitions
 export interface LegendEntry {
   kind: 'material' | 'sprite';
-  name: string;
+  name?: string;
+  solid: boolean;
+  tag?: string;
+  asset: string;
+}
+
+// New legend format with character arrays
+export interface LegendArrayEntry {
+  chars: string[];
+  kind: 'material' | 'sprite';
+  name?: string;
   solid: boolean;
   tag?: string;
   asset: string;
@@ -177,7 +187,8 @@ export class AssetManager {
       ]);
 
       const mapLines = mapData.split('\n');
-      const legend = JSON.parse(legendData);
+      const parsedLegend = JSON.parse(legendData);
+      const legend = this.expandLegendFormat(parsedLegend);
 
       return {
         mapData: mapLines,
@@ -187,6 +198,45 @@ export class AssetManager {
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to load map "${name}": ${message}`);
     }
+  }
+
+  /**
+   * Expands legend format to support both old and new formats
+   * - New format: { "legend": [ { "chars": [...], ...props } ] }
+   * - Old format: { "char": { ...props } }
+   */
+  private static expandLegendFormat(data: any): Record<string, LegendEntry> {
+    const result: Record<string, LegendEntry> = {};
+
+    // Check for new array format
+    if (data.legend && Array.isArray(data.legend)) {
+      // New format: expand each entry's chars array
+      for (const entry of data.legend) {
+        if (!entry.chars || !Array.isArray(entry.chars)) {
+          console.warn('Legend entry missing chars array:', entry);
+          continue;
+        }
+
+        // Create a LegendEntry without the chars property
+        const legendEntry: LegendEntry = {
+          kind: entry.kind,
+          solid: entry.solid,
+          asset: entry.asset,
+          ...(entry.name && { name: entry.name }),
+          ...(entry.tag && { tag: entry.tag })
+        };
+
+        // Expand each character in the chars array
+        for (const char of entry.chars) {
+          result[char] = legendEntry;
+        }
+      }
+    } else {
+      // Old format: data is already a Record<string, LegendEntry>
+      return data;
+    }
+
+    return result;
   }
 
   private static async loadMaterialAsset(name: string): Promise<MaterialAsset> {

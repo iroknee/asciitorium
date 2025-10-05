@@ -78,11 +78,11 @@ export class FirstPersonView extends Component {
     | State<string>;
   private playerSource?: Player | State<Player>;
   private compositor: FirstPersonCompositor;
-  private sceneSource: string | State<string>;
   private isLoading = false;
   private loadError?: string;
   private src?: string;
   private transparency: boolean;
+  private cachedView: string[][] | null = null;
 
   constructor(options: FirstPersonViewOptions) {
     const {
@@ -90,7 +90,7 @@ export class FirstPersonView extends Component {
       content,
       src,
       player,
-      scene,
+      scene, // Deprecated but kept for backward compatibility
       transparency,
       style,
       ...componentProps
@@ -131,31 +131,19 @@ export class FirstPersonView extends Component {
     this.gameWorld = gameWorld;
     this.contentSource = actualContent;
     this.playerSource = player;
-    this.sceneSource = scene ?? 'wireframe';
     this.transparency = transparency ?? false;
 
-    // Get initial scene value
-    const initialScene = isState(this.sceneSource)
-      ? (this.sceneSource as State<string>).value
-      : (this.sceneSource as string);
-
-    this.compositor = new FirstPersonCompositor(initialScene);
+    this.compositor = new FirstPersonCompositor();
 
     // Subscribe to player state changes
     if (this.gameWorld) {
       this.gameWorld.getPlayerState().subscribe(() => {
+        this.cachedView = null; // Invalidate cache
         requestRender();
       });
     } else if (isState(this.playerSource)) {
       (this.playerSource as State<Player>).subscribe(() => {
-        requestRender();
-      });
-    }
-
-    // Subscribe to scene changes
-    if (isState(this.sceneSource)) {
-      (this.sceneSource as State<string>).subscribe((newScene) => {
-        this.compositor.setScene(newScene);
+        this.cachedView = null; // Invalidate cache
         requestRender();
       });
     }
@@ -325,36 +313,38 @@ export class FirstPersonView extends Component {
    * Uses direction-specific raycast cubes with predefined relative offsets for each position.
    * This eliminates coordinate calculation errors and provides complete control over
    * which exact positions are checked for each direction.
+   *
+   * Returns the actual map character at each position (or null if occluded/out of bounds)
    */
   private castRays(): {
-    here: { left: boolean | null; center: boolean | null; right: boolean | null };
-    near: { left: boolean | null; center: boolean | null; right: boolean | null };
-    middle: { left: boolean | null; center: boolean | null; right: boolean | null };
-    far: { left: boolean | null; center: boolean | null; right: boolean | null };
+    here: { left: string | null; center: string | null; right: string | null };
+    near: { left: string | null; center: string | null; right: string | null };
+    middle: { left: string | null; center: string | null; right: string | null };
+    far: { left: string | null; center: string | null; right: string | null };
   } {
     const map = this.mapData;
     const player = this.player;
     const mapLines = map.map;
 
-    // If no map data, assume all walls (fallback)
+    // If no map data, return null for all positions
     if (!mapLines || mapLines.length === 0) {
       return {
-        here: { left: true, center: true, right: true },
-        near: { left: true, center: true, right: true },
-        middle: { left: true, center: true, right: true },
-        far: { left: true, center: true, right: true },
+        here: { left: null, center: null, right: null },
+        near: { left: null, center: null, right: null },
+        middle: { left: null, center: null, right: null },
+        far: { left: null, center: null, right: null },
       };
     }
 
     // Get the raycast cube for the player's current direction
     const cube = RAYCAST_CUBES[player.direction];
 
-    // Initialize all positions as passages (false = passage, true = wall, null = occluded)
+    // Initialize all positions as null
     const result = {
-      here: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
-      near: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
-      middle: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
-      far: { left: false as boolean | null, center: false as boolean | null, right: false as boolean | null },
+      here: { left: null as string | null, center: null as string | null, right: null as string | null },
+      near: { left: null as string | null, center: null as string | null, right: null as string | null },
+      middle: { left: null as string | null, center: null as string | null, right: null as string | null },
+      far: { left: null as string | null, center: null as string | null, right: null as string | null },
     };
 
     // Cast rays using predefined offsets from the cube
@@ -363,7 +353,15 @@ export class FirstPersonView extends Component {
         const offset = cube[depth][position];
         const checkX = player.x + offset.dx;
         const checkY = player.y + offset.dy;
-        result[depth][position] = this.isWall(checkX, checkY, mapLines);
+
+        // Get the character at this position
+        if (checkY >= 0 && checkY < mapLines.length &&
+            checkX >= 0 && checkX < mapLines[checkY].length) {
+          result[depth][position] = mapLines[checkY][checkX];
+        } else {
+          // Out of bounds - treat as solid wall character (use a default)
+          result[depth][position] = '█';
+        }
       }
     }
 
@@ -380,6 +378,9 @@ export class FirstPersonView extends Component {
       return this.buffer;
     }
 
+    // Get legend (GameWorld mode or empty for legacy mode)
+    const legend = this.gameWorld?.getLegend() ?? {};
+
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
     const offsetX = this.border ? 1 : 0;
@@ -388,17 +389,28 @@ export class FirstPersonView extends Component {
     // Cast rays to determine what's visible
     const raycast = this.castRays();
 
-    // Use compositor to generate the view
-    const composedView = this.compositor.compose(raycast, innerWidth, innerHeight, this.transparency);
-
-    // Copy composed view into our buffer with border offset
-    for (let y = 0; y < composedView.length && y < innerHeight; y++) {
-      for (let x = 0; x < composedView[y].length && x < innerWidth; x++) {
-        const char = composedView[y][x];
-        if (char && char !== ' ') {
-          this.buffer[y + offsetY][x + offsetX] = char;
+    // Use cached view if available, otherwise render asynchronously
+    if (this.cachedView) {
+      // Use cached view
+      const composedView = this.cachedView;
+      for (let y = 0; y < composedView.length && y < innerHeight; y++) {
+        for (let x = 0; x < composedView[y].length && x < innerWidth; x++) {
+          const char = composedView[y][x];
+          if (char && char !== ' ') {
+            this.buffer[y + offsetY][x + offsetX] = char;
+          }
         }
       }
+    } else {
+      // Start async composition
+      this.compositor.compose(raycast, legend, innerWidth, innerHeight, this.transparency)
+        .then((composedView) => {
+          this.cachedView = composedView;
+          requestRender(); // Request re-render with the composed view
+        })
+        .catch((error) => {
+          console.error('Failed to compose first-person view:', error);
+        });
     }
 
     return this.buffer;
@@ -407,19 +419,9 @@ export class FirstPersonView extends Component {
   private updateContent(newContent: string): void {
     // Update the content source with the loaded data
     this.contentSource = newContent;
+    this.cachedView = null; // Invalidate cache
 
     // Request a re-render
     requestRender();
-  }
-
-  // Method to change scene dynamically
-  setScene(scene: string): void {
-    this.compositor.setScene(scene);
-    requestRender();
-  }
-
-  // Get available scenes
-  static getAvailableScenes(): Promise<string[]> {
-    return FirstPersonCompositor.getAvailableScenes();
   }
 }
