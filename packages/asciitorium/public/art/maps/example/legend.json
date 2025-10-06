@@ -13,7 +13,7 @@
       "name": "door",
       "solid": false,
       "tag": "door",
-      "asset": "material/wood-door-on-brick-wall"
+      "asset": "material/door-on-brick"
     }
   ]
 }

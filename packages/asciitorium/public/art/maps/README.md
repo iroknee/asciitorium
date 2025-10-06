@@ -24,25 +24,40 @@ Each map should have an accompanying `legend.json` file that defines what each c
 
 ### Legend Structure
 
+Legends use an array format where each entry groups characters with shared properties:
+
 ```json
 {
-  "character": {
-    "kind": "material|sprite",
-    "name": "descriptive-name",
-    "solid": true|false,
-    "tag": "optional-category",
-    "asset": "asset-file-reference"
-  }
+  "legend": [
+    {
+      "chars": ["╭", "╮", "╯", "╰", "│", "─"],
+      "kind": "material",
+      "name": "wall",
+      "solid": true,
+      "asset": "material/brick-wall"
+    },
+    {
+      "chars": ["o"],
+      "kind": "material",
+      "name": "door",
+      "solid": false,
+      "tag": "door",
+      "asset": "material/wood-door-on-brick-wall"
+    }
+  ]
 }
 ```
 
 ### Legend Properties
 
+- **chars**: Array of characters that share the same properties (e.g., all wall variations)
 - **kind**: Type of object (`"material"` for terrain/environment, `"sprite"` for entities)
-- **name**: Descriptive name for the object type
+- **name**: Optional human-readable description for the object type
 - **solid**: Whether the object blocks player movement (`true`/`false`)
 - **tag**: Optional category for gameplay logic (e.g., `"door"`, `"enemy"`, `"treasure"`)
 - **asset**: Reference to visual asset file in the materials or sprites directories
+
+**Note:** The `chars` array allows you to group multiple map characters that share identical properties, significantly reducing legend file size and making them easier to maintain.
 
 ## Directory Organization
 
