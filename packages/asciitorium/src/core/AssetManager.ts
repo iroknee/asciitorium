@@ -54,7 +54,7 @@ export interface MapAsset {
 
 export interface MaterialAsset {
   usage: string;
-  placement?: 'ground' | 'ceiling' | 'left-wall' | 'right-wall';
+  placement?: 'ground' | 'ceiling';
   layers: MaterialLayer[];
 }
 
