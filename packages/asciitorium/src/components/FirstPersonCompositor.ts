@@ -163,7 +163,7 @@ export class FirstPersonCompositor {
     metadataX: number | undefined,
     viewWidth: number,
     viewHeight: number,
-    placement?: 'ground' | 'ceiling' | 'left-wall' | 'right-wall'
+    placement?: 'ground' | 'ceiling'
   ): { x: number; y: number } {
     const spriteHeight = sprite.length;
     const spriteWidth = Math.max(...sprite.map((line) => line.length));

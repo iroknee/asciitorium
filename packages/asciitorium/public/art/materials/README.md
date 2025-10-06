@@ -41,12 +41,31 @@ Here's a section from `wireframe.txt` showing the layered format:
 |____________|
 ```
 
+### Example with Placement
+
+Here's an example from `bone.txt` showing placement for ground materials:
+
+```text
+§ {"kind":"material","usage":"first-person","placement":"ground"}
+¶ {"layer":"here","position":"center"}
+  ⎽       ⎽
+ (_'⎯⎯⎯⎯⎯'_)
+ (⎽.⎯⎯⎯⎯⎯.⎽)
+¶ {"layer":"near","position":"center"}
+:‧‧:
+¶ {"layer":"middle","position":"center"}
+..
+¶ {"layer":"far","position":"center"}
+‥
+```
+
 ## Metadata Properties
 
 ### Section Header (`§`)
 
 - **kind**: Type of asset (`"material"`)
 - **usage**: Rendering context (`"first-person"`, `"top-down"`, etc.)
+- **placement**: Surface placement (`"ground"`, `"ceiling"`) - optional property that indicates where the material should be applied. Use `"scenery"` for general background/wall materials (default)
 
 ### Layer Configuration (`¶`)
 
