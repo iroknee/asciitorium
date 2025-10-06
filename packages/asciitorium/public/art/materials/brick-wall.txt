@@ -1,4 +1,4 @@
-§ {"kind":"material","usage":"first-person"}
+§ {"kind":"material","usage":"first-person","placement":"scenery"}
 ¶ {"layer":"here","position":"left"}
  ╲      
  ┊╲     
