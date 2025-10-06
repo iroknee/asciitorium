@@ -54,6 +54,7 @@ export interface MapAsset {
 
 export interface MaterialAsset {
   usage: string;
+  placement?: 'ground' | 'ceiling' | 'left-wall' | 'right-wall';
   layers: MaterialLayer[];
 }
 
@@ -344,6 +345,7 @@ export class AssetManager {
 
     return {
       usage: fileMetadata.usage || (isSceneFormat ? 'first-person' : 'unknown'),
+      placement: fileMetadata.placement,
       layers
     };
   }

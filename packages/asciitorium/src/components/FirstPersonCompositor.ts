@@ -1,4 +1,8 @@
-import { AssetManager, type MaterialAsset, type LegendEntry } from '../core/AssetManager';
+import {
+  AssetManager,
+  type MaterialAsset,
+  type LegendEntry,
+} from '../core/AssetManager';
 
 export interface RaycastData {
   here: { left: string | null; center: string | null; right: string | null };
@@ -105,8 +109,7 @@ export class FirstPersonCompositor {
         continue; // No legend entry for this character
       }
 
-      // Only render materials (not sprites) for now
-      // TODO: Add sprite support in the future
+      // Only render materials (sprites are for 2D Art component, not 3D first-person view)
       if (legendEntry.kind !== 'material') {
         continue;
       }
@@ -120,7 +123,7 @@ export class FirstPersonCompositor {
       // Find the sprite for this layer/position in the material
       const spriteKey = this.getSpriteKey(layer, position);
       const sprite = materialAsset.layers.find(
-        l => l.layer === layer && l.position === position
+        (l) => l.layer === layer && l.position === position
       );
 
       if (!sprite) {
@@ -134,7 +137,8 @@ export class FirstPersonCompositor {
         sprite.lines,
         sprite.x,
         viewWidth,
-        viewHeight
+        viewHeight,
+        materialAsset.placement
       );
 
       // Render sprite to buffer
@@ -158,33 +162,53 @@ export class FirstPersonCompositor {
     sprite: string[],
     metadataX: number | undefined,
     viewWidth: number,
-    viewHeight: number
+    viewHeight: number,
+    placement?: 'ground' | 'ceiling' | 'left-wall' | 'right-wall'
   ): { x: number; y: number } {
     const spriteHeight = sprite.length;
-    const y = Math.floor((viewHeight - spriteHeight) / 2);
+    const spriteWidth = Math.max(...sprite.map((line) => line.length));
 
     let x: number;
+    let y: number;
 
-    // Use metadata x coordinate if provided
-    if (metadataX !== undefined) {
-      x = metadataX;
+    // Handle placement-based positioning
+    if (placement === 'ground') {
+      // Ground items are always centered horizontally
+      x = Math.floor((viewWidth - spriteWidth) / 2);
+
+      // Ground items anchor their bottom to layer-specific ground heights
+      const groundLevelOffsets = {
+        here: 1,
+        near: 7,
+        middle: 10,
+        far: 11,
+      };
+      const groundOffset = groundLevelOffsets[layer];
+      y = viewHeight - groundOffset - spriteHeight;
     } else {
-      // First try to use default wireframe positions
-      const defaultKey = `${layer}-${position}`;
-      const defaultX = DEFAULT_SPRITE_POSITIONS[defaultKey];
+      // Standard positioning: vertically centered
+      y = Math.floor((viewHeight - spriteHeight) / 2);
 
-      if (defaultX !== undefined) {
-        x = defaultX;
+      // Use metadata x coordinate if provided
+      if (metadataX !== undefined) {
+        x = metadataX;
       } else {
-        // Final fallback to position-based calculation
-        const spriteWidth = Math.max(...sprite.map(line => line.length));
+        // First try to use default wireframe positions
+        const defaultKey = `${layer}-${position}`;
+        const defaultX = DEFAULT_SPRITE_POSITIONS[defaultKey];
 
-        if (position === 'left') {
-          x = 0;
-        } else if (position === 'right') {
-          x = viewWidth - spriteWidth;
-        } else { // center
-          x = Math.floor((viewWidth - spriteWidth) / 2);
+        if (defaultX !== undefined) {
+          x = defaultX;
+        } else {
+          // Final fallback to position-based calculation
+          if (position === 'left') {
+            x = 0;
+          } else if (position === 'right') {
+            x = viewWidth - spriteWidth;
+          } else {
+            // center
+            x = Math.floor((viewWidth - spriteWidth) / 2);
+          }
         }
       }
     }
@@ -221,5 +245,4 @@ export class FirstPersonCompositor {
       }
     }
   }
-
 }
