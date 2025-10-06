@@ -60,6 +60,7 @@ Legends use an array format where each entry groups characters with shared prope
 #### Optional Properties
 
 - **name**: Human-readable description for the object type
+- **visible**: Whether the object appears in map view (`true`/`false`). Defaults to `true`. When `false`, renders as a space in MapView but still appears in first-person view. Useful for ground items, invisible triggers, or objects that should only be visible up close.
 - **entity**: Gameplay entity type that defines behavior (e.g., `"door"`, `"enemy"`, `"treasure"`, `"trap"`, `"item"`)
 - **variant**: Specific subtype of the entity (e.g., `"wooden"`, `"iron"`, `"magic"`, `"bone"`)
 
@@ -121,9 +122,11 @@ Pickup-able objects for inventory
   "chars": ["b"],
   "entity": "item",
   "variant": "bone",
-  "solid": false
+  "solid": false,
+  "visible": false
 }
 ```
+**Note:** Items often use `"visible": false` so they appear in first-person view but not on the map, creating a more immersive exploration experience.
 
 #### **trap**
 Hazards that trigger on player interaction

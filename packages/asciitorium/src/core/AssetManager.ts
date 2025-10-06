@@ -5,6 +5,7 @@ export interface LegendEntry {
   kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
+  visible?: boolean;
   entity?: string;
   variant?: string;
   asset: string;
@@ -16,6 +17,7 @@ export interface LegendArrayEntry {
   kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
+  visible?: boolean;
   entity?: string;
   variant?: string;
   asset: string;
@@ -226,6 +228,7 @@ export class AssetManager {
           solid: entry.solid,
           asset: entry.asset,
           ...(entry.name && { name: entry.name }),
+          ...(entry.visible !== undefined && { visible: entry.visible }),
           ...(entry.entity && { entity: entry.entity }),
           ...(entry.variant && { variant: entry.variant })
         };

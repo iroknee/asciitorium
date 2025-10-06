@@ -2,7 +2,7 @@ import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
-import { AssetManager, type MapAsset } from '../core/AssetManager';
+import { AssetManager, type MapAsset, type LegendEntry } from '../core/AssetManager';
 import type { GameWorld } from '../core/GameWorld';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
@@ -62,6 +62,7 @@ export class MapView extends Component {
   private isLoading = false;
   private loadError?: string;
   private src?: string;
+  private legend?: Record<string, LegendEntry>;
 
   constructor(options: MapViewOptions) {
     const {
@@ -121,11 +122,13 @@ export class MapView extends Component {
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
 
-    // Subscribe to gameWorld player state if using GameWorld
+    // Subscribe to gameWorld player state and get legend if using GameWorld
     if (this.gameWorld) {
       this.gameWorld.getPlayerState().subscribe(() => {
         requestRender();
       });
+      // Get legend from GameWorld for visibility checks
+      this.legend = this.gameWorld.getLegend();
     }
 
     // Handle src loading after super() call
@@ -269,6 +272,15 @@ export class MapView extends Component {
       return this.buffer;
     }
 
+    // Update legend from GameWorld if available (handles async loading)
+    if (this.gameWorld && this.gameWorld.isReady()) {
+      this.legend = this.gameWorld.getLegend();
+      // DEBUG: Log legend loading
+      if (this.legend && this.legend['b']) {
+        console.log('Legend loaded from GameWorld, bone entry:', this.legend['b']);
+      }
+    }
+
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
 
@@ -330,6 +342,25 @@ export class MapView extends Component {
           const directionChar = this.getDirectionChar(player.direction);
           this.buffer[bufferY][bufferX] = directionChar;
         } else {
+          // Check legend visibility (defaults to true if not specified)
+          let displayChar = char;
+          if (this.legend && this.legend[char]) {
+            const legendEntry = this.legend[char];
+            // If visible is explicitly set to false, render as space
+            if (legendEntry.visible === false) {
+              displayChar = ' ';
+            }
+            // DEBUG: Log when we encounter a 'b' character
+            if (char === 'b') {
+              console.log('Found bone character:', {
+                char,
+                legendEntry,
+                visible: legendEntry.visible,
+                displayChar
+              });
+            }
+          }
+
           // Apply fog of war logic
           if (this.fogOfWar) {
             const isVisible = this.isPositionVisible(
@@ -341,12 +372,12 @@ export class MapView extends Component {
             const isExplored = this.isPositionExplored(mapX, mapY);
 
             if (isVisible || isExplored) {
-              this.buffer[bufferY][bufferX] = char;
+              this.buffer[bufferY][bufferX] = displayChar;
             } else {
               this.buffer[bufferY][bufferX] = this.fogCharacter;
             }
           } else {
-            this.buffer[bufferY][bufferX] = char;
+            this.buffer[bufferY][bufferX] = displayChar;
           }
         }
       }
@@ -616,8 +647,8 @@ export class MapView extends Component {
     // Update the content source with the loaded map data
     this.contentSource = { map: mapAsset.mapData };
 
-    // Store legend for potential future use
-    // (Currently MapView doesn't use legend, but it's available)
+    // Store legend for visibility checks
+    this.legend = mapAsset.legend;
 
     // Request a re-render
     requestRender();

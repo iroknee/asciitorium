@@ -98,11 +98,11 @@ export class ProgressBarSlider extends SliderBase {
     let barContent = '█'.repeat(Math.max(0, filledLength)) + ' '.repeat(Math.max(0, emptyLength));
 
     // Top border
-    this.drawChar(0, 0, '┌');
+    this.drawChar(0, 0, '╭');
     for (let x = 1; x < this.width - 1; x++) {
       this.drawChar(x, 0, '─');
     }
-    this.drawChar(this.width - 1, 0, '┐');
+    this.drawChar(this.width - 1, 0, '╮');
 
     // Middle with content
     this.drawChar(0, 1, '│');
@@ -113,11 +113,11 @@ export class ProgressBarSlider extends SliderBase {
     this.drawChar(this.width - 1, 1, '│');
 
     // Bottom border
-    this.drawChar(0, 2, '└');
+    this.drawChar(0, 2, '╰');
     for (let x = 1; x < this.width - 1; x++) {
       this.drawChar(x, 2, '─');
     }
-    this.drawChar(this.width - 1, 2, '┘');
+    this.drawChar(this.width - 1, 2, '╯');
 
     // Draw hotkey indicator at position (1, 0) if hotkey visibility is on
     if (this.hotkey && this.isHotkeyVisibilityEnabled()) {

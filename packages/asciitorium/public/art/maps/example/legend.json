@@ -20,6 +20,7 @@
       "kind": "material",
       "name": "bone",
       "solid": false,
+      "visible": false,
       "entity": "item",
       "variant": "bone",
       "asset": "material/bone"
