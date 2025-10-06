@@ -5,22 +5,23 @@
       "kind": "material",
       "name": "wall",
       "solid": true,
-      "asset": "material/brick-wall"
+      "asset": "material/wall-brick"
     },
     {
       "chars": ["o"],
       "kind": "material",
       "name": "door",
       "solid": false,
-      "tag": "door",
-      "asset": "material/door-on-brick"
+      "entity": "door",
+      "asset": "material/door-wooden"
     },
     {
       "chars": ["b"],
       "kind": "material",
       "name": "bone",
       "solid": false,
-      "tag": "item",
+      "entity": "item",
+      "variant": "bone",
       "asset": "material/bone"
     }
   ]

@@ -236,11 +236,18 @@ export class FirstPersonCompositor {
         if (bufferX >= viewWidth || bufferX < 0) continue;
 
         const char = line[x];
+
+        // Skip transparent characters (‽) - always transparent regardless of mode
+        if (char === '‽') {
+          continue;
+        }
+
         // In transparency mode, don't overwrite existing content with spaces
         if (transparency && char === ' ') {
           continue; // Skip rendering spaces in transparency mode
         }
-        // Render all characters including spaces to properly overwrite farther sprites
+
+        // Render all other characters to properly overwrite farther sprites
         buffer[bufferY][bufferX] = char;
       }
     }

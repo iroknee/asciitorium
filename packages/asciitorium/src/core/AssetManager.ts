@@ -5,7 +5,8 @@ export interface LegendEntry {
   kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
-  tag?: string;
+  entity?: string;
+  variant?: string;
   asset: string;
 }
 
@@ -15,7 +16,8 @@ export interface LegendArrayEntry {
   kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
-  tag?: string;
+  entity?: string;
+  variant?: string;
   asset: string;
 }
 
@@ -224,7 +226,8 @@ export class AssetManager {
           solid: entry.solid,
           asset: entry.asset,
           ...(entry.name && { name: entry.name }),
-          ...(entry.tag && { tag: entry.tag })
+          ...(entry.entity && { entity: entry.entity }),
+          ...(entry.variant && { variant: entry.variant })
         };
 
         // Expand each character in the chars array

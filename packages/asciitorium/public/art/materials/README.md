@@ -99,16 +99,69 @@ Materials are referenced in map legends through the `asset` property:
 
 ```json
 {
-  "#": {
-    "kind": "material",
-    "name": "wireframe-wall",
-    "solid": true,
-    "asset": "wireframe"
-  }
+  "chars": ["#"],
+  "kind": "material",
+  "name": "wireframe-wall",
+  "solid": true,
+  "asset": "material/wireframe"
 }
 ```
 
 The system will load the corresponding `wireframe.txt` file and render the appropriate layer based on the viewing context and distance.
+
+## Relationship with Legend Entities
+
+The architecture separates visual presentation (materials) from gameplay behavior (legend entities):
+
+### Materials Handle:
+- **Visual representation** at different distances (layer system)
+- **Ambient sounds** tied to proximity (howling when near a wolf wall)
+- **Transition sounds** when moving between layers (door creaking as you approach)
+- **Distance-based events** (footsteps on different floor types)
+
+### Legend Entities Handle:
+- **Interactions** (opening doors, picking up items, talking to NPCs)
+- **Game state** (is door locked/unlocked, enemy health, treasure quantity)
+- **Collision detection** (solid vs passable)
+- **Gameplay behaviors** (enemy AI, trap triggers, puzzle mechanics)
+
+### Example: Door Material + Entity
+
+**Material file** (`door-on-brick.txt`):
+```text
+§ {"kind":"material","usage":"first-person","placement":"scenery"}
+¶ {"layer":"near","position":"center","onEnter":{"sound":"door-creak.wav"}}
+[ASCII art for door at near distance]
+¶ {"layer":"here","position":"center"}
+[ASCII art for door at immediate distance]
+```
+
+**Legend entry** (references the material):
+```json
+{
+  "chars": ["o"],
+  "kind": "material",
+  "entity": "door",
+  "variant": "wooden",
+  "name": "Wooden Door",
+  "solid": false,
+  "asset": "material/door-on-brick",
+  "state": {
+    "locked": false,
+    "open": false
+  },
+  "interactions": {
+    "onInteract": "toggle-door",
+    "onMelee": "bash-door"
+  }
+}
+```
+
+This design allows:
+- **Reusable materials**: Same door material can be used for locked/unlocked/magic doors
+- **Instance-specific behavior**: Each door on the map can have different state (some locked, some open)
+- **Separation of concerns**: Artists focus on materials, game designers focus on legend entities
+- **Sensory cohesion**: Sounds/visuals stay together in material files
 
 ## Creating New Materials
 

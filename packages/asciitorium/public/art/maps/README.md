@@ -41,7 +41,7 @@ Legends use an array format where each entry groups characters with shared prope
       "kind": "material",
       "name": "door",
       "solid": false,
-      "tag": "door",
+      "entity": "door",
       "asset": "material/wood-door-on-brick-wall"
     }
   ]
@@ -50,14 +50,124 @@ Legends use an array format where each entry groups characters with shared prope
 
 ### Legend Properties
 
+#### Required Properties
+
 - **chars**: Array of characters that share the same properties (e.g., all wall variations)
-- **kind**: Type of object (`"material"` for terrain/environment, `"sprite"` for entities)
-- **name**: Optional human-readable description for the object type
+- **kind**: Type of asset (`"material"` for terrain/environment, `"sprite"` for animated entities)
 - **solid**: Whether the object blocks player movement (`true`/`false`)
-- **tag**: Optional category for gameplay logic (e.g., `"door"`, `"enemy"`, `"treasure"`)
 - **asset**: Reference to visual asset file in the materials or sprites directories
 
+#### Optional Properties
+
+- **name**: Human-readable description for the object type
+- **entity**: Gameplay entity type that defines behavior (e.g., `"door"`, `"enemy"`, `"treasure"`, `"trap"`, `"item"`)
+- **variant**: Specific subtype of the entity (e.g., `"wooden"`, `"iron"`, `"magic"`, `"bone"`)
+
 **Note:** The `chars` array allows you to group multiple map characters that share identical properties, significantly reducing legend file size and making them easier to maintain.
+
+### Entity and Variant System
+
+The `entity` and `variant` properties work together to define gameplay behavior:
+
+- **entity**: The primary type that determines how the game handles interactions (door, enemy, treasure, trap, item, etc.)
+- **variant**: The specific implementation or subtype (wooden-door, iron-door, wolf, bone, spike-trap, etc.)
+
+This separation allows for:
+- Shared behavior across similar entities (all doors can be opened/closed)
+- Variant-specific properties (wooden doors are weak, iron doors are strong)
+- Clear gameplay categorization
+
+### Common Entity Types
+
+Here are standard entity types used in dungeon crawlers:
+
+#### **door**
+Openable/closable passages, may be locked
+```json
+{
+  "chars": ["o"],
+  "entity": "door",
+  "variant": "wooden",
+  "solid": false
+}
+```
+
+#### **enemy**
+Hostile creatures or NPCs
+```json
+{
+  "chars": ["w"],
+  "entity": "enemy",
+  "variant": "wolf",
+  "solid": true
+}
+```
+
+#### **treasure**
+Collectible currency or valuables
+```json
+{
+  "chars": ["g"],
+  "entity": "treasure",
+  "variant": "gold-pile",
+  "solid": false
+}
+```
+
+#### **item**
+Pickup-able objects for inventory
+```json
+{
+  "chars": ["b"],
+  "entity": "item",
+  "variant": "bone",
+  "solid": false
+}
+```
+
+#### **trap**
+Hazards that trigger on player interaction
+```json
+{
+  "chars": ["^"],
+  "entity": "trap",
+  "variant": "spike",
+  "solid": false
+}
+```
+
+#### **mechanism**
+Switches, levers, pressure plates
+```json
+{
+  "chars": ["L"],
+  "entity": "mechanism",
+  "variant": "lever",
+  "solid": true
+}
+```
+
+#### **destructible**
+Breakable objects like crates or barrels
+```json
+{
+  "chars": ["C"],
+  "entity": "destructible",
+  "variant": "crate",
+  "solid": true
+}
+```
+
+#### **npc**
+Non-hostile characters for dialog/quests
+```json
+{
+  "chars": ["@"],
+  "entity": "npc",
+  "variant": "merchant",
+  "solid": true
+}
+```
 
 ## Directory Organization
 
