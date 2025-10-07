@@ -25,7 +25,7 @@
 ╱┊ ╱    
  ┊╱     
  ╱      
-¶ {"layer":"here","position":"center"}
+¶ {"layer":"here","position":"center","onEnter":{"sound":"open-door.mp3"}}
 …………… ……………… ……………… ………………
      ┊      ┊      ┊      
 …… ……┊……… ……┊……… ……┊……… ……

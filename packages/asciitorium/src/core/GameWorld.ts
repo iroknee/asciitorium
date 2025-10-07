@@ -1,6 +1,7 @@
-import { AssetManager, type MapAsset, type LegendEntry } from './AssetManager';
+import { AssetManager, type MapAsset, type LegendEntry, type MaterialAsset } from './AssetManager';
 import { State } from './State';
 import type { Direction, Player } from '../components/MapView';
+import { SoundManager } from './SoundManager';
 
 export interface GameWorldOptions {
   mapName: string;
@@ -195,6 +196,36 @@ export class GameWorld {
       direction,
     };
 
+    // Trigger sound if the new tile has onEnter sound
+    this.checkAndPlayTileSound(newX, newY);
+
     return true;
+  }
+
+  private async checkAndPlayTileSound(x: number, y: number): Promise<void> {
+    const char = this.getCharAt(x, y);
+    if (!char) return;
+
+    const legendEntry = this.getLegendEntry(char);
+    if (!legendEntry || legendEntry.kind !== 'material') return;
+
+    try {
+      // Load the material asset to check for sound metadata
+      const materialAsset: MaterialAsset = await AssetManager.getMaterial(
+        legendEntry.asset.replace('material/', '')
+      );
+
+      // Check the 'here' layer for onEnter sound
+      const hereLayer = materialAsset.layers.find(
+        (layer) => layer.layer === 'here' && layer.position === 'center'
+      );
+
+      if (hereLayer?.onEnter?.sound) {
+        SoundManager.playSound(hereLayer.onEnter.sound);
+      }
+    } catch (error) {
+      // Silently ignore errors loading materials or playing sounds
+      console.debug('Could not check tile sound:', error);
+    }
   }
 }

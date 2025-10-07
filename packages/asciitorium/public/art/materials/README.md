@@ -72,6 +72,10 @@ Here's an example from `bone.txt` showing placement for ground materials:
 - **layer**: Depth layer (`"here"`, `"near"`, `"middle"`, `"far"`)
 - **position**: Horizontal alignment (`"left"`, `"center"`, `"right"`)
 - **x**: Horizontal offset for precise positioning
+- **onEnter**: Sound event that triggers when the player steps onto this tile (optional)
+  - Structure: `{"sound": "filename.mp3"}`
+  - Only triggers for "here/center" layers when using GameWorld
+  - Sound files should be placed in `art/sounds/` directory
 
 ## Layer System
 
@@ -113,13 +117,15 @@ The system will load the corresponding `wireframe.txt` file and render the appro
 
 The architecture separates visual presentation (materials) from gameplay behavior (legend entities):
 
-### Materials Handle:
+### Materials Handle
+
 - **Visual representation** at different distances (layer system)
 - **Ambient sounds** tied to proximity (howling when near a wolf wall)
 - **Transition sounds** when moving between layers (door creaking as you approach)
 - **Distance-based events** (footsteps on different floor types)
 
-### Legend Entities Handle:
+### Legend Entities Handle
+
 - **Interactions** (opening doors, picking up items, talking to NPCs)
 - **Game state** (is door locked/unlocked, enemy health, treasure quantity)
 - **Collision detection** (solid vs passable)
@@ -127,16 +133,18 @@ The architecture separates visual presentation (materials) from gameplay behavio
 
 ### Example: Door Material + Entity
 
-**Material file** (`door-on-brick.txt`):
+**Material file** (`door-wooden.txt`):
+
 ```text
 § {"kind":"material","usage":"first-person","placement":"scenery"}
-¶ {"layer":"near","position":"center","onEnter":{"sound":"door-creak.wav"}}
+¶ {"layer":"here","position":"center","onEnter":{"sound":"open-door.mp3"}}
+[ASCII art for door at immediate distance - plays sound when player steps onto this tile]
+¶ {"layer":"near","position":"center"}
 [ASCII art for door at near distance]
-¶ {"layer":"here","position":"center"}
-[ASCII art for door at immediate distance]
 ```
 
 **Legend entry** (references the material):
+
 ```json
 {
   "chars": ["o"],
@@ -145,7 +153,7 @@ The architecture separates visual presentation (materials) from gameplay behavio
   "variant": "wooden",
   "name": "Wooden Door",
   "solid": false,
-  "asset": "material/door-on-brick",
+  "asset": "material/door-wooden",
   "state": {
     "locked": false,
     "open": false
@@ -158,10 +166,97 @@ The architecture separates visual presentation (materials) from gameplay behavio
 ```
 
 This design allows:
+
 - **Reusable materials**: Same door material can be used for locked/unlocked/magic doors
 - **Instance-specific behavior**: Each door on the map can have different state (some locked, some open)
 - **Separation of concerns**: Artists focus on materials, game designers focus on legend entities
 - **Sensory cohesion**: Sounds/visuals stay together in material files
+
+### Example: Puddle with Sound
+
+Ground materials can also use `onEnter` for footstep sounds:
+
+**Material file** (`puddle.txt`):
+
+```text
+§ {"kind":"material","usage":"first-person","placement":"ground"}
+¶ {"layer":"here","position":"center","onEnter":{"sound":"splash.mp3"}}
+  ~~~~
+ ~~~~~~
+~~~~~~~~
+ ~~~~~~
+  ~~~~
+¶ {"layer":"near","position":"center"}
+~~
+```
+
+**Legend entry**:
+
+```json
+{
+  "chars": ["~"],
+  "kind": "material",
+  "name": "puddle",
+  "solid": false,
+  "asset": "material/puddle"
+}
+```
+
+When the player steps onto a `~` tile, they'll hear a splash sound. This same pattern works for:
+- Gravel paths (`crunch.mp3`)
+- Creaky floorboards (`creak.mp3`)
+- Grass (`rustle.mp3`)
+- Snow (`snow-step.mp3`)
+
+## Sound System
+
+Materials support sound playback through the `onEnter` property in layer metadata. Sounds are automatically triggered by the GameWorld when the player steps onto a tile.
+
+### Sound File Requirements
+
+- **Location**: Place sound files in `art/sounds/` directory relative to your project root
+- **Formats**: MP3, WAV, and other browser-supported audio formats
+- **Environment**: Sounds only play in web environments (browser), not in CLI mode
+- **Reference**: Use filename in metadata: `{"onEnter":{"sound":"filename.mp3"}}`
+
+### How Sound Triggering Works
+
+When using `GameWorld` for game logic:
+
+1. Player moves to a new tile coordinate (x, y)
+2. GameWorld checks the tile's legend entry
+3. If the entry is a material, GameWorld loads the material asset
+4. If the material has a "here/center" layer with `onEnter.sound`, the sound plays
+5. Sound plays once per tile entry (moving onto the same tile repeatedly will retrigger)
+
+### Current Limitations
+
+- Only "here/center" layer sounds trigger automatically on tile entry
+- Sounds on other layers ("near", "middle", "far") or positions ("left", "right") require custom implementation
+- Future versions may support proximity-based sounds (e.g., `onApproach` for layers becoming visible)
+
+### Controlling Sound Playback
+
+You can control sound globally through the `SoundManager`:
+
+```typescript
+import { SoundManager } from 'asciitorium';
+
+// Disable all sounds
+SoundManager.setEnabled(false);
+
+// Re-enable sounds
+SoundManager.setEnabled(true);
+
+// Check if sounds are enabled
+const enabled = SoundManager.isEnabled();
+
+// Manually play a sound
+SoundManager.playSound('custom-sound.mp3');
+
+// Clear sound cache
+SoundManager.clearCache();
+```
 
 ## Creating New Materials
 

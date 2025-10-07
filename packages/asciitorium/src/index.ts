@@ -7,6 +7,7 @@ export * from './core/PersistentState';
 export * from './core/ScrollableViewport';
 export * from './core/AssetManager';
 export * from './core/GameWorld';
+export * from './core/SoundManager';
 export * from './components/Art';
 export * from './components/Button';
 export * from './components/CelticBorder';

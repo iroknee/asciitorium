@@ -27,6 +27,9 @@ export interface MaterialLayer {
   layer: 'here' | 'near' | 'middle' | 'far';
   position: 'left' | 'center' | 'right';
   x?: number;
+  onEnter?: {
+    sound?: string;
+  };
   lines: string[];
 }
 
@@ -327,6 +330,7 @@ export class AssetManager {
         layer: fileMetadata.layer,
         position: fileMetadata.position,
         x: fileMetadata.x,
+        onEnter: fileMetadata.onEnter,
         lines: firstLayerContent
       });
 
@@ -373,6 +377,7 @@ export class AssetManager {
           layer: metadata.layer,
           position: metadata.position,
           x: metadata.x,
+          onEnter: metadata.onEnter,
           lines: spriteLines
         });
       }
