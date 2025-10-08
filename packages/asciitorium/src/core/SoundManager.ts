@@ -1,4 +1,4 @@
-import { isWeb } from './environment';
+import { isWebEnvironment } from './environment';
 
 export class SoundManager {
   private static audioCache: Map<string, HTMLAudioElement> = new Map();
@@ -14,7 +14,7 @@ export class SoundManager {
 
   static async playSound(soundPath: string): Promise<void> {
     // Only play sounds in web environment
-    if (!isWeb()) {
+    if (!isWebEnvironment()) {
       return;
     }
 
