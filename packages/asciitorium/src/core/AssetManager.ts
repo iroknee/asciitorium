@@ -30,6 +30,9 @@ export interface MaterialLayer {
   onEnter?: {
     sound?: string;
   };
+  onExit?: {
+    sound?: string;
+  };
   lines: string[];
 }
 
@@ -331,6 +334,7 @@ export class AssetManager {
         position: fileMetadata.position,
         x: fileMetadata.x,
         onEnter: fileMetadata.onEnter,
+        onExit: fileMetadata.onExit,
         lines: firstLayerContent
       });
 
@@ -378,6 +382,7 @@ export class AssetManager {
           position: metadata.position,
           x: metadata.x,
           onEnter: metadata.onEnter,
+          onExit: metadata.onExit,
           lines: spriteLines
         });
       }

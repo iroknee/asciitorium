@@ -17,6 +17,7 @@ export class GameWorld {
   private legend: Record<string, LegendEntry> = {};
   private playerState: State<Player>;
   private isLoadedFlag: boolean = false;
+  private previousPosition: { x: number; y: number } | null = null;
 
   constructor(options: GameWorldOptions) {
     // Initialize player state with default or provided position
@@ -27,6 +28,7 @@ export class GameWorld {
     };
 
     this.playerState = new State<Player>(initialPos);
+    this.previousPosition = { x: initialPos.x, y: initialPos.y };
 
     // Start async initialization
     this.initialize(options.mapName).catch((error) => {
@@ -189,6 +191,11 @@ export class GameWorld {
       return false; // Blocked
     }
 
+    // Trigger onExit sound for the old tile before moving
+    if (this.previousPosition) {
+      this.checkAndPlayExitSound(this.previousPosition.x, this.previousPosition.y);
+    }
+
     // Move successful
     this.playerState.value = {
       x: newX,
@@ -196,7 +203,10 @@ export class GameWorld {
       direction,
     };
 
-    // Trigger sound if the new tile has onEnter sound
+    // Update previous position
+    this.previousPosition = { x: newX, y: newY };
+
+    // Trigger onEnter sound for the new tile
     this.checkAndPlayTileSound(newX, newY);
 
     return true;
@@ -226,6 +236,33 @@ export class GameWorld {
     } catch (error) {
       // Silently ignore errors loading materials or playing sounds
       console.debug('Could not check tile sound:', error);
+    }
+  }
+
+  private async checkAndPlayExitSound(x: number, y: number): Promise<void> {
+    const char = this.getCharAt(x, y);
+    if (!char) return;
+
+    const legendEntry = this.getLegendEntry(char);
+    if (!legendEntry || legendEntry.kind !== 'material') return;
+
+    try {
+      // Load the material asset to check for sound metadata
+      const materialAsset: MaterialAsset = await AssetManager.getMaterial(
+        legendEntry.asset.replace('material/', '')
+      );
+
+      // Check the 'here' layer for onExit sound
+      const hereLayer = materialAsset.layers.find(
+        (layer) => layer.layer === 'here' && layer.position === 'center'
+      );
+
+      if (hereLayer?.onExit?.sound) {
+        SoundManager.playSound(hereLayer.onExit.sound);
+      }
+    } catch (error) {
+      // Silently ignore errors loading materials or playing sounds
+      console.debug('Could not check exit sound:', error);
     }
   }
 }

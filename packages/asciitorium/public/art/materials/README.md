@@ -76,6 +76,10 @@ Here's an example from `bone.txt` showing placement for ground materials:
   - Structure: `{"sound": "filename.mp3"}`
   - Only triggers for "here/center" layers when using GameWorld
   - Sound files should be placed in `art/sounds/` directory
+- **onExit**: Sound event that triggers when the player steps off this tile (optional)
+  - Structure: `{"sound": "filename.mp3"}`
+  - Only triggers for "here/center" layers when using GameWorld
+  - Sound files should be placed in `art/sounds/` directory
 
 ## Layer System
 
@@ -137,8 +141,8 @@ The architecture separates visual presentation (materials) from gameplay behavio
 
 ```text
 § {"kind":"material","usage":"first-person","placement":"scenery"}
-¶ {"layer":"here","position":"center","onEnter":{"sound":"open-door.mp3"}}
-[ASCII art for door at immediate distance - plays sound when player steps onto this tile]
+¶ {"layer":"here","position":"center","onEnter":{"sound":"door-open.mp3"},"onExit":{"sound":"close-door.mp3"}}
+[ASCII art for door at immediate distance - plays open sound when player steps onto this tile, close sound when leaving]
 ¶ {"layer":"near","position":"center"}
 [ASCII art for door at near distance]
 ```
@@ -203,6 +207,7 @@ Ground materials can also use `onEnter` for footstep sounds:
 ```
 
 When the player steps onto a `~` tile, they'll hear a splash sound. This same pattern works for:
+
 - Gravel paths (`crunch.mp3`)
 - Creaky floorboards (`creak.mp3`)
 - Grass (`rustle.mp3`)
@@ -224,14 +229,16 @@ Materials support sound playback through the `onEnter` property in layer metadat
 When using `GameWorld` for game logic:
 
 1. Player moves to a new tile coordinate (x, y)
-2. GameWorld checks the tile's legend entry
-3. If the entry is a material, GameWorld loads the material asset
-4. If the material has a "here/center" layer with `onEnter.sound`, the sound plays
-5. Sound plays once per tile entry (moving onto the same tile repeatedly will retrigger)
+2. GameWorld triggers `onExit` sound for the previous tile (if any)
+3. GameWorld checks the new tile's legend entry
+4. If the entry is a material, GameWorld loads the material asset
+5. If the material has a "here/center" layer with `onEnter.sound`, the sound plays
+6. If the material has a "here/center" layer with `onExit.sound`, it will play when the player leaves the tile
+7. Sounds play once per tile entry/exit (moving onto the same tile repeatedly will retrigger both sounds)
 
 ### Current Limitations
 
-- Only "here/center" layer sounds trigger automatically on tile entry
+- Only "here/center" layer sounds trigger automatically on tile entry/exit
 - Sounds on other layers ("near", "middle", "far") or positions ("left", "right") require custom implementation
 - Future versions may support proximity-based sounds (e.g., `onApproach` for layers becoming visible)
 
