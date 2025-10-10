@@ -64,22 +64,23 @@ Here's an example from `bone.txt` showing placement for ground materials:
 ### Section Header (`§`)
 
 - **kind**: Type of asset (`"material"`)
-- **usage**: Rendering context (`"first-person"`, `"top-down"`, etc.)
+- **usage**: Rendering context (`"first-person"`, `"top-down"`, `"side-scroller"`)
 - **placement**: Surface placement (`"ground"`, `"ceiling"`) - optional property that indicates where the material should be applied. Use `"scenery"` for general background/wall materials (default)
+- **onEnterSound**: Sound that triggers when the player steps onto this tile (optional)
+  - Value: `"filename.mp3"`
+  - Sound files should be placed in `art/sounds/` directory
+- **onExitSound**: Sound that triggers when the player steps off this tile (optional)
+  - Value: `"filename.mp3"`
+  - Sound files should be placed in `art/sounds/` directory
+- **ambientSound**: Looping sound while material is visible (optional, future feature)
+  - Value: `"filename.mp3"`
+  - Sound files should be placed in `art/sounds/` directory
 
 ### Layer Configuration (`¶`)
 
 - **layer**: Depth layer (`"here"`, `"near"`, `"middle"`, `"far"`)
 - **position**: Horizontal alignment (`"left"`, `"center"`, `"right"`)
 - **x**: Horizontal offset for precise positioning
-- **onEnter**: Sound event that triggers when the player steps onto this tile (optional)
-  - Structure: `{"sound": "filename.mp3"}`
-  - Only triggers for "here/center" layers when using GameWorld
-  - Sound files should be placed in `art/sounds/` directory
-- **onExit**: Sound event that triggers when the player steps off this tile (optional)
-  - Structure: `{"sound": "filename.mp3"}`
-  - Only triggers for "here/center" layers when using GameWorld
-  - Sound files should be placed in `art/sounds/` directory
 
 ## Layer System
 
@@ -140,8 +141,8 @@ The architecture separates visual presentation (materials) from gameplay behavio
 **Material file** (`door-wooden.txt`):
 
 ```text
-§ {"kind":"material","usage":"first-person","placement":"scenery"}
-¶ {"layer":"here","position":"center","onEnter":{"sound":"door-open.mp3"},"onExit":{"sound":"close-door.mp3"}}
+§ {"kind":"material","usage":"first-person","placement":"scenery","onEnterSound":"door-open.mp3","onExitSound":"door-close.mp3"}
+¶ {"layer":"here","position":"center"}
 [ASCII art for door at immediate distance - plays open sound when player steps onto this tile, close sound when leaving]
 ¶ {"layer":"near","position":"center"}
 [ASCII art for door at near distance]
@@ -178,13 +179,13 @@ This design allows:
 
 ### Example: Puddle with Sound
 
-Ground materials can also use `onEnter` for footstep sounds:
+Ground materials can also use `onEnterSound` for footstep sounds:
 
 **Material file** (`puddle.txt`):
 
 ```text
-§ {"kind":"material","usage":"first-person","placement":"ground"}
-¶ {"layer":"here","position":"center","onEnter":{"sound":"splash.mp3"}}
+§ {"kind":"material","usage":"first-person","placement":"ground","onEnterSound":"splash.mp3"}
+¶ {"layer":"here","position":"center"}
   ~~~~
  ~~~~~~
 ~~~~~~~~
@@ -215,32 +216,32 @@ When the player steps onto a `~` tile, they'll hear a splash sound. This same pa
 
 ## Sound System
 
-Materials support sound playback through the `onEnter` property in layer metadata. Sounds are automatically triggered by the GameWorld when the player steps onto a tile.
+Materials support sound playback through properties in the section header (`§`). Sounds are automatically triggered by the GameWorld when the player moves.
 
 ### Sound File Requirements
 
 - **Location**: Place sound files in `art/sounds/` directory relative to your project root
 - **Formats**: MP3, WAV, and other browser-supported audio formats
 - **Environment**: Sounds only play in web environments (browser), not in CLI mode
-- **Reference**: Use filename in metadata: `{"onEnter":{"sound":"filename.mp3"}}`
+- **Reference**: Use filename in section header: `{"onEnterSound":"filename.mp3"}`
+
+### Sound Properties
+
+- **onEnterSound**: Plays once when the player steps onto a tile with this material
+- **onExitSound**: Plays once when the player steps off a tile with this material
+- **ambientSound**: Looping sound while material is visible (future feature)
 
 ### How Sound Triggering Works
 
 When using `GameWorld` for game logic:
 
 1. Player moves to a new tile coordinate (x, y)
-2. GameWorld triggers `onExit` sound for the previous tile (if any)
+2. GameWorld triggers `onExitSound` for the previous tile's material (if any)
 3. GameWorld checks the new tile's legend entry
 4. If the entry is a material, GameWorld loads the material asset
-5. If the material has a "here/center" layer with `onEnter.sound`, the sound plays
-6. If the material has a "here/center" layer with `onExit.sound`, it will play when the player leaves the tile
+5. If the material has `onEnterSound`, the sound plays
+6. When the player leaves the tile, `onExitSound` plays (if defined)
 7. Sounds play once per tile entry/exit (moving onto the same tile repeatedly will retrigger both sounds)
-
-### Current Limitations
-
-- Only "here/center" layer sounds trigger automatically on tile entry/exit
-- Sounds on other layers ("near", "middle", "far") or positions ("left", "right") require custom implementation
-- Future versions may support proximity-based sounds (e.g., `onApproach` for layers becoming visible)
 
 ### Controlling Sound Playback
 

@@ -225,13 +225,9 @@ export class GameWorld {
         legendEntry.asset.replace('material/', '')
       );
 
-      // Check the 'here' layer for onEnter sound
-      const hereLayer = materialAsset.layers.find(
-        (layer) => layer.layer === 'here' && layer.position === 'center'
-      );
-
-      if (hereLayer?.onEnter?.sound) {
-        SoundManager.playSound(hereLayer.onEnter.sound);
+      // Check for onEnterSound in the material asset
+      if (materialAsset.onEnterSound) {
+        SoundManager.playSound(materialAsset.onEnterSound);
       }
     } catch (error) {
       // Silently ignore errors loading materials or playing sounds
@@ -252,13 +248,9 @@ export class GameWorld {
         legendEntry.asset.replace('material/', '')
       );
 
-      // Check the 'here' layer for onExit sound
-      const hereLayer = materialAsset.layers.find(
-        (layer) => layer.layer === 'here' && layer.position === 'center'
-      );
-
-      if (hereLayer?.onExit?.sound) {
-        SoundManager.playSound(hereLayer.onExit.sound);
+      // Check for onExitSound in the material asset
+      if (materialAsset.onExitSound) {
+        SoundManager.playSound(materialAsset.onExitSound);
       }
     } catch (error) {
       // Silently ignore errors loading materials or playing sounds

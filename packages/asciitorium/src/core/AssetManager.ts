@@ -27,12 +27,6 @@ export interface MaterialLayer {
   layer: 'here' | 'near' | 'middle' | 'far';
   position: 'left' | 'center' | 'right';
   x?: number;
-  onEnter?: {
-    sound?: string;
-  };
-  onExit?: {
-    sound?: string;
-  };
   lines: string[];
 }
 
@@ -65,6 +59,9 @@ export interface MapAsset {
 export interface MaterialAsset {
   usage: string;
   placement?: 'ground' | 'ceiling';
+  onEnterSound?: string;
+  onExitSound?: string;
+  ambientSound?: string;
   layers: MaterialLayer[];
 }
 
@@ -333,8 +330,6 @@ export class AssetManager {
         layer: fileMetadata.layer,
         position: fileMetadata.position,
         x: fileMetadata.x,
-        onEnter: fileMetadata.onEnter,
-        onExit: fileMetadata.onExit,
         lines: firstLayerContent
       });
 
@@ -360,6 +355,9 @@ export class AssetManager {
     return {
       usage: fileMetadata.usage || (isSceneFormat ? 'first-person' : 'unknown'),
       placement: fileMetadata.placement,
+      onEnterSound: fileMetadata.onEnterSound,
+      onExitSound: fileMetadata.onExitSound,
+      ambientSound: fileMetadata.ambientSound,
       layers
     };
   }
@@ -381,8 +379,6 @@ export class AssetManager {
           layer: metadata.layer,
           position: metadata.position,
           x: metadata.x,
-          onEnter: metadata.onEnter,
-          onExit: metadata.onExit,
           lines: spriteLines
         });
       }

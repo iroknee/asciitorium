@@ -1,4 +1,4 @@
-§ {"kind":"material","usage":"first-person","placement":"scenery"}
+§ {"kind":"material","usage":"first-person","placement":"scenery","onEnterSound":"door-open.mp3","onExitSound":"door-close.mp3"}
 ¶ {"layer":"here","position":"left"}
  ╲      
  ┊╲     
@@ -25,7 +25,7 @@
 ╱┊ ╱    
  ┊╱     
  ╱      
-¶ {"layer":"here","position":"center","onEnter":{"sound":"door-open.mp3"},"onExit":{"sound":"door-close.mp3"}}
+¶ {"layer":"here","position":"center"}
 …………… ……………… ……………… ………………
      ┊      ┊      ┊      
 …… ……┊……… ……┊……… ……┊……… ……
