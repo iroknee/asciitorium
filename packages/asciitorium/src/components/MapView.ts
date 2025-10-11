@@ -279,13 +279,6 @@ export class MapView extends Component {
     // Update legend from GameWorld if available (handles async loading)
     if (this.gameWorld && this.gameWorld.isReady()) {
       this.legend = this.gameWorld.getLegend();
-      // DEBUG: Log legend loading
-      if (this.legend && this.legend['b']) {
-        console.log(
-          'Legend loaded from GameWorld, bone entry:',
-          this.legend['b']
-        );
-      }
     }
 
     const innerWidth = this.width - (this.border ? 2 : 0);
@@ -356,15 +349,6 @@ export class MapView extends Component {
             // If visible is explicitly set to false, render as space
             if (legendEntry.visible === false) {
               displayChar = ' ';
-            }
-            // DEBUG: Log when we encounter a 'b' character
-            if (char === 'b') {
-              console.log('Found bone character:', {
-                char,
-                legendEntry,
-                visible: legendEntry.visible,
-                displayChar,
-              });
             }
           }
 
