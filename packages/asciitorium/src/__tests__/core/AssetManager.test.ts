@@ -1,5 +1,11 @@
 import { describe, test, expect, beforeEach, vi, MockedFunction } from 'vitest';
-import { AssetManager, type Asset, type MapAsset, type MaterialAsset, type SpriteAsset } from '../../core/AssetManager';
+import {
+  AssetManager,
+  type Asset,
+  type MapAsset,
+  type MaterialAsset,
+  type SpriteAsset,
+} from '../../core/AssetManager';
 import { loadArt } from '../../core/environment';
 
 // Mock the loadArt function
@@ -30,7 +36,7 @@ Short`;
         kind: 'sprite',
         width: expect.any(Number),
         height: expect.any(Number),
-        data: expect.any(Object)
+        data: expect.any(Object),
       });
 
       expect(asset.width).toBe(13); // "Line 2 longer" = 13 chars
@@ -53,7 +59,7 @@ Short`;
       expect(asset.kind).toBe('material');
       expect(asset.width).toBe(4); // "|  ╲" = 4 chars
       expect(asset.height).toBe(3); // 3 content lines
-      expect(mockLoadArt).toHaveBeenCalledWith('art/materials/wall.txt');
+      expect(mockLoadArt).toHaveBeenCalledWith('art/materials/wall.art');
 
       const materialData = asset.data as MaterialAsset;
       expect(materialData.usage).toBe('first-person');
@@ -145,8 +151,9 @@ Short`;
     test('should throw error for non-existent assets', async () => {
       mockLoadArt.mockRejectedValue(new Error('Not found'));
 
-      await expect(AssetManager.getAsset('nonexistent'))
-        .rejects.toThrow('Asset "nonexistent" not found in any supported format');
+      await expect(AssetManager.getAsset('nonexistent')).rejects.toThrow(
+        'Asset "nonexistent" not found in any supported format'
+      );
     });
   });
 
@@ -241,8 +248,9 @@ Animation frame`;
         .mockRejectedValueOnce(new Error('Scene not found'))
         .mockResolvedValueOnce(spriteContent);
 
-      await expect(AssetManager.getMaterial('animation'))
-        .rejects.toThrow('Asset "animation" is not a material');
+      await expect(AssetManager.getMaterial('animation')).rejects.toThrow(
+        'Asset "animation" is not a material'
+      );
     });
   });
 
@@ -293,10 +301,10 @@ Some content`;
         // Expected to fail
       }
 
-      expect(mockLoadArt).toHaveBeenNthCalledWith(1, 'art/maps/test/map.txt');
-      expect(mockLoadArt).toHaveBeenNthCalledWith(2, 'art/materials/test.txt');
-      expect(mockLoadArt).toHaveBeenNthCalledWith(3, 'art/scenes/test.txt');
-      expect(mockLoadArt).toHaveBeenNthCalledWith(4, 'art/sprites/test.txt');
+      expect(mockLoadArt).toHaveBeenNthCalledWith(1, 'art/maps/test/map.art');
+      expect(mockLoadArt).toHaveBeenNthCalledWith(2, 'art/materials/test.art');
+      expect(mockLoadArt).toHaveBeenNthCalledWith(3, 'art/scenes/test.art');
+      expect(mockLoadArt).toHaveBeenNthCalledWith(4, 'art/sprites/test.art');
     });
   });
 

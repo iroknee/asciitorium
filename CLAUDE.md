@@ -154,9 +154,9 @@ The framework includes specialized components for ASCII game development:
   - Designed to be extended with interaction systems, entity management, and event handling
 
 - **AssetManager** (`src/core/AssetManager.ts`) - Asset loading and parsing system
-  - Loads maps from `art/maps/{name}/map.txt` and `art/maps/{name}/legend.json`
-  - Loads materials from `art/materials/{name}.txt` (first-person wall textures)
-  - Loads sprites from `art/sprites/{name}.txt` (animated ASCII art)
+  - Loads maps from `art/maps/{name}/map.art` and `art/maps/{name}/legend.json`
+  - Loads materials from `art/materials/{name}.art` (first-person wall textures)
+  - Loads sprites from `art/sprites/{name}.art` (animated ASCII art)
   - Parses metadata using `§` and `¶` separators
   - Returns typed assets: `MapAsset`, `MaterialAsset`, `SpriteAsset`
 
@@ -205,6 +205,7 @@ const gameWorld = new GameWorld({
 ```
 
 This architecture separates concerns:
+
 - **GameWorld**: Game logic, state, collision detection
 - **MapView/FirstPersonView**: Display-only, automatically reactive to GameWorld changes
 - **Keybind**: Global input handling

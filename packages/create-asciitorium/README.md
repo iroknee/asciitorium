@@ -94,8 +94,8 @@ To generate ASCII maze files (placed in public/art/mazes):
 node scripts/maze-builder.js <width> <height> <filename> [--smooth]
 
 # Examples:
-node scripts/maze-builder.js 10 10 dungeon-level-1.txt
-node scripts/maze-builder.js 15 20 castle-maze.txt --smooth
+node scripts/maze-builder.js 10 10 dungeon-level-1.art
+node scripts/maze-builder.js 15 20 castle-maze.art --smooth
 ```
 
 The `--smooth` flag uses Unicode box drawing characters for improved visual appearance.

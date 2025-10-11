@@ -20,7 +20,7 @@ interface SceneSprite {
 
 type Scene = string;
 
-// Default sprite positions extracted from wireframe.txt
+// Default sprite positions extracted from wireframe.art
 const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
   'here-left': -1,
   'here-right': 19,

@@ -17,17 +17,17 @@ async function findAllAssets() {
   const assets = { maps: [], materials: [], sprites: [] };
 
   try {
-    // Find maps (directories with map.txt)
+    // Find maps (directories with map.art)
     const mapsDir = path.join(artDir, 'maps');
     try {
       const mapDirs = await fs.readdir(mapsDir);
       for (const dir of mapDirs) {
-        const mapFile = path.join(mapsDir, dir, 'map.txt');
+        const mapFile = path.join(mapsDir, dir, 'map.art');
         try {
           await fs.access(mapFile);
           assets.maps.push(dir);
         } catch (e) {
-          // Skip if map.txt doesn't exist
+          // Skip if map.art doesn't exist
         }
       }
     } catch (e) {
@@ -39,8 +39,8 @@ async function findAllAssets() {
     try {
       const materialFiles = await fs.readdir(materialsDir);
       for (const file of materialFiles) {
-        if (file.endsWith('.txt')) {
-          assets.materials.push(file.replace('.txt', ''));
+        if (file.endsWith('.art')) {
+          assets.materials.push(file.replace('.art', ''));
         }
       }
     } catch (e) {
@@ -52,8 +52,8 @@ async function findAllAssets() {
     try {
       const spriteFiles = await fs.readdir(spritesDir);
       for (const file of spriteFiles) {
-        if (file.endsWith('.txt')) {
-          assets.sprites.push(file.replace('.txt', ''));
+        if (file.endsWith('.art')) {
+          assets.sprites.push(file.replace('.art', ''));
         }
       }
     } catch (e) {
@@ -65,8 +65,8 @@ async function findAllAssets() {
     try {
       const sceneFiles = await fs.readdir(scenesDir);
       for (const file of sceneFiles) {
-        if (file.endsWith('.txt')) {
-          const sceneName = file.replace('.txt', '');
+        if (file.endsWith('.art')) {
+          const sceneName = file.replace('.art', '');
           // Only add if not already in materials (avoid duplicates)
           if (!assets.materials.includes(sceneName)) {
             assets.materials.push(sceneName);
@@ -76,7 +76,6 @@ async function findAllAssets() {
     } catch (e) {
       console.log('No scenes directory found');
     }
-
   } catch (error) {
     console.error('Error scanning art directory:', error);
   }
@@ -88,10 +87,10 @@ async function showRawFile(name, assetKind) {
   console.log(`  Raw file content preview:`);
 
   const possiblePaths = [
-    `./public/art/maps/${name}/map.txt`,
-    `./public/art/materials/${name}.txt`,
-    `./public/art/scenes/${name}.txt`,
-    `./public/art/sprites/${name}.txt`
+    `./public/art/maps/${name}/map.art`,
+    `./public/art/materials/${name}.art`,
+    `./public/art/scenes/${name}.art`,
+    `./public/art/sprites/${name}.art`,
   ];
 
   for (const filePath of possiblePaths) {
@@ -162,7 +161,9 @@ async function testAsset(name, expectedType) {
         console.log(`  Legend entries: ${Object.keys(mapData.legend).length}`);
         console.log(`  Legend details:`);
         Object.entries(mapData.legend).forEach(([key, entry]) => {
-          console.log(`    "${key}": ${entry.kind} "${entry.name}" (solid: ${entry.solid}) -> ${entry.asset}`);
+          console.log(
+            `    "${key}": ${entry.kind} "${entry.name}" (solid: ${entry.solid}) -> ${entry.asset}`
+          );
         });
         break;
 
@@ -172,7 +173,9 @@ async function testAsset(name, expectedType) {
         console.log(`  Layers: ${materialData.layers.length}`);
         console.log(`  Layer details:`);
         materialData.layers.forEach((layer, i) => {
-          console.log(`    Layer ${i}: ${layer.layer} ${layer.position} (x: ${layer.x || 0})`);
+          console.log(
+            `    Layer ${i}: ${layer.layer} ${layer.position} (x: ${layer.x || 0})`
+          );
           console.log(`      Lines: ${layer.lines.length}`);
           console.log(`      Content preview:`);
           layer.lines.slice(0, 3).forEach((line, j) => {
@@ -188,11 +191,15 @@ async function testAsset(name, expectedType) {
         const spriteData = asset.data;
         console.log(`  Frames: ${spriteData.frames.length}`);
         console.log(`  Loop: ${spriteData.defaults.loop || false}`);
-        console.log(`  Default duration: ${spriteData.defaults.duration || 'none'}`);
+        console.log(
+          `  Default duration: ${spriteData.defaults.duration || 'none'}`
+        );
         console.log(`  Frame details:`);
         spriteData.frames.forEach((frame, i) => {
           console.log(`    Frame ${i}: ${frame.lines.length} lines`);
-          console.log(`      Meta: duration=${frame.meta.duration || 'default'}, sound=${frame.meta.sound || 'none'}`);
+          console.log(
+            `      Meta: duration=${frame.meta.duration || 'default'}, sound=${frame.meta.sound || 'none'}`
+          );
           console.log(`      Content preview (first 3 lines):`);
           frame.lines.slice(0, 3).forEach((line, j) => {
             const lineStr = line.join('');
@@ -202,7 +209,9 @@ async function testAsset(name, expectedType) {
             console.log(`        ... (${frame.lines.length - 3} more lines)`);
           }
           // Show frame dimensions
-          const frameWidth = Math.max(...frame.lines.map(line => line.length));
+          const frameWidth = Math.max(
+            ...frame.lines.map((line) => line.length)
+          );
           const frameHeight = frame.lines.length;
           console.log(`      Frame dimensions: ${frameWidth}×${frameHeight}`);
         });

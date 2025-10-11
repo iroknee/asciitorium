@@ -2,7 +2,11 @@ import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
-import { AssetManager, type MapAsset, type LegendEntry } from '../core/AssetManager';
+import {
+  AssetManager,
+  type MapAsset,
+  type LegendEntry,
+} from '../core/AssetManager';
 import type { GameWorld } from '../core/GameWorld';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
@@ -277,7 +281,10 @@ export class MapView extends Component {
       this.legend = this.gameWorld.getLegend();
       // DEBUG: Log legend loading
       if (this.legend && this.legend['b']) {
-        console.log('Legend loaded from GameWorld, bone entry:', this.legend['b']);
+        console.log(
+          'Legend loaded from GameWorld, bone entry:',
+          this.legend['b']
+        );
       }
     }
 
@@ -356,7 +363,7 @@ export class MapView extends Component {
                 char,
                 legendEntry,
                 visible: legendEntry.visible,
-                displayChar
+                displayChar,
               });
             }
           }
@@ -655,7 +662,7 @@ export class MapView extends Component {
   }
 
   private extractMapName(src: string): string {
-    // Handle old path format: "./art/maps/example/map.txt" -> "example"
+    // Handle old path format: "./art/maps/example/map.art" -> "example"
     if (src.includes('/maps/')) {
       const parts = src.split('/maps/');
       if (parts.length > 1) {

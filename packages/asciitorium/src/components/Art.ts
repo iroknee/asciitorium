@@ -1,10 +1,14 @@
 import { Component, ComponentProps } from '../core/Component';
 import { requestRender } from '../core/RenderScheduler';
 import { State } from '../core/State';
-import { AssetManager, type Asset, type SpriteAsset } from '../core/AssetManager';
+import {
+  AssetManager,
+  type Asset,
+  type SpriteAsset,
+} from '../core/AssetManager';
 
 export interface ArtOptions extends Omit<ComponentProps, 'children'> {
-  content?: string | State<string>; // raw text loaded from .txt (UTF-8) or reactive state
+  content?: string | State<string>; // raw text loaded from .art (UTF-8) or reactive state
   src?: string; // URL or file path to load ASCII art from
   children?: string | string[];
 }
@@ -83,10 +87,12 @@ export class Art extends Component {
       calculatedHeight = Math.max(1, maxH + borderPadding);
     } else {
       // For src loading, use placeholder
-      parsedFrames = [{
-        lines: [['L','o','a','d','i','n','g','.','.','.']],
-        meta: { duration: 0 }
-      }];
+      parsedFrames = [
+        {
+          lines: [['L', 'o', 'a', 'd', 'i', 'n', 'g', '.', '.', '.']],
+          meta: { duration: 0 },
+        },
+      ];
       parsedLoop = false;
       calculatedWidth = 12; // "Loading..." length + border
       calculatedHeight = 1 + borderPadding;
@@ -258,12 +264,12 @@ export class Art extends Component {
   }
 
   private extractSpriteName(src: string): string {
-    // Handle old path format: "./art/sprites/player.txt" -> "player"
+    // Handle old path format: "./art/sprites/player.art" -> "player"
     if (src.includes('/sprites/')) {
       const parts = src.split('/sprites/');
       if (parts.length > 1) {
         const spritePart = parts[1];
-        const spriteName = spritePart.replace('.txt', '');
+        const spriteName = spritePart.replace('.art', '');
         return spriteName;
       }
     }

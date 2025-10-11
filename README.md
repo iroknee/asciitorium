@@ -12,7 +12,7 @@ const userInput = new State('Hello, World!');
 
 const app = (
   <App>
-    <Art src="./art/asciitorium.txt" align="center" />
+    <Art src="./art/asciitorium.art" align="center" />
     <Line style={{ width: 60, align: 'center' }} />
     <Text style={{ align: 'center', gap: { bottom: 3 } }}>
       A UI framework for CLI and web
@@ -343,7 +343,7 @@ The `AssetManager` handles loading and parsing of game assets:
 
 ```bash
 art/maps/dungeon/
-├── map.txt          # ASCII map grid
+├── map.art          # ASCII map grid
 └── legend.json      # Tile definitions
 ```
 
