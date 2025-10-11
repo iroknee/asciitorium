@@ -23,13 +23,13 @@ figlet.text(phrase, { font }, (err, data) => {
   const outputPath = path.join(
     __dirname,
     '../public/art',
-    `${safeFilename}.txt`
+    `${safeFilename}.art`
   );
 
   fs.ensureDirSync(path.dirname(outputPath));
   fs.writeFileSync(outputPath, data);
 
-  console.log(`✅ Generated: art/${safeFilename}.txt`);
+  console.log(`✅ Generated: art/${safeFilename}.art`);
 });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

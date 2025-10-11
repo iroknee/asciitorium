@@ -176,7 +176,7 @@ Non-hostile characters for dialog/quests
 
 Each map should be organized in its own subdirectory containing:
 
-- `map.txt`: The ASCII map layout file
+- `map.art`: The ASCII map layout file
 - `legend.json`: Character-to-object mapping definitions
 - Optional: Additional map variants or related files
 
@@ -185,13 +185,13 @@ Example structure:
 ```text
 maps/
 ├─ underground/
-│  ├─ map.txt
+│  ├─ map.art
 │  └─ legend.json
 ├─ overworld/
-│  ├─ map.txt
+│  ├─ map.art
 │  └─ legend.json
 └─ example/
-   ├─ map.txt
+   ├─ map.art
    └─ legend.json
 ```
 
@@ -201,7 +201,7 @@ Maps are loaded by the `MapView` component using the `src` property:
 
 ```tsx
 <MapView
-  src="./art/maps/example/map.txt"
+  src="./art/maps/example/map.art"
   player={playerPosition}
   fogOfWar={false}
 />
@@ -243,9 +243,9 @@ node scripts/map-builder.js 30 20 castle-level --smooth
 
 - `width`: Map width in characters
 - `height`: Map height in characters
-- `directory-name`: Name of the directory to create (saved to `public/art/maps/<directory-name>/map.txt`)
+- `directory-name`: Name of the directory to create (saved to `public/art/maps/<directory-name>/map.art`)
 - `--smooth`: Use Unicode box-drawing characters for smoother appearance
 
-The script automatically generates a maze-like layout with corridors and rooms, creating both a `map.txt` file and the proper directory structure. This provides a perfect starting point for dungeon-style maps that you can then customize manually.
+The script automatically generates a maze-like layout with corridors and rooms, creating both a `map.art` file and the proper directory structure. This provides a perfect starting point for dungeon-style maps that you can then customize manually.
 
 Use the `example/` directory as a reference for proper file organization and legend format.

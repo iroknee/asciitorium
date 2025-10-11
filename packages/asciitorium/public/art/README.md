@@ -8,16 +8,16 @@ This directory contains ASCII art assets for a project. It is organized into sub
 public/art/
 ├─ maps/
 │ └─ example/
-│ ├─ map.txt
+│ ├─ map.art
 │ └─ legend.json
 │
 ├─ materials/
-│ ├─ brick-wall.txt
-│ └─ wooden-door.txt
+│ ├─ brick-wall.art
+│ └─ wooden-door.art
 │
 ├─ sprites/
-├─ giant-rat.txt
-└─ wolf.txt
+├─ giant-rat.art
+└─ wolf.art
 ```
 
 ## maps/
@@ -27,7 +27,7 @@ Contains map layouts and legends for game environments. Maps are typically store
 **Contents:**
 
 - `example/` - Sample map directory containing:
-  - `map.txt` - ASCII representation of the map layout
+  - `map.art` - ASCII representation of the map layout
   - `legend.json` - Character-to-entity mapping with visual assets, collision, and behavior definitions
 
 See [maps/README.md](maps/README.md) for detailed information on map file format, legend properties, and the entity/variant system.
@@ -38,10 +38,10 @@ Includes ASCII representations of various materials and textures that can be use
 
 **Contents:**
 
-- `brick-wall.txt` - ASCII pattern for brick wall textures
-- `bone.txt` - Ground-placed bone material with placement metadata
-- `door-on-brick.txt` - Door material overlaid on brick wall background
-- `wireframe-wall.txt` - Complex wireframe demonstrating layered perspective rendering
+- `brick-wall.art` - ASCII pattern for brick wall textures
+- `bone.art` - Ground-placed bone material with placement metadata
+- `door-on-brick.art` - Door material overlaid on brick wall background
+- `wireframe-wall.art` - Complex wireframe demonstrating layered perspective rendering
 
 See [materials/README.md](materials/README.md) for detailed information on material file format, layer system, placement properties, and the relationship between materials and legend entities.
 
@@ -51,7 +51,7 @@ Stores animated sprite files for characters, creatures, and other game entities.
 
 **Contents:**
 
-- `giant-rat.txt` - ASCII sprite for giant rat creature
-- `wolf.txt` - ASCII sprite for wolf creature
+- `giant-rat.art` - ASCII sprite for giant rat creature
+- `wolf.art` - ASCII sprite for wolf creature
 
 Sprites are referenced in map legends via the `asset` property and can be combined with entity types to define interactive game objects.

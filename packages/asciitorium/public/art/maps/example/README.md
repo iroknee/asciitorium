@@ -4,12 +4,12 @@ This folder demonstrates how to create a basic game level map for asciitorium.
 
 ## Contents
 
-- `example.txt`: The ASCII map layout showing a dungeon with rooms and corridors
+- `example.art`: The ASCII map layout showing a dungeon with rooms and corridors
 - `legend.json`: Maps characters in the map to materials and sprites
 
 ## Map Example
 
-Here's a portion of the example map (`example.txt`):
+Here's a portion of the example map (`example.art`):
 
 ```text
 ╭───────────────────────────────────┬───╮
@@ -57,6 +57,6 @@ The `legend.json` file defines what each character represents:
 - **name**: Descriptive name for the object
 - **solid**: Whether the object blocks movement (`true`/`false`)
 - **tag**: Optional category for gameplay logic (e.g., `"door"`, `"enemy"`)
-- **asset**: Reference to the visual asset file to use for rendering (all asset files assumed to end in .txt)
+- **asset**: Reference to the visual asset file to use for rendering (all asset files assumed to end in .art)
 
 Use this example as a reference for organizing your own maps, materials, and sprites in asciitorium.

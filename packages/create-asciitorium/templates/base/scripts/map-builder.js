@@ -20,7 +20,7 @@ function parseArgs() {
   if (filteredArgs.length !== 3) {
     console.error('Usage: node map-builder.js <width> <height> <directory-name> [--smooth]')
     console.error('Example: node map-builder.js 10 10 dungeon-level-1 --smooth')
-    console.error('Maps will be saved to public/art/maps/<directory-name>/map.txt')
+    console.error('Maps will be saved to public/art/maps/<directory-name>/map.art')
     console.error('Use --smooth flag to enable Unicode box drawing characters')
     process.exit(1)
   }
@@ -41,7 +41,7 @@ function parseArgs() {
 
   // Construct the full path to the map directory
   const mapDir = path.join(process.cwd(), '../public/art/maps', directoryName)
-  const fullPath = path.join(mapDir, 'map.txt')
+  const fullPath = path.join(mapDir, 'map.art')
 
   return { width, height, filename: fullPath, mapDir, smooth }
 }

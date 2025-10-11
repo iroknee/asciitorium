@@ -4,7 +4,7 @@ This directory contains ASCII art representations of various materials and textu
 
 ## Contents
 
-- `wireframe.txt`: A complex wireframe pattern demonstrating layered first-person perspective rendering
+- `wireframe.art`: A complex wireframe pattern demonstrating layered first-person perspective rendering
 
 ## Material File Format
 
@@ -19,7 +19,7 @@ Materials use paragraph markers (`¶`) to separate different layers or variants,
 
 ### Example Material
 
-Here's a section from `wireframe.txt` showing the layered format:
+Here's a section from `wireframe.art` showing the layered format:
 
 ```text
 § {"kind":"material","usage":"first-person"}
@@ -43,7 +43,7 @@ Here's a section from `wireframe.txt` showing the layered format:
 
 ### Example with Placement
 
-Here's an example from `bone.txt` showing placement for ground materials:
+Here's an example from `bone.art` showing placement for ground materials:
 
 ```text
 § {"kind":"material","usage":"first-person","placement":"ground"}
@@ -116,7 +116,7 @@ Materials are referenced in map legends through the `asset` property:
 }
 ```
 
-The system will load the corresponding `wireframe.txt` file and render the appropriate layer based on the viewing context and distance.
+The system will load the corresponding `wireframe.art` file and render the appropriate layer based on the viewing context and distance.
 
 ## Relationship with Legend Entities
 
@@ -138,7 +138,7 @@ The architecture separates visual presentation (materials) from gameplay behavio
 
 ### Example: Door Material + Entity
 
-**Material file** (`door-wooden.txt`):
+**Material file** (`door-wooden.art`):
 
 ```text
 § {"kind":"material","usage":"first-person","placement":"scenery","onEnterSound":"door-open.mp3","onExitSound":"door-close.mp3"}
@@ -181,7 +181,7 @@ This design allows:
 
 Ground materials can also use `onEnterSound` for footstep sounds:
 
-**Material file** (`puddle.txt`):
+**Material file** (`puddle.art`):
 
 ```text
 § {"kind":"material","usage":"first-person","placement":"ground","onEnterSound":"splash.mp3"}
