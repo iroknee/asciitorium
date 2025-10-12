@@ -9,6 +9,7 @@ import {
   PerfMonitor,
   State,
   Keybind,
+  Line,
 } from './index';
 
 import {
@@ -26,7 +27,7 @@ import {
 } from './examples';
 
 // Main state for component selection with persistence
-const selectedComponent = new PersistentState('Art', 'demo-selected-component');
+const selectedComponent = new PersistentState('Art', 'selected-example');
 
 // State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(false);
@@ -68,16 +69,16 @@ const togglePerfMonitor = () => {
 
 const app = (
   <App font="PrintChar21" height={42}>
-    <Keybind
-      keyBinding="p"
-      action={togglePerfMonitor}
-      global
-    />
+    <Keybind keyBinding="p" action={togglePerfMonitor} global />
 
-    {/* <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/> */}
+    <Art src="title" style={{ align: 'center', gap: 0 }} />
+    <Text align="center" gap={1}>
+      an ascii ui + game engine for web and cli
+    </Text>
+    <Line />
     <Row style={{ height: 'fill' }}>
       <Select
-        label="Components"
+        label="Examples"
         style={{
           width: '30%',
           height: 'fill',

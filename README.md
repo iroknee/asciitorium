@@ -15,7 +15,7 @@ const app = (
     <Art src="./art/asciitorium.art" align="center" />
     <Line style={{ width: 60, align: 'center' }} />
     <Text style={{ align: 'center', gap: { bottom: 3 } }}>
-      A UI framework for CLI and web
+      ascii ui + game engine for web and cli
     </Text>
 
     <TextInput

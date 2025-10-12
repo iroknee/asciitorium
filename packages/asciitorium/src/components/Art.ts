@@ -120,11 +120,13 @@ export class Art extends Component {
         .then((spriteAsset) => {
           this.isLoading = false;
           this.loadError = undefined;
+          // Calculate dimensions from sprite frames
+          const { maxW, maxH } = measureFrames(spriteAsset.frames);
           // Wrap in Asset format for updateContentFromAsset
           const asset = {
             kind: 'sprite' as const,
-            width: 0, // Will be calculated
-            height: 0, // Will be calculated
+            width: maxW,
+            height: maxH,
             data: spriteAsset,
           };
           this.updateContentFromAsset(asset);
