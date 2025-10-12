@@ -1,5 +1,4 @@
 import { loadArt } from './environment';
-import { State } from './State';
 
 // Asset type definitions
 export interface LegendEntry {
