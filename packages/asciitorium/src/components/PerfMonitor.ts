@@ -24,8 +24,8 @@ export class PerfMonitor extends Component {
 
     super({
       ...options,
-      width: options.width ?? options.style?.width ?? estimatedWidth,
-      align: options.align ?? 'right',
+      width: estimatedWidth,
+      position: options.position ?? { y: 0, x: 0 },
       label: 'Stats',
     });
 

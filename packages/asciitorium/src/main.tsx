@@ -16,7 +16,6 @@ import {
   ButtonExample,
   FormExample,
   ModalExample,
-  MultiSelectExample,
   LayoutSizingExample,
   ScrollableTextExample,
   TabsExample,
@@ -52,7 +51,6 @@ const app = (
         <Option value={FormExample}>Form</Option>
         <Option value={ModalExample}>Modal</Option>
         <Option value={DungeonCrawlerExample}>Dungeon Crawler</Option>
-        <Option value={MultiSelectExample}>MultiSelect</Option>
         <Option value={LayoutSizingExample}>LayoutSizing</Option>
         <Option value={ScrollableTextExample}>ScrollableText</Option>
         <Option value={SlidersExample}>Sliders</Option>
