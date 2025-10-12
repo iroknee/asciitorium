@@ -115,20 +115,23 @@ export class Art extends Component {
       this.src = options.src;
       this.isLoading = true;
 
-      // Start async loading using AssetManager - dimensions will come from AssetManager
-      AssetManager.getAsset(options.src)
-        .then((asset) => {
+      // Start async loading using AssetManager
+      AssetManager.getSprite(options.src)
+        .then((spriteAsset) => {
           this.isLoading = false;
           this.loadError = undefined;
-          if (asset.kind === 'sprite') {
-            this.updateContentFromAsset(asset);
-          } else {
-            throw new Error(`Expected sprite but got ${asset.kind}`);
-          }
+          // Wrap in Asset format for updateContentFromAsset
+          const asset = {
+            kind: 'sprite' as const,
+            width: 0, // Will be calculated
+            height: 0, // Will be calculated
+            data: spriteAsset,
+          };
+          this.updateContentFromAsset(asset);
           requestRender();
           this.forceRenderIfNeeded();
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load ASCII art';
           this.updateContent(`Error: ${this.loadError}`);

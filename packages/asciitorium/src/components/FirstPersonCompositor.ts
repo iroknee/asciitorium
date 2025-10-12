@@ -36,29 +36,38 @@ const DEFAULT_SPRITE_POSITIONS: Record<string, number> = {
 };
 
 export class FirstPersonCompositor {
-  private materialCache: Map<string, MaterialAsset> = new Map();
-
   constructor() {
-    // No longer needs a scene parameter
+    // No longer needs a scene parameter or local cache
   }
 
   private getSpriteKey(layer: string, position: string): string {
     return `${layer}-${position}`;
   }
 
-  // Load a material asset by name and cache it
+  // Load a material asset by name using AssetManager's State cache
   private async loadMaterial(assetName: string): Promise<MaterialAsset | null> {
-    // Check cache first
-    if (this.materialCache.has(assetName)) {
-      return this.materialCache.get(assetName)!;
-    }
-
     try {
       // Extract material name from asset path (e.g., "material/brick-wall" -> "brick-wall")
       const materialName = assetName.replace(/^material\//, '');
-      const materialAsset = await AssetManager.getMaterial(materialName);
-      this.materialCache.set(assetName, materialAsset);
-      return materialAsset;
+
+      // Get material State from AssetManager (cached automatically)
+      const materialState = AssetManager.getMaterialState(materialName);
+
+      // If already loaded, return immediately
+      if (materialState.value !== null) {
+        return materialState.value;
+      }
+
+      // Otherwise wait for it to load
+      return new Promise((resolve) => {
+        const checkLoaded = (material: MaterialAsset | null) => {
+          if (material !== null) {
+            materialState.unsubscribe(checkLoaded);
+            resolve(material);
+          }
+        };
+        materialState.subscribe(checkLoaded);
+      });
     } catch (error) {
       console.error(`Failed to load material "${assetName}":`, error);
       return null;

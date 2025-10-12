@@ -1,4 +1,5 @@
 import { loadArt } from './environment';
+import { State } from './State';
 
 // Asset type definitions
 export interface LegendEntry {
@@ -71,79 +72,113 @@ export interface SpriteAsset {
 }
 
 export class AssetManager {
-  static async getAsset(name: string): Promise<Asset> {
-    // Try to detect asset type and load it
-    const possiblePaths = [
-      { path: `art/maps/${name}/map.art`, kind: 'map' as const },
-      { path: `art/materials/${name}.art`, kind: 'material' as const },
-      { path: `art/scenes/${name}.art`, kind: 'material' as const },
-      { path: `art/sprites/${name}.art`, kind: 'sprite' as const },
-    ];
+  // State caches for reactive asset loading
+  private static mapStateCache: Map<string, State<MapAsset | null>> = new Map();
+  private static materialStateCache: Map<string, State<MaterialAsset | null>> = new Map();
 
-    for (const { path, kind } of possiblePaths) {
-      try {
-        const content = await loadArt(path);
-
-        // Validate the content matches the expected asset type
-        if (kind === 'map') {
-          const asset = await this.loadMapAsset(name);
-          return {
-            kind: 'map',
-            width: this.calculateMapWidth(asset),
-            height: asset.mapData.length,
-            data: asset,
-          };
-        } else if (kind === 'material') {
-          const asset = this.parseMaterialData(content);
-          return {
-            kind: 'material',
-            width: this.calculateMaterialWidth(asset),
-            height: this.calculateMaterialHeight(asset),
-            data: asset,
-          };
-        } else if (kind === 'sprite') {
-          const asset = this.parseSpriteData(content);
-          return {
-            kind: 'sprite',
-            width: this.calculateSpriteWidth(asset),
-            height: this.calculateSpriteHeight(asset),
-            data: asset,
-          };
-        }
-      } catch (error) {
-        // Continue to next possibility if this one fails
-        continue;
-      }
+  static getMapState(name: string): State<MapAsset | null> {
+    // Check cache first - return same State instance every time
+    if (this.mapStateCache.has(name)) {
+      return this.mapStateCache.get(name)!;
     }
 
-    throw new Error(
-      `Asset "${name}" not found in any supported format (map, material, sprite)`
-    );
+    // Create new State starting with null (loading)
+    const state = new State<MapAsset | null>(null);
+    this.mapStateCache.set(name, state);
+
+    // Start async load
+    this.loadMapAsset(name)
+      .then((mapAsset) => {
+        state.value = mapAsset;
+      })
+      .catch((error) => {
+        console.error(`Failed to load map "${name}":`, error);
+        // Keep as null on error
+      });
+
+    return state;
   }
 
-  // Legacy methods for backward compatibility
-  static async getMap(name: string): Promise<MapAsset> {
-    const asset = await this.getAsset(name);
-    if (asset.kind !== 'map') {
-      throw new Error(`Asset "${name}" is not a map`);
+  static getMaterialState(name: string): State<MaterialAsset | null> {
+    // Check cache first - return same State instance every time
+    if (this.materialStateCache.has(name)) {
+      return this.materialStateCache.get(name)!;
     }
-    return asset.data as MapAsset;
+
+    // Create new State starting with null (loading)
+    const state = new State<MaterialAsset | null>(null);
+    this.materialStateCache.set(name, state);
+
+    // Start async load
+    this.loadMaterialAsset(name)
+      .then((materialAsset) => {
+        state.value = materialAsset;
+      })
+      .catch((error) => {
+        console.error(`Failed to load material "${name}":`, error);
+        // Keep as null on error
+      });
+
+    return state;
+  }
+
+  // Legacy methods for backward compatibility (non-reactive)
+  // These use the State cache internally, so they benefit from caching
+  static async getMap(name: string): Promise<MapAsset> {
+    const state = this.getMapState(name);
+
+    // If already loaded, return immediately
+    if (state.value !== null) {
+      return state.value;
+    }
+
+    // Otherwise wait for it to load
+    return new Promise((resolve, reject) => {
+      const checkLoaded = (mapAsset: MapAsset | null) => {
+        if (mapAsset !== null) {
+          state.unsubscribe(checkLoaded);
+          resolve(mapAsset);
+        }
+      };
+      state.subscribe(checkLoaded);
+
+      // Add timeout to reject if loading takes too long
+      setTimeout(() => {
+        state.unsubscribe(checkLoaded);
+        reject(new Error(`Timeout loading map "${name}"`));
+      }, 10000); // 10 second timeout
+    });
   }
 
   static async getMaterial(name: string): Promise<MaterialAsset> {
-    const asset = await this.getAsset(name);
-    if (asset.kind !== 'material') {
-      throw new Error(`Asset "${name}" is not a material`);
+    const state = this.getMaterialState(name);
+
+    // If already loaded, return immediately
+    if (state.value !== null) {
+      return state.value;
     }
-    return asset.data as MaterialAsset;
+
+    // Otherwise wait for it to load
+    return new Promise((resolve, reject) => {
+      const checkLoaded = (materialAsset: MaterialAsset | null) => {
+        if (materialAsset !== null) {
+          state.unsubscribe(checkLoaded);
+          resolve(materialAsset);
+        }
+      };
+      state.subscribe(checkLoaded);
+
+      // Add timeout to reject if loading takes too long
+      setTimeout(() => {
+        state.unsubscribe(checkLoaded);
+        reject(new Error(`Timeout loading material "${name}"`));
+      }, 10000); // 10 second timeout
+    });
   }
 
   static async getSprite(name: string): Promise<SpriteAsset> {
-    const asset = await this.getAsset(name);
-    if (asset.kind !== 'sprite') {
-      throw new Error(`Asset "${name}" is not a sprite`);
-    }
-    return asset.data as SpriteAsset;
+    // Sprites don't have State cache yet, use direct loading
+    return this.loadSpriteAsset(name);
   }
 
   // Dimension calculation methods

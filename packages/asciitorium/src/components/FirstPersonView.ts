@@ -141,6 +141,11 @@ export class FirstPersonView extends Component {
         this.cachedView = null; // Invalidate cache
         requestRender();
       });
+      // Subscribe to map state changes (for initial load and hot-reload)
+      this.gameWorld.getMapState().subscribe(() => {
+        this.cachedView = null; // Invalidate cache when map data changes
+        requestRender();
+      });
     } else if (isState(this.playerSource)) {
       (this.playerSource as State<Player>).subscribe(() => {
         this.cachedView = null; // Invalidate cache
@@ -375,6 +380,12 @@ export class FirstPersonView extends Component {
     const player = this.player;
 
     if (!map || !map.map || !player) {
+      return this.buffer;
+    }
+
+    // In GameWorld mode, don't cache view if GameWorld isn't ready yet
+    if (this.gameWorld && !this.gameWorld.isReady()) {
+      // GameWorld still loading - don't render or cache anything yet
       return this.buffer;
     }
 

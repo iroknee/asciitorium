@@ -13,10 +13,8 @@ export interface GameWorldOptions {
 }
 
 export class GameWorld {
-  private mapData: string[] = [];
-  private legend: Record<string, LegendEntry> = {};
+  private mapState: State<MapAsset | null>;
   private playerState: State<Player>;
-  private isLoadedFlag: boolean = false;
   private previousPosition: { x: number; y: number } | null = null;
 
   constructor(options: GameWorldOptions) {
@@ -30,23 +28,8 @@ export class GameWorld {
     this.playerState = new State<Player>(initialPos);
     this.previousPosition = { x: initialPos.x, y: initialPos.y };
 
-    // Start async initialization
-    this.initialize(options.mapName).catch((error) => {
-      console.error('Failed to initialize GameWorld:', error);
-    });
-  }
-
-  private async initialize(mapName: string): Promise<void> {
-    try {
-      const mapAsset: MapAsset = await AssetManager.getMap(mapName);
-
-      this.mapData = mapAsset.mapData;
-      this.legend = mapAsset.legend;
-      this.isLoadedFlag = true;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`Failed to load map "${mapName}": ${message}`);
-    }
+    // Get reactive map state from AssetManager (cached, automatically loads)
+    this.mapState = AssetManager.getMapState(options.mapName);
   }
 
   // Read-only access methods
@@ -58,31 +41,36 @@ export class GameWorld {
     return this.playerState.value;
   }
 
+  getMapState(): State<MapAsset | null> {
+    return this.mapState;
+  }
+
   getMapData(): string[] {
-    return this.mapData;
+    return this.mapState.value?.mapData ?? [];
   }
 
   getLegend(): Record<string, LegendEntry> {
-    return this.legend;
+    return this.mapState.value?.legend ?? {};
   }
 
   isReady(): boolean {
-    return this.isLoadedFlag;
+    return this.mapState.value !== null;
   }
 
   // Legend interpretation methods
   getLegendEntry(char: string): LegendEntry | undefined {
-    return this.legend[char];
+    return this.getLegend()[char];
   }
 
   getCharAt(x: number, y: number): string | undefined {
-    if (y < 0 || y >= this.mapData.length) return undefined;
-    if (x < 0 || x >= this.mapData[y].length) return undefined;
-    return this.mapData[y][x];
+    const mapData = this.getMapData();
+    if (y < 0 || y >= mapData.length) return undefined;
+    if (x < 0 || x >= mapData[y].length) return undefined;
+    return mapData[y][x];
   }
 
   isSolidChar(char: string): boolean {
-    const entry = this.legend[char];
+    const entry = this.getLegend()[char];
     return entry?.solid ?? false;
   }
 
@@ -169,8 +157,9 @@ export class GameWorld {
     direction: Direction
   ): boolean {
     const player = this.getPlayer();
-    const mapHeight = this.mapData.length;
-    const mapWidth = mapHeight > 0 ? this.mapData[0].length : 0;
+    const mapData = this.getMapData();
+    const mapHeight = mapData.length;
+    const mapWidth = mapHeight > 0 ? mapData[0].length : 0;
 
     if (mapWidth === 0 || mapHeight === 0) return false;
 

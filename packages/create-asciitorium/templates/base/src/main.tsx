@@ -1,6 +1,5 @@
 import {
   App,
-  Art,
   Select,
   Switch,
   Row,
@@ -8,6 +7,7 @@ import {
   PerfMonitor,
   State,
   Keybind,
+  PersistentState
 } from 'asciitorium';
 
 import {
@@ -21,13 +21,13 @@ import {
   ArtExample,
   SlidersExample,
   ScrollableTextExample,
-  FirstPersonViewExample,
+  GameWorldExample,
 } from 'asciitorium/examples';
 
 // Main state for component selection with persistence
-const selectedComponent = new State('Art');
+const selectedComponent = new PersistentState('Art', 'demo-selected-component');
 
-// State for PerfMonitor visibility (P toggle)
+// State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(false);
 
 // Component list for navigation
@@ -37,7 +37,7 @@ const componentList = [
   'CelticBorder',
   'Form',
   'Modal',
-  'FirstPersonView',
+  'GameWorld',
   'MultiSelect',
   'LayoutSizing',
   'ScrollableText',
@@ -52,7 +52,7 @@ const examples = {
   CelticBorder: CelticBorderExample,
   Form: FormExample,
   Modal: ModalExample,
-  FirstPersonView: FirstPersonViewExample,
+  GameWorld: GameWorldExample,
   MultiSelect: MultiSelectExample,
   LayoutSizing: LayoutSizingExample,
   ScrollableText: ScrollableTextExample,
@@ -66,13 +66,10 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App>
+  <App font="PrintChar21" height={42}>
     <Keybind keyBinding="p" action={togglePerfMonitor} global />
 
-    <Art
-      src={'./art/asciitorium.art'}
-      style={{ align: 'center', gap: { bottom: 2 } }}
-    />
+    {/* <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/> */}
     <Row style={{ height: 'fill' }}>
       <Select
         label="Components"

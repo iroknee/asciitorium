@@ -1,0 +1,29 @@
+{
+  "legend": [
+    {
+      "chars": ["╭", "╮", "╯", "╰", "│", "─", "├", "┤", "┬", "┴", "╷", "╵", "╶", "╴"],
+      "kind": "material",
+      "name": "wall",
+      "solid": true,
+      "asset": "material/wall-brick"
+    },
+    {
+      "chars": ["o"],
+      "kind": "material",
+      "name": "door",
+      "solid": false,
+      "entity": "door",
+      "asset": "material/door-wooden"
+    },
+    {
+      "chars": ["b"],
+      "kind": "material",
+      "name": "bone",
+      "solid": false,
+      "visible": false,
+      "entity": "item",
+      "variant": "bone",
+      "asset": "material/bone"
+    }
+  ]
+}

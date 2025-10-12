@@ -126,13 +126,17 @@ export class MapView extends Component {
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
 
-    // Subscribe to gameWorld player state and get legend if using GameWorld
+    // Subscribe to gameWorld player state and map state if using GameWorld
     if (this.gameWorld) {
       this.gameWorld.getPlayerState().subscribe(() => {
         requestRender();
       });
-      // Get legend from GameWorld for visibility checks
-      this.legend = this.gameWorld.getLegend();
+      // Subscribe to map state changes (for initial load and hot-reload)
+      this.gameWorld.getMapState().subscribe((mapAsset) => {
+        // Update legend when map data changes
+        this.legend = mapAsset?.legend ?? {};
+        requestRender();
+      });
     }
 
     // Handle src loading after super() call
