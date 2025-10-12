@@ -18,9 +18,16 @@ export class RowLayout implements Layout {
     const borderPad = parent.border ? 1 : 0;
     const innerHeight = parent.height - 2 * borderPad;
     const innerWidth = parent.width - 2 * borderPad;
-    
-    // Calculate total gap width consumed by all children
-    const totalGapWidth = children.reduce((sum, child) => {
+
+    // Filter out invisible children (width=0, height=0, or visible=false)
+    const visibleChildren = children.filter(child => {
+      if (child.width === 0 || child.height === 0) return false;
+      if (child.visible !== undefined && !child.visible) return false;
+      return true;
+    });
+
+    // Calculate total gap width consumed by visible children
+    const totalGapWidth = visibleChildren.reduce((sum, child) => {
       if (child.fixed) return sum;
       const gap = resolveGap(child.gap);
       return sum + gap.left + gap.right;
@@ -31,10 +38,10 @@ export class RowLayout implements Layout {
     // Adjust available width to account for gaps
     context.availableWidth = Math.max(0, context.availableWidth - totalGapWidth);
 
-    // First pass: resolve sizes for all children
-    for (const child of children) {
+    // First pass: resolve sizes for visible children
+    for (const child of visibleChildren) {
       if (child.fixed) continue;
-      
+
       // Resolve child size based on parent context
       child.resolveSize(context);
     }
@@ -43,7 +50,7 @@ export class RowLayout implements Layout {
 
     // Third pass: calculate total row width for alignment
     let totalRowWidth = 0;
-    for (const child of children) {
+    for (const child of visibleChildren) {
       if (child.fixed) continue;
       const gap = resolveGap(child.gap);
       totalRowWidth += gap.left + child.width + gap.right;
@@ -52,7 +59,7 @@ export class RowLayout implements Layout {
     // Fourth pass: determine starting position based on row alignment
     const rowAlign = this.options.align || 'left';
     let startX = borderPad;
-    
+
     if (typeof rowAlign === 'string') {
       if (rowAlign.includes('right') || rowAlign === 'right') {
         startX = borderPad + innerWidth - totalRowWidth;
@@ -69,10 +76,10 @@ export class RowLayout implements Layout {
       }
     }
 
-    // Fifth pass: position children
+    // Fifth pass: position visible children
     let currentX = startX;
 
-    for (const child of children) {
+    for (const child of visibleChildren) {
       if (child.fixed) continue;
 
       // Resolve child's gap to normalized format

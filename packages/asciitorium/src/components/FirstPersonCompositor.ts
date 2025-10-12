@@ -50,24 +50,8 @@ export class FirstPersonCompositor {
       // Extract material name from asset path (e.g., "material/brick-wall" -> "brick-wall")
       const materialName = assetName.replace(/^material\//, '');
 
-      // Get material State from AssetManager (cached automatically)
-      const materialState = AssetManager.getMaterialState(materialName);
-
-      // If already loaded, return immediately
-      if (materialState.value !== null) {
-        return materialState.value;
-      }
-
-      // Otherwise wait for it to load
-      return new Promise((resolve) => {
-        const checkLoaded = (material: MaterialAsset | null) => {
-          if (material !== null) {
-            materialState.unsubscribe(checkLoaded);
-            resolve(material);
-          }
-        };
-        materialState.subscribe(checkLoaded);
-      });
+      // Get material from AssetManager (cached automatically, returns Promise)
+      return AssetManager.getMaterial(materialName);
     } catch (error) {
       console.error(`Failed to load material "${assetName}":`, error);
       return null;

@@ -7,7 +7,6 @@ import {
   type MapAsset,
   type LegendEntry,
 } from '../core/AssetManager';
-import type { GameWorld } from '../core/GameWorld';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 
@@ -22,28 +21,8 @@ export interface MapData {
 }
 
 export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
-  // New: GameWorld integration (preferred)
-  gameWorld?: GameWorld;
-
-  // Legacy: Direct map/player props (for backward compatibility)
-  content?:
-    | MapData
-    | string[]
-    | string
-    | State<MapData>
-    | State<string[]>
-    | State<string>;
-  map?:
-    | MapData
-    | string[]
-    | string
-    | State<MapData>
-    | State<string[]>
-    | State<string>; // deprecated, use content
-  src?: string; // Asset name to load map from (e.g., 'example' loads art/maps/example/)
-  player?: Player | State<Player>;
-
-  // Common options (work with both modes)
+  mapAsset: State<MapAsset | null>;
+  player: State<Player>;
   fogOfWar?: boolean | State<boolean>;
   exploredTiles?: Set<string> | State<Set<string>>;
   fogCharacter?: string;
@@ -51,29 +30,15 @@ export interface MapViewOptions extends Omit<ComponentProps, 'children'> {
 
 export class MapView extends Component {
   focusable = true;
-  private gameWorld?: GameWorld;
-  private contentSource:
-    | MapData
-    | string[]
-    | string
-    | State<MapData>
-    | State<string[]>
-    | State<string>;
-  private playerSource?: Player | State<Player>;
+  private mapAssetState: State<MapAsset | null>;
+  private playerState: State<Player>;
   private fogOfWarSource: boolean | State<boolean>;
   private exploredTilesSource?: Set<string> | State<Set<string>>;
   private fogCharacter: string;
-  private isLoading = false;
-  private loadError?: string;
-  private src?: string;
-  private legend?: Record<string, LegendEntry>;
 
   constructor(options: MapViewOptions) {
     const {
-      gameWorld,
-      content,
-      map,
-      src,
+      mapAsset,
       player,
       fogOfWar,
       exploredTiles,
@@ -82,36 +47,6 @@ export class MapView extends Component {
       ...componentProps
     } = options;
 
-    // Handle src prop for async loading
-    let actualContent:
-      | MapData
-      | string[]
-      | string
-      | State<MapData>
-      | State<string[]>
-      | State<string>;
-    let isLoadingSrc = false;
-
-    if (gameWorld) {
-      // GameWorld mode: use empty content initially
-      actualContent = 'Loading...';
-    } else if (src) {
-      isLoadingSrc = true;
-      actualContent = 'Loading...';
-    } else {
-      // Use content if provided, fall back to map for backward compatibility
-      const contentOrMap = content ?? map;
-      if (!contentOrMap) {
-        throw new Error(
-          'MapView requires either gameWorld, src, content, or map parameter'
-        );
-      }
-      actualContent = contentOrMap;
-    }
-
-    // Default dimensions if not specified
-    const defaultHeight = 10;
-
     super({
       ...componentProps,
       width: options.width ?? options.style?.width ?? 'fill',
@@ -119,94 +54,37 @@ export class MapView extends Component {
       border: options.border ?? options.style?.border ?? true,
     });
 
-    this.gameWorld = gameWorld;
-    this.contentSource = actualContent;
-    this.playerSource = player;
+    this.mapAssetState = mapAsset;
+    this.playerState = player;
     this.fogOfWarSource = fogOfWar ?? false;
     this.exploredTilesSource = exploredTiles;
     this.fogCharacter = fogCharacter ?? ' ';
 
-    // Subscribe to gameWorld player state and map state if using GameWorld
-    if (this.gameWorld) {
-      this.gameWorld.getPlayerState().subscribe(() => {
-        requestRender();
-      });
-      // Subscribe to map state changes (for initial load and hot-reload)
-      this.gameWorld.getMapState().subscribe((mapAsset) => {
-        // Update legend when map data changes
-        this.legend = mapAsset?.legend ?? {};
-        requestRender();
-      });
-    }
+    // Subscribe to player state changes
+    this.playerState.subscribe(() => {
+      requestRender();
+    });
 
-    // Handle src loading after super() call
-    if (isLoadingSrc && src) {
-      this.src = src;
-      this.isLoading = true;
-
-      // Extract map name from src (handle both old path format and new asset name format)
-      const mapName = this.extractMapName(this.src);
-
-      // Start async loading using AssetManager
-      AssetManager.getMap(mapName)
-        .then((mapAsset) => {
-          this.isLoading = false;
-          this.loadError = undefined;
-          this.updateContentFromAsset(mapAsset);
-        })
-        .catch((error) => {
-          this.isLoading = false;
-          this.loadError = error.message || 'Failed to load map';
-          this.updateContent(`Error: ${this.loadError}`);
-        });
-    }
+    // Subscribe to map state changes (for initial load and hot-reload)
+    this.mapAssetState.subscribe(() => {
+      requestRender();
+    });
   }
 
-  get mapData(): MapData {
-    // GameWorld mode: get map from gameWorld
-    if (this.gameWorld) {
-      return { map: this.gameWorld.getMapData() };
-    }
+  get mapAsset(): MapAsset | null {
+    return this.mapAssetState.value;
+  }
 
-    // Legacy mode: get from contentSource
-    let rawMapData: any;
+  get mapData(): string[] {
+    return this.mapAsset?.mapData ?? [];
+  }
 
-    if (isState(this.contentSource)) {
-      rawMapData = (this.contentSource as State<any>).value;
-    } else {
-      rawMapData = this.contentSource;
-    }
-
-    // Convert to MapData format
-    if (typeof rawMapData === 'string') {
-      // If it's a string (loaded text file), split by lines
-      return { map: rawMapData.split('\n') };
-    } else if (Array.isArray(rawMapData)) {
-      // If it's a string array
-      return { map: rawMapData };
-    } else if (rawMapData && rawMapData.map) {
-      // If it's already MapData
-      return rawMapData;
-    } else {
-      // Fallback to empty map
-      return { map: [] };
-    }
+  get legend(): Record<string, LegendEntry> {
+    return this.mapAsset?.legend ?? {};
   }
 
   get player(): Player {
-    // GameWorld mode: get player from gameWorld
-    if (this.gameWorld) {
-      return this.gameWorld.getPlayer();
-    }
-
-    // Legacy mode: get from playerSource
-    if (!this.playerSource) {
-      return { x: 0, y: 0, direction: 'north' };
-    }
-
-    return isState(this.playerSource)
-      ? (this.playerSource as State<Player>).value
-      : (this.playerSource as Player);
+    return this.playerState.value;
   }
 
   get exploredTiles(): Set<string> {
@@ -273,16 +151,12 @@ export class MapView extends Component {
   draw(): string[][] {
     super.draw(); // fills buffer, draws borders, etc.
 
-    const map = this.mapData;
+    const mapData = this.mapData;
     const player = this.player;
+    const legend = this.legend;
 
-    if (!map || !map.map || !player) {
+    if (!mapData || mapData.length === 0) {
       return this.buffer;
-    }
-
-    // Update legend from GameWorld if available (handles async loading)
-    if (this.gameWorld && this.gameWorld.isReady()) {
-      this.legend = this.gameWorld.getLegend();
     }
 
     const innerWidth = this.width - (this.border ? 2 : 0);
@@ -296,8 +170,8 @@ export class MapView extends Component {
     const centerY = Math.floor(innerHeight / 2);
 
     // Calculate map bounds
-    const mapHeight = map.map.length;
-    const mapWidth = mapHeight > 0 ? map.map[0].length : 0;
+    const mapHeight = mapData.length;
+    const mapWidth = mapHeight > 0 ? mapData[0].length : 0;
 
     if (mapWidth === 0 || mapHeight === 0) {
       return this.buffer;
@@ -327,7 +201,7 @@ export class MapView extends Component {
 
     // Draw the map portion
     for (let mapY = startMapY; mapY < endMapY; mapY++) {
-      const line = map.map[mapY];
+      const line = mapData[mapY];
       if (!line) continue;
 
       const bufferY = mapY - startMapY + offsetY;
@@ -348,8 +222,8 @@ export class MapView extends Component {
         } else {
           // Check legend visibility (defaults to true if not specified)
           let displayChar = char;
-          if (this.legend && this.legend[char]) {
-            const legendEntry = this.legend[char];
+          if (legend && legend[char]) {
+            const legendEntry = legend[char];
             // If visible is explicitly set to false, render as space
             if (legendEntry.visible === false) {
               displayChar = ' ';
@@ -402,265 +276,7 @@ export class MapView extends Component {
   }
 
   handleEvent(event: string): boolean {
-    // If using GameWorld, don't handle movement here (it's handled by GameWorld)
-    if (this.gameWorld) {
-      return false;
-    }
-
-    // Legacy mode: handle movement directly
-    const current = this.player;
-
-    switch (event) {
-      case 'ArrowUp':
-        // Move forward in current direction
-        this.movePlayerInDirection(current.direction);
-        break;
-      case 'ArrowDown':
-        // Move backward (opposite direction) while maintaining facing direction
-        this.movePlayerBackward();
-        break;
-      case 'ArrowLeft':
-        // Turn left
-        this.turnPlayer('left');
-        break;
-      case 'ArrowRight':
-        // Turn right
-        this.turnPlayer('right');
-        break;
-      default:
-        return false;
-    }
-
-    return true;
-  }
-
-  private movePlayerInDirection(direction: Direction): void {
-    const { dx, dy } = this.getDirectionVector(direction);
-    this.movePlayer(dx, dy);
-  }
-
-  private movePlayerBackward(): void {
-    const current = this.player;
-    const oppositeDirection = this.getOppositeDirection(current.direction);
-    const { dx, dy } = this.getDirectionVector(oppositeDirection);
-    // Move backward but keep facing the same direction
-    const newX = current.x + dx;
-    const newY = current.y + dy;
-    this.movePlayerToPosition(newX, newY, current.direction);
-  }
-
-  private turnPlayer(turn: 'left' | 'right'): void {
-    const current = this.player;
-    const newDirection = this.getNewDirection(current.direction, turn);
-    this.updatePosition(current.x, current.y, newDirection);
-  }
-
-  private getDirectionVector(direction: Direction): { dx: number; dy: number } {
-    switch (direction) {
-      case 'north':
-        return { dx: 0, dy: -1 };
-      case 'south':
-        return { dx: 0, dy: 1 };
-      case 'east':
-        return { dx: 2, dy: 0 };
-      case 'west':
-        return { dx: -2, dy: 0 };
-    }
-  }
-
-  private getOppositeDirection(direction: Direction): Direction {
-    switch (direction) {
-      case 'north':
-        return 'south';
-      case 'south':
-        return 'north';
-      case 'east':
-        return 'west';
-      case 'west':
-        return 'east';
-    }
-  }
-
-  private getNewDirection(
-    current: Direction,
-    turn: 'left' | 'right'
-  ): Direction {
-    const directions: Direction[] = ['north', 'east', 'south', 'west'];
-    const currentIndex = directions.indexOf(current);
-    const offset = turn === 'left' ? -1 : 1;
-    const newIndex = (currentIndex + offset + 4) % 4;
-    return directions[newIndex];
-  }
-
-  private movePlayerToPosition(
-    newX: number,
-    newY: number,
-    direction: Direction
-  ): void {
-    const map = this.mapData;
-
-    if (!map || !map.map || map.map.length === 0) return;
-
-    const mapLines = map.map;
-    const mapWidth = mapLines.length > 0 ? mapLines[0].length : 0;
-    const mapHeight = mapLines.length;
-
-    const clampedX = Math.max(0, Math.min(mapWidth - 1, newX));
-    const clampedY = Math.max(0, Math.min(mapHeight - 1, newY));
-
-    // Check for collision with walls along the path
-    const isWall = (x: number, y: number) => {
-      if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
-        return true;
-      const char = mapLines[y][x];
-      const wallChars = [
-        '╭',
-        '╮',
-        '╯',
-        '╰',
-        '─',
-        '│',
-        '┬',
-        '┴',
-        '├',
-        '┤',
-        '┼',
-        '╷',
-        '╵',
-        '╴',
-        '╶',
-      ];
-      return wallChars.includes(char);
-    };
-
-    const current = this.player;
-    const dx = clampedX - current.x;
-    const dy = clampedY - current.y;
-
-    // Check intermediate positions - only for X movement (2 steps)
-    if (Math.abs(dx) === 2) {
-      const stepX = dx > 0 ? 1 : -1;
-      const midX = current.x + stepX;
-      const midY = current.y;
-      if (isWall(midX, midY)) {
-        return; // Can't move, stay in place
-      }
-    }
-
-    // Check final destination
-    if (isWall(clampedX, clampedY)) {
-      return; // Can't move, stay in place
-    }
-
-    this.updatePosition(clampedX, clampedY, direction);
-  }
-
-  private movePlayer(dx: number, dy: number): void {
-    const current = this.player;
-    const map = this.mapData;
-
-    if (!map || !map.map || map.map.length === 0) return;
-
-    const mapLines = map.map;
-    const mapWidth = mapLines.length > 0 ? mapLines[0].length : 0;
-    const mapHeight = mapLines.length;
-
-    const newX = Math.max(0, Math.min(mapWidth - 1, current.x + dx));
-    const newY = Math.max(0, Math.min(mapHeight - 1, current.y + dy));
-
-    // Check for collision with walls along the path
-    const isWall = (x: number, y: number) => {
-      if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
-        return true;
-      const char = mapLines[y][x];
-      // Check for box drawing characters used in the map
-      const wallChars = [
-        '╭',
-        '╮',
-        '╯',
-        '╰',
-        '─',
-        '│',
-        '┬',
-        '┴',
-        '├',
-        '┤',
-        '┼',
-        '╷',
-        '╵',
-        '╴',
-        '╶',
-      ];
-      return wallChars.includes(char);
-    };
-
-    // Check intermediate positions - only for X movement (2 steps)
-    if (Math.abs(dx) === 2) {
-      const stepX = dx > 0 ? 1 : -1;
-      const midX = current.x + stepX;
-      const midY = current.y;
-      if (isWall(midX, midY)) {
-        return; // Can't move, stay in place
-      }
-    }
-
-    // Check final destination
-    if (isWall(newX, newY)) {
-      return; // Can't move, stay in place
-    }
-
-    // Determine direction based on movement for forward movement
-    let direction: Direction = current.direction;
-    if (dx > 0) direction = 'east';
-    else if (dx < 0) direction = 'west';
-    else if (dy > 0) direction = 'south';
-    else if (dy < 0) direction = 'north';
-
-    this.updatePosition(newX, newY, direction);
-  }
-
-  private updatePosition(x: number, y: number, direction: Direction): void {
-    if (isState(this.playerSource)) {
-      (this.playerSource as State<Player>).value = { x, y, direction };
-    } else {
-      // If it's not a State, we can't update it - this would be a programming error
-      console.warn(
-        'MapView player is not a State object, cannot update player position'
-      );
-    }
-  }
-
-  private updateContent(newContent: string): void {
-    // Update the content source with the loaded data
-    this.contentSource = newContent;
-
-    // Request a re-render
-    requestRender();
-  }
-
-  private updateContentFromAsset(mapAsset: MapAsset): void {
-    // Update the content source with the loaded map data
-    this.contentSource = { map: mapAsset.mapData };
-
-    // Store legend for visibility checks
-    this.legend = mapAsset.legend;
-
-    // Request a re-render
-    requestRender();
-  }
-
-  private extractMapName(src: string): string {
-    // Handle old path format: "./art/maps/example/map.art" -> "example"
-    if (src.includes('/maps/')) {
-      const parts = src.split('/maps/');
-      if (parts.length > 1) {
-        const mapPart = parts[1];
-        const mapName = mapPart.split('/')[0];
-        return mapName;
-      }
-    }
-
-    // Handle direct asset name: "example" -> "example"
-    return src;
+    // MapView is display-only, movement handled by GridMovement
+    return false;
   }
 }

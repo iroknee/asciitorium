@@ -12,9 +12,16 @@ export class ColumnLayout implements Layout {
     const borderPad = parent.border ? 1 : 0;
     const innerWidth = parent.width - 2 * borderPad;
     const innerHeight = parent.height - 2 * borderPad;
-    
-    // Calculate total gap height consumed by all children
-    const totalGapHeight = children.reduce((sum, child) => {
+
+    // Filter out invisible children (width=0, height=0, or visible=false)
+    const visibleChildren = children.filter(child => {
+      if (child.width === 0 || child.height === 0) return false;
+      if (child.visible !== undefined && !child.visible) return false;
+      return true;
+    });
+
+    // Calculate total gap height consumed by visible children
+    const totalGapHeight = visibleChildren.reduce((sum, child) => {
       if (child.fixed) return sum;
       const gap = resolveGap(child.gap);
       return sum + gap.top + gap.bottom;
@@ -25,20 +32,20 @@ export class ColumnLayout implements Layout {
     // Adjust available height to account for gaps
     context.availableHeight = Math.max(0, context.availableHeight - totalGapHeight);
 
-    // First pass: resolve sizes for all children
-    for (const child of children) {
+    // First pass: resolve sizes for visible children
+    for (const child of visibleChildren) {
       if (child.fixed) continue;
-      
+
       // Resolve child size based on parent context
       child.resolveSize(context);
     }
 
     // Second pass: sizing is now handled via width/height props and 'fill' values
 
-    // Third pass: position children
+    // Third pass: position visible children
     let currentY = borderPad;
 
-    for (const child of children) {
+    for (const child of visibleChildren) {
       if (child.fixed) {
         continue; // Skip positioning if component is fixed
       }
@@ -63,11 +70,11 @@ export class ColumnLayout implements Layout {
       const originalHeight = child.getOriginalHeight();
       if (originalHeight === 'fill') {
         // Calculate space needed by remaining components
-        const currentIndex = children.indexOf(child);
+        const currentIndex = visibleChildren.indexOf(child);
         let spaceNeededByLaterComponents = 0;
-        
-        for (let i = currentIndex + 1; i < children.length; i++) {
-          const laterChild = children[i];
+
+        for (let i = currentIndex + 1; i < visibleChildren.length; i++) {
+          const laterChild = visibleChildren[i];
           if (laterChild.fixed) continue;
           
           const laterGap = resolveGap(laterChild.gap);

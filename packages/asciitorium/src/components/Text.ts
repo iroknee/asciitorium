@@ -99,15 +99,41 @@ export class Text extends Component {
   public resolveSize(context: SizeContext): void {
     // First, let the base class resolve any explicitly set dimensions
     super.resolveSize(context);
-    
+
     // Handle width auto-sizing if not explicitly set
     if (this.getOriginalWidth() === undefined) {
       const contentLength = this.getContentAsString().length;
       const borderAdjustment = this.border ? 2 : 0;
-      
-      // Always use content-based sizing for Text components unless width is explicitly set
-      // This prevents unwanted fill behavior in layout contexts
-      this.width = Math.max(1, contentLength + borderAdjustment);
+
+      // Account for this component's own left/right gaps when calculating max width
+      let gapLeft = 0;
+      let gapRight = 0;
+      if (this.gap) {
+        if (Array.isArray(this.gap)) {
+          // Array format: [top, right, bottom, left] or [vertical, horizontal]
+          if (this.gap.length === 4) {
+            gapLeft = this.gap[3];
+            gapRight = this.gap[1];
+          } else if (this.gap.length === 2) {
+            gapLeft = gapRight = this.gap[1];
+          }
+        } else if (typeof this.gap === 'object') {
+          // Object format: { left, right, ... }
+          gapLeft = this.gap.left || 0;
+          gapRight = this.gap.right || 0;
+        } else if (typeof this.gap === 'number') {
+          // Single number: applies to all sides
+          gapLeft = gapRight = this.gap;
+        }
+      }
+      const gapAdjustment = gapLeft + gapRight;
+
+      // Size based on content, but respect parent's available width minus our gaps
+      const contentBasedWidth = contentLength + borderAdjustment;
+      const maxWidth = Math.max(1, context.availableWidth - gapAdjustment);
+
+      // Use the smaller of content width or available width
+      this.width = Math.max(1, Math.min(contentBasedWidth, maxWidth));
     }
     
     // Then calculate height based on the resolved width if height is not explicitly set

@@ -4,7 +4,7 @@ import { isState, loadArt } from '../core/environment';
 import { requestRender } from '../core/RenderScheduler';
 import { Direction, Player, MapData } from './MapView';
 import { FirstPersonCompositor } from './FirstPersonCompositor';
-import type { GameWorld } from '../core/GameWorld';
+import type { MapAsset, LegendEntry } from '../core/AssetManager';
 
 interface RaycastOffset {
   dx: number;
@@ -47,79 +47,27 @@ const RAYCAST_CUBES: Record<Direction, RaycastCube> = {
 };
 
 export interface FirstPersonViewOptions extends Omit<ComponentProps, 'children'> {
-  // New: GameWorld integration (preferred)
-  gameWorld?: GameWorld;
-
-  // Legacy: Direct map/player props (for backward compatibility)
-  content?:
-    | MapData
-    | string[]
-    | string
-    | State<MapData>
-    | State<string[]>
-    | State<string>;
-  src?: string; // URL or file path to load map from
-  player?: Player | State<Player>;
-
-  // Common options (work with both modes)
-  scene?: string | State<string>; // Scene name
+  mapAsset: State<MapAsset | null>;
+  player: State<Player>;
   transparency?: boolean; // When true, spaces won't overwrite existing content (useful for debugging)
 }
 
 export class FirstPersonView extends Component {
   focusable = false; // First person view is display-only
-  private gameWorld?: GameWorld;
-  private contentSource:
-    | MapData
-    | string[]
-    | string
-    | State<MapData>
-    | State<string[]>
-    | State<string>;
-  private playerSource?: Player | State<Player>;
+  private mapAssetState: State<MapAsset | null>;
+  private playerState: State<Player>;
   private compositor: FirstPersonCompositor;
-  private isLoading = false;
-  private loadError?: string;
-  private src?: string;
   private transparency: boolean;
   private cachedView: string[][] | null = null;
 
   constructor(options: FirstPersonViewOptions) {
     const {
-      gameWorld,
-      content,
-      src,
+      mapAsset,
       player,
-      scene, // Deprecated but kept for backward compatibility
       transparency,
       style,
       ...componentProps
     } = options;
-
-    // Handle src prop for async loading
-    let actualContent:
-      | MapData
-      | string[]
-      | string
-      | State<MapData>
-      | State<string[]>
-      | State<string>;
-    let isLoadingSrc = false;
-
-    if (gameWorld) {
-      // GameWorld mode: use empty content initially
-      actualContent = 'Loading...';
-    } else if (src) {
-      isLoadingSrc = true;
-      actualContent = 'Loading...';
-    } else {
-      if (!content) {
-        throw new Error(
-          'FirstPersonView requires either gameWorld, src, or content parameter'
-        );
-      }
-      actualContent = content;
-    }
 
     super({
       ...componentProps,
@@ -128,128 +76,53 @@ export class FirstPersonView extends Component {
       border: options.border ?? options.style?.border ?? true,
     });
 
-    this.gameWorld = gameWorld;
-    this.contentSource = actualContent;
-    this.playerSource = player;
+    this.mapAssetState = mapAsset;
+    this.playerState = player;
     this.transparency = transparency ?? false;
 
     this.compositor = new FirstPersonCompositor();
 
     // Subscribe to player state changes
-    if (this.gameWorld) {
-      this.gameWorld.getPlayerState().subscribe(() => {
-        this.cachedView = null; // Invalidate cache
-        requestRender();
-      });
-      // Subscribe to map state changes (for initial load and hot-reload)
-      this.gameWorld.getMapState().subscribe(() => {
-        this.cachedView = null; // Invalidate cache when map data changes
-        requestRender();
-      });
-    } else if (isState(this.playerSource)) {
-      (this.playerSource as State<Player>).subscribe(() => {
-        this.cachedView = null; // Invalidate cache
-        requestRender();
-      });
-    }
+    this.playerState.subscribe(() => {
+      this.cachedView = null; // Invalidate cache
+      requestRender();
+    });
 
-    // Handle src loading after super() call
-    if (isLoadingSrc && src) {
-      this.src = src;
-      this.isLoading = true;
-
-      // Start async loading
-      loadArt(this.src)
-        .then((loadedContent) => {
-          this.isLoading = false;
-          this.loadError = undefined;
-          this.updateContent(loadedContent);
-        })
-        .catch((error) => {
-          this.isLoading = false;
-          this.loadError = error.message || 'Failed to load map';
-          this.updateContent(`Error: ${this.loadError}`);
-        });
-    }
+    // Subscribe to map state changes (for initial load and hot-reload)
+    this.mapAssetState.subscribe(() => {
+      this.cachedView = null; // Invalidate cache when map data changes
+      requestRender();
+    });
   }
 
-  get mapData(): MapData {
-    // GameWorld mode: get map from gameWorld
-    if (this.gameWorld) {
-      return { map: this.gameWorld.getMapData() };
-    }
+  get mapAsset(): MapAsset | null {
+    return this.mapAssetState.value;
+  }
 
-    // Legacy mode: get from contentSource
-    let rawMapData: any;
+  get mapData(): string[] {
+    return this.mapAsset?.mapData ?? [];
+  }
 
-    if (isState(this.contentSource)) {
-      rawMapData = (this.contentSource as State<any>).value;
-    } else {
-      rawMapData = this.contentSource;
-    }
-
-    // Convert to MapData format
-    if (typeof rawMapData === 'string') {
-      // If it's a string (loaded text file), split by lines
-      return { map: rawMapData.split('\n') };
-    } else if (Array.isArray(rawMapData)) {
-      // If it's a string array
-      return { map: rawMapData };
-    } else if (rawMapData && rawMapData.map) {
-      // If it's already MapData
-      return rawMapData;
-    } else {
-      // Fallback to empty map
-      return { map: [] };
-    }
+  get legend(): Record<string, LegendEntry> {
+    return this.mapAsset?.legend ?? {};
   }
 
   get player(): Player {
-    // GameWorld mode: get player from gameWorld
-    if (this.gameWorld) {
-      return this.gameWorld.getPlayer();
-    }
-
-    // Legacy mode: get from playerSource
-    if (!this.playerSource) {
-      return { x: 0, y: 0, direction: 'north' };
-    }
-
-    return isState(this.playerSource)
-      ? (this.playerSource as State<Player>).value
-      : (this.playerSource as Player);
+    return this.playerState.value;
   }
 
-  private isWall(x: number, y: number, mapLines: string[]): boolean {
-    // GameWorld mode: use legend-based collision detection
-    if (this.gameWorld) {
-      return this.gameWorld.isSolid(x, y);
+  private isSolid(x: number, y: number): boolean {
+    const mapData = this.mapData;
+    const legend = this.legend;
+
+    if (y < 0 || y >= mapData.length || x < 0 || x >= mapData[y].length) {
+      return true; // Out of bounds = solid
     }
 
-    // Legacy mode: hardcoded wall detection
-    if (y < 0 || y >= mapLines.length || x < 0 || x >= mapLines[y].length)
-      return true;
-    const char = mapLines[y][x];
-    // Check for box drawing characters used in the map
-    const wallChars = [
-      '╭',
-      '╮',
-      '╯',
-      '╰',
-      '─',
-      '│',
-      '┬',
-      '┴',
-      '├',
-      '┤',
-      '┼',
-      '╷',
-      '╵',
-      '╴',
-      '╶',
-      'o', // Include 'o' as a wall character
-    ];
-    return wallChars.includes(char);
+    const char = mapData[y][x];
+    const legendEntry = legend[char];
+
+    return legendEntry?.solid ?? false;
   }
 
   /**
@@ -327,12 +200,11 @@ export class FirstPersonView extends Component {
     middle: { left: string | null; center: string | null; right: string | null };
     far: { left: string | null; center: string | null; right: string | null };
   } {
-    const map = this.mapData;
+    const mapData = this.mapData;
     const player = this.player;
-    const mapLines = map.map;
 
     // If no map data, return null for all positions
-    if (!mapLines || mapLines.length === 0) {
+    if (!mapData || mapData.length === 0) {
       return {
         here: { left: null, center: null, right: null },
         near: { left: null, center: null, right: null },
@@ -360,9 +232,9 @@ export class FirstPersonView extends Component {
         const checkY = player.y + offset.dy;
 
         // Get the character at this position
-        if (checkY >= 0 && checkY < mapLines.length &&
-            checkX >= 0 && checkX < mapLines[checkY].length) {
-          result[depth][position] = mapLines[checkY][checkX];
+        if (checkY >= 0 && checkY < mapData.length &&
+            checkX >= 0 && checkX < mapData[checkY].length) {
+          result[depth][position] = mapData[checkY][checkX];
         } else {
           // Out of bounds - treat as solid wall character (use a default)
           result[depth][position] = '█';
@@ -376,21 +248,12 @@ export class FirstPersonView extends Component {
   draw(): string[][] {
     super.draw(); // fills buffer, draws borders, etc.
 
-    const map = this.mapData;
-    const player = this.player;
+    const mapData = this.mapData;
+    const legend = this.legend;
 
-    if (!map || !map.map || !player) {
+    if (!mapData || mapData.length === 0) {
       return this.buffer;
     }
-
-    // In GameWorld mode, don't cache view if GameWorld isn't ready yet
-    if (this.gameWorld && !this.gameWorld.isReady()) {
-      // GameWorld still loading - don't render or cache anything yet
-      return this.buffer;
-    }
-
-    // Get legend (GameWorld mode or empty for legacy mode)
-    const legend = this.gameWorld?.getLegend() ?? {};
 
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
@@ -425,14 +288,5 @@ export class FirstPersonView extends Component {
     }
 
     return this.buffer;
-  }
-
-  private updateContent(newContent: string): void {
-    // Update the content source with the loaded data
-    this.contentSource = newContent;
-    this.cachedView = null; // Invalidate cache
-
-    // Request a re-render
-    requestRender();
   }
 }

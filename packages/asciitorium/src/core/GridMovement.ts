@@ -3,33 +3,21 @@ import { State } from './State';
 import type { Direction, Player } from '../components/MapView';
 import { SoundManager } from './SoundManager';
 
-export interface GameWorldOptions {
-  mapName: string;
-  initialPosition?: {
-    x: number;
-    y: number;
-    direction: Direction;
-  };
+export interface GridMovementOptions {
+  mapAsset: State<MapAsset | null>;
+  player: State<Player>;
 }
 
-export class GameWorld {
+export class GridMovement {
   private mapState: State<MapAsset | null>;
   private playerState: State<Player>;
   private previousPosition: { x: number; y: number } | null = null;
 
-  constructor(options: GameWorldOptions) {
-    // Initialize player state with default or provided position
-    const initialPos = options.initialPosition ?? {
-      x: 0,
-      y: 0,
-      direction: 'north' as Direction,
-    };
-
-    this.playerState = new State<Player>(initialPos);
-    this.previousPosition = { x: initialPos.x, y: initialPos.y };
-
-    // Get reactive map state from AssetManager (cached, automatically loads)
-    this.mapState = AssetManager.getMapState(options.mapName);
+  constructor(options: GridMovementOptions) {
+    // Use the provided map asset and player state
+    this.mapState = options.mapAsset;
+    this.playerState = options.player;
+    this.previousPosition = { x: options.player.value.x, y: options.player.value.y };
   }
 
   // Read-only access methods

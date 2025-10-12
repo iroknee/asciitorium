@@ -1,5 +1,5 @@
 export { ArtExample } from './ArtExample';
-export { GameWorldExample } from './GameWorldExample';
+export { DungeonCrawlerExample } from './DungeonCrawlerExample';
 export { ButtonExample } from './ButtonExample';
 export { CelticBorderExample } from './CelticBorderExample';
 export { FormExample } from './FormExample';

@@ -72,113 +72,45 @@ export interface SpriteAsset {
 }
 
 export class AssetManager {
-  // State caches for reactive asset loading
-  private static mapStateCache: Map<string, State<MapAsset | null>> = new Map();
-  private static materialStateCache: Map<string, State<MaterialAsset | null>> = new Map();
+  // Promise caches to prevent duplicate loading
+  private static mapCache: Map<string, Promise<MapAsset>> = new Map();
+  private static materialCache: Map<string, Promise<MaterialAsset>> = new Map();
+  private static spriteCache: Map<string, Promise<SpriteAsset>> = new Map();
 
-  static getMapState(name: string): State<MapAsset | null> {
-    // Check cache first - return same State instance every time
-    if (this.mapStateCache.has(name)) {
-      return this.mapStateCache.get(name)!;
-    }
-
-    // Create new State starting with null (loading)
-    const state = new State<MapAsset | null>(null);
-    this.mapStateCache.set(name, state);
-
-    // Start async load
-    this.loadMapAsset(name)
-      .then((mapAsset) => {
-        state.value = mapAsset;
-      })
-      .catch((error) => {
-        console.error(`Failed to load map "${name}":`, error);
-        // Keep as null on error
-      });
-
-    return state;
-  }
-
-  static getMaterialState(name: string): State<MaterialAsset | null> {
-    // Check cache first - return same State instance every time
-    if (this.materialStateCache.has(name)) {
-      return this.materialStateCache.get(name)!;
-    }
-
-    // Create new State starting with null (loading)
-    const state = new State<MaterialAsset | null>(null);
-    this.materialStateCache.set(name, state);
-
-    // Start async load
-    this.loadMaterialAsset(name)
-      .then((materialAsset) => {
-        state.value = materialAsset;
-      })
-      .catch((error) => {
-        console.error(`Failed to load material "${name}":`, error);
-        // Keep as null on error
-      });
-
-    return state;
-  }
-
-  // Legacy methods for backward compatibility (non-reactive)
-  // These use the State cache internally, so they benefit from caching
   static async getMap(name: string): Promise<MapAsset> {
-    const state = this.getMapState(name);
-
-    // If already loaded, return immediately
-    if (state.value !== null) {
-      return state.value;
+    // Check cache first - return same Promise every time
+    if (this.mapCache.has(name)) {
+      return this.mapCache.get(name)!;
     }
 
-    // Otherwise wait for it to load
-    return new Promise((resolve, reject) => {
-      const checkLoaded = (mapAsset: MapAsset | null) => {
-        if (mapAsset !== null) {
-          state.unsubscribe(checkLoaded);
-          resolve(mapAsset);
-        }
-      };
-      state.subscribe(checkLoaded);
-
-      // Add timeout to reject if loading takes too long
-      setTimeout(() => {
-        state.unsubscribe(checkLoaded);
-        reject(new Error(`Timeout loading map "${name}"`));
-      }, 10000); // 10 second timeout
-    });
+    // Start async load and cache the promise
+    const promise = this.loadMapAsset(name);
+    this.mapCache.set(name, promise);
+    return promise;
   }
 
   static async getMaterial(name: string): Promise<MaterialAsset> {
-    const state = this.getMaterialState(name);
-
-    // If already loaded, return immediately
-    if (state.value !== null) {
-      return state.value;
+    // Check cache first - return same Promise every time
+    if (this.materialCache.has(name)) {
+      return this.materialCache.get(name)!;
     }
 
-    // Otherwise wait for it to load
-    return new Promise((resolve, reject) => {
-      const checkLoaded = (materialAsset: MaterialAsset | null) => {
-        if (materialAsset !== null) {
-          state.unsubscribe(checkLoaded);
-          resolve(materialAsset);
-        }
-      };
-      state.subscribe(checkLoaded);
-
-      // Add timeout to reject if loading takes too long
-      setTimeout(() => {
-        state.unsubscribe(checkLoaded);
-        reject(new Error(`Timeout loading material "${name}"`));
-      }, 10000); // 10 second timeout
-    });
+    // Start async load and cache the promise
+    const promise = this.loadMaterialAsset(name);
+    this.materialCache.set(name, promise);
+    return promise;
   }
 
   static async getSprite(name: string): Promise<SpriteAsset> {
-    // Sprites don't have State cache yet, use direct loading
-    return this.loadSpriteAsset(name);
+    // Check cache first - return same Promise every time
+    if (this.spriteCache.has(name)) {
+      return this.spriteCache.get(name)!;
+    }
+
+    // Start async load and cache the promise
+    const promise = this.loadSpriteAsset(name);
+    this.spriteCache.set(name, promise);
+    return promise;
   }
 
   // Dimension calculation methods
