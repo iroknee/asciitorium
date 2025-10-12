@@ -5,20 +5,8 @@ import type { State } from '../core/State';
  * Properties for Switch component
  */
 export interface SwitchProps extends ComponentProps {
-  /** State that determines which component to display */
-  selectedKey: State<string>;
-
-  /** Map of keys to components (instances, classes, or factory functions) */
-  componentMap: Record<
-    string,
-    Component | (() => Component) | (new (...args: any[]) => Component)
-  >;
-
-  /** Optional fallback component when selectedKey doesn't match any map entry */
-  fallback?:
-    | Component
-    | (() => Component)
-    | (new (...args: any[]) => Component);
+  /** State that holds the component to display (instance, class, or factory) */
+  component: State<Component | (() => Component) | (new (...args: any[]) => Component)>;
 }
 
 /**
@@ -69,48 +57,33 @@ function makeComponent(entry: any): Component | undefined {
 }
 
 /**
- * Switch component that displays different child components based on a reactive state key.
+ * Switch component that displays a child component based on a reactive state.
  *
- * Inspired by React's conditional rendering patterns and switch/case statements,
- * this component provides a clean way to dynamically switch between different
- * components based on a state value.
+ * Inspired by React's conditional rendering patterns, this component provides
+ * a clean way to dynamically switch between different components based on state.
  *
  * Example usage:
  * ```tsx
- * const currentView = new State('dashboard');
+ * const currentView = new State<any>(DashboardComponent);
  *
- * <Switch
- *   selectedKey={currentView}
- *   componentMap={{
- *     'dashboard': DashboardComponent,
- *     'settings': () => new SettingsComponent({}),
- *     'profile': new ProfileComponent({})
- *   }}
- *   fallback={NotFoundComponent}
- * />
+ * <Switch component={currentView} />
  * ```
  */
 export class Switch extends Component {
-  private selectedKey: State<string>;
-  private componentMap: Record<string, any>;
-  private fallbackComponent?: any;
+  private componentState: State<any>;
 
   constructor(props: SwitchProps) {
     super(props);
 
-    this.selectedKey = props.selectedKey;
-    this.componentMap = props.componentMap;
-    this.fallbackComponent = props.fallback;
-
-    // Subscribe to state changes and update content
-    this.bind(this.selectedKey, () => this.updateContent());
+    this.componentState = props.component;
+    this.bind(this.componentState, () => this.updateContent());
 
     // Set initial content
     this.updateContent();
   }
 
   /**
-   * Updates the displayed content based on the current selectedKey value.
+   * Updates the displayed content based on the current state value.
    * Clears existing children and creates the appropriate component.
    */
   private updateContent(): void {
@@ -121,19 +94,12 @@ export class Switch extends Component {
       this.removeChild(child);
     }
 
-    // Get the current component entry
-    const key = this.selectedKey.value;
-    const entry = this.componentMap[key];
+    const entry = this.componentState.value;
 
     if (entry) {
       const component = makeComponent(entry);
       if (component) {
         this.addChild(component);
-      }
-    } else if (this.fallbackComponent) {
-      const fallbackComponent = makeComponent(this.fallbackComponent);
-      if (fallbackComponent) {
-        this.addChild(fallbackComponent);
       }
     }
 

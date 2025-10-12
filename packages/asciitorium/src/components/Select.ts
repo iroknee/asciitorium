@@ -1,41 +1,63 @@
 import { Component, ComponentProps } from '../core/Component';
 import { State } from '../core/State';
 import { ScrollableViewport } from '../core/ScrollableViewport';
+import { Option } from './Option';
 
-export interface SelectOptions extends ComponentProps {
-  items: string[];
-  selectedItem: State<string>;
+export interface SelectOptions<T = any> extends ComponentProps {
+  items?: string[];
+  selectedItem?: State<string>;
+  selected?: State<T>;
+  children?: Option<T>[];
 }
 
-export class Select extends Component {
+interface SelectItem<T = any> {
+  label: string;
+  value: T;
+}
+
+export class Select<T = any> extends Component {
   private scrollableViewport = new ScrollableViewport();
-  private readonly items: string[];
-  private readonly selectedItem: State<string>;
+  private readonly items: SelectItem<T>[];
+  private readonly selectedState: State<T>;
   private focusedIndex: number = 0;
   private selectedIndex: number = 0;
 
   focusable = true;
   hasFocus = false;
 
-  constructor(options: SelectOptions) {
+  constructor(options: SelectOptions<T>) {
     super({
       ...options,
       height: options.height ?? options.style?.height ?? 3,
       border: options.border ?? options.style?.border ?? true
     });
 
-    this.items = options.items;
-    this.selectedItem = options.selectedItem;
+    // Support both old API (items/selectedItem) and new API (children/selected)
+    if (options.children && options.children.length > 0) {
+      // New JSX-based API with Option children
+      this.items = options.children.map(child => ({
+        label: child.label,
+        value: child.value
+      }));
+      this.selectedState = options.selected!;
+    } else {
+      // Old API with string array
+      this.items = (options.items || []).map(item => ({
+        label: item,
+        value: item as unknown as T
+      }));
+      this.selectedState = options.selectedItem as unknown as State<T>;
+    }
 
     const initialSelectedIndex = Math.max(
       0,
-      this.items.findIndex((item) => item === this.selectedItem.value)
+      this.items.findIndex((item) => item.value === this.selectedState.value)
     );
     this.selectedIndex = initialSelectedIndex;
     this.focusedIndex = initialSelectedIndex;
 
-    this.bind(this.selectedItem, (value) => {
-      const index = this.items.indexOf(value);
+    this.bind(this.selectedState, (value) => {
+      const index = this.items.findIndex(item => item.value === value);
       if (index !== -1 && index !== this.selectedIndex) {
         this.selectedIndex = index;
         this.focusedIndex = index;
@@ -58,7 +80,7 @@ export class Select extends Component {
     // Selection (space/enter selects the focused item)
     if (event === ' ' || event === 'Enter') {
       this.selectedIndex = this.focusedIndex;
-      this.selectedItem.value = this.items[this.selectedIndex];
+      this.selectedState.value = this.items[this.selectedIndex].value;
     }
 
     // Return true if any state changed
@@ -79,8 +101,9 @@ export class Select extends Component {
     const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
 
     // Use ScrollableViewport to calculate scroll window
+    const itemLabels = this.items.map(item => item.label);
     const scrollWindow = this.scrollableViewport.calculateScrollWindow({
-      items: this.items,
+      items: itemLabels,
       totalCount: this.items.length,
       maxVisible,
       focusedIndex: this.focusedIndex
@@ -89,7 +112,7 @@ export class Select extends Component {
     const { startIdx: focusedStartIdx, visibleItems: focusedVisibleItems } = scrollWindow;
 
     // Draw items
-    focusedVisibleItems.forEach((item, i) => {
+    focusedVisibleItems.forEach((itemLabel, i) => {
       const y = borderPad + paddingTop + i * lineHeight;
       const x = borderPad;
       const itemIndex = focusedStartIdx + i;
@@ -103,13 +126,13 @@ export class Select extends Component {
         if (y > borderPad) {
           const topY = y - 1;
           buffer[topY][x + 2] = '╭';
-          for (let j = 3; j < item.length + 5; j++) {
+          for (let j = 3; j < itemLabel.length + 5; j++) {
             if (x + j < this.width - borderPad) {
               buffer[topY][x + j] = '─';
             }
           }
-          if (x + item.length + 3 < this.width - borderPad) {
-            buffer[topY][x + item.length + 5] = '╮';
+          if (x + itemLabel.length + 3 < this.width - borderPad) {
+            buffer[topY][x + itemLabel.length + 5] = '╮';
           }
         }
 
@@ -121,7 +144,7 @@ export class Select extends Component {
         buffer[y][x] = prefix[0];
         buffer[y][x + 1] = prefix[1];
         buffer[y][x + 2] = prefix[2];
-        const itemText = `  ${item} `;
+        const itemText = `  ${itemLabel} `;
         for (let j = 0; j < itemText.length; j++) {
           if (x + 2 + j < this.width - borderPad) {
             buffer[y][x + 2 + j] = itemText[j];
@@ -136,13 +159,13 @@ export class Select extends Component {
         if (y + 1 < this.height - borderPad) {
           const bottomY = y + 1;
           buffer[bottomY][x + 2] = '╰';
-          for (let j = 3; j < item.length + 5; j++) {
+          for (let j = 3; j < itemLabel.length + 5; j++) {
             if (x + j < this.width - borderPad) {
               buffer[bottomY][x + j] = '─';
             }
           }
-          if (x + item.length + 4 < this.width - borderPad) {
-            buffer[bottomY][x + item.length + 5] = '╯';
+          if (x + itemLabel.length + 4 < this.width - borderPad) {
+            buffer[bottomY][x + itemLabel.length + 5] = '╯';
           }
         }
       } else {
@@ -152,7 +175,7 @@ export class Select extends Component {
           prefix = ' > ';
         }
 
-        const line = `${prefix} ${item}`
+        const line = `${prefix} ${itemLabel}`
           .slice(0, this.width - 2 * borderPad)
           .padEnd(this.width - 2 * borderPad, ' ');
 

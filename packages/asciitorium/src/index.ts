@@ -17,6 +17,7 @@ export * from './components/Keybind';
 export * from './components/PerfMonitor';
 export * from './components/Line';
 export * from './components/Select';
+export * from './components/Option';
 export * from './components/MultiSelect';
 export * from './components/Tab';
 export * from './components/TabContainer';
