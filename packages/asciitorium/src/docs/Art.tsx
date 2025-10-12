@@ -1,9 +1,14 @@
 import { Art, Text, Column } from '../index';
 import { BaseStyle } from './constants';
 
-export function ArtExample() {
+/**
+ * Art Component Reference
+ *
+ * Displays ASCII art sprites loaded from the asset system.
+ */
+export function ArtDoc() {
   return (
-    <Column style={BaseStyle} label="ASCII Art Example">
+    <Column style={BaseStyle} label="Art Component">
       <Art gap={2} src="castle" align="center" />
       <Text width="75%" align="center" gap={2}>
         The Art component loads ASCII Art sprites using the AssetManager.

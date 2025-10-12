@@ -1,7 +1,12 @@
 import { Component, State, Button, Text, Fragment, ComponentStyle } from '../index';
 import { BaseStyle } from './constants';
 
-export const ModalExample = () => {
+/**
+ * Modal Component Reference
+ *
+ * Demonstrates overlay modals with visibility state and z-positioning.
+ */
+export const ModalDoc = () => {
   const showModal = new State(false);
   const modalMessage = new State('Modal is now visible!');
   const modalStyle: ComponentStyle = { width: 40, position: { x: 8, y: 8 }, border: true, align: "center", background: '.' };
@@ -32,7 +37,7 @@ export const ModalExample = () => {
   );
 
   return (
-    <Component style={BaseStyle} label="Modal Example">
+    <Component style={BaseStyle} label="Modal Component">
       <Text align="center" gap={{ top: 2 }}>Modal Visibility Test</Text>
 
       <Text align="center" gap={{ top: 1 }}>

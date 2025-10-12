@@ -1,7 +1,12 @@
 import { Component, TabContainer, Tab, Text, Button, State } from '../index';
 import { BaseStyle } from './constants';
 
-export function TabsExample() {
+/**
+ * TabContainer Component Reference
+ *
+ * Demonstrates tabbed navigation with keyboard controls.
+ */
+export function TabsDoc() {
   const selectedIndex = new State(0);
   const clickCount = new State(0);
   const clickCountText = new State(`Button clicked: ${clickCount.value} times`);
@@ -12,7 +17,7 @@ export function TabsExample() {
   });
 
   return (
-    <Component style={BaseStyle} label="TabContainer Example">
+    <Component style={BaseStyle} label="TabContainer Component">
       <TabContainer gap={4}
         selectedIndex={selectedIndex}
         hotkey='t'

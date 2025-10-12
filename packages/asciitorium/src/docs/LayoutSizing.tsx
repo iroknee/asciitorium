@@ -1,8 +1,13 @@
 import { Text, Component, Row, Column, Line } from '../index';
 import { BaseStyle } from './constants';
 
-export const LayoutSizingExample = () => (
-  <Component style={BaseStyle} label="Layout & Sizing Examples">
+/**
+ * Layout & Sizing Reference
+ *
+ * Demonstrates various layout patterns and sizing options.
+ */
+export const LayoutSizingDoc = () => (
+  <Component style={BaseStyle} label="Layout & Sizing">
       <Text width="100%" align="center" height={5} label="Header" border>
         100% width, fixed 5 height
       </Text>

@@ -51,7 +51,12 @@ const validateName = (name: string): ValidationResult => {
   return { isValid: true };
 };
 
-export const FormExample = () => {
+/**
+ * Form Components Reference
+ *
+ * Demonstrates form validation, TextInput, Select, and State management.
+ */
+export const FormDoc = () => {
   // Style dictionary for reusable component styles
   const styles = {
     fieldLabel: {
@@ -186,7 +191,7 @@ export const FormExample = () => {
 
   // UI
   return (
-    <Column style={BaseStyle} label="Form Example">
+    <Column style={BaseStyle} label="Form Components">
       {/* Name */}
       <Row style={styles.formRowWithTopGap}>
         <Text style={styles.fieldLabel}>Name:</Text>

@@ -39,8 +39,13 @@ const gridMovement = new GridMovement({
 // Fog of war: track tiles that have been explored
 const exploredTiles = new State(new Set<string>());
 
-export const DungeonCrawlerExample = () => (
-  <Column label="Dungeon Crawler Example" style={BaseStyle}>
+/**
+ * Dungeon Crawler Reference
+ *
+ * Demonstrates game development with MapView, FirstPersonView, and GridMovement.
+ */
+export const DungeonCrawlerDoc = () => (
+  <Column label="Dungeon Crawler" style={BaseStyle}>
     Global keybinds for movement - use GridMovement's methods
     <Keybind keyBinding="w" action={() => gridMovement.moveForward()} global />
     <Keybind keyBinding="s" action={() => gridMovement.moveBackward()} global />

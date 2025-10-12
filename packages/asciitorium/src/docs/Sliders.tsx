@@ -7,7 +7,12 @@ import {
   VerticalSlider,
 } from '../components/Sliders';
 
-export const SlidersExample = () => {
+/**
+ * Sliders Component Reference
+ *
+ * Demonstrates various slider styles and value binding.
+ */
+export const SlidersDoc = () => {
   const sharedValue = new State(50);
   const volumeValue = new State(75);
 

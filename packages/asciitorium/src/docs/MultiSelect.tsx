@@ -1,7 +1,12 @@
 import { Text, State, MultiSelect, Component, Row } from '../index';
 import { BaseStyle } from './constants';
 
-export const MultiSelectExample = () => {
+/**
+ * MultiSelect Component Reference
+ *
+ * Demonstrates multi-item selection with keyboard navigation.
+ */
+export const MultiSelectDoc = () => {
   const multiValue = new State(['Suspension', 'Brakes']);
   const displayText = new State(multiValue.value.join(', '));
 
@@ -28,7 +33,7 @@ export const MultiSelectExample = () => {
   ];
 
   return (
-    <Component style={BaseStyle} label="MultiSelect Example">
+    <Component style={BaseStyle} label="MultiSelect Component">
       <MultiSelect
         label="Car Parts"
         align="center"

@@ -7,7 +7,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
-        'examples/index': path.resolve(__dirname, 'src/examples/index.ts'),
+        'docs/index': path.resolve(__dirname, 'src/docs/index.ts'),
       },
       name: 'asciitorium',
       fileName: (format, entryName) => {

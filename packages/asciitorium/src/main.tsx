@@ -13,19 +13,19 @@ import {
 } from './index';
 
 import {
-  ButtonExample,
-  FormExample,
-  ModalExample,
-  LayoutSizingExample,
-  ScrollableTextExample,
-  TabsExample,
-  ArtExample,
-  SlidersExample,
-  DungeonCrawlerExample,
-} from './examples';
+  ButtonDoc,
+  FormDoc,
+  ModalDoc,
+  LayoutSizingDoc,
+  ScrollableTextDoc,
+  TabsDoc,
+  ArtDoc,
+  SlidersDoc,
+  DungeonCrawlerDoc,
+} from './docs';
 
 // Main state for component selection with persistence
-const selected = new State<any>(ArtExample);
+const selected = new State<any>(ArtDoc);
 
 // State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(false);
@@ -45,16 +45,16 @@ const app = (
     </Text>
     <Line />
     <Row height="fill">
-      <Select label="Examples" width="33%" height="fill" selected={selected}>
-        <Option value={ArtExample}>Art</Option>
-        <Option value={ButtonExample}>Button</Option>
-        <Option value={FormExample}>Form</Option>
-        <Option value={ModalExample}>Modal</Option>
-        <Option value={DungeonCrawlerExample}>Dungeon Crawler</Option>
-        <Option value={LayoutSizingExample}>LayoutSizing</Option>
-        <Option value={ScrollableTextExample}>ScrollableText</Option>
-        <Option value={SlidersExample}>Sliders</Option>
-        <Option value={TabsExample}>Tabs</Option>
+      <Select label="Docs" width="33%" height="fill" selected={selected}>
+        <Option value={ArtDoc}>Art</Option>
+        <Option value={ButtonDoc}>Button</Option>
+        <Option value={FormDoc}>Form</Option>
+        <Option value={ModalDoc}>Modal</Option>
+        <Option value={DungeonCrawlerDoc}>Dungeon Crawler</Option>
+        <Option value={LayoutSizingDoc}>Layout & Sizing</Option>
+        <Option value={ScrollableTextDoc}>Scrollable Text</Option>
+        <Option value={SlidersDoc}>Sliders</Option>
+        <Option value={TabsDoc}>Tabs</Option>
       </Select>
       <Switch width="fill" height="fill" component={selected} />
     </Row>

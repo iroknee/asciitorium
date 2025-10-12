@@ -24,8 +24,13 @@ You can scroll through this text using the arrow keys when this component has fo
 
 This is the end of the demonstration text. Try scrolling up and down to see the scroll indicators in action!`;
 
-export const ScrollableTextExample = () => (
-  <Column label="Scrollable Text Example" style={BaseStyle}>
+/**
+ * Scrollable Text Reference
+ *
+ * Demonstrates scrollable text with viewport management.
+ */
+export const ScrollableTextDoc = () => (
+  <Column label="Scrollable Text Component" style={BaseStyle}>
     <Text
       gap={2}
       align="center"
