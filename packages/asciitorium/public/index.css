@@ -12,20 +12,23 @@
 body {
   font-family: 'JetBrains Mono', sans-serif;
   margin: 0;
+  padding: 0;
   background: black;
   color: #2cd03a;
 
-  /* Center the screen both horizontally and vertically */
+  /* Center the screen horizontally, align to top vertically */
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh; /* Full viewport height */
+  align-items: flex-start;
+  min-height: 100vh; /* Full viewport height */
   width: 100vw; /* Full viewport width */
+  overflow: hidden; /* Prevent body scrollbars */
+  padding-top: 2rem; /* Small top margin */
 }
 
 #screen {
-  /* Use 90% of viewport dimensions to leave some margin */
-  width: 90vw;
+  /* Use viewport dimensions for responsive sizing */
+  width: 95vw;
   height: 90vh;
   margin: 0;
   padding: 0;
@@ -34,6 +37,10 @@ body {
   /* Ensure monospace font for proper character sizing */
   font-size: 16px; /* Base font size for character measurement */
   line-height: 1; /* Tight line spacing for ASCII art */
+
+  /* Center text content horizontally */
+  text-align: center;
+  white-space: pre; /* Preserve spaces and newlines */
 }
 
 .inverted {

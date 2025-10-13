@@ -37,7 +37,7 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21" width={80}>
+  <App font="PrintChar21" height={80}>
     <Keybind keyBinding="p" action={togglePerfMonitor} global />
 
     <Art src="title" align="center" />
