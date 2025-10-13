@@ -15,30 +15,26 @@ export const GettingStartedDoc = () => {
 
       <Art gap={1} src="castle" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 2, bottom: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2 }}>
         Asciitorium is an ASCII UI & game framework that runs in
-        both web browsers and terminals. It enables React-like development. 
+        both web browsers and terminals while enabling react-like development. 
         Important concepts include:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
         1. Components & States
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
         2. Layouts & Styles
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
         3. Keybindings & Navigation
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
         4. Game Controllers & Views
-      </Text>
-
-      <Text align="center" gap={{ top: 2 }}>
-        Select a component from the left menu to see it in action!
       </Text>
     </Column>
   );

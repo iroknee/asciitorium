@@ -7,13 +7,14 @@ import {
   Row,
   Text,
   PerfMonitor,
+  PersistentState,
   State,
   Keybind,
-  Line,
 } from './index';
 
 import {
   GettingStartedDoc,
+  ComponentsStatesDoc,
   ButtonDoc,
   FormDoc,
   ModalDoc,
@@ -25,8 +26,29 @@ import {
   DungeonCrawlerDoc,
 } from './docs';
 
+// Doc component mapping
+const docMap: Record<string, any> = {
+  'getting-started': GettingStartedDoc,
+  'components-states': ComponentsStatesDoc,
+  'art': ArtDoc,
+  'button': ButtonDoc,
+  'form': FormDoc,
+  'modal': ModalDoc,
+  'dungeon-crawler': DungeonCrawlerDoc,
+  'layout-sizing': LayoutSizingDoc,
+  'scrollable-text': ScrollableTextDoc,
+  'sliders': SlidersDoc,
+  'tabs': TabsDoc,
+};
+
 // Main state for component selection with persistence
-const selected = new State<any>(GettingStartedDoc);
+const selectedKey = new PersistentState<string>('getting-started', 'selected-doc');
+const selected = new State<any>(docMap[selectedKey.value]);
+
+// Sync selected component with persisted key
+selectedKey.subscribe((key) => {
+  selected.value = docMap[key];
+});
 
 // State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(false);
@@ -45,17 +67,18 @@ const app = (
       an ascii ui + game framework for web and cli
     </Text>
     <Row height="fill">
-      <Select label="Docs" width="33%" height="fill" selected={selected}>
-        <Option value={GettingStartedDoc}>Getting Started</Option>
-        <Option value={ArtDoc}>Art</Option>
-        <Option value={ButtonDoc}>Button</Option>
-        <Option value={FormDoc}>Form</Option>
-        <Option value={ModalDoc}>Modal</Option>
-        <Option value={DungeonCrawlerDoc}>Dungeon Crawler</Option>
-        <Option value={LayoutSizingDoc}>Layout & Sizing</Option>
-        <Option value={ScrollableTextDoc}>Scrollable Text</Option>
-        <Option value={SlidersDoc}>Sliders</Option>
-        <Option value={TabsDoc}>Tabs</Option>
+      <Select label="Docs" width="33%" height="fill" selected={selectedKey}>
+        <Option value="getting-started">Getting Started</Option>
+        <Option value="components-states">Components & States</Option>
+        <Option value="art">Art</Option>
+        <Option value="button">Button</Option>
+        <Option value="form">Form</Option>
+        <Option value="modal">Modal</Option>
+        <Option value="dungeon-crawler">Dungeon Crawler</Option>
+        <Option value="layout-sizing">Layout & Sizing</Option>
+        <Option value="scrollable-text">Scrollable Text</Option>
+        <Option value="sliders">Sliders</Option>
+        <Option value="tabs">Tabs</Option>
       </Select>
       <Switch width="fill" height="fill" component={selected} />
     </Row>
