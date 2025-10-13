@@ -46,29 +46,36 @@ export const ComponentsStatesDoc = () => {
         re-renders when modified.
       </Text>
 
-      <Text align="left" gap={{ left: 2, bottom: 1 }}>
-        Example: Button-Controlled Slider
-      </Text>
-
-      <Row gap={{ left: 6, bottom: 2 }}>
-        <Button hotkey="d" onClick={decrement}>
-          Decrease
-        </Button>
-        <Button hotkey="i" onClick={increment}>
-          Increase
-        </Button>
-      </Row>
-
-      <ProgressBarSlider
-        width={36}
+      <Column
+        label="State Change Example"
+        align="center"
+        width="90%"
         height={15}
-        value={sliderValue}
-        label="Value"
-        gap={{ left: 4 }}
-      />
+        border
+      >
+        <Row gap={{ left: 6, top: 2, bottom: 1 }}>
+          <Button hotkey="d" onClick={decrement}>
+            Decrease
+          </Button>
+          <Button hotkey="i" onClick={increment}>
+            Increase
+          </Button>
+        </Row>
+
+        <ProgressBarSlider
+          width={36}
+          value={sliderValue}
+          label="Value"
+          gap={{ left: 4 }}
+        />
+
+        <Text width={4} height={3} align="center">
+          {sliderValue}
+        </Text>
+      </Column>
 
       <Text align="center" gap={{ bottom: 1 }}>
-        Use Tab to navigate, Enter to press buttons
+        Press [`] to make hotkeys visible
       </Text>
     </Column>
   );
