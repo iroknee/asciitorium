@@ -1,3 +1,4 @@
+export { GettingStartedDoc } from './GettingStarted';
 export { ArtDoc } from './Art';
 export { DungeonCrawlerDoc } from './DungeonCrawler';
 export { ButtonDoc } from './Button';

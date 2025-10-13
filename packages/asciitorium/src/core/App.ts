@@ -23,6 +23,8 @@ export class App extends Component {
   private currentMemory: number = 0;
   private lastCPUUsage?: any;
   private keybindRegistry = new Map<string, any>();
+  private readonly fixedWidth: boolean;
+  private readonly fixedHeight: boolean;
 
   constructor(props: AppProps) {
     // Extract font from props or style object
@@ -38,6 +40,10 @@ export class App extends Component {
     const heightFromStyle = props.style?.height;
     const layoutFromStyle = props.style?.layout;
 
+    // Determine if dimensions are fixed (numeric values were explicitly provided)
+    const hasFixedWidth = typeof (props.width ?? widthFromStyle) === 'number';
+    const hasFixedHeight = typeof (props.height ?? heightFromStyle) === 'number';
+
     // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
     const asciitoriumProps = {
@@ -52,6 +58,8 @@ export class App extends Component {
 
     this.renderer = renderer;
     this.focus = new FocusManager();
+    this.fixedWidth = hasFixedWidth;
+    this.fixedHeight = hasFixedHeight;
 
     // Setup resize handling
     this.setupResizeHandling();
@@ -233,9 +241,21 @@ export class App extends Component {
   private setupResizeHandling(): void {
     const handleResize = () => {
       const newSize = this.renderer.getScreenSize();
-      if (newSize.width !== this.width || newSize.height !== this.height) {
+      let changed = false;
+
+      // Only update width if it wasn't fixed
+      if (!this.fixedWidth && newSize.width !== this.width) {
         this.width = newSize.width;
+        changed = true;
+      }
+
+      // Only update height if it wasn't fixed
+      if (!this.fixedHeight && newSize.height !== this.height) {
         this.height = newSize.height;
+        changed = true;
+      }
+
+      if (changed) {
         this.render();
       }
     };
