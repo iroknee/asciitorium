@@ -37,12 +37,12 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21" height={80}>
+  <App font="PrintChar21" width={80}>
     <Keybind keyBinding="p" action={togglePerfMonitor} global />
 
     <Art src="title" align="center" />
     <Text align="center" gap={1}>
-      an ascii ui + game engine for web and cli
+      an ascii ui + game framework for web and cli
     </Text>
     <Row height="fill">
       <Select label="Docs" width="33%" height="fill" selected={selected}>

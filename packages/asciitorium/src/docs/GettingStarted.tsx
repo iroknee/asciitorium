@@ -16,9 +16,9 @@ export const GettingStartedDoc = () => {
       <Art gap={1} src="castle" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 2, bottom: 2 }}>
-        Asciitorium is an ASCII-based ui and game framework that runs in
-        both web browsers and CLI environments. It uses 
-        React-like JSX syntax with zero dependencies. Important concepts include:
+        Asciitorium is an ASCII UI & game framework that runs in
+        both web browsers and terminals. It enables React-like development. 
+        Important concepts include:
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
