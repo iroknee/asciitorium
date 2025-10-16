@@ -20,37 +20,60 @@ export class ColumnLayout implements Layout {
       return true;
     });
 
-    // Calculate total gap height consumed by visible children
-    const totalGapHeight = visibleChildren.reduce((sum, child) => {
-      if (child.fixed) return sum;
-      const gap = resolveGap(child.gap);
-      return sum + gap.top + gap.bottom;
-    }, 0);
-    
-    // Create size context that accounts for gaps
-    const context = createSizeContext(parent.width, parent.height, borderPad);
-    // Adjust available height to account for gaps
-    context.availableHeight = Math.max(0, context.availableHeight - totalGapHeight);
+    // Pass 1: Categorize children and measure fixed-height children
+    const fixedChildren: Component[] = [];
+    const fillChildren: Component[] = [];
+    let fixedHeightTotal = 0;
 
-    // First pass: resolve sizes for visible children
     for (const child of visibleChildren) {
       if (child.fixed) continue;
 
-      // Resolve child size based on parent context
-      child.resolveSize(context);
+      const gap = resolveGap(child.gap);
+      const originalHeight = child.getOriginalHeight();
+
+      if (originalHeight === 'fill') {
+        // This child wants to fill remaining space
+        fillChildren.push(child);
+        // Account for its gaps in the total
+        fixedHeightTotal += gap.top + gap.bottom;
+      } else {
+        // This child has a fixed or content-based height
+        fixedChildren.push(child);
+
+        // Create size context for resolving this child's size
+        const context = createSizeContext(parent.width, parent.height, borderPad);
+        child.resolveSize(context);
+
+        // Add to total fixed height
+        fixedHeightTotal += gap.top + child.height + gap.bottom;
+      }
     }
 
-    // Second pass: sizing is now handled via width/height props and 'fill' values
+    // Pass 2: Distribute remaining space to fill children
+    const remainingHeight = innerHeight - fixedHeightTotal;
+    const fillCount = fillChildren.length;
 
-    // Third pass: position visible children
+    if (fillCount > 0 && remainingHeight > 0) {
+      const heightPerFill = Math.floor(remainingHeight / fillCount);
+
+      for (const child of fillChildren) {
+        const gap = resolveGap(child.gap);
+        // Each fill child gets equal share (gaps already accounted for in fixedHeightTotal)
+        child.height = Math.max(1, heightPerFill);
+      }
+    } else if (fillCount > 0) {
+      // No remaining space - give fill children minimum size
+      for (const child of fillChildren) {
+        child.height = 1;
+      }
+    }
+
+    // Pass 3: Position all children and set widths
     let currentY = borderPad;
 
     for (const child of visibleChildren) {
-      if (child.fixed) {
-        continue; // Skip positioning if component is fixed
-      }
+      if (child.fixed) continue;
 
-      // Resolve child's gap to normalized format
       const gap = resolveGap(child.gap);
 
       // Apply top gap
@@ -58,33 +81,14 @@ export class ColumnLayout implements Layout {
 
       // Calculate available width after accounting for left/right gaps
       const availableWidth = innerWidth - gap.left - gap.right;
-      
-      // For column layout, children should fill width only if explicitly set to 'fill'
+
+      // For column layout, children should fill width if explicitly set to 'fill'
       const originalWidth = child.getOriginalWidth();
       if (originalWidth === 'fill') {
         child.width = Math.max(1, availableWidth);
       }
-      // If originalWidth is undefined, let the component handle its own auto-sizing
 
-      // Handle height="fill" - fill remaining vertical space
-      const originalHeight = child.getOriginalHeight();
-      if (originalHeight === 'fill') {
-        // Calculate space needed by remaining components
-        const currentIndex = visibleChildren.indexOf(child);
-        let spaceNeededByLaterComponents = 0;
-
-        for (let i = currentIndex + 1; i < visibleChildren.length; i++) {
-          const laterChild = visibleChildren[i];
-          if (laterChild.fixed) continue;
-          
-          const laterGap = resolveGap(laterChild.gap);
-          spaceNeededByLaterComponents += laterChild.height + laterGap.top + laterGap.bottom;
-        }
-        
-        const remainingHeight = innerHeight - (currentY - borderPad) - gap.top - gap.bottom - spaceNeededByLaterComponents;
-        child.height = Math.max(1, remainingHeight);
-      }
-
+      // Calculate horizontal alignment
       const { x } = resolveAlignment(
         child.align,
         availableWidth,
@@ -93,11 +97,11 @@ export class ColumnLayout implements Layout {
         child.height
       );
 
-      // Position with border padding + left gap + alignment offset
+      // Position child
       child.x = borderPad + gap.left + x;
       child.y = currentY;
 
-      // Move to next position: current position + component height + bottom gap
+      // Move to next position
       currentY += child.height + gap.bottom;
     }
   }

@@ -15,6 +15,7 @@ import {
 import {
   GettingStartedDoc,
   ComponentsStatesDoc,
+  KeybindingsHotkeysDoc,
   ButtonDoc,
   FormDoc,
   ModalDoc,
@@ -30,6 +31,7 @@ import {
 const docMap: Record<string, any> = {
   'getting-started': GettingStartedDoc,
   'components-states': ComponentsStatesDoc,
+  'keybindings-hotkeys': KeybindingsHotkeysDoc,
   'art': ArtDoc,
   'button': ButtonDoc,
   'form': FormDoc,
@@ -53,14 +55,14 @@ selectedKey.subscribe((key) => {
 // State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(false);
 
-// toggle PerfMonitor with "P" key
+// toggle PerfMonitor with "F12" key
 const togglePerfMonitor = () => {
   showPerfMonitor.value = !showPerfMonitor.value;
 };
 
 const app = (
   <App font="PrintChar21" width={80}>
-    <Keybind keyBinding="p" action={togglePerfMonitor} global />
+    <Keybind keyBinding="F12" action={togglePerfMonitor} global />
 
     <Art src="title" align="center" />
     <Text align="center" gap={1}>
@@ -69,8 +71,8 @@ const app = (
     <Row height="fill">
       <Select label="Docs" width="33%" height="fill" selected={selectedKey}>
         <Option value="getting-started">Getting Started</Option>
-        <Option value="components-states">Components & States</Option>
-        <Option value="art">Art</Option>
+        <Option value="components-states">Components & State</Option>
+        <Option value="keybindings-hotkeys">Keybindings & Hotkeys</Option>
         <Option value="button">Button</Option>
         <Option value="form">Form</Option>
         <Option value="modal">Modal</Option>

@@ -26,29 +26,55 @@ export class RowLayout implements Layout {
       return true;
     });
 
-    // Calculate total gap width consumed by visible children
-    const totalGapWidth = visibleChildren.reduce((sum, child) => {
-      if (child.fixed) return sum;
-      const gap = resolveGap(child.gap);
-      return sum + gap.left + gap.right;
-    }, 0);
-    
-    // Create size context that accounts for gaps
-    const context = createSizeContext(parent.width, parent.height, borderPad);
-    // Adjust available width to account for gaps
-    context.availableWidth = Math.max(0, context.availableWidth - totalGapWidth);
+    // Pass 1: Categorize children and measure fixed-width children
+    const fixedChildren: Component[] = [];
+    const fillChildren: Component[] = [];
+    let fixedWidthTotal = 0;
 
-    // First pass: resolve sizes for visible children
     for (const child of visibleChildren) {
       if (child.fixed) continue;
 
-      // Resolve child size based on parent context
-      child.resolveSize(context);
+      const gap = resolveGap(child.gap);
+      const originalWidth = child.getOriginalWidth();
+
+      if (originalWidth === 'fill') {
+        // This child wants to fill remaining space
+        fillChildren.push(child);
+        // Account for its gaps in the total
+        fixedWidthTotal += gap.left + gap.right;
+      } else {
+        // This child has a fixed or content-based width
+        fixedChildren.push(child);
+
+        // Create size context for resolving this child's size
+        const context = createSizeContext(parent.width, parent.height, borderPad);
+        child.resolveSize(context);
+
+        // Add to total fixed width
+        fixedWidthTotal += gap.left + child.width + gap.right;
+      }
     }
 
-    // Second pass: sizing is now handled via width/height props and 'fill' values
+    // Pass 2: Distribute remaining space to fill children
+    const remainingWidth = innerWidth - fixedWidthTotal;
+    const fillCount = fillChildren.length;
 
-    // Third pass: calculate total row width for alignment
+    if (fillCount > 0 && remainingWidth > 0) {
+      const widthPerFill = Math.floor(remainingWidth / fillCount);
+
+      for (const child of fillChildren) {
+        const gap = resolveGap(child.gap);
+        // Each fill child gets equal share (gaps already accounted for in fixedWidthTotal)
+        child.width = Math.max(1, widthPerFill);
+      }
+    } else if (fillCount > 0) {
+      // No remaining space - give fill children minimum size
+      for (const child of fillChildren) {
+        child.width = 1;
+      }
+    }
+
+    // Pass 3: Calculate total row width for row-level alignment
     let totalRowWidth = 0;
     for (const child of visibleChildren) {
       if (child.fixed) continue;
@@ -56,7 +82,7 @@ export class RowLayout implements Layout {
       totalRowWidth += gap.left + child.width + gap.right;
     }
 
-    // Fourth pass: determine starting position based on row alignment
+    // Pass 4: Determine starting position based on row-level alignment
     const rowAlign = this.options.align || 'left';
     let startX = borderPad;
 
@@ -76,13 +102,12 @@ export class RowLayout implements Layout {
       }
     }
 
-    // Fifth pass: position visible children
+    // Pass 5: Position all children and set heights
     let currentX = startX;
 
     for (const child of visibleChildren) {
       if (child.fixed) continue;
 
-      // Resolve child's gap to normalized format
       const gap = resolveGap(child.gap);
 
       // Apply left gap
@@ -90,20 +115,14 @@ export class RowLayout implements Layout {
 
       // Calculate available height after accounting for top/bottom gaps
       const availableHeight = innerHeight - gap.top - gap.bottom;
-      
+
       // For row layout, children should fill height if not specified
       const originalHeight = child.getOriginalHeight();
       if (originalHeight === undefined || originalHeight === 'fill') {
         child.height = Math.max(1, availableHeight);
       }
 
-      // Handle width="fill" - fill remaining horizontal space
-      const originalWidth = child.getOriginalWidth();
-      if (originalWidth === 'fill') {
-        const remainingWidth = innerWidth - (currentX - borderPad) - gap.left - gap.right;
-        child.width = Math.max(1, remainingWidth);
-      }
-
+      // Calculate vertical alignment
       const { y } = resolveAlignment(
         child.align,
         child.width,
@@ -112,11 +131,11 @@ export class RowLayout implements Layout {
         child.height
       );
 
-      // Position with current X and border padding + top gap + alignment offset
+      // Position child
       child.x = currentX;
       child.y = borderPad + gap.top + y;
 
-      // Move to next position: current position + component width + right gap
+      // Move to next position
       currentX += child.width + gap.right;
     }
   }

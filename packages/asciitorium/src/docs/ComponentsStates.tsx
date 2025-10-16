@@ -33,7 +33,7 @@ export const ComponentsStatesDoc = () => {
       <Line width="90%" align="left" gap={{ left: 2, bottom: 1 }} />
 
       <Text width="85%" align="center" gap={{ left: 2, bottom: 1 }}>
-        Built-in components to enable a fairly rich ui including: Buttons, Text
+        Built-in components reduce the effort including: Buttons, Text
         blocks, TextInput, Selectors, Tabs, Sliders and more.
       </Text>
 
@@ -47,7 +47,7 @@ export const ComponentsStatesDoc = () => {
       </Text>
 
       <Column
-        label="State Change Example"
+        label="State & Components Example"
         align="center"
         width="90%"
         height={15}
