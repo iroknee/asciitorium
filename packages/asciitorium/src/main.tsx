@@ -77,7 +77,7 @@ const app = (
         selected={selectedKey}
       >
         <Option value="getting-started">Getting Started</Option>
-        <Option value="art">Ascii Art</Option>
+        <Option value="art">Ascii Art - Sprites</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="components-states">Components & State</Option>
         <Option value="layout-sizing">Layout & Sizing</Option>
