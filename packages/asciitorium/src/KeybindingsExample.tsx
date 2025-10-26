@@ -1,30 +1,16 @@
-import {
-  Column,
-  State,
-  Text,
-  Keybind,
-  Line,
-  loadArt,
-  Art
-} from '../index';
+import { Column, State, Text, Keybind, Line, loadArt, Art } from './index';
 import { BaseStyle } from './constants';
 
-
-  const left = await loadArt('eyes-left');
-  const center = await loadArt('eyes-center');
-
-  const right = await loadArt('eyes-right');
 /**
  * Keybindings & Hot Keys Guide
  *
  * Demonstrates global keybindings and component hotkeys for keyboard navigation.
  */
-export const KeybindingsHotkeysDoc = () => {
-
-  const eyes = new State<string>(left);
+export const KeybindingsExample = () => {
+  const eyes = new State<string>('left');
 
   const look = (direction) => {
-    eyes.value = direction
+    eyes.value = direction;
   };
 
   return (
@@ -33,13 +19,13 @@ export const KeybindingsHotkeysDoc = () => {
         Global/Local Keybindings
       </Text>
       <Line width="90%" align="left" gap={{ left: 2, bottom: 1 }} />
-      <Keybind keyBinding="j" action={look(left)}/>
-      <Keybind keyBinding="k" action={look(center)}/>
-      <Keybind keyBinding="l" action={look(right)}/>
-      <Art content="eyes" gap={{bottom: 1}} />
+      <Keybind keyBinding="j" action={look('left')} />
+      <Keybind keyBinding="k" action={look('center')} />
+      <Keybind keyBinding="l" action={look('right')} />
+      <Art src="eyes" gap={{ bottom: 1 }} />
       <Text width="85%" align="center" gap={{ left: 2, bottom: 1 }}>
-        asciitorium enables binding key presses to any custom logic to enable quick and 
-        responsive experience. Try pushing the [J] [K] [L] keys.
+        asciitorium enables binding key presses to any custom logic to enable
+        quick and responsive experience. Try pushing the [J] [K] [L] keys.
       </Text>
 
       <Text width="90%" align="left" gap={{ top: 1, left: 2 }}>

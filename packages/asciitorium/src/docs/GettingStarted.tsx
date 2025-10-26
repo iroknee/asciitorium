@@ -13,24 +13,24 @@ export const GettingStartedDoc = () => {
         Welcome to Asciitorium!
       </Text>
 
-      <Art gap={1} src="castle" align="center" />
+      <Art gap={1} src="welcome" align="center" />
 
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        Asciitorium is an ASCII UI & game framework that runs in
-        both web browsers and terminals while enabling react-like development. 
-        Important concepts include:
+        Asciitorium is an ASCII based CLUI (Command Line User Interface) & game
+        framework that runs in both web browsers and terminals while enabling
+        react-like development. Important concepts include:
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
-        1. Components & States
+        1. Keybindings & Navigation
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
-        2. Layouts & Styles
+        2. Components & States
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>
-        3. Keybindings & Navigation
+        3. Layouts & Styles
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 6, bottom: 1 }}>

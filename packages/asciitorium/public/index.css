@@ -35,7 +35,7 @@ body {
   overflow: hidden; /* Hide scrollbars for clean appearance */
 
   /* Ensure monospace font for proper character sizing */
-  font-size: 16px; /* Base font size for character measurement */
+  font-size: 12px; /* Base font size for character measurement */
   line-height: 1; /* Tight line spacing for ASCII art */
 
   /* Center text content horizontally */

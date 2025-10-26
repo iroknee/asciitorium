@@ -34,18 +34,18 @@ export const ScrollableTextDoc = () => (
     <Text
       gap={2}
       align="center"
-      width={60}
-      height={15}
+      width="fill"
+      height={20}
       border
       scrollable
       hotkey="t"
-      label="Scrollable Text (press Tab to focus)"
+      label="Scrollable Text"
     >
       {longText}
     </Text>
 
     <Text align="center">
-      Focus the text above and use ↑↓ or W/S to scroll
+      Focus the text [t] above and use ↑↓ to scroll
     </Text>
   </Column>
 );
