@@ -12,15 +12,18 @@ export const GettingStarted = () => {
       <Art gap={{ top: 2, bottom: 4 }} src="welcome" align="center" />
 
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        Asciitorium is an ASCII CLUI (Command Line User Interface) framework for
-        building interactive applications and games that run in both web browsers
-        and terminals.
+        Asciitorium is an ASCII-based CLUI (Command Line User Interface)
+        framework for building interactive applications that run in both web
+        browsers and terminals.
       </Text>
 
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        Use the Select menu on the left to explore components, layouts, and
-        features. Navigate with Tab/Shift+Tab between components, arrow keys
-        within menus, and Enter to select. Press F1 or ` to toggle hotkeys.
+      <Text width="90%" align="center">
+        To view the documentation, use the Select menu on the left to explore
+        components, layouts, and features. Navigate with:
+      </Text>
+      <Text width="90%" align="center" gap={{ top: 2, bottom: 2, left: 2 }}>
+        {`• [↑],[↓] keys to navigate within the menu,
+          • [Enter] to select a documentation item.`}
       </Text>
 
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
