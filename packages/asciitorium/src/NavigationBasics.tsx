@@ -38,7 +38,7 @@ export const NavigationBasics = () => {
         • Letter keys — Jump directly to component with matching hotkey
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" align="center" gap={{ top: 2, bottom: 1 }}>
         Try navigating between these buttons:
       </Text>
 
@@ -65,14 +65,10 @@ export const NavigationBasics = () => {
         </Button>
       </Row>
 
-      <Text width="90%" align="center" border>
+      <Text width="90%" align="center" >
         {message}
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        For implementation details, see
-        packages/asciitorium/src/core/FocusManager.ts
-      </Text>
     </Column>
   );
 };

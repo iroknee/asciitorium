@@ -104,16 +104,15 @@ export class Button extends Component {
     } else {
       // Normal: shadow on bottom and right
       for (let x = 1; x < this.width - 1; x++) {
-        drawChar(x, buttonHeight, '⎺'); // bottom shadow
+        drawChar(x, buttonHeight, '─'); // bottom shadow
       }
       for (let y = 1; y < this.height - 2; y++) {
         drawChar(buttonWidth, y, '│'); // right shadow
       }
-      drawChar(buttonWidth, buttonHeight - 1, '╵');
-      drawChar(1, buttonHeight, '`');
-      drawChar(buttonWidth, buttonHeight, '`');
-      drawChar(buttonWidth, 0, '˛');
-      drawChar(buttonWidth, 1, '╷');
+      drawChar(buttonWidth, buttonHeight - 1, '│');
+      drawChar(1, buttonHeight, '╰');
+      drawChar(buttonWidth, buttonHeight, '╯');
+      drawChar(buttonWidth, 1, '╮');
     }
 
     // Calculate button area offset based on press state
