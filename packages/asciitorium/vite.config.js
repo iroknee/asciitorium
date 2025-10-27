@@ -39,6 +39,10 @@ export default defineConfig({
   plugins: [],
   assetsInclude: ['**/*.md'],
   resolve: {
+    alias: isDemo ? {
+      'asciitorium/jsx-runtime': path.resolve(__dirname, 'src/jsx/jsx-runtime.ts'),
+      'asciitorium/jsx-dev-runtime': path.resolve(__dirname, 'src/jsx/jsx-dev-runtime.ts'),
+    } : {},
   },
   esbuild: {
     jsx: 'automatic',
