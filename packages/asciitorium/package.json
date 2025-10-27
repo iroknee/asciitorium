@@ -38,6 +38,7 @@
     "web": "vite",
     "cli": "tsx src/main.tsx",
     "build": "vite build && tsc -p tsconfig.json",
+    "build:demo": "BUILD_MODE=demo vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
     "test": "vitest",
