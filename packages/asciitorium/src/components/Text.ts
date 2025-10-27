@@ -11,6 +11,7 @@ export interface TextOptions
   align?: Alignment;
   children?: (string | State<any>) | (string | State<any>)[];
   scrollable?: boolean;
+  wrap?: boolean;
 }
 
 export class Text extends Component {
@@ -19,6 +20,7 @@ export class Text extends Component {
   private totalLines: string[] = [];
   private scrollOffset: number = 0;
   private isScrollable: boolean = false;
+  private shouldWrap: boolean = true;
 
   focusable = false;
   hasFocus = false;
@@ -58,7 +60,7 @@ export class Text extends Component {
       actualContent = '';
     }
 
-    const { children, content, scrollable, ...componentProps } = options;
+    const { children, content, scrollable, wrap, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width, // Don't default to fill - let resolveSize handle it
@@ -67,6 +69,7 @@ export class Text extends Component {
 
     this.source = actualContent;
     this.isScrollable = scrollable ?? false;
+    this.shouldWrap = wrap ?? true;
     this.focusable = this.isScrollable;
     // Don't override align - let the Component base class handle it through mergeStyles
   }
@@ -261,6 +264,14 @@ export class Text extends Component {
     maxHeight: number
   ): string[] {
     if (maxWidth <= 0) return [];
+
+    // If wrapping is disabled, just split by newlines and truncate
+    if (!this.shouldWrap) {
+      const lines = text.split('\n');
+      return lines.slice(0, maxHeight).map(line =>
+        line.length > maxWidth ? line.substring(0, maxWidth) : line
+      );
+    }
 
     // First split by newlines to handle explicit line breaks
     const paragraphs = text.split('\n');

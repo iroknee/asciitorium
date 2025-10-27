@@ -1,7 +1,4 @@
-export { GettingStartedDoc } from './GettingStarted';
 export { ComponentsStatesDoc } from './ComponentsStates';
-export { KeybindingsHotkeysDoc } from './KeybindingsHotkeys';
-export { ArtDoc } from './Art';
 export { DungeonCrawlerDoc } from './DungeonCrawler';
 export { ButtonDoc } from './Button';
 export { CelticBorderDoc } from './CelticBorder';

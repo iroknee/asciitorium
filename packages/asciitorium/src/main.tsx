@@ -12,28 +12,29 @@ import {
 } from './index';
 
 import {
-  ComponentsStatesDoc,
   ButtonDoc,
   FormDoc,
   ModalDoc,
   LayoutSizingDoc,
   ScrollableTextDoc,
   TabsDoc,
-  ArtDoc,
   SlidersDoc,
   DungeonCrawlerDoc,
 } from './docs';
 
 import { KeybindingsExample } from './KeybindingsExample';
 import { GettingStarted } from './GettingStarted';
-import { AsciiArt } from './AsciiArt';
+import { ArtBasics } from './ArtBasics';
+import { ComponentBasics } from './ComponentBasics';
+import { NavigationBasics } from './NavigationBasics';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
-  'getting-started': GettingStarted,
-  'components-states': ComponentsStatesDoc,
+  start: GettingStarted,
+  components: ComponentBasics,
+  art: ArtBasics,
+  navigation: NavigationBasics,
   keybindings: KeybindingsExample,
-  art: AsciiArt,
   button: ButtonDoc,
   form: FormDoc,
   modal: ModalDoc,
@@ -76,8 +77,10 @@ const app = (
         height="fill"
         selected={selectedKey}
       >
-        <Option value="getting-started">Getting Started</Option>
+        <Option value="start">Getting Started</Option>
+        <Option value="components">Components</Option>
         <Option value="art">Ascii Art - Sprites</Option>
+        <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="components-states">Components & State</Option>
         <Option value="layout-sizing">Layout & Sizing</Option>
