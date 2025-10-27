@@ -43,6 +43,7 @@ export default defineConfig({
       'asciitorium/jsx-runtime': path.resolve(__dirname, 'src/jsx/jsx-runtime.ts'),
       'asciitorium/jsx-dev-runtime': path.resolve(__dirname, 'src/jsx/jsx-dev-runtime.ts'),
     } : {},
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
   esbuild: {
     jsx: 'automatic',
