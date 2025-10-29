@@ -1,34 +1,8 @@
 # asciitorium
 
-**asciitorium** (pronounced ASS-kee-TOR-ee-um, unlike plane-a-rium seen [here](https://youtu.be/oK5n9lPvaQk?feature=shared&t=5), is an ASCII-only framework that runs in both the web and terminal. It was designed to create CLUIs (Command Line User Interfaces), and having a web build component speeds development. Originally it was purposed to allow a Gen Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
+**asciitorium** is an ASCII-based CLUI framework that runs both via terminal and web. It was designed to create games/applications quickly via web development standards and conventions. Originally it was purposed to allow a Gen-Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
 ![example](asciitorium.png)
-
-```jsx
-import { App, Text, State, Art, TextInput, Line } from './index';
-
-// Reactive state for user input
-const userInput = new State('Hello, World!');
-
-const app = (
-  <App>
-    <Art src="./art/asciitorium.art" align="center" />
-    <Line style={{ width: 60, align: 'center' }} />
-    <Text style={{ align: 'center', gap: { bottom: 3 } }}>
-      ascii ui + game engine for web and cli
-    </Text>
-
-    <TextInput
-      style={{ width: 40, align: 'center', gap: { bottom: 2 } }}
-      value={userInput}
-    />
-
-    <Text align="center">{userInput}</Text>
-  </App>
-);
-
-await app.start();
-```
 
 ## Key features
 
@@ -37,6 +11,8 @@ await app.start();
 - **Zero dependencies**: Lightweight with no runtime dependencies
 - **TypeScript**: Full TypeScript support with custom JSX runtime
 - **Component-based**: Supports JSX and React-like component architecture
+
+You can see a demo of it running [here](https://iroknee.github.io/asciitorium/).
 
 ## Getting Started
 

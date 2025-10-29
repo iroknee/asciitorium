@@ -11,22 +11,12 @@ import {
   Keybind,
 } from './index';
 
-import {
-  ButtonDoc,
-  FormDoc,
-  ModalDoc,
-  LayoutSizingDoc,
-  ScrollableTextDoc,
-  TabsDoc,
-  SlidersDoc,
-  DungeonCrawlerDoc,
-} from './docs';
-
 import { KeybindingsExample } from './KeybindingsExample';
 import { GettingStarted } from './GettingStarted';
 import { ArtBasics } from './ArtBasics';
 import { ComponentBasics } from './ComponentBasics';
 import { NavigationBasics } from './NavigationBasics';
+import { StateBasics } from './StateBasics';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -35,14 +25,7 @@ const docMap: Record<string, any> = {
   art: ArtBasics,
   navigation: NavigationBasics,
   keybindings: KeybindingsExample,
-  button: ButtonDoc,
-  form: FormDoc,
-  modal: ModalDoc,
-  'dungeon-crawler': DungeonCrawlerDoc,
-  'layout-sizing': LayoutSizingDoc,
-  'scrollable-text': ScrollableTextDoc,
-  sliders: SlidersDoc,
-  tabs: TabsDoc,
+  state: StateBasics,
 };
 
 // Main state for component selection with persistence
@@ -79,17 +62,10 @@ const app = (
       >
         <Option value="start">Getting Started</Option>
         <Option value="components">Components</Option>
+        <Option value="state">State</Option>
         <Option value="art">Ascii Art - Sprites</Option>
         <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
-        <Option value="components-states">Components & State</Option>
-        <Option value="layout-sizing">Layout & Sizing</Option>
-        <Option value="form">Form</Option>
-        <Option value="modal">Modal</Option>
-        <Option value="dungeon-crawler">Dungeon Crawler</Option>
-        <Option value="scrollable-text">Scrollable Text</Option>
-        <Option value="sliders">Sliders</Option>
-        <Option value="tabs">Tabs</Option>
       </Select>
       <Switch width="fill" height="fill" component={selected} />
     </Row>

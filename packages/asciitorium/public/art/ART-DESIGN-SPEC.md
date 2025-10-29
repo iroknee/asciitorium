@@ -1,6 +1,6 @@
 # Art Asset Format Specification
 
-This document defines the metadata format for ASCII art assets in asciitorium, including materials and sprites.
+This document defines the metadata format for ASCII art assets in asciitorium, including fonts, materials, and sprites.
 
 ## Overview
 
@@ -15,41 +15,41 @@ Art assets use a text-based format that combines:
 1. **Human-readable**: Artists should be able to read and write metadata without tooling
 2. **Simple**: Use standard JSON format with flat key-value structure
 3. **No nesting**: Flat data structures only - no nested objects or arrays
-4. **Consistent**: Same format works for materials, sprites, and future asset types
+4. **Consistent**: Same format works for materials, sprites, and font asset types
 5. **Extensible**: Easy to add new properties without breaking existing assets
 
 ## Format Syntax
 
-### Section Header (`§`)
+### File Header (`§`)
 
-The section header appears once at the beginning of the file and defines the asset type and global properties.
+The file header appears once at the beginning of the file and defines the asset type and global properties.
 
 **Format:**
 
-```
+```json
 § {"key":"value","key":"value"}
 ```
 
 **Example:**
 
-```
+```json
 § {"kind":"material","usage":"first-person","placement":"scenery"}
 ```
 
 ### Layer/Frame Separator (`¶`)
 
-Separates different layers (materials) or frames (sprites) with section-specific metadata.
+Separates different layers (materials), characters (fonts) or frames (sprites) with section-specific metadata.
 
 **Format:**
 
-```
+```json
 ¶ {"key":"value","key":"value"}
 [ASCII art content follows]
 ```
 
 **Example:**
 
-```
+```json
 ¶ {"layer":"here","pos":"center"}
    |‽‽‽‽‽‽‽|
    |‽‽‽‽‽‽‽|
@@ -64,22 +64,11 @@ Separates different layers (materials) or frames (sprites) with section-specific
 3. **No nesting**: Objects must be flat - no nested objects or arrays
 4. **Empty metadata**: Empty separator `¶` or `§` is valid (inherits defaults)
 
-### Empty Separators
-
-A separator with no metadata is valid:
-
-```
-¶
-[ASCII art content]
-```
-
-This inherits defaults or indicates a frame with no special properties.
-
 ### Single-Frame Sprites
 
-If a file does not start with a `§` section header, it is assumed to be a single-frame sprite with no metadata:
+If a file does not start with a `§` file header, it is assumed to be a single-frame sprite with no metadata:
 
-```
+```txt
   ___
  /   \
 |  o  |
@@ -88,7 +77,7 @@ If a file does not start with a `§` section header, it is assumed to be a singl
 
 This is equivalent to:
 
-```
+```json
 § {"kind":"sprite","loop":"false"}
 ¶
   ___
@@ -97,11 +86,118 @@ This is equivalent to:
  \___/
 ```
 
+### Empty Separators
+
+A separator with no metadata is valid for sprites:
+
+```txt
+¶
+[ASCII art content]
+```
+
+This inherits defaults or indicates a frame with no special properties.
+
+## Font Assets
+
+Fonts define ASCII art representations of characters for rendering text in stylized formats.
+
+### File Header Properties
+
+| Key    | Values | Required | Description           |
+| ------ | ------ | -------- | --------------------- |
+| `kind` | `font` | Yes      | Asset type identifier |
+
+### Character Separator Properties
+
+| Key         | Values | Required | Description                         |
+| ----------- | ------ | -------- | ----------------------------------- |
+| `character` | string | Yes      | The character this glyph represents |
+
+### Font Example
+
+``` json
+§ {"kind":"font"}
+¶ {"character":"a"}
+
+╭─╮
+╭─┤
+╰─╰
+
+¶ {"character":"b"}
+│
+├─╮
+│ │
+╯─╯
+
+¶ {"character":"c"}
+
+╭─╮
+│
+╰─╯
+```
+
+### Font Design Rules
+
+- Each character glyph should have consistent height (including leading/trailing blank lines)
+- Characters can have variable width
+- Blank lines before/after the glyph art create vertical spacing
+- The `character` property must be a single character (letter, number, punctuation, etc.)
+- Fonts are typically loaded by name and used to render styled text
+
+## Sprite Assets
+
+Sprites define animated ASCII art with multiple frames.
+
+### File Header Properties
+
+| Key                  | Values          | Required | Description                                |
+| -------------------- | --------------- | -------- | ------------------------------------------ |
+| `kind`               | `sprite`        | Yes      | Asset type identifier                      |
+| `loop`               | `true`, `false` | No       | Whether animation loops (default: `false`) |
+| `default-frame-rate` | number (ms)     | No       | Default frame duration in milliseconds (default is 250 if none is supplied)     |
+
+### Frame Separator Properties
+
+| Key        | Values      | Required | Description                        |
+| ---------- | ----------- | -------- | ---------------------------------- |
+| `duration` | number (ms) | No       | Frame duration (overrides default) |
+| `sound`    | filename    | No       | Sound to play when frame displays  |
+| `event`    | string      | No       | Custom event name to trigger       |
+
+### Sprite Example
+
+```
+§ {"kind":"sprite","loop":true,"default-frame-rate":120}
+¶ {"duration":1000}
+                _ _ _             _
+  __ _ ___  ___(_|_) |_ ___  _ __(_)_   _ _ __ ___
+ / _` / __|/ __| | | __/ _ \| '__| | | | | '_ ` _ \
+| (_| \__ \ (__| | | || (_) | |  | | |_| | | | | | |
+ \__,_|___/\___|_|_|\__\___/|_|  |_|\__,_|_| |_| |_|
+¶ {"duration":500}
+              .   _ * _             *     .
+  __ _ ___  ___(_|_).|_   *  _ __(_)_   _   *  __
+ / _` / __|/ _ .  |  __/  . \ '__| | | | '   `  \ .
+| (_| \__  (__| *|.| || (_) |  * | | |_|  *| | | │ .
+ \__,_|___/\__ ._|_|\__\  * /|_|   .|\__   |_| |_│
+¶
+          *      _    *     .    *     .    *
+  __   *      (_|_)   .  *   _ __   .     .    __
+ /   `    __|  |    __/   * \ '__|     *      ` \
+| *   * \__    | | || (_) |   .  |  *  *   |   | │
+   .  .|___/   |_| \__\___/|_|   .    .  |_|  . |_│
+```
+
+### Animation Control
+
+- **loop:true**: Animation repeats from first frame after last frame
+- **loop:false**: Animation plays once and stops on last frame
+
 ## Material Assets
 
 Materials define visual representations at different distances in first-person view.
 
-### Section Header Properties
+### File Header Properties
 
 | Key            | Values                                      | Required | Description                       |
 | -------------- | ------------------------------------------- | -------- | --------------------------------- |
@@ -181,7 +277,7 @@ Each layer can have `left`, `center`, and `right` positioned elements for additi
 
 ### Sound Triggers
 
-Sound properties are defined once in the section header and apply to the entire material:
+Sound properties are defined once in the file header and apply to the entire material:
 
 - **onEnterSound**: Plays once when player steps onto the tile
 - **onExitSound**: Plays once when player leaves the tile
@@ -234,105 +330,11 @@ Here's an example of materials for a side-scrolling platformer game:
 
 In side-scrollers, the layer system naturally supports parallax scrolling where `far` layers move slower than `here` layers, creating depth perception.
 
-## Sprite Assets
-
-Sprites define animated ASCII art with multiple frames.
-
-### Section Header Properties
-
-| Key                  | Values          | Required | Description                                |
-| -------------------- | --------------- | -------- | ------------------------------------------ |
-| `kind`               | `sprite`        | Yes      | Asset type identifier                      |
-| `loop`               | `true`, `false` | No       | Whether animation loops (default: `false`) |
-| `default-frame-rate` | number (ms)     | No       | Default frame duration in milliseconds     |
-
-### Frame Separator Properties
-
-| Key        | Values      | Required | Description                        |
-| ---------- | ----------- | -------- | ---------------------------------- |
-| `duration` | number (ms) | No       | Frame duration (overrides default) |
-| `sound`    | filename    | No       | Sound to play when frame displays  |
-| `event`    | string      | No       | Custom event name to trigger       |
-
-### Sprite Example
-
-```
-§ {"kind":"sprite","loop":true,"default-frame-rate":120}
-¶ {"duration":1000}
-                _ _ _             _
-  __ _ ___  ___(_|_) |_ ___  _ __(_)_   _ _ __ ___
- / _` / __|/ __| | | __/ _ \| '__| | | | | '_ ` _ \
-| (_| \__ \ (__| | | || (_) | |  | | |_| | | | | | |
- \__,_|___/\___|_|_|\__\___/|_|  |_|\__,_|_| |_| |_|
-¶ {"duration":500}
-              .   _ * _             *     .
-  __ _ ___  ___(_|_).|_   *  _ __(_)_   _   *  __
- / _` / __|/ _ .  |  __/  . \ '__| | | | '   `  \ .
-| (_| \__  (__| *|.| || (_) |  * | | |_|  *| | | │ .
- \__,_|___/\__ ._|_|\__\  * /|_|   .|\__   |_| |_│
-¶
-          *      _    *     .    *     .    *
-  __   *      (_|_)   .  *   _ __   .     .    __
- /   `    __|  |    __/   * \ '__|     *      ` \
-| *   * \__    | | || (_) |   .  |  *  *   |   | │
-   .  .|___/   |_| \__\___/|_|   .    .  |_|  . |_│
-```
-
-### Frame Timing
-
-- **default-frame-rate**: Sets base duration for all frames
-- **duration**: Overrides default for specific frame
-- No duration specified: Uses default-frame-rate or 100ms if neither set
-
-### Animation Control
-
-- **loop:true**: Animation repeats from first frame after last frame
-- **loop:false**: Animation plays once and stops on last frame
-
-## Parser Implementation Pseudocode
-
-```typescript
-function parseMetadata(
-  line: string
-): Record<string, string | number | boolean> {
-  line = line.trim();
-
-  // Empty separator
-  if (line === '¶' || line === '§') {
-    return {};
-  }
-
-  // Remove separator character
-  line = line.substring(1).trim();
-
-  // Empty metadata after separator
-  if (line === '') {
-    return {};
-  }
-
-  // Parse JSON
-  const metadata = JSON.parse(line);
-
-  // Validate no nesting (all values must be primitives)
-  for (const [key, value] of Object.entries(metadata)) {
-    const type = typeof value;
-    if (type !== 'string' && type !== 'number' && type !== 'boolean') {
-      throw new Error(
-        `Property "${key}" must be a primitive value (string, number, or boolean). ` +
-          `Nested objects and arrays are not supported.`
-      );
-    }
-  }
-
-  return metadata;
-}
-```
-
 ## Validation Rules
 
 ### Required Properties
 
-- Section header MUST have `kind` property
+- File header MUST have `kind` property
 - Material layers MUST have `layer` and `pos` properties
 - Sprite frames MAY omit all properties (inherits defaults)
 

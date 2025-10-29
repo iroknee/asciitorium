@@ -1,4 +1,4 @@
-import { Art, Line, Column, Text } from './index';
+import { Art, Line, Column, Text, Row } from './index';
 import { BaseStyle } from './constants';
 
 /**
@@ -9,10 +9,16 @@ import { BaseStyle } from './constants';
 export const ComponentBasics = () => {
   return (
     <Column style={BaseStyle} label="Component Basics">
-      <Art gap={{ bottom: 1 }} src="components" align="left" />
-
+      <Row align="center">
+        <Art
+          gap={{ top: 1, left: 2, right: 1 }}
+          align="left"
+          src="component-icon"
+        />
+        <Art font="simple" text="components" gap={{ top: 2 }} />
+      </Row>
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        The Component class is the foundation of all UI elements and they all
+        The Component class is the foundation of all UI elements. All elements
         extend this base class. It provides position management, layout,
         rendering, focus handling, and state binding.
       </Text>

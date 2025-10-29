@@ -43,12 +43,24 @@ export interface SpriteDefaults {
   loop?: boolean;
 }
 
-// Unified Asset interface
-export interface Asset {
-  kind: 'map' | 'material' | 'sprite';
+export interface FontGlyph {
+  character: string;
+  lines: string[][];
   width: number;
   height: number;
-  data: MapAsset | MaterialAsset | SpriteAsset;
+}
+
+export interface FontAsset {
+  glyphs: Map<string, FontGlyph>;
+  height: number; // consistent height across all glyphs
+}
+
+// Unified Asset interface
+export interface Asset {
+  kind: 'map' | 'material' | 'sprite' | 'font';
+  width: number;
+  height: number;
+  data: MapAsset | MaterialAsset | SpriteAsset | FontAsset;
 }
 
 export interface MapAsset {
@@ -75,6 +87,7 @@ export class AssetManager {
   private static mapCache: Map<string, Promise<MapAsset>> = new Map();
   private static materialCache: Map<string, Promise<MaterialAsset>> = new Map();
   private static spriteCache: Map<string, Promise<SpriteAsset>> = new Map();
+  private static fontCache: Map<string, Promise<FontAsset>> = new Map();
 
   static async getMap(name: string): Promise<MapAsset> {
     // Check cache first - return same Promise every time
@@ -109,6 +122,18 @@ export class AssetManager {
     // Start async load and cache the promise
     const promise = this.loadSpriteAsset(name);
     this.spriteCache.set(name, promise);
+    return promise;
+  }
+
+  static async getFont(name: string): Promise<FontAsset> {
+    // Check cache first - return same Promise every time
+    if (this.fontCache.has(name)) {
+      return this.fontCache.get(name)!;
+    }
+
+    // Start async load and cache the promise
+    const promise = this.loadFontAsset(name);
+    this.fontCache.set(name, promise);
     return promise;
   }
 
@@ -234,6 +259,16 @@ export class AssetManager {
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to load sprite "${name}": ${message}`);
+    }
+  }
+
+  private static async loadFontAsset(name: string): Promise<FontAsset> {
+    try {
+      const fontData = await loadArt(`art/font/${name}.art`);
+      return this.parseFontData(fontData);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to load font "${name}": ${message}`);
     }
   }
 
@@ -466,6 +501,89 @@ export class AssetManager {
     return { frames, defaults };
   }
 
+  // Font parsing using § and ¶ separators
+  // Format: § {"kind":"font"} followed by glyphs separated by ¶ {"character":"a"}
+  private static parseFontData(data: string): FontAsset {
+    const glyphs = new Map<string, FontGlyph>();
+    let maxHeight = 0;
+
+    // Split by § to separate file header from content
+    const fileParts = data.split('§');
+    if (fileParts.length < 2) {
+      throw new Error('Invalid font file format: missing § header');
+    }
+
+    // Parse file header
+    const headerSection = fileParts[1];
+    const headerLines = headerSection.split('\n');
+    const headerMetadataLine = headerLines[0].trim();
+
+    try {
+      const fileMetadata = JSON.parse(headerMetadataLine);
+      if (fileMetadata.kind !== 'font') {
+        throw new Error('File is not a font');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to parse font file metadata: ${message}`);
+    }
+
+    // Get content after header line
+    const contentAfterHeader = headerSection.substring(
+      headerLines[0].length + 1
+    );
+
+    // Split by ¶ to get individual glyph sections
+    const glyphSections = contentAfterHeader.split('¶');
+
+    // Process each ¶-separated glyph section
+    for (let i = 1; i < glyphSections.length; i++) {
+      const section = glyphSections[i];
+      if (!section.trim()) continue;
+
+      const lines = section.split('\n');
+      if (lines.length === 0) continue;
+
+      // Parse metadata from first line
+      const metadataLine = lines[0].trim();
+      if (!metadataLine.startsWith('{')) continue;
+
+      try {
+        const metadata = JSON.parse(metadataLine);
+        if (!metadata.character || typeof metadata.character !== 'string') {
+          console.warn('Glyph metadata missing character property:', metadataLine);
+          continue;
+        }
+
+        // Glyph content is everything after the metadata line
+        // Use normalizeFontBlock to preserve vertical positioning (no leading line removal)
+        const glyphLines = this.normalizeFontBlock(lines.slice(1));
+        const glyphHeight = glyphLines.length;
+        const glyphWidth = Math.max(...glyphLines.map((line) => line.length), 0);
+
+        glyphs.set(metadata.character, {
+          character: metadata.character,
+          lines: glyphLines,
+          width: glyphWidth,
+          height: glyphHeight,
+        });
+
+        maxHeight = Math.max(maxHeight, glyphHeight);
+      } catch (error) {
+        console.warn('Failed to parse glyph metadata:', metadataLine, error);
+      }
+    }
+
+    if (glyphs.size === 0) {
+      throw new Error('No valid glyphs found in font file');
+    }
+
+    return {
+      glyphs,
+      height: maxHeight,
+    };
+  }
+
   // Helper method to normalize sprite blocks (from Art component)
   private static normalizeBlock(blockLines: string[]): string[][] {
     // Drop a single leading empty line if present (authoring convenience)
@@ -474,6 +592,14 @@ export class AssetManager {
       lines.shift();
     }
     const result = lines.map((line) => [...line]);
+    return result;
+  }
+
+  // Helper method to normalize font glyph blocks
+  // Unlike normalizeBlock, this preserves ALL lines including leading empty lines
+  // to maintain vertical positioning of glyphs
+  private static normalizeFontBlock(blockLines: string[]): string[][] {
+    const result = blockLines.map((line) => [...line]);
     return result;
   }
 }
