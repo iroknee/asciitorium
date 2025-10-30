@@ -86,8 +86,9 @@ The framework uses a component-based architecture with custom JSX runtime:
 
 **Layout System:**
 
-- Multiple layout implementations: `RowLayout`, `ColumnLayout`, `FixedLayout`, `AlignedLayout`
-- Components can be positioned absolutely or use layout-based positioning
+- Multiple layout implementations: `RowLayout`, `ColumnLayout`
+- Components can be positioned absolutely via `position` prop (sets `fixed` flag) or use layout-based positioning
+- Row and Column layouts skip children with `fixed=true` to preserve their absolute positioning
 - Support for relative sizing and alignment options
 
 **Built-in Components:**

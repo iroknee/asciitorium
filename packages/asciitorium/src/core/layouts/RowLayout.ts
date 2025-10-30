@@ -116,10 +116,14 @@ export class RowLayout implements Layout {
       // Calculate available height after accounting for top/bottom gaps
       const availableHeight = innerHeight - gap.top - gap.bottom;
 
-      // For row layout, children should fill height if not specified
+      // For row layout, only fill height if explicitly requested
       const originalHeight = child.getOriginalHeight();
-      if (originalHeight === undefined || originalHeight === 'fill') {
+      if (originalHeight === 'fill') {
         child.height = Math.max(1, availableHeight);
+      } else if (originalHeight === undefined) {
+        // Let child auto-size its height based on content
+        const context = createSizeContext(parent.width, parent.height, borderPad);
+        child.resolveSize(context);
       }
 
       // Calculate vertical alignment

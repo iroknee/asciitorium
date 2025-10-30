@@ -221,8 +221,10 @@ export class Text extends Component {
       linesToDraw = this.wrapText(this.getContentAsString(), innerWidth, innerHeight);
     }
 
+    // Use contentAlign for positioning content within the component
+    // Fall back to align for backward compatibility
     const { x, y } = resolveAlignment(
-      this.align,
+      this.contentAlign ?? this.align,
       innerWidth,
       innerHeight,
       innerWidth,

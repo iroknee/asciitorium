@@ -242,7 +242,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enhanced component instantiation logic
 
 - **Layout System:**
-  - Enhanced `AlignedLayout` with improved positioning calculations
+  - Enhanced layout system with improved positioning calculations
   - Better space allocation algorithms in column layouts
 
 ### Technical Details

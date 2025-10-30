@@ -3,6 +3,7 @@ import {
   Art,
   Select,
   Option,
+  OptionGroup,
   Switch,
   Row,
   PerfMonitor,
@@ -15,6 +16,7 @@ import { KeybindingsExample } from './KeybindingsExample';
 import { GettingStarted } from './GettingStarted';
 import { ArtBasics } from './ArtBasics';
 import { ComponentBasics } from './ComponentBasics';
+import { LayoutBasics } from './LayoutBasics';
 import { NavigationBasics } from './NavigationBasics';
 import { StateBasics } from './StateBasics';
 
@@ -23,6 +25,7 @@ const docMap: Record<string, any> = {
   start: GettingStarted,
   components: ComponentBasics,
   art: ArtBasics,
+  layout: LayoutBasics,
   navigation: NavigationBasics,
   keybindings: KeybindingsExample,
   state: StateBasics,
@@ -49,7 +52,7 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21" width={80} height={52}>
+  <App font="PrintChar21" width={80}>
     <Keybind keyBinding="F12" action={togglePerfMonitor} global />
 
     <Art src="asciitorium" align="center" gap={{ bottom: 1 }} />
@@ -61,11 +64,16 @@ const app = (
         selected={selectedKey}
       >
         <Option value="start">Getting Started</Option>
-        <Option value="components">Components</Option>
-        <Option value="state">State</Option>
-        <Option value="art">Ascii Art - Sprites</Option>
+        <Option value="components">Component Basics</Option>
+        <Option value="layout">Layouts</Option>
         <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
+        <Option value="state">State Management</Option>
+        <OptionGroup label="Special Components">
+          <Option value="app">App</Option>
+          <Option value="art">Art</Option>
+          <Option value="perf">PerfMonitor</Option>
+        </OptionGroup>
       </Select>
       <Switch width="fill" height="fill" component={selected} />
     </Row>

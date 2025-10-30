@@ -1,4 +1,4 @@
-import { Art, Line, Column, Text, Row } from './index';
+import { Line, Column, Text } from './index';
 import { BaseStyle } from './constants';
 
 /**
@@ -8,19 +8,12 @@ import { BaseStyle } from './constants';
  */
 export const ComponentBasics = () => {
   return (
-    <Column style={BaseStyle} label="Component Basics">
-      <Row align="center">
-        <Art
-          gap={{ top: 1, left: 2, right: 1 }}
-          align="left"
-          src="component-icon"
-        />
-        <Art font="simple" text="components" gap={{ top: 2 }} />
-      </Row>
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        The Component class is the foundation of all UI elements. All elements
-        extend this base class. It provides position management, layout,
-        rendering, focus handling, and state binding.
+    <Column style={BaseStyle} gap={1} label="Component Basics">
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+        All components extend the base Component class. It provides position
+        management, layout, rendering, focus handling, and state binding. This
+        allows you to adjust a standard set of properties and behaviors across
+        all components.
       </Text>
 
       <Text width="90%" align="center">
@@ -29,43 +22,43 @@ export const ComponentBasics = () => {
       <Line width="90%" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • width — Component width
+        • Width — width of component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • height — Component height
+        • Height — height of component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • border — Border around component
+        • Border — use a border?
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • label — Border title (top centered)
+        • Label — show a title in the border
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • gap — Spacing around component
+        • Gap — Spacing within the component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • align — Content alignment
+        • Align — align component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • background — Fill character
+        • Background — fill character
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • hotkey — Keyboard shortcut for quick access
+        • Hotkey — keyboard shortcut for quick access
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • visible — Component visibility
+        • Visible — component visibility
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • children — Child components
+        • Children/Content — child / content
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
@@ -74,14 +67,14 @@ export const ComponentBasics = () => {
 
       <Text width="90%" align="center" gap={{ bottom: 1 }} wrap={false} border>
         {`
- <Text label="Hi" align="center" border>
-    Welcome to asciitorium!
+ <Text width="90%" align="center" border>
+    Hello World!
  </Text>
 `}
       </Text>
 
-      <Text label="Hi" align="center" border>
-        Welcome to asciitorium!
+      <Text width="90%" height={5} align="center" border>
+        Hello World!
       </Text>
     </Column>
   );

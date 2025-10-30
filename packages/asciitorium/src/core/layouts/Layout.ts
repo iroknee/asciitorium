@@ -1,8 +1,6 @@
 import type { Component } from '../Component';
 import { RowLayout } from './RowLayout';
 import { ColumnLayout } from './ColumnLayout';
-import { FixedLayout } from './FixedLayout';
-import { AlignedLayout } from './AlignedLayout';
 
 /**
  * Interface for layouts that handle child component positioning
@@ -19,7 +17,7 @@ export interface Layout {
 /**
  * Available layout types that can be specified by name
  */
-export type LayoutType = 'row' | 'column' | 'fixed' | 'aligned';
+export type LayoutType = 'row' | 'column';
 
 /**
  * Configuration options for specific layouts
@@ -41,8 +39,6 @@ export class LayoutRegistry {
   static {
     this.layouts.set('row', RowLayout);
     this.layouts.set('column', ColumnLayout);
-    this.layouts.set('fixed', FixedLayout);
-    this.layouts.set('aligned', AlignedLayout);
   }
 
   static register(
