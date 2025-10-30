@@ -459,8 +459,11 @@ export class Art extends Component {
         const line = lines[y];
         for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
           const char = line[x];
-          // Only render if character is not the transparent character
-          if (char !== transparentChar) {
+          // If character matches transparent char, use framework's transparent char
+          // Otherwise, render the actual character
+          if (char === transparentChar) {
+            buffer[y + yOffset][x + xOffset] = this.transparentChar;
+          } else {
             buffer[y + yOffset][x + xOffset] = char;
           }
         }
@@ -478,8 +481,11 @@ export class Art extends Component {
       const line = lines[y];
       for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
         const char = line[x];
-        // Only render if character is not the transparent character
-        if (char !== transparentChar) {
+        // If character matches transparent char, use framework's transparent char
+        // Otherwise, render the actual character
+        if (char === transparentChar) {
+          buffer[y + yOffset][x + xOffset] = this.transparentChar;
+        } else {
           buffer[y + yOffset][x + xOffset] = char;
         }
       }
