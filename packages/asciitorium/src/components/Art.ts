@@ -32,6 +32,7 @@ type SpriteFrame = {
 type SpriteDefaults = {
   duration?: number; // ms
   loop?: boolean;
+  transparent?: string; // single character to treat as transparent
 };
 
 export class Art extends Component {
@@ -47,6 +48,7 @@ export class Art extends Component {
   private font?: string;
   private fontAsset?: FontAsset;
   private text?: string;
+  private spriteTransparentChar?: string; // sprite-specific transparency character
 
   constructor(options: ArtOptions) {
     let actualContent = options.content;
@@ -102,6 +104,10 @@ export class Art extends Component {
 
       parsedFrames = parsed.frames;
       parsedLoop = parsed.defaults.loop || false;
+      // Store sprite-specific transparent character
+      if (parsed.defaults.transparent !== undefined) {
+        this.spriteTransparentChar = parsed.defaults.transparent;
+      }
       calculatedWidth = Math.max(1, maxW + borderPadding);
       calculatedHeight = Math.max(1, maxH + borderPadding);
     } else {
@@ -324,6 +330,10 @@ export class Art extends Component {
     // Update frames and reset animation state
     this.frames = spriteAsset.frames;
     this.loop = spriteAsset.defaults.loop || false;
+    // Store sprite-specific transparent character
+    if (spriteAsset.defaults.transparent !== undefined) {
+      this.spriteTransparentChar = spriteAsset.defaults.transparent;
+    }
     this.frameIndex = 0;
 
     // Restart animation if needed
@@ -439,13 +449,20 @@ export class Art extends Component {
     const innerWidth = this.width - (this.border ? 2 : 0);
     const innerHeight = this.height - (this.border ? 2 : 0);
 
+    // Use sprite-specific transparent char if defined, otherwise use component's default
+    const transparentChar = this.spriteTransparentChar ?? this.transparentChar;
+
     // Font rendering mode
     if (this.fontAsset && this.text !== undefined) {
       const lines = this.renderTextWithFont(this.text, this.fontAsset);
       for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
         const line = lines[y];
         for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
-          buffer[y + yOffset][x + xOffset] = line[x];
+          const char = line[x];
+          // Only render if character is not the transparent character
+          if (char !== transparentChar) {
+            buffer[y + yOffset][x + xOffset] = char;
+          }
         }
       }
       this.buffer = buffer;
@@ -460,7 +477,11 @@ export class Art extends Component {
     for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
       const line = lines[y];
       for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
-        buffer[y + yOffset][x + xOffset] = line[x];
+        const char = line[x];
+        // Only render if character is not the transparent character
+        if (char !== transparentChar) {
+          buffer[y + yOffset][x + xOffset] = char;
+        }
       }
     }
     this.buffer = buffer;
@@ -527,6 +548,7 @@ function parseSprite(text: string): {
           defaults = {
             duration: asNum(d?.duration),
             loop: asBool(d?.loop),
+            transparent: asString(d?.transparent),
           };
         }
         // continue to next line; defaults line itself is not art
@@ -623,4 +645,7 @@ function asNum(v: any): number | undefined {
 }
 function asBool(v: any): boolean {
   return typeof v === 'boolean' ? v : false;
+}
+function asString(v: any): string | undefined {
+  return typeof v === 'string' && v.length === 1 ? v : undefined;
 }

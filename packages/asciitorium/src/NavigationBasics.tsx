@@ -1,4 +1,4 @@
-import { Art, Line, Column, Row, Text, Button, State } from './index';
+import { Art, Line, Column, Row, Text, Button } from './index';
 import { BaseStyle } from './constants';
 
 /**
@@ -7,14 +7,31 @@ import { BaseStyle } from './constants';
  * Guide to keyboard navigation and focus management in asciitorium.
  */
 export const NavigationBasics = () => {
-  const message = new State('Press Tab to navigate between buttons');
 
-  return (
+  const spawnFirework = () => {
+    // Random position within a reasonable range
+    const x = Math.floor(Math.random() * 60) + 10;
+    const y = Math.floor(Math.random() * 20) + 5;
+
+    const firework = new Art({
+      src: 'firework',
+      position: { x, y, z: 10 },
+    });
+
+    container.addChild(firework);
+
+    // Remove firework after animation completes (~800ms for 8 frames at 100ms each)
+    setTimeout(() => {
+      container.removeChild(firework);
+    }, 800);
+  };
+
+  const container = (
     <Column style={BaseStyle} label="Navigation Basics">
       <Art gap={{ top: 1, bottom: 1 }} src="nav-basics" align="center" />
 
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        {`Asciitorium uses [Tab] + [Shift+Tab] for moving between focusable components. In addition, components can befocused accessed directly via hotkeys. Focused components use a '>' to indicate focus.`}
+        {`Asciitorium uses [Tab] + [Tab+Shift] for moving between focusable components. In addition, components can befocused accessed directly via hotkeys. Focused components use a '>' to indicate focus.`}
       </Text>
 
       <Text width="90%" align="center">
@@ -43,32 +60,20 @@ export const NavigationBasics = () => {
       </Text>
 
       <Row width="90%" align="center" gap={{ bottom: 2 }}>
-        <Button
-          hotkey="a"
-          onClick={() => (message.value = 'Button A activated!')}
-        >
+        <Button height={6} hotkey="a" onClick={spawnFirework}>
           Button A
         </Button>
 
-        <Button
-          hotkey="b"
-          onClick={() => (message.value = 'Button B activated!')}
-        >
+        <Button height={6} hotkey="b" onClick={spawnFirework}>
           Button B
         </Button>
 
-        <Button
-          hotkey="c"
-          onClick={() => (message.value = 'Button C activated!')}
-        >
+        <Button height={6} hotkey="c" onClick={spawnFirework}>
           Button C
         </Button>
       </Row>
-
-      <Text width="90%" align="center" >
-        {message}
-      </Text>
-
     </Column>
   );
+
+  return container;
 };

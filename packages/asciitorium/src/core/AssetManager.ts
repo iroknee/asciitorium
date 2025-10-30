@@ -41,6 +41,7 @@ export interface SpriteFrame {
 export interface SpriteDefaults {
   duration?: number;
   loop?: boolean;
+  transparent?: string;
 }
 
 export interface FontGlyph {
@@ -433,6 +434,9 @@ export class AssetManager {
         defaults = {
           duration: fileMetadata['default-frame-rate'] || fileMetadata.duration,
           loop: fileMetadata.loop,
+          transparent: typeof fileMetadata.transparent === 'string' && fileMetadata.transparent.length === 1
+            ? fileMetadata.transparent
+            : undefined,
         };
       }
     } catch (error) {

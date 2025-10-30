@@ -3,6 +3,7 @@ import type { State } from './State';
 import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
 import { resolveGap } from './utils/gapUtils';
 import { resolveSize } from './utils/sizeUtils';
+import { requestRender } from './RenderScheduler';
 
 // Border character set
 const SINGLE_BORDER_CHARS = {
@@ -335,6 +336,7 @@ export abstract class Component {
     child.setParent(this);
     this.children.push(child);
     this.recalculateLayout();
+    requestRender();
   }
 
   public removeChild(child: Component): void {
@@ -342,6 +344,7 @@ export abstract class Component {
     if (index !== -1) {
       this.children.splice(index, 1);
       this.recalculateLayout();
+      requestRender();
     }
   }
 

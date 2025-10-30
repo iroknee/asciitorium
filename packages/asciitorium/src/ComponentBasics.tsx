@@ -8,7 +8,7 @@ import { BaseStyle } from './constants';
  */
 export const ComponentBasics = () => {
   return (
-    <Column style={BaseStyle} gap={1} label="Component Basics">
+    <Column style={BaseStyle} label="Component Basics">
       <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
         All components extend the base Component class. It provides position
         management, layout, rendering, focus handling, and state binding. This
