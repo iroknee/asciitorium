@@ -32,7 +32,12 @@ export class RowLayout implements Layout {
     let fixedWidthTotal = 0;
 
     for (const child of visibleChildren) {
-      if (child.fixed) continue;
+      if (child.fixed) {
+        // Fixed positioned children still need size resolution
+        const context = createSizeContext(parent.width, parent.height, borderPad);
+        child.resolveSize(context);
+        continue;
+      }
 
       const gap = resolveGap(child.gap);
       const originalWidth = child.getOriginalWidth();
@@ -64,8 +69,8 @@ export class RowLayout implements Layout {
 
       for (const child of fillChildren) {
         const gap = resolveGap(child.gap);
-        // Each fill child gets equal share (gaps already accounted for in fixedWidthTotal)
-        child.width = Math.max(1, widthPerFill);
+        // Each fill child gets equal share, minus its gaps
+        child.width = Math.max(1, widthPerFill - gap.left - gap.right);
       }
     } else if (fillCount > 0) {
       // No remaining space - give fill children minimum size
@@ -77,7 +82,7 @@ export class RowLayout implements Layout {
     // Pass 3: Calculate total row width for row-level alignment
     let totalRowWidth = 0;
     for (const child of visibleChildren) {
-      if (child.fixed) continue;
+      if (child.fixed) continue; // Don't include fixed children in layout calculations
       const gap = resolveGap(child.gap);
       totalRowWidth += gap.left + child.width + gap.right;
     }
@@ -106,7 +111,7 @@ export class RowLayout implements Layout {
     let currentX = startX;
 
     for (const child of visibleChildren) {
-      if (child.fixed) continue;
+      if (child.fixed) continue; // Skip positioning - already positioned
 
       const gap = resolveGap(child.gap);
 

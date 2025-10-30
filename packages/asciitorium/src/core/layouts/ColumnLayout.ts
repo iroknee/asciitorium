@@ -26,7 +26,12 @@ export class ColumnLayout implements Layout {
     let fixedHeightTotal = 0;
 
     for (const child of visibleChildren) {
-      if (child.fixed) continue;
+      if (child.fixed) {
+        // Fixed positioned children still need size resolution
+        const context = createSizeContext(parent.width, parent.height, borderPad);
+        child.resolveSize(context);
+        continue;
+      }
 
       const gap = resolveGap(child.gap);
       const originalHeight = child.getOriginalHeight();
@@ -58,8 +63,8 @@ export class ColumnLayout implements Layout {
 
       for (const child of fillChildren) {
         const gap = resolveGap(child.gap);
-        // Each fill child gets equal share (gaps already accounted for in fixedHeightTotal)
-        child.height = Math.max(1, heightPerFill);
+        // Each fill child gets equal share, minus its gaps
+        child.height = Math.max(1, heightPerFill - gap.top - gap.bottom);
       }
     } else if (fillCount > 0) {
       // No remaining space - give fill children minimum size
@@ -72,7 +77,7 @@ export class ColumnLayout implements Layout {
     let currentY = borderPad;
 
     for (const child of visibleChildren) {
-      if (child.fixed) continue;
+      if (child.fixed) continue; // Skip positioning - already positioned
 
       const gap = resolveGap(child.gap);
 

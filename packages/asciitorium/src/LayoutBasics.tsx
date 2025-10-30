@@ -8,9 +8,9 @@ import { BaseStyle } from './constants';
  */
 export const LayoutBasics = () => {
   return (
-    <Column style={BaseStyle} gap={1} label="Layout Basics">
+    <Column style={BaseStyle} label="Layout Basics">
       <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
-        Asciitorium provides multiple layout approaches for organizing
+        Asciitorium provides Column and Row layout containers for organizing
         components. Layouts automatically calculate child positions and sizes
         based on the layout type and available space.
       </Text>
@@ -21,63 +21,55 @@ export const LayoutBasics = () => {
       <Line width="90%" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Row Layout — arranges children horizontally left-to-right
+        • Row Layout — arranges children horizontally
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Column Layout — arranges children vertically top-to-bottom
+        • Column Layout — arranges children vertically
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
-        Row Layout Example:
+        Layout Examples:
       </Text>
-
-      <Text width="90%" align="center" gap={{ bottom: 1 }} wrap={false}>
-        {`
- <Row gap={2} border>
-    <Text border>First</Text>
-    <Text border>Second</Text>
-    <Text border>Third</Text>
- </Row>
-`}
-      </Text>
-
-      <Row align="center" gap={2} border label="Row Demo">
-        <Text border>First</Text>
-        <Text border>Second</Text>
-        <Text border>Third</Text>
-      </Row>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Column Layout Example:
-      </Text>
-
-      <Text width="90%" align="center" gap={{ bottom: 1 }} wrap={false}>
-        {`
- <Column gap={1} border>
-    <Text border>First</Text>
-    <Text border>Second</Text>
-    <Text border>Third</Text>
- </Column>
-`}
-      </Text>
+      <Line width="90%" gap={{ bottom: 1 }} align="center" />
 
       <Column
         width="90%"
         align="center"
-        gap={1}
         border
-        label="Column Demo"
+        label="Combined Row + Column Demo"
+        height={15}
       >
-        <Text border>First</Text>
-        <Text border>Second</Text>
-        <Text border>Third</Text>
+        <Text border width="fill" align="center">
+          Header
+        </Text>
+        <Row height="fill">
+          <Column width={14} height="fill" border>
+            <Text>Nav Item 1</Text>
+            <Text>Nav Item 2</Text>
+            <Text>Nav Item 3</Text>
+          </Column>
+          <Column width="fill" height="fill" border>
+            <Text>Main Content Area</Text>
+          </Column>
+        </Row>
+        <Text border width="fill" align="center">
+          Footer
+        </Text>
       </Column>
 
-      <Text width="90%" align="center" gap={{ top: 2, bottom: 2 }}>
-        Use the Row and Column components for automatic layout, or set the
-        position property on any component for absolute positioning. Layouts
-        respect gap, alignment, and sizing properties for flexible composition.
+      <Text width="90%" align="center" gap={{ top: 1, bottom: 1 }}>
+        * For absolute positioning you can use the position prop. 
+        Positioned components are skipped by
+        layout systems and placed at exact coordinates.
+      </Text>
+
+      <Text width="80%" align="center" wrap={false} border>
+        {`
+  <Text position={{ x: 10, y: 5 }}>
+    Fixed Position
+  </Text>
+`}
       </Text>
     </Column>
   );
