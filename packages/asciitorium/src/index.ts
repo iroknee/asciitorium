@@ -32,4 +32,5 @@ export * from './components/FirstPersonView';
 export * from './components/FirstPersonCompositor';
 export * from './StateBasics';
 export * from './ComponentBasics';
+export * from './TextBasics';
 export * from './NavigationBasics';

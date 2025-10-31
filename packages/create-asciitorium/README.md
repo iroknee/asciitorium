@@ -1,6 +1,6 @@
 # create-asciitorium
 
-`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](https://github.com/iroknee/asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building ASCII art-based web applications with minimal setup.
+`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](https://github.com/iroknee/asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building CLUI applications with minimal setup.
 
 ## Features
 

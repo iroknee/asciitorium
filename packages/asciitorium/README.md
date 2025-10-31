@@ -1,6 +1,6 @@
 # asciitorium
 
-**asciitorium** is an ASCII-based UI framework that runs in both the web and CLI.
+**asciitorium** is an ASCII-based CLUI framework that runs in both the web and CLI.
 
 ## Installation
 

@@ -20,6 +20,7 @@ import { LayoutBasics } from './LayoutBasics';
 import { NavigationBasics } from './NavigationBasics';
 import { StateBasics } from './StateBasics';
 import { AlignmentBasics } from './AlignmentBasics';
+import { TextBasics } from './TextBasics';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -28,6 +29,7 @@ const docMap: Record<string, any> = {
   art: ArtBasics,
   layout: LayoutBasics,
   navigation: NavigationBasics,
+  text: TextBasics,
   keybindings: KeybindingsExample,
   align: AlignmentBasics,
   state: StateBasics,
@@ -73,10 +75,11 @@ const app = (
         <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="state">State Management</Option>
-        <OptionGroup label="Special Components">
+        <OptionGroup label="Components">
           <Option value="app">App</Option>
           <Option value="art">Art</Option>
           <Option value="perf">PerfMonitor</Option>
+          <Option value="text">Text</Option>
         </OptionGroup>
       </Select>
       <Switch width="fill" height="fill" component={selected} />
