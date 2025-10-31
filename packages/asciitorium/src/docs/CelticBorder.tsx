@@ -8,12 +8,12 @@ import { BaseStyle } from './constants';
  */
 export const CelticBorderDoc = () => {
   return (
-    <Component style={BaseStyle} layout="aligned" label="CelticBorder Component">
-        <CelticBorder align="top-left" />
-        <CelticBorder align="bottom-left" />
+    <Component style={BaseStyle} label="CelticBorder Component">
+        <CelticBorder position={{ x: 0, y: 0 }} />
+        <CelticBorder position={{ x: 0, y: -3 }} />
         <Text align="center" width={30} >CelticBorder Component is an example of how to create decorative borders in ASCII art.</Text>
-        <CelticBorder align="top-right" />
-        <CelticBorder align="bottom-right" />
+        <CelticBorder position={{ x: -3, y: 0 }} />
+        <CelticBorder position={{ x: -3, y: -3 }} />
     </Component>
   );
 };

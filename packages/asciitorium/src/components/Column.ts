@@ -11,7 +11,7 @@ export class Column extends Component {
     super({
       ...props,
       width: props.width, // Don't default width - let auto-sizing calculate from children
-      height: props.height, // Don't default height - let auto-sizing calculate from children  
+      height: props.height, // Don't default height - let auto-sizing calculate from children
       layout: 'column',
       layoutOptions: {}
     });

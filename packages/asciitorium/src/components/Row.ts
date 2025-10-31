@@ -9,7 +9,8 @@ export class Row extends Component {
     super({
       ...props,
       width: props.width ?? props.style?.width ?? 'fill', // Keep 'fill' for width as rows typically span horizontally
-      layout: 'row'
+      layout: 'row',
+      layoutOptions: {}
     });
   }
 

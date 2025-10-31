@@ -93,6 +93,15 @@ export class ColumnLayout implements Layout {
         child.width = Math.max(1, availableWidth);
       }
 
+      // Validate alignment - Column children should only use horizontal alignment
+      if (child.align && (child.align === 'top' || child.align === 'bottom')) {
+        console.warn(
+          `Column layout: Child has invalid align="${child.align}". ` +
+          `Column children only support horizontal alignment: 'left', 'center', 'right'. ` +
+          `For vertical spacing, use the 'gap' prop.`
+        );
+      }
+
       // Calculate horizontal alignment
       const { x } = resolveAlignment(
         child.align,

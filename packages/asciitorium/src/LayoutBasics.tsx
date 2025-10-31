@@ -29,9 +29,9 @@ export const LayoutBasics = () => {
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
-        Layout Examples:
+        Layout Example:
       </Text>
-      <Line width="90%" gap={{ bottom: 1 }} align="center" />
+      <Line width="90%" gap={{ bottom: 2 }} align="center" />
 
       <Column
         width="90%"
@@ -58,13 +58,13 @@ export const LayoutBasics = () => {
         </Text>
       </Column>
 
-      <Text width="90%" align="center" gap={{ top: 1, bottom: 1 }}>
+      <Text width="90%" align="center" gap={{ bottom: 1 }}>
         * For absolute positioning you can use the position prop. 
         Positioned components are skipped by
         layout systems and placed at exact coordinates.
       </Text>
 
-      <Text width="80%" align="center" wrap={false} border>
+      <Text width="90%" label="Absolute Positioning Example" align="center" wrap={false} border>
         {`
   <Text position={{ x: 10, y: 5 }}>
     Fixed Position

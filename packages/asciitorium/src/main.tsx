@@ -19,6 +19,7 @@ import { ComponentBasics } from './ComponentBasics';
 import { LayoutBasics } from './LayoutBasics';
 import { NavigationBasics } from './NavigationBasics';
 import { StateBasics } from './StateBasics';
+import { AlignmentBasics } from './AlignmentBasics';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -28,6 +29,7 @@ const docMap: Record<string, any> = {
   layout: LayoutBasics,
   navigation: NavigationBasics,
   keybindings: KeybindingsExample,
+  align: AlignmentBasics,
   state: StateBasics,
 };
 
@@ -52,20 +54,21 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21" width={80}>
+  <App font="PrintChar21">
     <Keybind keyBinding="F12" action={togglePerfMonitor} global />
 
     <Art src="asciitorium" align="center" gap={{ bottom: 1 }} />
     <Row height="fill">
       <Select
         label="Documentation"
-        width="33%"
+        width={28}
         height="fill"
         selected={selectedKey}
       >
         <Option value="start">Getting Started</Option>
-        <Option value="components">Component Basics</Option>
+        <Option value="components">Components</Option>
         <Option value="layout">Layouts</Option>
+        <Option value="align">Component Alignment</Option>
         <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="state">State Management</Option>

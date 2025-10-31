@@ -1,27 +1,11 @@
 import { Component } from './Component';
 import { LayoutOptions, LayoutType } from './layouts/Layout';
 
-export type HorizontalAlign = 'left' | 'center' | 'right' | number;
-export type VerticalAlign = 'top' | 'center' | 'bottom' | number;
-
-export type AlignmentKeyword =
-  | 'top-left'
-  | 'top'
-  | 'top-right'
-  | 'left'
-  | 'center'
-  | 'right'
-  | 'bottom-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'fixed';
-
-export type Alignment =
-  | AlignmentKeyword
-  | {
-      x: 'left' | 'center' | 'right' | number;
-      y: 'top' | 'middle' | 'bottom' | number;
-    };
+// Simplified alignment - only cross-axis positioning with keywords
+// Row children: 'top' | 'center' | 'bottom' (vertical cross-axis)
+// Column children: 'left' | 'center' | 'right' (horizontal cross-axis)
+// Use 'position' prop for numeric offsets, 'gap' prop for spacing
+export type Alignment = 'top' | 'center' | 'bottom' | 'left' | 'right';
 
 // Size value types for relative and absolute sizing
 export type SizeValue = 

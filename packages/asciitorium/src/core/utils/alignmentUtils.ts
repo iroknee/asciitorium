@@ -1,5 +1,12 @@
 import type { Alignment } from '../types';
 
+/**
+ * Resolve alignment keywords to numeric offsets.
+ * Only handles simple cross-axis alignment:
+ * - Row children: 'top', 'center', 'bottom' (vertical)
+ * - Column children: 'left', 'center', 'right' (horizontal)
+ * - 'center' works for both axes
+ */
 export function resolveAlignment(
   align: Alignment | undefined,
   parentWidth: number,
@@ -7,76 +14,35 @@ export function resolveAlignment(
   childWidth: number,
   childHeight: number
 ): { x: number; y: number } {
-  let hAlign: 'left' | 'center' | 'right' | number = 'left';
-  let vAlign: 'top' | 'middle' | 'bottom' | number = 'top';
-
-  if (typeof align === 'string') {
-    // Handle compound alignments like "top-left"
-    switch (align) {
-      case 'top-left':
-        vAlign = 'top';
-        hAlign = 'left';
-        break;
-      case 'top':
-        vAlign = 'top';
-        hAlign = 'center';
-        break;
-      case 'top-right':
-        vAlign = 'top';
-        hAlign = 'right';
-        break;
-
-      case 'left':
-        vAlign = 'middle';
-        hAlign = 'left';
-        break;
-      case 'center':
-        vAlign = 'middle';
-        hAlign = 'center';
-        break;
-      case 'right':
-        vAlign = 'middle';
-        hAlign = 'right';
-        break;
-
-      case 'bottom-left':
-        vAlign = 'bottom';
-        hAlign = 'left';
-        break;
-      case 'bottom':
-        vAlign = 'bottom';
-        hAlign = 'center';
-        break;
-      case 'bottom-right':
-        vAlign = 'bottom';
-        hAlign = 'right';
-        break;
-
-      default:
-        // fallback to top-left if unrecognized
-        vAlign = 'top';
-        hAlign = 'left';
-        break;
-    }
-  } else if (typeof align === 'object' && align !== null) {
-    hAlign = align.x ?? 'left';
-    vAlign = align.y ?? 'top';
+  if (!align) {
+    return { x: 0, y: 0 };
   }
 
   const padX = parentWidth - childWidth;
   const padY = parentHeight - childHeight;
 
-  let x: number;
-  if (typeof hAlign === 'number') x = hAlign;
-  else if (hAlign === 'center') x = Math.floor(padX / 2);
-  else if (hAlign === 'right') x = padX;
-  else x = 0;
+  let x = 0;
+  let y = 0;
 
-  let y: number;
-  if (typeof vAlign === 'number') y = vAlign;
-  else if (vAlign === 'middle') y = Math.floor(padY / 2);
-  else if (vAlign === 'bottom') y = padY;
-  else y = 0;
+  // Horizontal alignment (for Column children)
+  if (align === 'left') {
+    x = 0;
+  } else if (align === 'right') {
+    x = padX;
+  }
+
+  // Vertical alignment (for Row children)
+  if (align === 'top') {
+    y = 0;
+  } else if (align === 'bottom') {
+    y = padY;
+  }
+
+  // Center works for both axes
+  if (align === 'center') {
+    x = Math.floor(padX / 2);
+    y = Math.floor(padY / 2);
+  }
 
   return { x, y };
 }

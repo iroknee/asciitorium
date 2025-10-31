@@ -3,15 +3,9 @@ import { Layout, LayoutOptions } from './Layout';
 import type { Alignment } from '../types';
 import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index';
 
-export interface RowLayoutOptions extends LayoutOptions {
-  align?: Alignment;
-}
-
 export class RowLayout implements Layout {
-  private options: RowLayoutOptions;
-
-  constructor(options?: RowLayoutOptions) {
-    this.options = options || {};
+  constructor(_options?: LayoutOptions) {
+    // Row layout constructor - options reserved for future extensions
   }
 
   layout(parent: Component, children: Component[]): void {
@@ -79,36 +73,8 @@ export class RowLayout implements Layout {
       }
     }
 
-    // Pass 3: Calculate total row width for row-level alignment
-    let totalRowWidth = 0;
-    for (const child of visibleChildren) {
-      if (child.fixed) continue; // Don't include fixed children in layout calculations
-      const gap = resolveGap(child.gap);
-      totalRowWidth += gap.left + child.width + gap.right;
-    }
-
-    // Pass 4: Determine starting position based on row-level alignment
-    const rowAlign = this.options.align || 'left';
-    let startX = borderPad;
-
-    if (typeof rowAlign === 'string') {
-      if (rowAlign.includes('right') || rowAlign === 'right') {
-        startX = borderPad + innerWidth - totalRowWidth;
-      } else if (rowAlign.includes('center') || rowAlign === 'center') {
-        startX = borderPad + Math.floor((innerWidth - totalRowWidth) / 2);
-      }
-    } else if (typeof rowAlign === 'object' && rowAlign.x !== undefined) {
-      if (rowAlign.x === 'right') {
-        startX = borderPad + innerWidth - totalRowWidth;
-      } else if (rowAlign.x === 'center') {
-        startX = borderPad + Math.floor((innerWidth - totalRowWidth) / 2);
-      } else if (typeof rowAlign.x === 'number') {
-        startX = borderPad + rowAlign.x;
-      }
-    }
-
-    // Pass 5: Position all children and set heights
-    let currentX = startX;
+    // Pass 3: Position all children and set heights
+    let currentX = borderPad;
 
     for (const child of visibleChildren) {
       if (child.fixed) continue; // Skip positioning - already positioned
@@ -129,6 +95,15 @@ export class RowLayout implements Layout {
         // Let child auto-size its height based on content
         const context = createSizeContext(parent.width, parent.height, borderPad);
         child.resolveSize(context);
+      }
+
+      // Validate alignment - Row children should only use vertical alignment
+      if (child.align && (child.align === 'left' || child.align === 'right')) {
+        console.warn(
+          `Row layout: Child has invalid align="${child.align}". ` +
+          `Row children only support vertical alignment: 'top', 'center', 'bottom'. ` +
+          `For horizontal spacing, use the 'gap' prop.`
+        );
       }
 
       // Calculate vertical alignment
