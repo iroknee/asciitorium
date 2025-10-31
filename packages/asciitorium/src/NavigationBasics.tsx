@@ -15,7 +15,7 @@ export const NavigationBasics = () => {
 
     const firework = new Art({
       src: 'firework',
-      position: { x, y, z: 10 },
+      position: { x, y },
     });
 
     container.addChild(firework);
