@@ -1,21 +1,14 @@
 import { Component, ComponentProps } from '../core/Component';
 import type { State } from '../core/State';
 import { isState } from '../core/environment';
-import { resolveTextAlignment } from '../core/utils/textAlignmentUtils';
+import { resolveAlignment } from '../core/utils/index';
 import { Alignment, SizeContext } from '../core/types';
 import { ScrollableViewport } from '../core/ScrollableViewport';
-
-// Text-specific alignment supporting 9 positions within the text box
-export type TextAlignment =
-  | 'top-left' | 'top' | 'top-right'
-  | 'left' | 'center' | 'right'
-  | 'bottom-left' | 'bottom' | 'bottom-right';
 
 export interface TextOptions
   extends Omit<ComponentProps, 'children'> {
   content?: string | State<any>;
   align?: Alignment;
-  textAlign?: TextAlignment;
   children?: (string | State<any>) | (string | State<any>)[];
   scrollable?: boolean;
   wrap?: boolean;
@@ -23,7 +16,6 @@ export interface TextOptions
 
 export class Text extends Component {
   private source: string | State<any>;
-  private textAlign?: TextAlignment;
   private scrollableViewport = new ScrollableViewport();
   private totalLines: string[] = [];
   private scrollOffset: number = 0;
@@ -68,7 +60,7 @@ export class Text extends Component {
       actualContent = '';
     }
 
-    const { children, content, scrollable, wrap, textAlign, ...componentProps } = options;
+    const { children, content, scrollable, wrap, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width, // Don't default to fill - let resolveSize handle it
@@ -76,10 +68,10 @@ export class Text extends Component {
     });
 
     this.source = actualContent;
-    this.textAlign = textAlign;
     this.isScrollable = scrollable ?? false;
     this.shouldWrap = wrap ?? true;
     this.focusable = this.isScrollable;
+    // Don't override align - let the Component base class handle it through mergeStyles
   }
 
   override handleEvent(event: string): boolean {
@@ -229,9 +221,10 @@ export class Text extends Component {
       linesToDraw = this.wrapText(this.getContentAsString(), innerWidth, innerHeight);
     }
 
-    // Use textAlign for positioning text within the component
-    const { x, y } = resolveTextAlignment(
-      this.textAlign,
+    // Use contentAlign for positioning content within the component
+    // Fall back to align for backward compatibility
+    const { x, y } = resolveAlignment(
+      this.contentAlign ?? this.align,
       innerWidth,
       innerHeight,
       innerWidth,

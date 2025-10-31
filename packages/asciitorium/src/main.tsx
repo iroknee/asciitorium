@@ -63,12 +63,13 @@ const app = (
         label="Documentation"
         width={28}
         height="fill"
+        hotkey="d"
         selected={selectedKey}
       >
         <Option value="start">Getting Started</Option>
         <Option value="components">Components</Option>
         <Option value="layout">Layouts</Option>
-        <Option value="align">Component Alignment</Option>
+        <Option value="align">Alignment</Option>
         <Option value="navigation">Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="state">State Management</Option>

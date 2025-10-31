@@ -24,20 +24,14 @@ export const LayoutBasics = () => {
         • Row Layout — arranges children horizontally
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
         • Column Layout — arranges children vertically
       </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Layout Example:
-      </Text>
-      <Line width="90%" gap={{ bottom: 2 }} align="center" />
-
       <Column
         width="90%"
         align="center"
         border
-        label="Combined Row + Column Demo"
+        label="Layout Example"
         height={15}
       >
         <Text border width="fill" align="center">
@@ -59,12 +53,18 @@ export const LayoutBasics = () => {
       </Column>
 
       <Text width="90%" align="center" gap={{ bottom: 1 }}>
-        * For absolute positioning you can use the position prop. 
-        Positioned components are skipped by
-        layout systems and placed at exact coordinates.
+        * For absolute positioning you can use the position prop. Positioned
+        components are skipped by layout systems and placed at exact
+        coordinates.
       </Text>
 
-      <Text width="90%" label="Absolute Positioning Example" align="center" wrap={false} border>
+      <Text
+        width="90%"
+        label="Absolute Positioning Example"
+        align="center"
+        wrap={false}
+        border
+      >
         {`
   <Text position={{ x: 10, y: 5 }}>
     Fixed Position

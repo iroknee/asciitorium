@@ -8,7 +8,7 @@ import { BaseStyle } from './constants';
  */
 export const AlignmentBasics = () => {
   return (
-    <Column style={BaseStyle} label="Component Alignment Basics">
+    <Column style={BaseStyle} label="Alignment Basics">
       <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
         The 'align' prop positions component children on the cross-axis using
         simple keywords.
@@ -23,12 +23,12 @@ export const AlignmentBasics = () => {
         • Row children: use 'top', 'center', or 'bottom' (vertical positioning)
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
         • Column children: use 'left', 'center', or 'right' (horizontal
         positioning)
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" align="center">
         Examples
       </Text>
       <Line width="90%" align="center" gap={{ bottom: 1 }} />
@@ -46,7 +46,7 @@ export const AlignmentBasics = () => {
           </Text>
         </Column>
 
-        <Column width={23} height={12} border label="Column Aligned">
+        <Column width={23} height={12} border label="Column Alignment">
           <Text align="left" border>
             left
           </Text>
@@ -72,7 +72,7 @@ export const AlignmentBasics = () => {
           </Text>
         </Row>
 
-        <Row width={23} height={12} border label="Row Aligned">
+        <Row width={23} height={12} border label="Row Alignment">
           <Text align="top" border>
             top
           </Text>
@@ -84,45 +84,8 @@ export const AlignmentBasics = () => {
           </Text>
         </Row>
       </Row>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Column Layout - Horizontal Alignment
-      </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Other Options
-      </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="center" gap={{ left: 4, top: 1 }}>
         • For spacing between children: use the 'gap' prop
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        • For numeric offsets: use the 'position' prop (e.g., position=
-        {`{{ x: 10, y: 5 }}`})
-      </Text>
-
-      <Row width="90%" border label="Using gap for spacing" gap={{ top: 2 }}>
-        <Text border gap={{ right: 2 }}>
-          A
-        </Text>
-        <Text border gap={{ right: 5 }}>
-          B
-        </Text>
-        <Text border>C</Text>
-      </Row>
-
-      <Text
-        width="90%"
-        border
-        label="Using position for offset"
-        gap={{ top: 2 }}
-      >
-        <Text position={{ x: 10, y: 2 }} border>
-          Positioned at (10, 2)
-        </Text>
       </Text>
     </Column>
   );

@@ -31,7 +31,9 @@ export const NavigationBasics = () => {
       <Art gap={{ top: 1, bottom: 1 }} src="nav-basics" align="center" />
 
       <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        {`Asciitorium uses [Tab] + [Tab+Shift] for moving between focusable components. In addition, components can befocused accessed directly via hotkeys. Focused components use a '>' to indicate focus.`}
+        Asciitorium uses [Tab] + [Tab+Shift] for moving between focusable components. 
+        Some components can be focused on directly via hotkeys, such as Buttons. 
+        Focused components use a {'>'} key to indicate they have focus.
       </Text>
 
       <Text width="90%" align="center">

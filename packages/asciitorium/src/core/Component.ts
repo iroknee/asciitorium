@@ -44,9 +44,6 @@ export interface ComponentProps {
   /** Component alignment within its parent (used by layout system) */
   align?: Alignment;
 
-  /** Content alignment within the component itself */
-  contentAlign?: Alignment;
-
   /** Exact coordinate placement - overrides layout positioning */
   position?: PositionValue;
 
@@ -166,9 +163,6 @@ export abstract class Component {
   /** Component alignment within its parent (used by layout system) */
   public align?: Alignment;
 
-  /** Content alignment within the component itself */
-  public contentAlign?: Alignment;
-
   /** Whether the component uses fixed positioning */
   public fixed: boolean = false;
 
@@ -260,7 +254,6 @@ export abstract class Component {
     this.border = mergedStyle.border ?? false;
     this.fill = mergedStyle.background ?? ' ';
     this.align = mergedStyle.align;
-    this.contentAlign = props.contentAlign;
 
     // Handle positioning
     if (mergedStyle.position) {

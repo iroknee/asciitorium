@@ -38,11 +38,11 @@ export const ComponentBasics = () => {
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Gap — Spacing within the component
+        • Align — align component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Align — align component
+        • Gap — Spacing within the component
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
@@ -57,23 +57,12 @@ export const ComponentBasics = () => {
         • Visible — component visibility
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
         • Children/Content — child / content
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Simple component example:
-      </Text>
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }} wrap={false} border>
-        {`
- <Text width="90%" align="center" border>
-    Hello World!
- </Text>
-`}
-      </Text>
-
-      <Text width="90%" height={5} align="center" border>
+      <Text width="90%" label="Component Example" height={5} align="center" textAlign="center" border>
         Hello World!
       </Text>
     </Column>
