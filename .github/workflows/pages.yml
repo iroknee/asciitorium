@@ -34,24 +34,15 @@ jobs:
       - name: Build demo
         run: |
           cd packages/asciitorium
-          npm run build
+          BUILD_MODE=demo npm run build
 
       - name: Copy demo files for Pages
         run: |
           mkdir -p dist-pages
           cd packages/asciitorium
 
-          # Copy main HTML file
-          cp index.html ../../dist-pages/
-
-          # Copy all public assets (CSS, fonts, images, art files)
-          cp -r public/* ../../dist-pages/ 2>/dev/null || true
-
-          # Copy built library files
-          cp -r dist ../../dist-pages/
-
-          # Copy source files (needed for the demo since it imports from src)
-          cp -r src ../../dist-pages/
+          # Copy the entire demo build output (includes HTML, CSS, and bundled JS)
+          cp -r dist-demo/* ../../dist-pages/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
