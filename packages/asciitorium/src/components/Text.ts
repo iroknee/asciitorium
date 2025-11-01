@@ -4,6 +4,7 @@ import { isState } from '../core/environment';
 import { resolveTextAlignment } from '../core/utils/textAlignmentUtils';
 import { Alignment, SizeContext } from '../core/types';
 import { ScrollableViewport } from '../core/ScrollableViewport';
+import { requestRender } from '../core/RenderScheduler';
 
 // Text-specific alignment supporting 9 positions within the text box
 export type TextAlignment =
@@ -22,13 +23,14 @@ export interface TextOptions
 }
 
 export class Text extends Component {
-  private source: string | State<any>;
+  private source: string | State<any> | (string | State<any>)[];
   private textAlign?: TextAlignment;
   private scrollableViewport = new ScrollableViewport();
   private totalLines: string[] = [];
   private scrollOffset: number = 0;
   private isScrollable: boolean = false;
   private shouldWrap: boolean = true;
+  private stateUnsubscribers: (() => void)[] = [];
 
   focusable = false;
   hasFocus = false;
@@ -42,23 +44,14 @@ export class Text extends Component {
         ? options.children
         : [options.children];
 
-      // Process all children and concatenate them
+      // Process all children
       if (children.length > 0) {
         // If there's only one child, use it directly (preserves State objects)
         if (children.length === 1) {
           actualContent = children[0];
         } else {
-          // Multiple children: create a computed string by concatenating
-          // For now, concatenate at construction time (static)
-          actualContent = children.map(child => {
-            if (typeof child === 'string') {
-              return child;
-            } else if (isState(child)) {
-              return child.value;
-            } else {
-              return String(child);
-            }
-          }).join('');
+          // Multiple children: store the array for dynamic concatenation
+          actualContent = children;
         }
       }
     }
@@ -80,6 +73,42 @@ export class Text extends Component {
     this.isScrollable = scrollable ?? false;
     this.shouldWrap = wrap ?? true;
     this.focusable = this.isScrollable;
+
+    // Subscribe to any State objects in the source
+    this.subscribeToStates();
+  }
+
+  private subscribeToStates(): void {
+    const statesToSubscribe: State<any>[] = [];
+
+    // Collect all State objects
+    if (Array.isArray(this.source)) {
+      for (const child of this.source) {
+        if (isState(child)) {
+          statesToSubscribe.push(child);
+        }
+      }
+    } else if (isState(this.source)) {
+      statesToSubscribe.push(this.source);
+    }
+
+    // Subscribe to each State object
+    for (const state of statesToSubscribe) {
+      const listener = () => {
+        requestRender();
+      };
+      state.subscribe(listener);
+      this.stateUnsubscribers.push(() => state.unsubscribe(listener));
+    }
+  }
+
+  override destroy(): void {
+    // Unsubscribe from all State objects
+    for (const unsubscribe of this.stateUnsubscribers) {
+      unsubscribe();
+    }
+    this.stateUnsubscribers = [];
+    super.destroy();
   }
 
   override handleEvent(event: string): boolean {
@@ -180,7 +209,19 @@ export class Text extends Component {
   }
 
   getContentAsString(): string {
-    if (isState(this.source)) {
+    if (Array.isArray(this.source)) {
+      // Multiple children: concatenate them dynamically
+      return this.source.map(child => {
+        if (typeof child === 'string') {
+          return child;
+        } else if (isState(child)) {
+          const value = child.value;
+          return value == null ? '' : String(value);
+        } else {
+          return String(child);
+        }
+      }).join('');
+    } else if (isState(this.source)) {
       const value = (this.source as State<any>).value;
       return value == null ? '' : String(value);
     }

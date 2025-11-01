@@ -57,7 +57,7 @@ const togglePerfMonitor = () => {
 
 const app = (
   <App font="PrintChar21">
-    <Keybind keyBinding="F12" action={togglePerfMonitor} global />
+    <Keybind keyBinding="F12" action={togglePerfMonitor} />
 
     <Art src="asciitorium" align="center" gap={{ bottom: 1 }} />
     <Row height="fill">
@@ -69,10 +69,10 @@ const app = (
         selected={selectedKey}
       >
         <Option value="start">Getting Started</Option>
-        <Option value="components">Components</Option>
+        <Option value="components">Component Basics</Option>
         <Option value="layout">Layouts</Option>
         <Option value="align">Alignment</Option>
-        <Option value="navigation">Navigation</Option>
+        <Option value="navigation">Component Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="state">State Management</Option>
         <OptionGroup label="Components">
