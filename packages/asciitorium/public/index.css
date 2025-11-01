@@ -10,7 +10,7 @@
 }
 
 body {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
   margin: 0;
   padding: 0;
   background: black;
@@ -35,6 +35,7 @@ body {
   overflow: hidden; /* Hide scrollbars for clean appearance */
 
   /* Ensure monospace font for proper character sizing */
+  font-family: 'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
   font-size: 12px; /* Base font size for character measurement */
   line-height: 1; /* Tight line spacing for ASCII art */
 
