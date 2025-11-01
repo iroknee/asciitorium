@@ -17,6 +17,13 @@ export const GettingStarted = () => {
         browsers and terminals.
       </Text>
 
+      <Text width="90%" align="center" gap={{ bottom: 2 }}>
+        Asciitorium is both a Component Framework and a lightweight ASCII art
+        and game engine. You can build UIs with reactive components, create ASCII
+        art with sprites and materials, or develop retro-style games with
+        first-person rendering and map-based movement systems.
+      </Text>
+
       <Text width="90%" align="center">
         To view the documentation, use the Select menu on the left to explore
         components, layouts, and features. Navigate with:
@@ -30,7 +37,7 @@ export const GettingStarted = () => {
         We hope you enjoy building ASCII experiences with Asciitorium!
       </Text>
 
-      <Text align="right" gap={{ top: 4, right: 4 }}>
+      <Text align="right" gap={{ top: 2, right: 4 }}>
         - The Asciitorium Team
       </Text>
     </Column>

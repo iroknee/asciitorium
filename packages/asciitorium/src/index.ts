@@ -34,3 +34,8 @@ export * from './ComponentBasics';
 export * from './TextBasics';
 export * from './KeybindingsBasics';
 export * from './NavigationBasics';
+export * from './SpritesBasics';
+export * from './FontsBasics';
+export * from './MaterialsBasics';
+export * from './MapsBasics';
+export * from './FPVBasics';
