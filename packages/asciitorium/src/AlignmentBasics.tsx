@@ -20,12 +20,11 @@ export const AlignmentBasics = () => {
       <Line width="90%" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        • Row children: use 'top', 'center', or 'bottom' (vertical positioning)
+        • Row children: use 'top', 'center', or 'bottom'
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • Column children: use 'left', 'center', or 'right' (horizontal
-        positioning)
+        • Column children: use 'left', 'center', or 'right'
       </Text>
 
       <Text width="90%" align="center">

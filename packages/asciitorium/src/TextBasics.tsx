@@ -13,9 +13,23 @@ export const TextBasics = () => {
         The Text component displays text content with support for alignment,
         wrapping, scrolling, and more.
       </Text>
+      <Text width="90%" align="center">
+        Common Properties
+      </Text>
+      <Line width="90%" align="center" gap={{ bottom: 1 }} />
+
+      <Text width="90%" align="left" gap={{ left: 4 }}>
+        • textAlign — Position text within component (9-point grid)
+      </Text>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
+        • wrap — Enable/disable text wrapping (default: true)
+      </Text>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
+        • scrollable — Enable scrolling for long content (default: false)
+      </Text>
 
       <Text width="90%" align="center">
-        Text Alignment (textAlign)
+        Text Alignment
       </Text>
       <Line width="90%" align="center" />
 
@@ -116,47 +130,6 @@ Line 7: Almost there...
 Line 8: You made it!
 Line 9: But there's more...
 Line 10: This is the end`}
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Auto-sizing
-      </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
-        Text components auto-size to fit their content when width or height are
-        not specified.
-      </Text>
-
-      <Column width="90%" align="center">
-        <Text border>Auto-sized text</Text>
-        <Text border gap={{ top: 1 }}>
-          This text will size to fit its content
-        </Text>
-      </Column>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Common Properties
-      </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • textAlign — Position text within component (9-point grid)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • wrap — Enable/disable text wrapping (default: true)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • scrollable — Enable scrolling for long content (default: false)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • width, height — Explicit dimensions or 'fill' for layout-based sizing
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • border — Show border around text (default: false)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • align — Position component within parent layout (cross-axis only)
       </Text>
     </Column>
   );

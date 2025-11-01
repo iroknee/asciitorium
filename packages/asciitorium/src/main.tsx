@@ -12,7 +12,6 @@ import {
   Keybind,
 } from './index';
 
-import { KeybindingsExample } from './KeybindingsExample';
 import { GettingStarted } from './GettingStarted';
 import { ArtBasics } from './ArtBasics';
 import { ComponentBasics } from './ComponentBasics';
@@ -21,6 +20,7 @@ import { NavigationBasics } from './NavigationBasics';
 import { StateBasics } from './StateBasics';
 import { AlignmentBasics } from './AlignmentBasics';
 import { TextBasics } from './TextBasics';
+import { KeybindingsBasics } from './KeybindingsBasics';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -30,7 +30,7 @@ const docMap: Record<string, any> = {
   layout: LayoutBasics,
   navigation: NavigationBasics,
   text: TextBasics,
-  keybindings: KeybindingsExample,
+  keybindings: KeybindingsBasics,
   align: AlignmentBasics,
   state: StateBasics,
 };

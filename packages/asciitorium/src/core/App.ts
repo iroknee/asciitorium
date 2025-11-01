@@ -206,6 +206,9 @@ export class App extends Component {
 
   // Add keybind registration methods
   registerKeybind(keybind: any) {
+    if (this.keybindRegistry.has(keybind.keyBinding)) {
+      console.warn(`Warning: Duplicate keybinding for "${keybind.keyBinding}". The previous binding will be overwritten.`);
+    }
     this.keybindRegistry.set(keybind.keyBinding, keybind);
   }
 
@@ -216,14 +219,11 @@ export class App extends Component {
   handleKey(key: string, event?: KeyboardEvent): void {
     // Check for app-level keybinds first
     const keybind = this.keybindRegistry.get(key);
-    if (keybind && !keybind.disabled) {
-      // Execute if global or no component has focus
-      if (keybind.global || !this.hasComponentWithFocus()) {
-        keybind.action();
-        this.render();
-        event?.preventDefault();
-        return;
-      }
+    if (keybind && !keybind.disabled && this.isKeybindActive(keybind)) {
+      keybind.action();
+      this.render();
+      event?.preventDefault();
+      return;
     }
 
     // Continue with existing focus manager delegation
@@ -231,6 +231,21 @@ export class App extends Component {
       this.render();
       event?.preventDefault();
     }
+  }
+
+  private isKeybindActive(keybind: any): boolean {
+    // Keybind is active if it's in the component tree and visible
+    return this.isComponentInTree(keybind);
+  }
+
+  private isComponentInTree(component: Component): boolean {
+    // Check if component is in the tree by walking up to find this App
+    let current: Component | undefined = component;
+    while (current) {
+      if (current === this) return true;
+      current = current.parent;
+    }
+    return false;
   }
 
   private hasComponentWithFocus(): boolean {

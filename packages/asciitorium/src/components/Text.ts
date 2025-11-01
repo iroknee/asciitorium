@@ -229,12 +229,15 @@ export class Text extends Component {
       linesToDraw = this.wrapText(this.getContentAsString(), innerWidth, innerHeight);
     }
 
+    // Calculate the maximum line width for alignment purposes
+    const maxLineWidth = Math.max(...linesToDraw.map(line => line.length), 0);
+
     // Use textAlign for positioning text within the component
     const { x, y } = resolveTextAlignment(
       this.textAlign,
       innerWidth,
       innerHeight,
-      innerWidth,
+      maxLineWidth,
       linesToDraw.length
     );
 
@@ -252,12 +255,25 @@ export class Text extends Component {
 
       if (currentY >= this.height) break;
 
+      // Calculate per-line horizontal alignment offset
+      const lineWidth = line.length;
+      let lineX = drawX;
+
+      // Apply horizontal alignment for each line
+      if (this.textAlign) {
+        if (this.textAlign.includes('right')) {
+          lineX = drawX + (maxLineWidth - lineWidth);
+        } else if (this.textAlign === 'center' || this.textAlign === 'top' || this.textAlign === 'bottom') {
+          lineX = drawX + Math.floor((maxLineWidth - lineWidth) / 2);
+        }
+      }
+
       for (
         let charIndex = 0;
         charIndex < line.length && charIndex < innerWidth;
         charIndex++
       ) {
-        const currentX = drawX + charIndex;
+        const currentX = lineX + charIndex;
         if (currentX < this.width) {
           this.buffer[currentY][currentX] = line[charIndex];
         }

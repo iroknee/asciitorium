@@ -5,7 +5,6 @@ export interface KeybindOptions extends ComponentProps {
   keyBinding: string;    // e.g., "F12", "Ctrl+s", "Escape"
   action: () => void;    // Function to execute
   description?: string;  // Optional description for help
-  global?: boolean;      // Override component focus (default: false)
   disabled?: State<boolean> | boolean; // Reactive or static disable
 }
 
@@ -13,7 +12,6 @@ export class Keybind extends Component {
   public readonly keyBinding: string;
   public readonly action: () => void;
   public readonly description?: string;
-  public readonly global: boolean;
   private disabledState?: State<boolean>;
   private staticDisabled: boolean;
   private registrationAttempted = false;
@@ -24,13 +22,12 @@ export class Keybind extends Component {
       width: 0,  // Invisible component
       height: 0,
       border: false,
-      visible: new State(false) // Never render
+      visible: new State(true) // Always visible to track component tree status
     });
 
     this.keyBinding = options.keyBinding;
     this.action = options.action;
     this.description = options.description;
-    this.global = options.global ?? false;
 
     // Handle disabled state (reactive or static)
     if (options.disabled instanceof State) {
