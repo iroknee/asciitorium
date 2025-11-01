@@ -10,8 +10,9 @@ export const TextBasics = () => {
   return (
     <Column style={BaseStyle} label="Text Component Basics">
       <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
-        The Text component displays text content with support for alignment,
-        wrapping, scrolling, and more.
+        The Text component is heavily used and will likely be your friend so it
+        warrants a dedicated section. It supports text alignment, wrapping, and
+        scrolling.
       </Text>
       <Text width="90%" align="center">
         Common Properties

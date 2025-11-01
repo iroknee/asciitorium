@@ -19,7 +19,6 @@ export * from './components/Line';
 export * from './components/Select';
 export * from './components/Option';
 export * from './components/OptionGroup';
-export * from './components/MultiSelect';
 export * from './components/Tab';
 export * from './components/TabContainer';
 export * from './components/Text';

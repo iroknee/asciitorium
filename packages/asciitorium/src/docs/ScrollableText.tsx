@@ -10,15 +10,14 @@ Key features:
 • Arrow keys (↑↓) for scrolling
 • Visual scroll indicators (↑↓) when content extends beyond viewport
 • Focus management - only scrollable when focused
-• Consistent UX with Select and MultiSelect components
+• Consistent UX with Select component
 • Backward compatible - non-scrollable Text components unchanged
 
 This implementation extracts common scrolling logic into a shared ScrollableViewport class that is used by:
 1. Select component
-2. MultiSelect component
-3. Text component (when scrollable: true)
+2. Text component (when scrollable: true)
 
-The scrolling behavior is consistent across all three components, providing a unified user experience throughout the framework.
+The scrolling behavior is consistent across both components, providing a unified user experience throughout the framework.
 
 You can scroll through this text using the arrow keys when this component has focus. The scroll indicators (↑↓) will appear on the right side when there is more content above or below the current viewport.
 
