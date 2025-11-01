@@ -184,6 +184,15 @@ export abstract class Component {
   /** Whether this component currently has focus */
   public hasFocus: boolean = false;
 
+  /**
+   * When true, component captures ALL keyboard input except bypass keys.
+   * Used by input components (TextInput, etc.) to receive all keystrokes.
+   */
+  protected captureModeActive: boolean = false;
+
+  /** Keys that bypass capture mode and always work for navigation */
+  public static readonly BYPASS_KEYS = ['Tab', 'Shift+Tab'];
+
   /** Character used for transparency in rendering ('‽' allows overlays) */
   public transparentChar = '‽';
 

@@ -31,9 +31,20 @@ export class TextInput extends Component {
 
   private cursorIndex = 0;
   private suppressCursorSync = false;
+  private _hasFocus = false;
 
   focusable = true;
-  hasFocus = false;
+
+  // Override hasFocus with getter/setter to enable capture mode on focus
+  get hasFocus(): boolean {
+    return this._hasFocus;
+  }
+
+  set hasFocus(value: boolean) {
+    this._hasFocus = value;
+    // Enable capture mode when focused, disable when unfocused
+    this.captureModeActive = value;
+  }
 
   constructor(options: TextInputOptions) {
     const height = options.height ?? options.style?.height ?? 3; // Default to 3 for backwards compatibility
@@ -166,6 +177,12 @@ export class TextInput extends Component {
     let updated = false;
     const val = this.valueStr.value;
 
+    // Handle Escape key - exit capture mode
+    if (event === 'Escape') {
+      this.captureModeActive = false;
+      return true;
+    }
+
     if (event.length === 1 && event >= ' ') {
       if (!this.allowChar(event, val)) return false;
 
@@ -175,7 +192,7 @@ export class TextInput extends Component {
       this.cursorIndex++;
       updated = true;
     } else if (event === 'Backspace') {
-      if (this.cursorIndex > 0) { 
+      if (this.cursorIndex > 0) {
         const left = val.slice(0, this.cursorIndex - 1);
         const right = val.slice(this.cursorIndex);
         this.setString(left + right);
@@ -211,6 +228,8 @@ export class TextInput extends Component {
       if (this.onEnter) {
         this.onEnter();
       }
+      // Exit capture mode after committing
+      this.captureModeActive = false;
       updated = true;
     }
 

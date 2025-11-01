@@ -1,11 +1,11 @@
 import {
-  Art,
   Line,
   Column,
   Row,
   Text,
   Button,
   State,
+  PersistentState,
   TextInput,
 } from './index';
 import { BaseStyle } from './constants';
@@ -16,120 +16,74 @@ import { BaseStyle } from './constants';
  * Guide to reactive state management in asciitorium.
  */
 export const StateBasics = () => {
-  const counter = new State(0);
-  const message = new State('Edit the text below and see it update!');
-  const inputValue = new State('Hello, State!');
+  // Regular State - resets when page reloads
+  const textValue = new State('Type something here!');
 
-  // Subscribe to input changes to update message
-  inputValue.subscribe((value) => {
-    message.value = `You typed: ${value}`;
-  });
+  // PersistentState - persists across page reloads
+  const persistentCounter = new PersistentState(0, 'demo-persistent-counter');
 
   return (
     <Column style={BaseStyle} label="State Basics">
-      <Art gap={{ bottom: 1 }} src="state-icon" align="left" />
-
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        State objects provide reactive state management with a subscribe pattern.
-        Components automatically re-render when State values change, enabling
-        dynamic UIs without manual DOM manipulation.
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+        Asciitorium provides reactive state management with State and
+        PersistentState. Components automatically re-render when values change.
       </Text>
 
       <Text width="90%" align="center">
-        Core State Features
+        State (In-Memory Reactivity)
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • State&lt;T&gt; — Generic reactive state container
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • value — Get/set current state value
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • subscribe() — Listen for state changes
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • unsubscribe() — Remove change listener
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • PersistentState&lt;T&gt; — State with localStorage persistence
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2, bottom: 1 }}>
-        Simple counter example:
-      </Text>
-
-      <Text width="90%" align="center" gap={{ bottom: 1 }} wrap={false} border>
-        {`
- const counter = new State(0);
-
- <Text>{counter}</Text>
- <Button onClick={() => counter.value++}>
-   Increment
- </Button>
-`}
-      </Text>
-
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
-        Counter: {counter}
-      </Text>
-
-      <Row width="90%" align="center" gap={{ bottom: 2 }}>
-        <Button hotkey="i" onClick={() => counter.value++}>
-          Increment
-        </Button>
-        <Button hotkey="d" onClick={() => counter.value--}>
-          Decrement
-        </Button>
-        <Button hotkey="r" onClick={() => (counter.value = 0)}>
-          Reset
-        </Button>
-      </Row>
-
-      <Text width="90%" align="center" gap={{ top: 1, bottom: 1 }}>
-        Reactive input example:
+      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 1 }}>
+        State provides reactive variables that trigger re-renders when changed.
+        Use for temporary values that reset on page reload.
       </Text>
 
       <TextInput
         width="90%"
         align="center"
         gap={{ bottom: 1 }}
-        hotkey="e"
-        value={inputValue}
+        hotkey="i"
+        value={textValue}
       />
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
-        {message}
-      </Text>
+      <Column width="90%" align="center" border gap={{ bottom: 2 }}>
+        <Text align="center" gap={{ top: 1, bottom: 1 }}>
+          You typed: {textValue}
+        </Text>
+      </Column>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        State Management Tips
+      <Text width="90%" align="center">
+        State API
       </Text>
       <Line width="90%" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Use State for values that change over time
+        • new State&lt;T&gt;(initialValue) — Create reactive state
       </Text>
-
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Pass State objects directly to component props
+        • state.value — Get or set the current value
       </Text>
-
       <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Use PersistentState for values that should survive page reloads
+        • state.subscribe(callback) — Listen for changes
+      </Text>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+        • state.unsubscribe(callback) — Stop listening
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Subscribe manually for custom reactions to state changes
+      <Text width="90%" align="center">
+        PersistentState (localStorage Backed)
+      </Text>
+      <Line width="90%" align="center" />
+
+      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 1 }}>
+        Asciitorium also supports PersistentState which extends State with
+        automatic localStorage persistence. Values survive page reloads.
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
-        • State changes automatically trigger component re-renders
+      <Text width="90%" align="center" gap={{ top: 1 }}>
+        Tip: State changes automatically trigger re-renders. You can also use
+        subscribe() for custom side effects when state changes.
       </Text>
     </Column>
   );

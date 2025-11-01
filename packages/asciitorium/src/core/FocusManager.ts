@@ -70,6 +70,19 @@ export class FocusManager {
    * Unified key handling for both hotkeys and navigation
    */
   handleKey(key: string): boolean {
+    // Get currently focused component
+    const current = this.currentContext[this.index];
+
+    // Check if focused component is in capture mode
+    if (current?.captureModeActive) {
+      // Only bypass keys (Tab, Shift+Tab) escape capture mode
+      if (!Component.BYPASS_KEYS.includes(key)) {
+        // Send key directly to component, skip hotkey processing
+        const handled = current.handleEvent?.(key);
+        return handled ?? false;
+      }
+    }
+
     // Handle hotkey visibility toggle first
     if (key === '`' || key === 'F1') {
       this.hotkeyVisibilityState.value = !this.hotkeyVisibilityState.value;
@@ -106,7 +119,6 @@ export class FocusManager {
     }
 
     // Pass other keys to focused component
-    const current = this.currentContext[this.index];
     const handled = current?.handleEvent?.(key);
     return handled ?? false;
   }

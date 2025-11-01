@@ -217,6 +217,20 @@ export class App extends Component {
   }
 
   handleKey(key: string, event?: KeyboardEvent): void {
+    // Check if focused component is in capture mode
+    const focusedComponent = this.getFocusedComponent();
+    if (focusedComponent?.captureModeActive) {
+      // Only bypass keys (Tab, Shift+Tab) escape capture mode
+      if (!Component.BYPASS_KEYS.includes(key)) {
+        // Send key directly to component, skip keybindings/hotkeys
+        if (focusedComponent.handleEvent(key)) {
+          this.render();
+          event?.preventDefault();
+        }
+        return;
+      }
+    }
+
     // Check for app-level keybinds first
     const keybind = this.keybindRegistry.get(key);
     if (keybind && !keybind.disabled && this.isKeybindActive(keybind)) {
@@ -231,6 +245,10 @@ export class App extends Component {
       this.render();
       event?.preventDefault();
     }
+  }
+
+  private getFocusedComponent(): Component | undefined {
+    return this.getAllDescendants().find(c => c.hasFocus);
   }
 
   private isKeybindActive(keybind: any): boolean {
