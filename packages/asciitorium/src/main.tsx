@@ -70,16 +70,16 @@ const app = (
       >
         <Option value="start">Getting Started</Option>
         <Option value="components">Component Basics</Option>
+        <Option value="text">Text</Option>
         <Option value="layout">Layouts</Option>
         <Option value="align">Alignment</Option>
         <Option value="navigation">Component Navigation</Option>
         <Option value="keybindings">Keybindings</Option>
         <Option value="state">State Management</Option>
-        <OptionGroup label="Components">
-          <Option value="app">App</Option>
-          <Option value="art">Art</Option>
-          <Option value="perf">PerfMonitor</Option>
-          <Option value="text">Text</Option>
+        <OptionGroup label="The Art Component">
+          <Option value="app">Sprites</Option>
+          <Option value="art">Fonts</Option>
+          <Option value="perf">Materials</Option>
         </OptionGroup>
       </Select>
       <Switch width="fill" height="fill" component={selected} />

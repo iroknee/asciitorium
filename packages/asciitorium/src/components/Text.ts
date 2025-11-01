@@ -321,6 +321,16 @@ export class Text extends Component {
       }
     }
 
+    // Draw focus indicator for scrollable text with border
+    if (this.hasFocus && this.border && this.isScrollable) {
+      // Draw ' > ' at positions (1, 0), (2, 0), (3, 0)
+      if (this.buffer.length > 0 && this.buffer[0].length > 3) {
+        this.buffer[0][2] = ' ';
+        this.buffer[0][3] = '>';
+        this.buffer[0][4] = ' ';
+      }
+    }
+
     return this.buffer;
   }
 
