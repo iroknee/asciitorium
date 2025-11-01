@@ -414,6 +414,13 @@ export abstract class Component {
   }
 
   destroy(): void {
+    // Recursively destroy all children first
+    const childrenToDestroy = [...this.children];
+    for (const child of childrenToDestroy) {
+      child.destroy();
+    }
+
+    // Then clean up own state
     for (const unbind of this.unbindFns) unbind();
     this.unbindFns = [];
   }

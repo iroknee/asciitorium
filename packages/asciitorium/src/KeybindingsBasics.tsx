@@ -37,9 +37,9 @@ export const KeybindingsBasics = () => {
   const container = (
     <Column style={BaseStyle} label="Keybindings Basics">
       <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
-        Asciitorium provides two keyboard systems: global Keybindings for
-        app-level shortcuts and Hotkeys for quick component navigation (see Component Navigation).
-        Use keybindings when you just want an action to occur, but want to maintain focus on the given component, and hotkeys when you want to focus a specific component.
+        Asciitorium provides global Keybindings for
+        app-level shortcuts in addition to Hotkeys.
+        Use keybindings when you just want an action to occur, but want to maintain focus on the given component.
       </Text>
 
       <Text width="90%" align="center">

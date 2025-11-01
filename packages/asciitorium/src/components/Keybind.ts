@@ -15,6 +15,8 @@ export class Keybind extends Component {
   private disabledState?: State<boolean>;
   private staticDisabled: boolean;
   private registrationAttempted = false;
+  private timeoutId?: number;
+  private destroyed = false;
 
   constructor(options: KeybindOptions) {
     super({
@@ -49,8 +51,8 @@ export class Keybind extends Component {
   }
 
   private registerWithApp() {
-    if (this.registrationAttempted) {
-      return; // Prevent infinite loops
+    if (this.registrationAttempted || this.destroyed) {
+      return; // Prevent infinite loops and registration after destruction
     }
 
     // Walk up parent chain to find App
@@ -64,14 +66,24 @@ export class Keybind extends Component {
       this.registrationAttempted = true;
     } else {
       // Try again after a short delay in case the parent tree isn't fully built yet
-      setTimeout(() => {
-        this.registerWithApp();
-      }, 0);
+      this.timeoutId = setTimeout(() => {
+        if (!this.destroyed) {
+          this.registerWithApp();
+        }
+      }, 0) as unknown as number;
     }
   }
 
   // Called when component is removed
   override destroy() {
+    this.destroyed = true;
+
+    // Clear any pending registration timeout
+    if (this.timeoutId !== undefined) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
+    }
+
     this.unregisterWithApp();
     super.destroy();
   }
