@@ -23,13 +23,13 @@ body {
   min-height: 100vh; /* Full viewport height */
   width: 100vw; /* Full viewport width */
   overflow: hidden; /* Prevent body scrollbars */
-  padding-top: 2rem; /* Small top margin */
+  padding-top: 1rem; /* Small top margin */
 }
 
 #screen {
   /* Use viewport dimensions for responsive sizing */
-  width: 95vw;
-  height: 90vh;
+  width: 98vw;
+  height: calc(100vh - 1rem); /* Full height minus body padding */
   margin: 0;
   padding: 0;
   overflow: hidden; /* Hide scrollbars for clean appearance */

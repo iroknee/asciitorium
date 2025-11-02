@@ -2,46 +2,38 @@ import { Art, Line, Column, Text } from './index';
 import { BaseStyle } from './constants';
 
 /**
- * Fonts Basics
- *
- * Guide to using ASCII fonts in asciitorium.
+ * Guide to using Asciitorium Fonts.
  */
 export const FontsBasics = () => {
   return (
     <Column style={BaseStyle} label="Fonts Basics">
-      <Art gap={{ top: 2, bottom: 2 }} src="asciitorium" align="center" />
-
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
-        ASCII fonts are pre-rendered text art stored as sprites, allowing you
-        to display stylized text and logos in your applications.
-      </Text>
-
+      <Art gap={{ top: 2 }} font="pencil" text="asciitorium" align="center" />
+      
       <Text width="90%" align="center">
-        What are ASCII Fonts?
+        What are Asciitorium Fonts?
       </Text>
       <Line width="90%" align="center" />
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        ASCII fonts are special sprite files that contain artistic renderings
-        of text. Unlike standard fonts, these are hand-crafted ASCII art pieces
-        that can include decorative elements, shadows, and unique styling.
+      <Text width="90%" align="center" gap={{ top: 1, bottom: 2 }}>
+        Asciitorium Fonts are text art sprites, allowing you to display large
+        letter phrases from ASCII characters.
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        Fonts are stored in the art/sprites/ directory just like other sprites
-        and are loaded using the Art component.
+        Fonts are stored in the art/fonts/ directory with the .art extension,
+        like other asciitorium assets. The Art component loads and displays
+        fonts by specifying the font property.
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" align="center" gap={{ top: 1 }}>
         Using Fonts
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="left" gap={{ top: 1, left: 4 }}>
         Display font art using the Art component with the src property:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 2 }}>
+      <Text width={48} align="center" textAlign="center" gap={{ left: 4, top: 1 }} border>
         {`<Art src="asciitorium" align="center" />`}
       </Text>
 
@@ -50,22 +42,18 @@ export const FontsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Application logos and branding
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" align="left" gap={{ top: 1, left: 4 }}>
         • Title screens and splash pages
       </Text>
       <Text width="90%" align="left" gap={{ left: 4 }}>
         • Section headers and banners
       </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         • Game titles and credits
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 1 }}>
-        TIP: Create your own font art using ASCII art generators or draw them
-        by hand in a text editor. Save them as .art files in the sprites
+      <Text width="90%" align="center" gap={{ top: 2 }}>
+        TIP: To create your own font art review the documentation in public/art
         directory.
       </Text>
     </Column>
