@@ -19,8 +19,6 @@ export * from './components/Line';
 export * from './components/Select';
 export * from './components/Option';
 export * from './components/OptionGroup';
-export * from './components/Tab';
-export * from './components/TabContainer';
 export * from './components/Text';
 export * from './components/TextInput';
 export * from './components/Sliders';

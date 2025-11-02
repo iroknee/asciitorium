@@ -14,7 +14,7 @@ export type TextAlignment =
 
 export interface TextOptions
   extends Omit<ComponentProps, 'children'> {
-  content?: string | State<any>;
+  content?: string | State<any> | (string | State<any>)[];
   align?: Alignment;
   textAlign?: TextAlignment;
   children?: (string | State<any>) | (string | State<any>)[];
