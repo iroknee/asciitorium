@@ -1,16 +1,6 @@
-@import url('https://fonts.cdnfonts.com/css/jetbrains-mono');
-@font-face {
-  font-family: 'PrintChar21';
-  src:
-    url('/fonts/PrintChar21.woff2') format('woff2'),
-    url('/fonts/PrintChar21.woff') format('woff'),
-    url('/fonts/PrintChar21.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
-  font-family: 'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-family:
+    'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
   margin: 0;
   padding: 0;
   background: black;
@@ -35,9 +25,10 @@ body {
   overflow: hidden; /* Hide scrollbars for clean appearance */
 
   /* Ensure monospace font for proper character sizing */
-  font-family: 'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
-  font-size: 12px; /* Base font size for character measurement */
-  line-height: 1; /* Tight line spacing for ASCII art */
+  font-family:
+    'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 16px; /* Base font size for character measurement */
+  line-height: 1.1; /* Tight line spacing for ASCII art */
 
   /* Center text content horizontally */
   text-align: center;
