@@ -64,7 +64,7 @@ const togglePerfMonitor = () => {
 };
 
 const app = (
-  <App font="PrintChar21">
+  <App>
     <Keybind keyBinding="F12" action={togglePerfMonitor} />
 
     <Art src="asciitorium" align="center" gap={{ bottom: 1 }} />
