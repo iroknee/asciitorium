@@ -30,13 +30,15 @@ export class TTYRenderer implements Renderer {
         height = parseInt(process.env.LINES || '24', 10);
       }
     }
-    return { width, height };
+    // Reserve 1 line for terminal prompt/status
+    return { width, height: Math.max(1, height - 1) };
   }
 
   render(buffer: string[][]): void {
     const lines = buffer.map((row) => row.join('')).join('\n');
-    process.stdout.write('\x1Bc'); // Clear screen (ANSI)
-    process.stdout.write('\x1b[38;2;63;255;0m'); // Set text color to bright green (#3fff00)
+    process.stdout.write('\x1b[2J'); // Clear screen (ANSI)
+    process.stdout.write('\x1b[H'); // Move cursor to home position (0,0)
+    process.stdout.write('\x1b[38;2;44;208;58m'); // Set text color to #2cd03a
     process.stdout.write(lines + '\n');
     process.stdout.write('\x1b[0m'); // Reset color
   }

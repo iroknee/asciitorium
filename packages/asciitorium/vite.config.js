@@ -19,15 +19,9 @@ export default defineConfig({
     lib: {
       entry: {
         index: path.resolve(__dirname, 'src/index.ts'),
-        'docs/index': path.resolve(__dirname, 'src/docs/index.ts'),
       },
       name: 'asciitorium',
-      fileName: (format, entryName) => {
-        if (entryName === 'index') {
-          return `asciitorium.${format}.js`;
-        }
-        return `${entryName}.js`;
-      },
+      fileName: (format) => `asciitorium.${format}.js`,
       formats: ['es', 'cjs'],
     },
     outDir: 'dist',
