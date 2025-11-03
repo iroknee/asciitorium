@@ -9,7 +9,7 @@ import { BaseStyle } from './constants';
 export const ComponentBasics = () => {
   return (
     <Column style={BaseStyle} label="Component Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 1, top: 2 }}>
         All components extend the base Component class. It provides position
         management, layout, rendering, focus handling, and state binding. This
         allows you to adjust a standard set of properties and behaviors across
@@ -21,48 +21,29 @@ export const ComponentBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Width — width of component
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Height — height of component
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Border — use a border?
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Label — show a title in the border
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Align — align component
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Gap — Spacing within the component
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Background — fill character
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Hotkey — keyboard shortcut for quick access
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Visible — component visibility
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • Width — width of Component ¶
+        • Height — height of component ¶
+        • Border — use a border? ¶
+        • Label — show a title in the border ¶
+        • Align — align Component ¶
+        • Gap — Spacing within the component ¶
+        • Background — fill character ¶
+        • Hotkey — keyboard shortcut for quick access ¶
+        • Visible — component visibility ¶
         • Children/Content — child / content
       </Text>
 
-
-      <Text width="90%" label="Component Example" height={5} align="center" textAlign="center" border>
+      <Text
+        gap={2}
+        width={32}
+        label="Component Example"
+        height={5}
+        align="center"
+        textAlign="center"
+        border
+      >
         Hello World!
       </Text>
     </Column>

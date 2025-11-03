@@ -9,35 +9,23 @@ import { BaseStyle } from './constants';
 export const GettingStarted = () => {
   return (
     <Column style={BaseStyle} label="Getting Started">
-      <Art gap={{ top: 2, bottom: 4 }} src="welcome" align="center" />
+      <Art gap={{ top: 1, bottom: 1 }} src="welcome" align="center" />
 
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
+      <Text width="80%" align="center">
         Asciitorium is an ASCII-based CLUI (Command Line User Interface)
         framework for building interactive applications that run in both web
-        browsers and terminals.
-      </Text>
-
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        Asciitorium is both a Component Framework and a lightweight ASCII art
-        and game engine. You can build UIs with reactive components, create ASCII
-        art with sprites and materials, or develop retro-style games with
-        first-person rendering and map-based movement systems.
-      </Text>
-
-      <Text width="90%" align="center">
-        To view the documentation, use the Select menu on the left to explore
-        components, layouts, and features. Navigate with:
-      </Text>
-      <Text width="90%" align="center" gap={{ top: 2, bottom: 2, left: 2 }}>
+        browsers and terminals. ¶¶ Asciitorium is both a Component Framework and
+        a lightweight ASCII art and game engine. You can build UIs with reactive
+        components, create ASCII art with sprites and materials, or develop
+        retro-style games with first-person rendering and map-based movement
+        systems.¶¶ To view the documentation, use the Select menu on the left to
+        explore components, layouts, and features. Navigate with: ¶¶
         {`• [↑],[↓] keys to navigate within the menu,
-          • [Enter] to select a documentation item.`}
+        • [Enter] to select a documentation item.`}
+        ¶¶ We hope you enjoy building ASCII experiences with Asciitorium!
       </Text>
 
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
-        We hope you enjoy building ASCII experiences with Asciitorium!
-      </Text>
-
-      <Text align="right" gap={{ top: 2, right: 4 }}>
+      <Text align="right" gap={{ top: 1, right: 8 }}>
         - The Asciitorium Team
       </Text>
     </Column>

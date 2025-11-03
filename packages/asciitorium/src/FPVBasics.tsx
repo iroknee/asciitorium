@@ -53,7 +53,7 @@ export const FPVBasics = () => {
       <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
       <Keybind keyBinding="d" action={() => gridMovement.turnRight()} />
 
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         First Person View (FPV) provides immersive ASCII-based 3D perspective
         rendering for dungeon crawlers and exploration games.
       </Text>
@@ -63,62 +63,39 @@ export const FPVBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="center" gap={{ top: 1, bottom: 1 }}>
+      <Text width="90%" align="center" gap={{ bottom: 1 }}>
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
-      <Row width="90%" align="center" gap={{ bottom: 2 }}>
+      <Row width={48} align="center" gap={{ bottom: 2 }}>
         <FirstPersonView
           mapAsset={map}
           player={player}
-          width={40}
-          height={20}
-          border
         />
         <MapView
           mapAsset={map}
           player={player}
-          fogOfWar={true}
+          fogOfWar={false}
           exploredTiles={exploredTiles}
-          width={25}
-          height={20}
+          width={20}
+          height={10}
           border
         />
       </Row>
 
       <Text width="90%" align="center">
-        What is First Person View?
-      </Text>
-      <Line width="90%" align="center" />
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        The FirstPersonView component renders a first-person perspective of
-        the game world using ASCII art materials. It creates depth perception
-        through layered rendering and distance-based detail levels.
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        FPV works with GameWorld to manage player position, direction, and
-        map data, automatically updating the view as the player moves.
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
         Raycasting System
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         FirstPersonView uses raycasting with predefined offset cubes to
         determine what the player can see in each direction:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Casts rays at multiple depths (here, near, middle, far)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Uses GameWorld.isSolid() for wall detection
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • Casts rays at multiple depths (here, near, middle, far) ¶
+        • Uses GameWorld.isSolid() for wall detection ¶
         • Composites materials based on distance and position
       </Text>
 
@@ -127,30 +104,12 @@ export const FPVBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
         FirstPersonView supports different visual styles through the scene
         property, allowing you to switch between wireframe, brick-wall, and
         other material sets for varied aesthetics.
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        GameWorld Integration
-      </Text>
-      <Line width="90%" align="center" />
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        Use FirstPersonView with GameWorld for automatic reactive rendering:
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 2 }}>
-        {`<FirstPersonView gameWorld={gameWorld} scene="brick-wall" />`}
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 1 }}>
-        TIP: FirstPersonView is display-only and subscribes to GameWorld's
-        player State. Handle movement through global keybinds that call
-        GameWorld methods (moveForward, turnLeft, etc).
-      </Text>
     </Column>
   );
 };

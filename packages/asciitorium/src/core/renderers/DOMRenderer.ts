@@ -7,9 +7,14 @@ export class DOMRenderer implements Renderer {
   private charWidth: number = 0;
   private charHeight: number = 0;
 
-  constructor(private screen: HTMLElement, font?: string) {
-    // this.screen.style.whiteSpace = 'pre';
-    // this.screen.style.fontFamily = font || 'JetBrains Mono, monospace';
+  constructor(
+    private screen: HTMLElement,
+    font?: string
+  ) {
+    if (font) {
+      this.screen.style.whiteSpace = 'pre';
+      this.screen.style.fontFamily = font;
+    }
 
     // Delay measurement slightly to ensure CSS is applied
     setTimeout(() => this.measureCharacterSize(), 10);
@@ -32,7 +37,6 @@ export class DOMRenderer implements Renderer {
     this.charHeight = rect.height;
     document.body.removeChild(measureElement);
 
-
     // Fallback values if measurement fails
     if (this.charWidth === 0) this.charWidth = 8;
     if (this.charHeight === 0) this.charHeight = 16;
@@ -49,7 +53,6 @@ export class DOMRenderer implements Renderer {
 
     const width = Math.floor(availableWidth / this.charWidth);
     const height = Math.floor(availableHeight / this.charHeight);
-
 
     // Minimum size fallback
     const result = {

@@ -9,7 +9,7 @@ import { BaseStyle } from './constants';
 export const TextBasics = () => {
   return (
     <Column style={BaseStyle} label="Text Component Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         The Text component is heavily used and will likely be your friend so it
         warrants a dedicated section. It supports text alignment, wrapping, and
         scrolling.
@@ -19,14 +19,12 @@ export const TextBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • textAlign — Position text within component (9-point grid)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • wrap — Enable/disable text wrapping (default: true)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • scrollable — Enable scrolling for long content (default: false)
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • textAlign — Position text within component (9-point grid) ¶
+        • wrap — Enable/disable text wrapping (default: true) ¶
+        • scrollable — Enable scrolling for long content (default: false) ¶
+        • \¶ — use \¶ to insert a line break within text ¶
       </Text>
 
       <Text width="90%" align="center">
@@ -34,7 +32,7 @@ export const TextBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         The textAlign property positions text within the Text component using a
         9-position grid: top-left, top, top-right, left, center, right,
         bottom-left, bottom, bottom-right.
@@ -76,7 +74,7 @@ export const TextBasics = () => {
         </Text>
       </Row>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" align="center">
         Text Wrapping
       </Text>
       <Line width="90%" align="center" />
@@ -86,28 +84,14 @@ export const TextBasics = () => {
         wrap=false to disable wrapping.
       </Text>
 
-      <Column width="90%" align="center">
-        <Text width={40} border align="center" label="wrap=true (default)">
-          This is a long line of text that will automatically wrap to fit within
-          the component width.
-        </Text>
-
-        <Text
-          width={40}
-          border
-          label="wrap=false"
-          wrap={false}
-          align="center"
-          gap={{ top: 1 }}
-        >
-          This is a long line of text that will be truncated instead of wrapped.
-        </Text>
-      </Column>
+      <Text width={48} border label="wrap=false" wrap={false} align="center">
+        This is a long line of text that will be truncated instead of wrapped.
+      </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
         Scrollable Text
       </Text>
-      <Line width="90%" align="center"/>
+      <Line width="90%" align="center" />
 
       <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
         Use scrollable=true to enable scrolling for long content. Use arrow keys
@@ -116,32 +100,18 @@ export const TextBasics = () => {
 
       <Text
         width={48}
-        height={8}
+        height={6}
         hotkey="t"
         align="center"
         border
         scrollable
         label="Scrollable Text (use ↑↓ to scroll)"
       >
-        {`Line 1: This is scrollable text
-
-Line 2: You can use arrow keys
-
-Line 3: to scroll through content
-
-Line 4: that exceeds the height
-
-Line 5: of the text component
-
-Line 6: Keep scrolling...
-
-Line 7: Almost there...
-
-Line 8: You made it!
-
-Line 9: But there's more...
-
-Line 10: This is the end`}
+        Line 1: This is scrollable text ¶ Line 2: You can use arrow keys ¶ Line
+        3: to scroll through content ¶ Line 4: that exceeds the height ¶ Line 5:
+        of the text component ¶ Line 6: Keep scrolling... ¶ Line 7: Almost
+        there... ¶ Line 8: You made it! ¶ Line 9: But there's more... ¶ Line 10:
+        This is the end
       </Text>
     </Column>
   );

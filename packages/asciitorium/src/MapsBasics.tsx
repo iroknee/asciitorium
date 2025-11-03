@@ -52,7 +52,7 @@ export const MapsBasics = () => {
       <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
       <Keybind keyBinding="d" action={() => gridMovement.turnRight()} />
 
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         Maps are ASCII layouts that define game environments, combining visual
         representation with legend files that specify gameplay properties.
       </Text>
@@ -62,15 +62,15 @@ export const MapsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="center" gap={{ top: 1, bottom: 1 }}>
+      <Text width="90%" align="center" gap={{ bottom: 1 }}>
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
-      <Row width="90%" align="center" gap={{ bottom: 2 }}>
+      <Row width={32} align="center" gap={{ bottom: 2 }}>
         <MapView
           mapAsset={map}
           player={player}
-          fogOfWar={true}
+          fogOfWar={false}
           exploredTiles={exploredTiles}
           width={30}
           height={15}
@@ -83,22 +83,9 @@ export const MapsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         Maps use ASCII text files where each character represents a different
         terrain type, object, or game element. Common characters include:
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Box-drawing characters for walls and structures
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Special characters for doors, spawn points, items
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Spaces for walkable floor areas
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • Custom characters assigned through legends
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
@@ -106,49 +93,17 @@ export const MapsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         Each map has an accompanying legend.json file that defines what each
         character represents, including:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • kind - Type of asset (material or sprite)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • solid - Whether it blocks player movement
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • asset - Reference to visual asset file
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • entity - Gameplay type (door, enemy, treasure, trap)
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • kind - Type of asset (material or sprite) ¶
+        • solid - Whether it blocks player movement ¶
+        • asset - Reference to visual asset file ¶
+        • entity - Gameplay type (door, enemy, treasure, trap) ¶
         • variant - Specific subtype (wooden, iron, wolf, etc.)
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Common Entity Types
-      </Text>
-      <Line width="90%" align="center" />
-
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • door - Openable/closable passages
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • enemy - Hostile creatures or NPCs
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • treasure - Collectible currency or valuables
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • item - Pickup-able objects for inventory
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • trap - Hazards that trigger on interaction
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • mechanism - Switches, levers, pressure plates
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
@@ -156,17 +111,12 @@ export const MapsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 2 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
         Use the map-builder.js script to quickly generate maze-like dungeon
         layouts that you can customize. Maps are stored in art/maps/ with each
         map in its own directory containing map.art and legend.json files.
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 1 }}>
-        TIP: The entity and variant system allows shared behavior across
-        similar entities while maintaining variant-specific properties for
-        rich gameplay variety.
-      </Text>
     </Column>
   );
 };

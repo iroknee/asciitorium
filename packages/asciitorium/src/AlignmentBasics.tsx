@@ -9,7 +9,7 @@ import { BaseStyle } from './constants';
 export const AlignmentBasics = () => {
   return (
     <Column style={BaseStyle} label="Alignment Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         The 'align' prop positions component children on the cross-axis using
         simple keywords.
       </Text>
@@ -19,18 +19,16 @@ export const AlignmentBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
-        • Row children: use 'top', 'center', or 'bottom'
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • Column children: use 'left', 'center', or 'right'
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • Row children: use 'top', 'center', or 'bottom' ¶
+        • Column children: use 'left', 'center', or 'right' ¶
       </Text>
 
       <Text width="90%" align="center">
         Examples
       </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
+      <Line width="90%" align="center" />
 
       <Row width={36} align="center">
         <Column width={13} height={12} border label="Column">
@@ -84,7 +82,7 @@ export const AlignmentBasics = () => {
         </Row>
       </Row>
       <Text width="90%" align="center" gap={{ left: 4, top: 1 }}>
-        • For spacing between children: use the 'gap' prop
+        * For spacing between children: use the 'gap' prop
       </Text>
     </Column>
   );

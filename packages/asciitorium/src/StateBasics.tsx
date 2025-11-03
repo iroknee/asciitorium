@@ -24,7 +24,7 @@ export const StateBasics = () => {
 
   return (
     <Column style={BaseStyle} label="State Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         Asciitorium provides reactive state management with State and
         PersistentState. Components automatically re-render when values change.
       </Text>
@@ -34,20 +34,13 @@ export const StateBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
         State provides reactive variables that trigger re-renders when changed.
         Use for temporary values that reset on page reload.
       </Text>
 
-      <TextInput
-        width="90%"
-        align="center"
-        gap={{ bottom: 1 }}
-        hotkey="i"
-        value={textValue}
-      />
-
       <Column width="90%" align="center" border gap={{ bottom: 2 }}>
+        <TextInput width="90%" align="center" hotkey="i" value={textValue} />
         <Text align="center" gap={{ top: 1, bottom: 1 }}>
           You typed: {textValue}
         </Text>
@@ -58,17 +51,12 @@ export const StateBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • new State&lt;T&gt;(initialValue) — Create reactive state
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • state.value — Get or set the current value
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • state.subscribe(callback) — Listen for changes
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • state.unsubscribe(callback) — Stop listening
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • new State&lt;T&gt;(initialValue) — Create reactive state ¶
+        • state.value — Get or set the current values ¶
+        • state.subscribe(callback) — Listen for changes ¶
+        • state.unsubscribe(callback) — Stop listening ¶
       </Text>
 
       <Text width="90%" align="center">
@@ -76,7 +64,7 @@ export const StateBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
         Asciitorium also supports PersistentState which extends State with
         automatic localStorage persistence. Values survive page reloads.
       </Text>

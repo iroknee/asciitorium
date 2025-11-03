@@ -9,7 +9,7 @@ import { BaseStyle } from './constants';
 export const LayoutBasics = () => {
   return (
     <Column style={BaseStyle} label="Layout Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
         Asciitorium provides Column and Row layout containers for organizing
         components. Layouts automatically calculate child positions and sizes
         based on the layout type and available space.
@@ -20,12 +20,10 @@ export const LayoutBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Row Layout — arranges children horizontally
-      </Text>
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • Column Layout — arranges children vertically
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • Row Layout — arranges children horizontally ¶ 
+        • Column Layout — arranges children vertically ¶
       </Text>
       <Column
         width="90%"

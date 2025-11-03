@@ -39,7 +39,7 @@ export const SpritesBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1, top: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
         Sprites store ASCII art for characters, creatures, and other game
         entities. Sprites support multiple frames with configurable timing and
         can be referenced for dynamic visual representation.
@@ -55,7 +55,7 @@ export const SpritesBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4 }}>
         Display sprites using the Art component:
       </Text>
 
@@ -69,9 +69,9 @@ export const SpritesBasics = () => {
         {`<Art src="firework" align="center" />`}
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 1 }}>
-        TIP: Sprites automatically cycle through their frames based on the
-        timing configuration in the sprite file. The Art component handles all
+      <Text width="90%" align="center">
+        Sprites automatically cycle through their frames based on the timing
+        configuration in the sprite file. The Art component handles all
         animation playback automatically. To learn how to create your own
         sprites, check out the documentation in the public/art/sprites
         directory.

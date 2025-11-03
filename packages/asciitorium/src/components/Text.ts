@@ -209,9 +209,11 @@ export class Text extends Component {
   }
 
   getContentAsString(): string {
+    let result: string;
+
     if (Array.isArray(this.source)) {
       // Multiple children: concatenate them dynamically
-      return this.source.map(child => {
+      result = this.source.map(child => {
         if (typeof child === 'string') {
           return child;
         } else if (isState(child)) {
@@ -223,9 +225,13 @@ export class Text extends Component {
       }).join('');
     } else if (isState(this.source)) {
       const value = (this.source as State<any>).value;
-      return value == null ? '' : String(value);
+      result = value == null ? '' : String(value);
+    } else {
+      result = this.source == null ? '' : String(this.source);
     }
-    return this.source == null ? '' : String(this.source);
+
+    // Convert ¶ (pilcrow) to newline for text wrapping, but allow escaping with backslash
+    return result.replace(/\\¶/g, '\u0000').replace(/¶/g, '\n').replace(/\u0000/g, '¶');
   }
 
   draw(): string[][] {

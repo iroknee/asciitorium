@@ -25,27 +25,20 @@ export const NavigationBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Tab — Move focus to next focusable component
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Shift+Tab — Move focus to previous component
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • F1 or ` — Toggle hotkey visibility
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Letter keys — Jump to component with matching hotkey
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • Enter/Space — Activate focused button
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • Arrow keys — Component-specific navigation (e.g., Select, Tabs)
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • Tab — Move focus to next focusable component ¶
+        • Shift+Tab — Move focus to previous component ¶
+        • F1 or ` — Toggle hotkey visibility ¶
+        • Letter keys — Jump to component with matching Hotkey ¶
+        • Enter/Space — Activate focused buttons or toggles ¶
+        • Arrow keys — Component-specific navigation (e.g., Select, Tabs) ¶
       </Text>
 
       <Text width="90%" align="center" gap={{ bottom: 1 }}>
-        Try navigating between these buttons using [Tab], [Shift+Tab] or press [F1] to see their hotkeys:      </Text>
+        Try navigating between these buttons using [Tab], [Shift+Tab] or press
+        [F1] to see their hotkeys:{' '}
+      </Text>
 
       <Column width="90%" align="center" border gap={{ bottom: 1 }}>
         <Text align="center" gap={{ top: 1, bottom: 1 }}>
@@ -61,7 +54,6 @@ export const NavigationBasics = () => {
         <Button height={6} hotkey="s" onClick={() => counter.value--}>
           Decrement
         </Button>
-
       </Row>
     </Column>
   );

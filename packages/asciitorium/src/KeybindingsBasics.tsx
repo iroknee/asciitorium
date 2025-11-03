@@ -36,10 +36,10 @@ export const KeybindingsBasics = () => {
 
   const container = (
     <Column style={BaseStyle} label="Keybindings Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 2 }}>
-        Asciitorium provides global Keybindings for
-        app-level shortcuts in addition to Hotkeys.
-        Use keybindings when you just want an action to occur, but want to maintain focus on the given component.
+      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
+        Asciitorium provides global Keybindings for app-level shortcuts in
+        addition to Hotkeys. Use keybindings when you just want an action to
+        occur, but want to maintain focus on the given component.
       </Text>
 
       <Text width="90%" align="center">
@@ -47,7 +47,7 @@ export const KeybindingsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, top: 1, bottom: 1 }}>
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
         Use the Keybind component to create global keyboard shortcuts that
         execute custom logic anywhere in your app.
       </Text>
@@ -78,7 +78,12 @@ export const KeybindingsBasics = () => {
       />
 
       <Column width="90%" align="center" border gap={{ bottom: 2 }}>
-        <Text align="center" textAlign="center" width="80%" gap={{ top: 1, bottom: 1 }}>
+        <Text
+          align="center"
+          textAlign="center"
+          width="80%"
+          gap={{ top: 1, bottom: 1 }}
+        >
           {message}
         </Text>
       </Column>
@@ -88,28 +93,23 @@ export const KeybindingsBasics = () => {
       </Text>
       <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • keyBinding — Key to bind (e.g., "F12", "j", "Escape")
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • action — Function to execute when key is pressed
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4 }}>
-        • description — Optional description for documentation
-      </Text>
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        • disabled — Disable keybinding (supports State for reactive control)
+      {/* prettier-ignore */}
+      <Text width="90%" align="left" gap={{ left: 6 }}>
+        • keyBinding — Key to bind (e.g., "F12", "j", "Escape") ¶
+        • action — Function to execute when key is pressed ¶
+        • description — Optional description for documentation ¶
+        • disabled — Disable keybinding (supports State for reactive control) ¶
       </Text>
 
       <Text width="90%" align="center">
         Reserved Keys
       </Text>
-      <Line width="90%" align="center" gap={{ bottom: 1 }} />
+      <Line width="90%" align="center" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
-        Arrow keys, Tab, Enter, Space, Delete, Home, End,
-        PageUp, and PageDown are reserved for component navigation and should
-        not be used for hotkeys.
+      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
+        Arrow keys, Tab, Enter, Space, Delete, Home, End, PageUp, and PageDown
+        are reserved for component navigation and should not be used for
+        hotkeys.
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 1 }}>
