@@ -6,7 +6,7 @@ import {
   Text,
   PerfMonitor,
   State,
-  Keybind
+  Keybind,
 } from 'asciitorium';
 
 // State for counter demo
@@ -25,32 +25,17 @@ const app = (
     <Keybind keyBinding="p" action={togglePerfMonitor} />
 
     <Column style={{ align: 'center', gap: 1, width: '100%' }}>
-      <Art src="asciitorium" />
-
-      <Text style={{ align: 'center' }}>
-        Welcome to asciitorium!
-      </Text>
+      <Art font="pencil" text="Welcome to" align="center" />
+      <Art src="asciitorium" align="center" />
 
       <Text style={{ align: 'center', gap: 1 }}>
         Edit src/main.tsx and save to reload.
       </Text>
 
-      <Column style={{ align: 'center', gap: 1, width: 'auto' }}>
-        <Text>Count: {count}</Text>
-
-        <Button
-          label="Increment"
-          hotkey="i"
-          onClick={() => count.value++}
-        />
-      </Column>
+      <Art src="beating-heart" width={20} align="center" />
 
       <Text style={{ align: 'center', gap: 1 }}>
         Press [P] to toggle performance monitor
-      </Text>
-
-      <Text style={{ align: 'center' }}>
-        Press [Tab] to navigate • [Enter] to activate
       </Text>
     </Column>
 

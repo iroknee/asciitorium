@@ -1,0 +1,41 @@
+body {
+  font-family:
+    'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: #2cd03a;
+
+  /* Center the screen horizontally, align to top vertically */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  overflow: hidden; /* Prevent body scrollbars */
+  padding-top: 1rem; /* Small top margin */
+}
+
+#screen {
+  /* Use viewport dimensions for responsive sizing */
+  width: 98vw;
+  height: calc(100vh - 1rem); /* Full height minus body padding */
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Hide scrollbars for clean appearance */
+
+  /* Ensure monospace font for proper character sizing */
+  font-family:
+    'Courier New', 'Courier', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 16px; /* Base font size for character measurement */
+  line-height: 1.1; /* Tight line spacing for ASCII art */
+
+  /* Center text content horizontally */
+  text-align: center;
+  white-space: pre; /* Preserve spaces and newlines */
+}
+
+.inverted {
+  background-color: #3fff00;
+  color: black;
+}
