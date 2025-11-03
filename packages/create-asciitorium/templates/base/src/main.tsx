@@ -37,6 +37,10 @@ const app = (
       <Text style={{ align: 'center', gap: 1 }}>
         Press [P] to toggle performance monitor
       </Text>
+
+      <Text style={{ align: 'center', gap: 1 }}>
+        in terminal, press [Ctrl+C] to exit.
+      </Text>
     </Column>
 
     <PerfMonitor visible={showPerfMonitor} />

@@ -2,7 +2,7 @@
 
 **asciitorium** is an ASCII-based CLUI framework that runs both via terminal and web. It was designed to create games/applications quickly via web development standards and conventions. Originally it was purposed to allow a Gen-Xer to build games to the flavor of Wizardy I, Zork, etc. but frankly has gotten out of hand.
 
-![example](asciitorium.png)
+![asciitorium-screenshot](asciitorium.png)
 
 ## Key features
 
@@ -28,6 +28,8 @@ npm run web  # or npm run cli
 ```
 
 This creates a complete project with examples, TypeScript configuration, and both web and CLI support.
+
+![create-screenshot](create-asciitorium.png)
 
 ### NPM Installation
 
