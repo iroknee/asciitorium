@@ -10,21 +10,21 @@ import {
   PersistentState,
   State,
   Keybind,
-} from './index';
+} from './index.js';
 
-import { GettingStarted } from './GettingStarted';
-import { ComponentBasics } from './ComponentBasics';
-import { LayoutBasics } from './LayoutBasics';
-import { NavigationBasics } from './NavigationBasics';
-import { StateBasics } from './StateBasics';
-import { AlignmentBasics } from './AlignmentBasics';
-import { TextBasics } from './TextBasics';
-import { KeybindingsBasics } from './KeybindingsBasics';
-import { SpritesBasics } from './SpritesBasics';
-import { FontsBasics } from './FontsBasics';
-import { MaterialsBasics } from './MaterialsBasics';
-import { MapsBasics } from './MapsBasics';
-import { FPVBasics } from './FPVBasics';
+import { GettingStarted } from './GettingStarted.js';
+import { ComponentBasics } from './ComponentBasics.js';
+import { LayoutBasics } from './LayoutBasics.js';
+import { NavigationBasics } from './NavigationBasics.js';
+import { StateBasics } from './StateBasics.js';
+import { AlignmentBasics } from './AlignmentBasics.js';
+import { TextBasics } from './TextBasics.js';
+import { KeybindingsBasics } from './KeybindingsBasics.js';
+import { SpritesBasics } from './SpritesBasics.js';
+import { FontsBasics } from './FontsBasics.js';
+import { MaterialsBasics } from './MaterialsBasics.js';
+import { MapsBasics } from './MapsBasics.js';
+import { FPVBasics } from './FPVBasics.js';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -45,8 +45,8 @@ const docMap: Record<string, any> = {
 
 // Main state for component selection with persistence
 const selectedKey = new PersistentState<string>(
-  'getting-started',
-  'selected-doc'
+  'start',
+  'asciitorium.getting.started.selected'
 );
 const selected = new State<any>(docMap[selectedKey.value]);
 

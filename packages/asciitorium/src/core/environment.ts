@@ -1,5 +1,5 @@
-import { State } from './State';
-import { setRenderCallback } from './RenderScheduler';
+import { State } from './State.js';
+import { setRenderCallback } from './RenderScheduler.js';
 
 export function isState<T>(v: any): v is State<T> {
   return typeof v === 'object' && typeof v.subscribe === 'function';

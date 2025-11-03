@@ -1,11 +1,11 @@
-import { Component, ComponentProps } from './Component';
-import { FocusManager } from './FocusManager';
-import type { Renderer } from './renderers/Renderer';
-import { DOMRenderer } from './renderers/DOMRenderer';
-import { TTYRenderer } from './renderers/TTYRenderer';
-import { setRenderCallback } from './RenderScheduler';
-import { setupKeyboardHandling, validateWebEnvironment } from './environment';
-import { createSizeContext } from './utils/sizeUtils';
+import { Component, ComponentProps } from './Component.js';
+import { FocusManager } from './FocusManager.js';
+import type { Renderer } from './renderers/Renderer.js';
+import { DOMRenderer } from './renderers/DOMRenderer.js';
+import { TTYRenderer } from './renderers/TTYRenderer.js';
+import { setRenderCallback } from './RenderScheduler.js';
+import { setupKeyboardHandling, validateWebEnvironment } from './environment.js';
+import { createSizeContext } from './utils/sizeUtils.js';
 
 export interface AppProps extends ComponentProps {
   // App-specific props can be added here

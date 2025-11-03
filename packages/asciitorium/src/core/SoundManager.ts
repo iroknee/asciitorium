@@ -1,4 +1,4 @@
-import { isWebEnvironment } from './environment';
+import { isWebEnvironment } from './environment.js';
 
 export class SoundManager {
   private static audioCache: Map<string, HTMLAudioElement> = new Map();

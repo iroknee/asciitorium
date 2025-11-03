@@ -1,5 +1,5 @@
-import { Component, CelticBorder, Text } from '../index';
-import { BaseStyle } from './constants';
+import { Component, CelticBorder, Text } from '../index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * CelticBorder Component Reference

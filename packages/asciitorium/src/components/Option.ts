@@ -1,4 +1,4 @@
-import { Component, ComponentProps } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component.js';
 
 export interface OptionProps<T = any> extends Omit<ComponentProps, 'children'> {
   value: T;

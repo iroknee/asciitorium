@@ -1,12 +1,12 @@
-import { Component, ComponentProps } from '../core/Component';
-import type { State } from '../core/State';
-import { isState } from '../core/environment';
-import { requestRender } from '../core/RenderScheduler';
+import { Component, ComponentProps } from '../core/Component.js';
+import type { State } from '../core/State.js';
+import { isState } from '../core/environment.js';
+import { requestRender } from '../core/RenderScheduler.js';
 import {
   AssetManager,
   type MapAsset,
   type LegendEntry,
-} from '../core/AssetManager';
+} from '../core/AssetManager.js';
 
 export type Direction = 'north' | 'south' | 'east' | 'west';
 

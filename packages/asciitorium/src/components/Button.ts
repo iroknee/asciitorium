@@ -1,5 +1,5 @@
-import { Component, ComponentProps } from '../core/Component';
-import { requestRender } from '../core/RenderScheduler';
+import { Component, ComponentProps } from '../core/Component.js';
+import { requestRender } from '../core/RenderScheduler.js';
 
 export interface ButtonOptions extends Omit<ComponentProps, 'children'> {
   content?: string;

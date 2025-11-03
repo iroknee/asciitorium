@@ -1,5 +1,5 @@
-import { Component, ComponentProps } from '../core/Component';
-import { Option } from './Option';
+import { Component, ComponentProps } from '../core/Component.js';
+import { Option } from './Option.js';
 
 export interface OptionGroupProps<T = any> extends Omit<ComponentProps, 'children'> {
   label: string;

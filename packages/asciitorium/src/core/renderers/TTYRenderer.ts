@@ -1,7 +1,7 @@
 /**
  * A terminal-based renderer that outputs a 2D array of strings to the terminal.
  */
-import { Renderer } from './Renderer';
+import { Renderer } from './Renderer.js';
 
 export class TTYRenderer implements Renderer {
   getScreenSize(): { width: number; height: number } {

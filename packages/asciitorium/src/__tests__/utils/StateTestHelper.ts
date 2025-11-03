@@ -1,4 +1,4 @@
-import { State } from '../../core/State';
+import { State } from '../../core/State.js';
 import { vi, expect } from 'vitest';
 
 /**

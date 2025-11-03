@@ -1,5 +1,5 @@
-import { Art, Line, Column, Row, Text, Button, State } from './index';
-import { BaseStyle } from './constants';
+import { Art, Line, Column, Row, Text, Button, State } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Navigation Basics

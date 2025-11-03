@@ -1,5 +1,5 @@
-import { Component, ComponentProps } from '../core/Component';
-import type { State } from '../core/State';
+import { Component, ComponentProps } from '../core/Component.js';
+import type { State } from '../core/State.js';
 
 /**
  * Properties for Switch component

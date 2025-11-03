@@ -1,6 +1,6 @@
-import type { Component } from '../Component';
-import { RowLayout } from './RowLayout';
-import { ColumnLayout } from './ColumnLayout';
+import type { Component } from '../Component.js';
+import { RowLayout } from './RowLayout.js';
+import { ColumnLayout } from './ColumnLayout.js';
 
 /**
  * Interface for layouts that handle child component positioning

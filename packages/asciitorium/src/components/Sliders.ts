@@ -1,6 +1,6 @@
-import { Component, ComponentProps } from '../core/Component';
-import { State } from '../core/State';
-import { SizeValue } from '../core/types';
+import { Component, ComponentProps } from '../core/Component.js';
+import { State } from '../core/State.js';
+import { SizeValue } from '../core/types.js';
 
 export interface SliderVariantOptions extends ComponentProps {
   value: State<number>;

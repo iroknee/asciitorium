@@ -1,9 +1,9 @@
-import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue, PositionValue } from './types';
-import type { State } from './State';
-import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout';
-import { resolveGap } from './utils/gapUtils';
-import { resolveSize } from './utils/sizeUtils';
-import { requestRender } from './RenderScheduler';
+import { Alignment, SizeValue, SizeContext, ComponentStyle, GapValue, PositionValue } from './types.js';
+import type { State } from './State.js';
+import { LayoutRegistry, LayoutType, LayoutOptions } from './layouts/Layout.js';
+import { resolveGap } from './utils/gapUtils.js';
+import { resolveSize } from './utils/sizeUtils.js';
+import { requestRender } from './RenderScheduler.js';
 
 // Border character set
 const SINGLE_BORDER_CHARS = {

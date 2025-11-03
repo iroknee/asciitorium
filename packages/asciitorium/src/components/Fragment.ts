@@ -1,4 +1,4 @@
-import { Component, ComponentProps } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component.js';
 
 /**
  * Properties for Fragment component

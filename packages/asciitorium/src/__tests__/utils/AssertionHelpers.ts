@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { Component } from '../../core/Component';
+import { Component } from '../../core/Component.js';
 
 /**
  * Custom assertion helpers for testing asciitorium components

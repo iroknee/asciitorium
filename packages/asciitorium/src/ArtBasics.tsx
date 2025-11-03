@@ -1,5 +1,5 @@
-import { Art, Column, Line, Text } from './index';
-import { BaseStyle } from './constants';
+import { Art, Column, Line, Text } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * ASCII Art - Sprites

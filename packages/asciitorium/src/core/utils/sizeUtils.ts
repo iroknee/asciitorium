@@ -1,4 +1,4 @@
-import type { SizeValue, SizeContext } from '../types';
+import type { SizeValue, SizeContext } from '../types.js';
 
 /**
  * Parse a percentage string and return the numeric value

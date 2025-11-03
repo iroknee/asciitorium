@@ -1,10 +1,10 @@
-import { Component, ComponentProps } from '../core/Component';
-import type { State } from '../core/State';
-import { isState, loadArt } from '../core/environment';
-import { requestRender } from '../core/RenderScheduler';
-import { Direction, Player, MapData } from './MapView';
-import { FirstPersonCompositor } from './FirstPersonCompositor';
-import type { MapAsset, LegendEntry } from '../core/AssetManager';
+import { Component, ComponentProps } from '../core/Component.js';
+import type { State } from '../core/State.js';
+import { isState, loadArt } from '../core/environment.js';
+import { requestRender } from '../core/RenderScheduler.js';
+import { Direction, Player, MapData } from './MapView.js';
+import { FirstPersonCompositor } from './FirstPersonCompositor.js';
+import type { MapAsset, LegendEntry } from '../core/AssetManager.js';
 
 interface RaycastOffset {
   dx: number;

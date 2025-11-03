@@ -1,4 +1,4 @@
-import type { Component } from '../core/Component';
+import type { Component } from '../core/Component.js';
 
 declare namespace JSX {
   export type Element = Component;

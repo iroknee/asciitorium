@@ -1,11 +1,11 @@
-import { Text, State, Component, Row } from '../index';
-import { BaseStyle } from './constants';
+import { Text, State, Component, Row } from '../index.js';
+import { BaseStyle } from './constants.js';
 import {
   ProgressBarSlider,
   GaugeSlider,
   DotSlider,
   VerticalSlider,
-} from '../components/Sliders';
+} from '../components/Sliders.js';
 
 /**
  * Sliders Component Reference

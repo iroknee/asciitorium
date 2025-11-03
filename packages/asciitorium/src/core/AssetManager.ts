@@ -1,4 +1,4 @@
-import { loadArt } from './environment';
+import { loadArt } from './environment.js';
 
 // Asset type definitions
 export interface LegendEntry {

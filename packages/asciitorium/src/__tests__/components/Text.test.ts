@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { Text } from '../../components/Text';
-import { State } from '../../core/State';
-import { ComponentTestRenderer, StateTestHelper, expectBuffer, expectComponent } from '../utils';
+import { Text } from '../../components/Text.js';
+import { State } from '../../core/State.js';
+import { ComponentTestRenderer, StateTestHelper, expectBuffer, expectComponent } from '../utils/index.js';
 
 describe('Text', () => {
   let renderer: ComponentTestRenderer;

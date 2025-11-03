@@ -1,12 +1,12 @@
-import { Component, ComponentProps } from '../core/Component';
-import { requestRender } from '../core/RenderScheduler';
-import { State } from '../core/State';
+import { Component, ComponentProps } from '../core/Component.js';
+import { requestRender } from '../core/RenderScheduler.js';
+import { State } from '../core/State.js';
 import {
   AssetManager,
   type Asset,
   type SpriteAsset,
   type FontAsset,
-} from '../core/AssetManager';
+} from '../core/AssetManager.js';
 
 export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .art (UTF-8) or reactive state

@@ -1,5 +1,5 @@
-import { Art, Column, Text } from './index';
-import { BaseStyle } from './constants';
+import { Art, Column, Text } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Getting Started Guide

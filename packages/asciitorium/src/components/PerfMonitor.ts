@@ -1,6 +1,6 @@
-import { Component, ComponentProps } from '../core/Component';
-import { App } from '../core/App';
-import { isCPUSupported, isMemorySupported } from '../core/environment';
+import { Component, ComponentProps } from '../core/Component.js';
+import { App } from '../core/App.js';
+import { isCPUSupported, isMemorySupported } from '../core/environment.js';
 
 export interface PerfMonitorOptions extends ComponentProps {
   // No feature toggles - auto-detects supported features

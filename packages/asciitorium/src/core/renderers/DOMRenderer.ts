@@ -1,7 +1,7 @@
 /**
  * A DOM-based renderer that outputs a 2D array of strings to an HTML element.
  */
-import { Renderer } from './Renderer';
+import { Renderer } from './Renderer.js';
 
 export class DOMRenderer implements Renderer {
   private charWidth: number = 0;

@@ -1,6 +1,6 @@
-import { Component } from '../../core/Component';
-import { State } from '../../core/State';
-import { createSizeContext } from '../../core/utils/sizeUtils';
+import { Component } from '../../core/Component.js';
+import { State } from '../../core/State.js';
+import { createSizeContext } from '../../core/utils/sizeUtils.js';
 
 /**
  * A headless renderer for testing components without DOM or terminal output

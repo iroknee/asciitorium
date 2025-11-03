@@ -1,4 +1,4 @@
-import { Component, ComponentProps } from '../core/Component';
+import { Component, ComponentProps } from '../core/Component.js';
 
 export interface ColumnProps extends Omit<ComponentProps, 'layout'> {
   // Column-specific props can be added here

@@ -7,8 +7,8 @@ import {
   State,
   PersistentState,
   TextInput,
-} from './index';
-import { BaseStyle } from './constants';
+} from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * State Basics

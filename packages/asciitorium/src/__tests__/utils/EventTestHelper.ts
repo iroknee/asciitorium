@@ -1,4 +1,4 @@
-import { Component } from '../../core/Component';
+import { Component } from '../../core/Component.js';
 
 /**
  * Helper for simulating user interactions and events in tests

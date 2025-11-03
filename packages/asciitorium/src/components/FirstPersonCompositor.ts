@@ -2,7 +2,7 @@ import {
   AssetManager,
   type MaterialAsset,
   type LegendEntry,
-} from '../core/AssetManager';
+} from '../core/AssetManager.js';
 
 export interface RaycastData {
   here: { left: string | null; center: string | null; right: string | null };

@@ -1,7 +1,7 @@
-import type { Component } from '../Component';
-import { Layout, LayoutOptions } from './Layout';
-import type { Alignment } from '../types';
-import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index';
+import type { Component } from '../Component.js';
+import { Layout, LayoutOptions } from './Layout.js';
+import type { Alignment } from '../types.js';
+import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index.js';
 
 export class ColumnLayout implements Layout {
   constructor(_options?: LayoutOptions) {

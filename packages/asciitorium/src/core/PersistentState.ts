@@ -1,5 +1,5 @@
-import { State } from './State';
-import { isWebEnvironment } from './environment';
+import { State } from './State.js';
+import { isWebEnvironment } from './environment.js';
 
 export class PersistentState<T> extends State<T> {
   private storageKey: string;

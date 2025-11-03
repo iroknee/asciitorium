@@ -1,8 +1,8 @@
-import { Component, ComponentProps } from '../core/Component';
-import { State } from '../core/State';
-import { ScrollableViewport } from '../core/ScrollableViewport';
-import { Option } from './Option';
-import { OptionGroup } from './OptionGroup';
+import { Component, ComponentProps } from '../core/Component.js';
+import { State } from '../core/State.js';
+import { ScrollableViewport } from '../core/ScrollableViewport.js';
+import { Option } from './Option.js';
+import { OptionGroup } from './OptionGroup.js';
 
 export interface SelectOptions<T = any> extends ComponentProps {
   items?: string[];

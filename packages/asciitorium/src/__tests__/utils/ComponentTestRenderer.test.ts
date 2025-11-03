@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { ComponentTestRenderer } from './ComponentTestRenderer';
-import { Button } from '../../components/Button';
-import { Text } from '../../components/Text';
+import { ComponentTestRenderer } from './ComponentTestRenderer.js';
+import { Button } from '../../components/Button.js';
+import { Text } from '../../components/Text.js';
 
 describe('ComponentTestRenderer', () => {
   let renderer: ComponentTestRenderer;

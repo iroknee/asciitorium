@@ -1,3 +1,3 @@
-export * from './alignmentUtils';
-export * from './gapUtils';
-export * from './sizeUtils';
+export * from './alignmentUtils.js';
+export * from './gapUtils.js';
+export * from './sizeUtils.js';

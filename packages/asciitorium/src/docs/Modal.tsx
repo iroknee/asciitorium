@@ -1,5 +1,5 @@
-import { Component, State, Button, Text, Fragment, ComponentStyle } from '../index';
-import { BaseStyle } from './constants';
+import { Component, State, Button, Text, Fragment, ComponentStyle } from '../index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Modal Component Reference

@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { State } from '../../core/State';
-import { StateTestHelper } from '../utils';
+import { State } from '../../core/State.js';
+import { StateTestHelper } from '../utils/index.js';
 
 describe('State', () => {
   describe('constructor', () => {

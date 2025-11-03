@@ -1,5 +1,5 @@
-import { Component } from './Component';
-import { LayoutOptions, LayoutType } from './layouts/Layout';
+import { Component } from './Component.js';
+import { LayoutOptions, LayoutType } from './layouts/Layout.js';
 
 // Simplified alignment - only cross-axis positioning with keywords
 // Row children: 'top' | 'center' | 'bottom' (vertical cross-axis)

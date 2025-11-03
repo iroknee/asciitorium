@@ -1,5 +1,5 @@
-import { Line, Column, Row, Text } from './index';
-import { BaseStyle } from './constants';
+import { Line, Column, Row, Text } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Layout Basics

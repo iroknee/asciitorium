@@ -1,5 +1,5 @@
-import { Component } from './Component';
-import { State } from './State';
+import { Component } from './Component.js';
+import { State } from './State.js';
 
 export class FocusManager {
   private contextStack: Component[][] = [];

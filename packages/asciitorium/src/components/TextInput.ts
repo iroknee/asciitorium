@@ -1,6 +1,6 @@
-import { Component, ComponentProps } from '../core/Component';
-import { State } from '../core/State';
-import { requestRender } from '../core/RenderScheduler';
+import { Component, ComponentProps } from '../core/Component.js';
+import { State } from '../core/State.js';
+import { requestRender } from '../core/RenderScheduler.js';
 
 export interface TextInputOptions extends ComponentProps {
   /** Accepts string OR number state */

@@ -1,7 +1,7 @@
-import { AssetManager, type MapAsset, type LegendEntry, type MaterialAsset } from './AssetManager';
-import { State } from './State';
-import type { Direction, Player } from '../components/MapView';
-import { SoundManager } from './SoundManager';
+import { AssetManager, type MapAsset, type LegendEntry, type MaterialAsset } from './AssetManager.js';
+import { State } from './State.js';
+import type { Direction, Player } from '../components/MapView.js';
+import { SoundManager } from './SoundManager.js';
 
 export interface GridMovementOptions {
   mapAsset: State<MapAsset | null>;

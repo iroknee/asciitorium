@@ -11,8 +11,8 @@ import {
   AssetManager,
   type MapAsset,
   type Player,
-} from './index';
-import { BaseStyle } from './constants';
+} from './index.js';
+import { BaseStyle } from './constants.js';
 
 // Initialize state containers
 const map = new State<MapAsset | null>(null);

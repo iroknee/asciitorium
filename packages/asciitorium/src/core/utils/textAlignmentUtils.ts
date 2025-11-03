@@ -1,4 +1,4 @@
-import type { TextAlignment } from '../../components/Text';
+import type { TextAlignment } from '../../components/Text.js';
 
 /**
  * Resolve text alignment keywords to numeric offsets.

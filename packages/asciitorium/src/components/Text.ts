@@ -1,10 +1,10 @@
-import { Component, ComponentProps } from '../core/Component';
-import type { State } from '../core/State';
-import { isState } from '../core/environment';
-import { resolveTextAlignment } from '../core/utils/textAlignmentUtils';
-import { Alignment, SizeContext } from '../core/types';
-import { ScrollableViewport } from '../core/ScrollableViewport';
-import { requestRender } from '../core/RenderScheduler';
+import { Component, ComponentProps } from '../core/Component.js';
+import type { State } from '../core/State.js';
+import { isState } from '../core/environment.js';
+import { resolveTextAlignment } from '../core/utils/textAlignmentUtils.js';
+import { Alignment, SizeContext } from '../core/types.js';
+import { ScrollableViewport } from '../core/ScrollableViewport.js';
+import { requestRender } from '../core/RenderScheduler.js';
 
 // Text-specific alignment supporting 9 positions within the text box
 export type TextAlignment =

@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Button } from '../../components/Button';
-import { ComponentTestRenderer, EventTestHelper, expectBuffer, expectComponent } from '../utils';
+import { Button } from '../../components/Button.js';
+import { ComponentTestRenderer, EventTestHelper, expectBuffer, expectComponent } from '../utils/index.js';
 
 describe('Button', () => {
   let renderer: ComponentTestRenderer;

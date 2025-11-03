@@ -1,5 +1,5 @@
-import { Component, ComponentProps } from '../core/Component';
-import { State } from '../core/State';
+import { Component, ComponentProps } from '../core/Component.js';
+import { State } from '../core/State.js';
 
 export interface KeybindOptions extends ComponentProps {
   keyBinding: string;    // e.g., "F12", "Ctrl+s", "Escape"

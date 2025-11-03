@@ -1,5 +1,5 @@
-import { Line, Column, Text } from './index';
-import { BaseStyle } from './constants';
+import { Line, Column, Text } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Materials Basics

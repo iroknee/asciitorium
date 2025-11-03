@@ -1,5 +1,5 @@
-import { Art, Line, Column, Text } from './index';
-import { BaseStyle } from './constants';
+import { Art, Line, Column, Text } from './index.js';
+import { BaseStyle } from './constants.js';
 
 /**
  * Guide to using Asciitorium Fonts.
