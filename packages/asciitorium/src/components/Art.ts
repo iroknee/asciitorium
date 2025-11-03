@@ -59,6 +59,7 @@ export class Art extends Component {
     // Prepare content and dimensions before super() call
     let parsedFrames: SpriteFrame[] = [];
     let parsedLoop = false;
+    let spriteTransparent: string | undefined;
     let calculatedWidth: number | undefined;
     let calculatedHeight: number | undefined;
 
@@ -104,10 +105,8 @@ export class Art extends Component {
 
       parsedFrames = parsed.frames;
       parsedLoop = parsed.defaults.loop || false;
-      // Store sprite-specific transparent character
-      if (parsed.defaults.transparent !== undefined) {
-        this.spriteTransparentChar = parsed.defaults.transparent;
-      }
+      // Store sprite-specific transparent character for later assignment
+      spriteTransparent = parsed.defaults.transparent;
       calculatedWidth = Math.max(1, maxW + borderPadding);
       calculatedHeight = Math.max(1, maxH + borderPadding);
     } else {
@@ -130,6 +129,11 @@ export class Art extends Component {
       width: options.width ?? options.style?.width ?? calculatedWidth,
       height: options.height ?? options.style?.height ?? calculatedHeight,
     });
+
+    // Now we can safely assign to this
+    if (spriteTransparent !== undefined) {
+      this.spriteTransparentChar = spriteTransparent;
+    }
 
     // Set initial state
     this.frames = parsedFrames;

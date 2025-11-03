@@ -1,98 +1,59 @@
 import {
   App,
-  Select,
-  Switch,
-  Row,
+  Art,
+  Button,
+  Column,
   Text,
   PerfMonitor,
   State,
-  Keybind,
-  PersistentState
+  Keybind
 } from 'asciitorium';
 
-import {
-  ButtonExample,
-  CelticBorderExample,
-  FormExample,
-  MultiSelectExample,
-  LayoutSizingExample,
-  ModalExample,
-  TabsExample,
-  ArtExample,
-  SlidersExample,
-  ScrollableTextExample,
-  GameWorldExample,
-} from 'asciitorium/examples';
+// State for counter demo
+const count = new State(0);
 
-// Main state for component selection with persistence
-const selectedComponent = new PersistentState('Art', 'demo-selected-component');
-
-// State for PerfMonitor visibility (F12 toggle)
+// State for PerfMonitor visibility toggle
 const showPerfMonitor = new State(false);
 
-// Component list for navigation
-const componentList = [
-  'Art',
-  'Button',
-  'CelticBorder',
-  'Form',
-  'Modal',
-  'GameWorld',
-  'MultiSelect',
-  'LayoutSizing',
-  'ScrollableText',
-  'Sliders',
-  'Tabs',
-];
-
-// Component mapping for dynamic content
-const examples = {
-  Art: ArtExample,
-  Button: ButtonExample,
-  CelticBorder: CelticBorderExample,
-  Form: FormExample,
-  Modal: ModalExample,
-  GameWorld: GameWorldExample,
-  MultiSelect: MultiSelectExample,
-  LayoutSizing: LayoutSizingExample,
-  ScrollableText: ScrollableTextExample,
-  Sliders: SlidersExample,
-  Tabs: TabsExample,
-};
-
-// toggle PerfMonitor with "P" key
+// toggle PerfMonitor
 const togglePerfMonitor = () => {
   showPerfMonitor.value = !showPerfMonitor.value;
 };
 
 const app = (
-  <App font="PrintChar21" height={42}>
-    <Keybind keyBinding="p" action={togglePerfMonitor} global />
+  <App>
+    <Keybind keyBinding="p" action={togglePerfMonitor} />
 
-    {/* <Art src="asciitorium" style={{ align: 'center', gap: 0 }}/> */}
-    <Row style={{ height: 'fill' }}>
-      <Select
-        label="Components"
-        style={{
-          width: '30%',
-          height: 'fill',
-        }}
-        items={componentList}
-        selectedItem={selectedComponent}
-      />
-      <Switch
-        style={{
-          width: 'fill',
-          height: 'fill',
-        }}
-        selectedKey={selectedComponent}
-        componentMap={examples}
-      />
-    </Row>
-    <Text
-      content="Navigation: ↑↓ • [Space]/[Enter] to select • [Tab]/[Tab+Shift] to switch focus • [P] toggles performance monitor"
-      style={{ align: 'center', gap: 1 }}
-    />
+    <Column style={{ align: 'center', gap: 1, width: '100%' }}>
+      <Art src="asciitorium" />
+
+      <Text style={{ align: 'center' }}>
+        Welcome to asciitorium!
+      </Text>
+
+      <Text style={{ align: 'center', gap: 1 }}>
+        Edit src/main.tsx and save to reload.
+      </Text>
+
+      <Column style={{ align: 'center', gap: 1, width: 'auto' }}>
+        <Text>Count: {count}</Text>
+
+        <Button
+          label="Increment"
+          hotkey="i"
+          onClick={() => count.value++}
+        />
+      </Column>
+
+      <Text style={{ align: 'center', gap: 1 }}>
+        Press [P] to toggle performance monitor
+      </Text>
+
+      <Text style={{ align: 'center' }}>
+        Press [Tab] to navigate • [Enter] to activate
+      </Text>
+    </Column>
+
     <PerfMonitor visible={showPerfMonitor} />
   </App>
 );

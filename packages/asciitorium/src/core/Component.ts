@@ -188,7 +188,7 @@ export abstract class Component {
    * When true, component captures ALL keyboard input except bypass keys.
    * Used by input components (TextInput, etc.) to receive all keystrokes.
    */
-  protected captureModeActive: boolean = false;
+  public captureModeActive: boolean = false;
 
   /** Keys that bypass capture mode and always work for navigation */
   public static readonly BYPASS_KEYS = ['Tab', 'Shift+Tab'];

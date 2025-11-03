@@ -67,21 +67,12 @@ export const FPVBasics = () => {
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
-      <Row width={48} align="center" gap={{ bottom: 2 }}>
-        <FirstPersonView
-          mapAsset={map}
-          player={player}
-        />
-        <MapView
-          mapAsset={map}
-          player={player}
-          fogOfWar={false}
-          exploredTiles={exploredTiles}
-          width={20}
-          height={10}
-          border
-        />
-      </Row>
+      <FirstPersonView
+        align="center"
+        gap={{ bottom: 2 }}
+        mapAsset={map}
+        player={player}
+      />
 
       <Text width="90%" align="center">
         Raycasting System
@@ -94,9 +85,9 @@ export const FPVBasics = () => {
       </Text>
 
       <Text width="90%" align="left" gap={{ left: 6 }}>
-        • Casts rays at multiple depths (here, near, middle, far) ¶
-        • Uses GameWorld.isSolid() for wall detection ¶
-        • Composites materials based on distance and position
+        • Casts rays at multiple depths (here, near, middle, far) ¶ • Uses
+        GameWorld.isSolid() for wall detection ¶ • Composites materials based on
+        distance and position
       </Text>
 
       <Text width="90%" align="center" gap={{ top: 2 }}>
@@ -109,7 +100,6 @@ export const FPVBasics = () => {
         property, allowing you to switch between wireframe, brick-wall, and
         other material sets for varied aesthetics.
       </Text>
-
     </Column>
   );
 };

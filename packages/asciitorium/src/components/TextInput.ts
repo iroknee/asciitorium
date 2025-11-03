@@ -31,20 +31,8 @@ export class TextInput extends Component {
 
   private cursorIndex = 0;
   private suppressCursorSync = false;
-  private _hasFocus = false;
 
   focusable = true;
-
-  // Override hasFocus with getter/setter to enable capture mode on focus
-  get hasFocus(): boolean {
-    return this._hasFocus;
-  }
-
-  set hasFocus(value: boolean) {
-    this._hasFocus = value;
-    // Enable capture mode when focused, disable when unfocused
-    this.captureModeActive = value;
-  }
 
   constructor(options: TextInputOptions) {
     const height = options.height ?? options.style?.height ?? 3; // Default to 3 for backwards compatibility
@@ -174,6 +162,11 @@ export class TextInput extends Component {
   }
 
   override handleEvent(event: string): boolean {
+    // Enable capture mode on first interaction when focused
+    if (this.hasFocus && !this.captureModeActive && event !== 'Escape') {
+      this.captureModeActive = true;
+    }
+
     let updated = false;
     const val = this.valueStr.value;
 
