@@ -28,4 +28,4 @@ export const jsxs = jsx;
 export const jsxDEV = jsx;
 
 // Fragment component for <> </> syntax
-export { Fragment } from '../components/Fragment';
+export { Fragment } from '../components/Fragment.js';
