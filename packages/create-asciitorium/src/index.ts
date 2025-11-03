@@ -37,8 +37,8 @@ async function main() {
     process.exit(1);
   }
 
-  const pm =
-    argv.pm ?? process.env.npm_config_user_agent?.split('/')[0] ?? 'npm';
+  // Always use npm as the package manager
+  const pm = argv.pm ?? 'npm';
   const template = argv.template ?? 'base';
   const useGit = Boolean(argv.git);
   const doInstall = Boolean(argv.install);
