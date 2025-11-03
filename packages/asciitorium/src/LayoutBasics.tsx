@@ -63,7 +63,7 @@ export const LayoutBasics = () => {
         wrap={false}
         border
       >
-        {`
+{`
   <Text position={{ x: 10, y: 5 }}>
     Fixed Position
   </Text>
