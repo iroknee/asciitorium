@@ -7,6 +7,135 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.35] - 2025-11-02
+
+### Added
+
+- **Game Development Architecture:**
+  - `GameWorld` class - Central game state coordinator for managing maps, legends, player state, and collision detection
+  - `AssetManager` class - Asset loading and parsing system for maps, materials, sprites, and legends
+  - Legend system - JSON-based tile metadata with properties: `kind`, `name`, `solid`, `tag`, `asset`
+  - `SoundManager` class - Audio playback system for web environment with support for sound effects and ambient audio
+  - Material assets with sound properties (`onEnter`, `onExit`, `ambient`)
+  - `GridMovement` class - Refactored movement logic for grid-based navigation
+  - Map generation and rendering features with fog of war support
+  - `visible` property to legend entries for visibility checks in `MapView`
+
+- **New Components:**
+  - `FirstPersonView` - First-person perspective renderer with raycasting
+  - `FirstPersonCompositor` - Material composition system for first-person views
+  - `OptionGroup` - Component for better organization of selectable options
+  - `DOMRenderer` - Class for rendering 2D arrays to HTML (renamed from internal renderer)
+  - Enhanced `MapView` with `GameWorld` mode and legacy mode support
+
+- **Documentation and Examples:**
+  - Comprehensive documentation: `AlignmentBasics`, `ArtBasics`, `ComponentBasics`, `FontsBasics`, `KeybindingsBasics`, `MapsBasics`, `MaterialsBasics`, `NavigationBasics`, `SpritesBasics`, `TextBasics`
+  - `GettingStarted` guide with improved navigation instructions
+  - Documentation structure reorganized from examples to documentation
+  - `ART-DESIGN-SPEC.md` - Comprehensive art asset design specification
+  - Art README files for maps, materials, and sprites with usage guides
+  - Style guide for documentation consistency
+
+- **Art Assets:**
+  - New materials: `bone.art`, `door-wooden.art`, `wall-brick.art`, `wall-wireframe.art`
+  - New sprites: `asciitorium.art`, `balloon.art`, `beating-heart.art`, `component-icon.art`, `eyes.art`, `firework.art`, `heart.art`, `nav-basics.art`, `pyramid.art`, `welcome.art`
+  - Pencil font character set (`pencil.art`)
+  - Sound effects: `door-close.mp3`, `door-open.mp3`, `taps.mp3`
+  - Map example with legend: `maps/example/map.art` and `maps/example/legend.json`
+
+- **Build and Deploy:**
+  - GitHub Actions workflow for deploying demos to GitHub Pages
+  - Demo build script for automated builds
+  - Alias configuration for JSX runtime in Vite config
+
+### Changed
+
+- **Component Architecture:**
+  - **Breaking Change:** Removed `Tab` and `TabContainer` components
+  - **Breaking Change:** Removed `MultiSelect` component
+  - **Breaking Change:** Removed `font` prop from `App` component
+  - `Text` component now supports arrays of content for multi-line text
+  - Enhanced `Text` component with improved alignment logic and word wrapping
+  - `Art` component refactored for improved loading handling and content parsing
+  - `MapView` and `FirstPersonView` now support `GameWorld` integration
+  - `Select` component API improvements for better consistency
+  - Enhanced scrollable text focus indicator
+  - Improved button shadow rendering with better visual consistency
+
+- **Keyboard Input System:**
+  - Implemented capture mode for keyboard input in components
+  - Enhanced key handling with component-specific capture support
+  - Improved `Keybind` registration handling and component destruction
+  - Enhanced keybindings documentation with firework launch demonstration
+
+- **Layout System:**
+  - Improved layout handling for fixed children in `RowLayout` and `ColumnLayout`
+  - Enhanced column layout space allocation and child sizing
+  - Better layout positioning calculations
+  - Updated alignment terminology throughout documentation
+
+- **Rendering System:**
+  - Fixed transparent character rendering logic
+  - Added sprite transparency support
+  - `TTYRenderer` improvements: adjusted terminal height calculation and screen clearing
+  - Updated font-family in body and `#screen` for consistency (default: Courier New)
+
+- **Asset Management:**
+  - **Breaking Change:** Refactored to use `.art` file extension for all art assets (was `.txt`)
+  - Asset loading system refactored for better performance
+  - Material asset format enhanced with placement attributes and sound properties
+  - Legend structure updated to support new metadata format
+  - Materials now support `placement` attribute: "floor", "ceiling", "front-wall"
+
+- **Developer Experience:**
+  - Simplified layout in main component
+  - Enhanced performance monitor toggle
+  - Improved import statements with file extensions throughout codebase
+  - Updated logo path in HTML template
+  - Removed unused font files (PRNumber3, PrintChar21)
+  - Updated favicon path
+  - `.gitignore` updated to include `dist-demo`
+  - Better documentation text for clarity across all guides
+
+- **Examples Restructured:**
+  - Converted examples to documentation structure
+  - `GettingStartedDoc` and `ComponentsStatesDoc` for improved documentation
+  - State change examples reorganized for clarity
+  - Removed obsolete `MapViewExample` (integrated into documentation)
+  - Enhanced `GameWorldExample` demonstrating new architecture
+
+### Removed
+
+- Tab-based components: `Tab`, `TabContainer` (replaced with documentation structure)
+- `MultiSelect` component (consolidated functionality)
+- `font` prop from `App` component (use default font family)
+- Unused border art files: `bubbles.txt`, `dna.txt`
+- Unused sprite files: `computer.txt`, `tatooene.txt`, `asciitorium.txt`
+- Unused font files and licenses
+- Obsolete documentation and example files
+- Debug logging for legend loading and character detection
+
+### Fixed
+
+- Terminal height calculation in `TTYRenderer`
+- Transparent character rendering logic
+- ASCII art characters for 'm', 'w', and 'x'
+- Layout handling for absolutely positioned children
+- Z-coordinate handling in firework positioning
+- Import path issues throughout codebase
+
+### Technical Details
+
+- **Key Files Modified:** Core architecture, component library, asset system, documentation structure, build configuration
+- **Breaking Changes:**
+  - Asset file extension changed from `.txt` to `.art`
+  - Removed components: `Tab`, `TabContainer`, `MultiSelect`
+  - Removed `font` prop from `App`
+  - Material and legend format changes
+- **New Architecture:** `GameWorld`-based game development pattern, asset management system, sound integration
+- **Performance:** Enhanced rendering with transparency support, improved layout calculations, optimized asset loading
+- **Lines Changed:** Extensive refactoring across ~80+ files with major documentation additions
+
 ## [0.1.34] - 2025-09-22
 
 ### Added
