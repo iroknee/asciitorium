@@ -47,7 +47,7 @@ async function main() {
     `${green('✔')} Creating ${cyan(target)} with template ${yellow(template)}…`
   );
 
-  await scaffold({ projectDir, template });
+  await scaffold({ projectDir, template, install: false, initGit: false });
 
   if (useGit) {
     try {
