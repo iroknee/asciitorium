@@ -10,7 +10,7 @@ export const FontsBasics = () => {
       <Art
         gap={{ top: 2 }}
         font="marker"
-        text="asciitorium"
+        text="opqrstuvwxyz"
         letterSpacing={1}
         align="center"
       />
