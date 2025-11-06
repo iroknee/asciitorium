@@ -554,8 +554,19 @@ export class AssetManager {
 
       try {
         const metadata = JSON.parse(metadataLine);
-        if (!metadata.character || typeof metadata.character !== 'string') {
+        if (!metadata.character) {
           console.warn('Glyph metadata missing character property:', metadataLine);
+          continue;
+        }
+
+        // Support both string and array of characters
+        const characters = Array.isArray(metadata.character)
+          ? metadata.character
+          : [metadata.character];
+
+        // Validate all characters are strings
+        if (!characters.every((c: any) => typeof c === 'string')) {
+          console.warn('Glyph character must be string or array of strings:', metadataLine);
           continue;
         }
 
@@ -565,12 +576,17 @@ export class AssetManager {
         const glyphHeight = glyphLines.length;
         const glyphWidth = Math.max(...glyphLines.map((line) => line.length), 0);
 
-        glyphs.set(metadata.character, {
-          character: metadata.character,
+        const glyph: FontGlyph = {
+          character: characters[0], // Store first character as primary
           lines: glyphLines,
           width: glyphWidth,
           height: glyphHeight,
-        });
+        };
+
+        // Map all characters to the same glyph
+        for (const char of characters) {
+          glyphs.set(char, glyph);
+        }
 
         maxHeight = Math.max(maxHeight, glyphHeight);
       } catch (error) {
