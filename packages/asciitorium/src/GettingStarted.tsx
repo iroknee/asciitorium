@@ -11,8 +11,6 @@ export const GettingStarted = () => {
     <Column style={BaseStyle} label="Getting Started">
       <Art gap={{ top: 1, bottom: 1 }} src="welcome" align="center" />
 
-      <Art gap={{ bottom: 1 }} src="eyes" align="center" />
-
       <Text width="80%" align="center">
         Asciitorium is an ASCII-based CLUI (Command Line User Interface)
         framework for building interactive applications that run in both web

@@ -13,6 +13,7 @@ export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   src?: string; // URL or file path to load ASCII art from
   font?: string; // Font asset name for styled text rendering
   text?: string | State<string>; // Text to render using font
+  letterSpacing?: number; // Additional spacing between characters (default: 0)
   children?: string | string[];
 }
 
@@ -48,6 +49,7 @@ export class Art extends Component {
   private font?: string;
   private fontAsset?: FontAsset;
   private text?: string;
+  private letterSpacing: number = 0;
   private spriteTransparentChar?: string; // sprite-specific transparency character
 
   constructor(options: ArtOptions) {
@@ -123,7 +125,7 @@ export class Art extends Component {
     }
 
     // Call super() with calculated or provided dimensions
-    const { children, content, src, font, text, ...componentProps } = options;
+    const { children, content, src, font, text, letterSpacing, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width ?? options.style?.width ?? calculatedWidth,
@@ -134,6 +136,9 @@ export class Art extends Component {
     if (spriteTransparent !== undefined) {
       this.spriteTransparentChar = spriteTransparent;
     }
+
+    // Set letter spacing (default 0 if not provided)
+    this.letterSpacing = letterSpacing ?? 0;
 
     // Set initial state
     this.frames = parsedFrames;
@@ -414,6 +419,15 @@ export class Art extends Component {
             for (let x = 0; x < glyph.width; x++) {
               result[y].push(' ');
             }
+          }
+        }
+      }
+
+      // Add letter spacing after each character (except the last one)
+      if (i < text.length - 1 && this.letterSpacing > 0) {
+        for (let y = 0; y < height; y++) {
+          for (let s = 0; s < this.letterSpacing; s++) {
+            result[y].push(' ');
           }
         }
       }
