@@ -1,11 +1,23 @@
 import { Component } from './Component.js';
 import { LayoutOptions, LayoutType } from './layouts/Layout.js';
 
-// Simplified alignment - only cross-axis positioning with keywords
-// Row children: 'top' | 'center' | 'bottom' (vertical cross-axis)
-// Column children: 'left' | 'center' | 'right' (horizontal cross-axis)
-// Use 'position' prop for numeric offsets, 'gap' prop for spacing
-export type Alignment = 'top' | 'center' | 'bottom' | 'left' | 'right';
+// Alignment system for grouping and positioning children
+// Used by Row/Column containers to position all children as a unified group
+//
+// Full 9-value positions:
+//   'top-left', 'top-center', 'top-right'
+//   'center-left', 'center', 'center-right'
+//   'bottom-left', 'bottom-center', 'bottom-right'
+//
+// Shorthands (auto-center on opposite axis):
+//   'left' → 'center-left', 'right' → 'center-right'
+//   'top' → 'top-center', 'bottom' → 'bottom-center'
+//
+export type Alignment =
+  | 'top-left' | 'top-center' | 'top-right'
+  | 'center-left' | 'center' | 'center-right'
+  | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  | 'left' | 'right' | 'top' | 'bottom';  // Shorthands
 
 // Size value types for relative and absolute sizing
 export type SizeValue = 

@@ -52,17 +52,17 @@ export const MapsBasics = () => {
       <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
       <Keybind keyBinding="d" action={() => gridMovement.turnRight()} />
 
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
+      <Text width="90%" gap={{ bottom: 2, top: 1 }}>
         Maps are ASCII layouts that define game environments, combining visual
         representation with legend files that specify gameplay properties.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Interactive Map Example
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
+      <Text width="90%" gap={{ bottom: 1 }}>
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
@@ -78,27 +78,27 @@ export const MapsBasics = () => {
         />
       </Row>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Map File Format
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" gap={{ left: 4 }}>
         Maps use ASCII text files where each character represents a different
         terrain type, object, or game element. Common characters include:
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" gap={{ top: 2 }}>
         Legend Files
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" gap={{ left: 4 }}>
         Each map has an accompanying legend.json file that defines what each
         character represents, including:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 6 }}>
+      <Text width="90%" gap={{ left: 6 }}>
         • kind - Type of asset (material or sprite) ¶
         • solid - Whether it blocks player movement ¶
         • asset - Reference to visual asset file ¶
@@ -106,12 +106,12 @@ export const MapsBasics = () => {
         • variant - Specific subtype (wooden, iron, wolf, etc.)
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" gap={{ top: 2 }}>
         Map Generation
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      <Text width="90%" gap={{ left: 4, bottom: 2 }}>
         Use the map-builder.js script to quickly generate maze-like dungeon
         layouts that you can customize. Maps are stored in art/maps/ with each
         map in its own directory containing map.art and legend.json files.

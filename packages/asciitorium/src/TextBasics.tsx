@@ -9,30 +9,30 @@ import { BaseStyle } from './constants.js';
 export const TextBasics = () => {
   return (
     <Column style={BaseStyle} label="Text Component Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
-        The Text component is heavily used and will likely be your friend so it
-        warrants a dedicated section. It supports text alignment, wrapping, and
-        scrolling.
+      <Text width="90%" gap={{ bottom: 2, top: 1 }}>
+        The Text component has a few extra properties than other components that supports text alignment, wrapping, and scrolling.
       </Text>
-      <Text width="90%" align="center">
+      <Text width="90%">
         Common Properties
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
       {/* prettier-ignore */}
-      <Text width="90%" align="left" gap={{ left: 6 }}>
+      <Text width="90%" gap={{ left: 6 }}>
         • textAlign — Position text within component (9-point grid) ¶
         • wrap — Enable/disable text wrapping (default: true) ¶
         • scrollable — Enable scrolling for long content (default: false) ¶
+        • typewriter — Enable typewriter effect (default: false) ¶
+        • typewriterSpeed — Speed of typewriter effect (chars per second) ¶
         • \¶ — use \¶ to insert a line break within text ¶
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Text Alignment
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" gap={{ left: 4 }}>
         The textAlign property positions text within the Text component using a
         9-position grid: top-left, top, top-right, left, center, right,
         bottom-left, bottom, bottom-right.
@@ -74,45 +74,29 @@ export const TextBasics = () => {
         </Text>
       </Row>
 
-      <Text width="90%" align="center">
-        Text Wrapping
+      <Text width="90%" gap={{ top: 2 }}>
+        Typewriter Effect
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
-        Text automatically wraps to fit within the component width. Use
-        wrap=false to disable wrapping.
-      </Text>
-
-      <Text width={48} border label="wrap=false" wrap={false} align="center">
-        This is a long line of text that will be truncated instead of wrapped.
-      </Text>
-
-      <Text width="90%" align="center" gap={{ top: 2 }}>
-        Scrollable Text
-      </Text>
-      <Line width="90%" align="center" />
-
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 1 }}>
-        Use scrollable=true to enable scrolling for long content. Use arrow keys
-        to scroll when focused.
+      <Text width="90%" gap={{ left: 4 }}>
+        Use typewriter=true to create a typewriter effect. Control the speed
+        with typewriterSpeed (characters per second).
       </Text>
 
       <Text
         width={48}
-        height={6}
-        hotkey="t"
         align="center"
         border
-        scrollable
-        label="Scrollable Text (use ↑↓ to scroll)"
+        typewriter
+        typewriterSpeed={30}
+        label="Typewriter Effect (30 chars/sec)"
       >
-        Line 1: This is scrollable text ¶ Line 2: You can use arrow keys ¶ Line
-        3: to scroll through content ¶ Line 4: that exceeds the height ¶ Line 5:
-        of the text component ¶ Line 6: Keep scrolling... ¶ Line 7: Almost
-        there... ¶ Line 8: You made it! ¶ Line 9: But there's more... ¶ Line 10:
-        This is the end
+        This text appears with a classic typewriter effect. Each character is
+        revealed one at a time, creating a dynamic typing animation that draws
+        attention to your content.
       </Text>
+
     </Column>
   );
 };

@@ -53,17 +53,17 @@ export const FPVBasics = () => {
       <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
       <Keybind keyBinding="d" action={() => gridMovement.turnRight()} />
 
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
+      <Text width="90%" gap={{ bottom: 2, top: 1 }}>
         First Person View (FPV) provides immersive ASCII-based 3D perspective
         rendering for dungeon crawlers and exploration games.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Interactive First Person Example
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
+      <Text width="90%" gap={{ bottom: 1 }}>
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
@@ -74,28 +74,28 @@ export const FPVBasics = () => {
         player={player}
       />
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Raycasting System
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" gap={{ left: 4 }}>
         FirstPersonView uses raycasting with predefined offset cubes to
         determine what the player can see in each direction:
       </Text>
 
-      <Text width="90%" align="left" gap={{ left: 6 }}>
+      <Text width="90%" gap={{ left: 6 }}>
         • Casts rays at multiple depths (here, near, middle, far) ¶ • Uses
         GameWorld.isSolid() for wall detection ¶ • Composites materials based on
         distance and position
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" gap={{ top: 2 }}>
         Scene Switching
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4, bottom: 2 }}>
+      <Text width="90%" gap={{ left: 4, bottom: 2 }}>
         FirstPersonView supports different visual styles through the scene
         property, allowing you to switch between wireframe, brick-wall, and
         other material sets for varied aesthetics.

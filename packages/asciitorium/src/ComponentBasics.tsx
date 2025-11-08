@@ -9,34 +9,32 @@ import { BaseStyle } from './constants.js';
 export const ComponentBasics = () => {
   return (
     <Column style={BaseStyle} label="Component Basics">
-      <Text width="90%" align="center" gap={{ bottom: 1, top: 2 }}>
-        All components extend the base Component class. It provides position
-        management, layout, rendering, focus handling, and state binding. This
+      <Text width="90%" gap={{ bottom: 1, top: 2 }}>
+        All components extend a base Component class. It provides sizing, rendering, focus handling, and state binding. This
         allows you to adjust a standard set of properties and behaviors across
         all components.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Common Component Properties
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
       {/* prettier-ignore */}
-      <Text width="90%" align="left" gap={{ left: 6 }}>
-        • Width — width of Component ¶
-        • Height — height of component ¶
-        • Border — use a border? ¶
-        • Label — show a title in the border ¶
-        • Align — align Component ¶
-        • Gap — Spacing within the component ¶
-        • Background — fill character ¶
-        • Hotkey — keyboard shortcut for quick access ¶
-        • Visible — component visibility ¶
-        • Children/Content — child / content
+      <Text width="90%" gap={{ left: 6 }}>
+        • width — width of Component ¶
+        • height — height of component ¶
+        • border — use a border? ¶
+        • label — show a title in the border ¶
+        • align — align component's children ¶
+        • gap — Spacing within the component ¶
+        • background — character to use as fill ¶
+        • hotkey — keyboard shortcut for quick access ¶
+        • visible — component visibility ¶
       </Text>
 
       <Text
-        gap={2}
+        gap={1}
         width={32}
         label="Component Example"
         height={5}

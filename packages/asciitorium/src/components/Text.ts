@@ -2,7 +2,7 @@ import { Component, ComponentProps } from '../core/Component.js';
 import type { State } from '../core/State.js';
 import { isState } from '../core/environment.js';
 import { resolveTextAlignment } from '../core/utils/textAlignmentUtils.js';
-import { Alignment, SizeContext } from '../core/types.js';
+import { SizeContext } from '../core/types.js';
 import { ScrollableViewport } from '../core/ScrollableViewport.js';
 import { requestRender } from '../core/RenderScheduler.js';
 
@@ -15,11 +15,12 @@ export type TextAlignment =
 export interface TextOptions
   extends Omit<ComponentProps, 'children'> {
   content?: string | State<any> | (string | State<any>)[];
-  align?: Alignment;
   textAlign?: TextAlignment;
   children?: (string | State<any>) | (string | State<any>)[];
   scrollable?: boolean;
   wrap?: boolean;
+  typewriter?: boolean;
+  typewriterSpeed?: number;
 }
 
 export class Text extends Component {
@@ -31,6 +32,13 @@ export class Text extends Component {
   private isScrollable: boolean = false;
   private shouldWrap: boolean = true;
   private stateUnsubscribers: (() => void)[] = [];
+
+  // Typewriter effect properties
+  private isTypewriter: boolean = false;
+  private typewriterSpeed: number = 20; // characters per second
+  private visibleCharCount: number = 0;
+  private typewriterIntervalId?: number;
+  private fullContent: string = '';
 
   focusable = false;
   hasFocus = false;
@@ -61,7 +69,7 @@ export class Text extends Component {
       actualContent = '';
     }
 
-    const { children, content, scrollable, wrap, textAlign, ...componentProps } = options;
+    const { children, content, scrollable, wrap, textAlign, typewriter, typewriterSpeed, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width, // Don't default to fill - let resolveSize handle it
@@ -74,8 +82,44 @@ export class Text extends Component {
     this.shouldWrap = wrap ?? true;
     this.focusable = this.isScrollable;
 
+    // Initialize typewriter settings
+    this.isTypewriter = typewriter ?? false;
+    this.typewriterSpeed = typewriterSpeed ?? 20;
+
     // Subscribe to any State objects in the source
     this.subscribeToStates();
+
+    // Start typewriter effect if enabled
+    if (this.isTypewriter) {
+      this.startTypewriter();
+    }
+  }
+
+  private startTypewriter(): void {
+    this.visibleCharCount = 0;
+
+    // Calculate interval in milliseconds from characters per second
+    const intervalMs = 1000 / this.typewriterSpeed;
+
+    this.typewriterIntervalId = window.setInterval(() => {
+      // Get full content length (we'll cache it in getContentAsString)
+      const fullLength = this.fullContent.length;
+
+      if (this.visibleCharCount < fullLength) {
+        this.visibleCharCount++;
+        requestRender();
+      } else {
+        // Typewriter complete, stop the interval
+        this.stopTypewriter();
+      }
+    }, intervalMs);
+  }
+
+  private stopTypewriter(): void {
+    if (this.typewriterIntervalId !== undefined) {
+      window.clearInterval(this.typewriterIntervalId);
+      this.typewriterIntervalId = undefined;
+    }
   }
 
   private subscribeToStates(): void {
@@ -95,6 +139,11 @@ export class Text extends Component {
     // Subscribe to each State object
     for (const state of statesToSubscribe) {
       const listener = () => {
+        // If typewriter is enabled, restart it when content changes
+        if (this.isTypewriter) {
+          this.stopTypewriter();
+          this.startTypewriter();
+        }
         requestRender();
       };
       state.subscribe(listener);
@@ -103,6 +152,9 @@ export class Text extends Component {
   }
 
   override destroy(): void {
+    // Stop typewriter effect if active
+    this.stopTypewriter();
+
     // Unsubscribe from all State objects
     for (const unsubscribe of this.stateUnsubscribers) {
       unsubscribe();
@@ -231,7 +283,17 @@ export class Text extends Component {
     }
 
     // Convert ¶ (pilcrow) to newline for text wrapping, but allow escaping with backslash
-    return result.replace(/\\¶/g, '\u0000').replace(/¶/g, '\n').replace(/\u0000/g, '¶');
+    result = result.replace(/\\¶/g, '\u0000').replace(/¶/g, '\n').replace(/\u0000/g, '¶');
+
+    // Cache the full content for typewriter effect
+    this.fullContent = result;
+
+    // If typewriter is enabled and not complete, return truncated content
+    if (this.isTypewriter && this.visibleCharCount < result.length) {
+      return result.substring(0, this.visibleCharCount);
+    }
+
+    return result;
   }
 
   draw(): string[][] {

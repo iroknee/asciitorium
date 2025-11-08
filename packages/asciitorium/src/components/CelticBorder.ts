@@ -75,23 +75,13 @@ export class CelticBorder extends Component {
   private lines: string[][];
 
   constructor({ edge, ...options }: CelticBorderOptions) {
-    // Extract align from style object if present
-    const alignFromStyle = options.style?.align;
-    const alignValue = options.align ?? alignFromStyle;
-    
-    // Use edge if provided, otherwise use align if it's a valid CelticEdge
+    // Use edge if provided
     let selectedEdge: CelticEdge;
     if (edge) {
       selectedEdge = edge;
-    } else if (
-      alignValue &&
-      typeof alignValue === 'string' &&
-      alignValue in borderPatterns
-    ) {
-      selectedEdge = alignValue as CelticEdge;
     } else {
       throw new Error(
-        'CelticBorder requires either an "edge" property or an "align" property that is one of: top-left, top-right, bottom-left, bottom-right'
+        'CelticBorder requires an "edge" property that is one of: top-left, top-right, bottom-left, bottom-right'
       );
     }
 

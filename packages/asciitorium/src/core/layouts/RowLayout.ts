@@ -1,6 +1,5 @@
 import type { Component } from '../Component.js';
 import { Layout, LayoutOptions } from './Layout.js';
-import type { Alignment } from '../types.js';
 import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index.js';
 
 export class RowLayout implements Layout {
@@ -73,8 +72,48 @@ export class RowLayout implements Layout {
       }
     }
 
-    // Pass 3: Position all children and set heights
-    let currentX = borderPad;
+    // Pass 3: Calculate total content width for alignment
+    let totalContentWidth = 0;
+    for (const child of visibleChildren) {
+      if (child.fixed) continue;
+      const gap = resolveGap(child.gap);
+      totalContentWidth += gap.left + child.width + gap.right;
+    }
+
+    // Pass 4: Calculate alignment offsets based on parent's align property
+    const remainingWidthForAlign = innerWidth - totalContentWidth;
+
+    let horizontalOffset = 0;
+    let defaultVerticalAlignment: 'top' | 'center' | 'bottom' = 'top';
+
+    if (parent.align) {
+      // Expand shorthand alignment values
+      let expandedAlign = parent.align;
+      if (parent.align === 'left') expandedAlign = 'center-left';
+      if (parent.align === 'right') expandedAlign = 'center-right';
+      if (parent.align === 'top') expandedAlign = 'top-center';
+      if (parent.align === 'bottom') expandedAlign = 'bottom-center';
+
+      // Parse the align value into vertical and horizontal components
+      const [vertical, horizontal] = expandedAlign.split('-').length === 2
+        ? expandedAlign.split('-')
+        : expandedAlign === 'center'
+          ? ['center', 'center']
+          : ['top', 'left']; // fallback
+
+      // Calculate horizontal offset
+      if (horizontal === 'center') {
+        horizontalOffset = Math.floor(remainingWidthForAlign / 2);
+      } else if (horizontal === 'right') {
+        horizontalOffset = remainingWidthForAlign;
+      }
+
+      // Set default vertical alignment for children
+      defaultVerticalAlignment = vertical as 'top' | 'center' | 'bottom';
+    }
+
+    // Pass 5: Position all children
+    let currentX = borderPad + horizontalOffset;
 
     for (const child of visibleChildren) {
       if (child.fixed) continue; // Skip positioning - already positioned
@@ -97,23 +136,13 @@ export class RowLayout implements Layout {
         child.resolveSize(context);
       }
 
-      // Validate alignment - Row children should only use vertical alignment
-      if (child.align && (child.align === 'left' || child.align === 'right')) {
-        console.warn(
-          `Row layout: Child has invalid align="${child.align}". ` +
-          `Row children only support vertical alignment: 'top', 'center', 'bottom'. ` +
-          `For horizontal spacing, use the 'gap' prop.`
-        );
+      // Calculate vertical positioning using parent's default alignment
+      let y = 0;
+      if (defaultVerticalAlignment === 'center') {
+        y = Math.floor((availableHeight - child.height) / 2);
+      } else if (defaultVerticalAlignment === 'bottom') {
+        y = availableHeight - child.height;
       }
-
-      // Calculate vertical alignment
-      const { y } = resolveAlignment(
-        child.align,
-        child.width,
-        availableHeight,
-        child.width,
-        child.height
-      );
 
       // Position child
       child.x = currentX;

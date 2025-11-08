@@ -1,6 +1,5 @@
 import type { Component } from '../Component.js';
 import { Layout, LayoutOptions } from './Layout.js';
-import type { Alignment } from '../types.js';
 import { resolveGap, resolveAlignment, createSizeContext, resolveSize, calculateAvailableSpace } from '../utils/index.js';
 
 export class ColumnLayout implements Layout {
@@ -73,8 +72,48 @@ export class ColumnLayout implements Layout {
       }
     }
 
-    // Pass 3: Position all children and set widths
-    let currentY = borderPad;
+    // Pass 3: Calculate total content height for alignment
+    let totalContentHeight = 0;
+    for (const child of visibleChildren) {
+      if (child.fixed) continue;
+      const gap = resolveGap(child.gap);
+      totalContentHeight += gap.top + child.height + gap.bottom;
+    }
+
+    // Pass 4: Calculate alignment offsets based on parent's align property
+    const remainingHeightForAlign = innerHeight - totalContentHeight;
+
+    let verticalOffset = 0;
+    let defaultHorizontalAlignment: 'left' | 'center' | 'right' = 'left';
+
+    if (parent.align) {
+      // Expand shorthand alignment values
+      let expandedAlign = parent.align;
+      if (parent.align === 'left') expandedAlign = 'center-left';
+      if (parent.align === 'right') expandedAlign = 'center-right';
+      if (parent.align === 'top') expandedAlign = 'top-center';
+      if (parent.align === 'bottom') expandedAlign = 'bottom-center';
+
+      // Parse the align value into vertical and horizontal components
+      const [vertical, horizontal] = expandedAlign.split('-').length === 2
+        ? expandedAlign.split('-')
+        : expandedAlign === 'center'
+          ? ['center', 'center']
+          : ['top', 'left']; // fallback
+
+      // Calculate vertical offset
+      if (vertical === 'center') {
+        verticalOffset = Math.floor(remainingHeightForAlign / 2);
+      } else if (vertical === 'bottom') {
+        verticalOffset = remainingHeightForAlign;
+      }
+
+      // Set default horizontal alignment for children
+      defaultHorizontalAlignment = horizontal as 'left' | 'center' | 'right';
+    }
+
+    // Pass 5: Position all children
+    let currentY = borderPad + verticalOffset;
 
     for (const child of visibleChildren) {
       if (child.fixed) continue; // Skip positioning - already positioned
@@ -93,23 +132,13 @@ export class ColumnLayout implements Layout {
         child.width = Math.max(1, availableWidth);
       }
 
-      // Validate alignment - Column children should only use horizontal alignment
-      if (child.align && (child.align === 'top' || child.align === 'bottom')) {
-        console.warn(
-          `Column layout: Child has invalid align="${child.align}". ` +
-          `Column children only support horizontal alignment: 'left', 'center', 'right'. ` +
-          `For vertical spacing, use the 'gap' prop.`
-        );
+      // Calculate horizontal positioning using parent's default alignment
+      let x = 0;
+      if (defaultHorizontalAlignment === 'center') {
+        x = Math.floor((availableWidth - child.width) / 2);
+      } else if (defaultHorizontalAlignment === 'right') {
+        x = availableWidth - child.width;
       }
-
-      // Calculate horizontal alignment
-      const { x } = resolveAlignment(
-        child.align,
-        availableWidth,
-        child.height,
-        child.width,
-        child.height
-      );
 
       // Position child
       child.x = borderPad + gap.left + x;

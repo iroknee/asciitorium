@@ -10,12 +10,12 @@ export const FontsBasics = () => {
       <Art
         gap={{ top: 2 }}
         font="marker"
-        text="opqrstuvwxyz"
+        text="asciitorium"
         letterSpacing={1}
         align="center"
       />
 
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
+      <Text width="90%" gap={{ bottom: 2 }}>
         Asciitorium Fonts are text art sprites, allowing you to display large
         letter phrases from ASCII characters. ¶¶ Fonts are stored in the
         art/fonts/ directory with the .art extension, like other asciitorium
@@ -23,15 +23,15 @@ export const FontsBasics = () => {
         font property.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Using Fonts
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 4 }}>
+      <Text width="90%" gap={{ left: 4 }}>
         Display font art using the Art component with the text property:
       </Text>
-      <Art font="pencil" text="Hello World" align="center" />
+      <Art font="pencil" text="Hello World" />
       <Text
         width={48}
         align="center"
@@ -39,20 +39,20 @@ export const FontsBasics = () => {
         gap={{ left: 4, top: 1 }}
         border
       >
-        {`<Art font="pencil" text="Hello World" align="center" />`}
+        {`<Art font="pencil" text="Hello World" />`}
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 2 }}>
+      <Text width="90%" gap={{ top: 2 }}>
         Common Use Cases
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
-      <Text width="90%" align="left" gap={{ left: 6 }}>
+      <Text width="90%" gap={{ left: 6 }}>
         • Title screens and splash pages ¶ • Section headers and banners ¶ •
         Game titles and credits ¶
       </Text>
 
-      <Text width="90%" align="center" gap={{ top: 1 }}>
+      <Text width="90%" gap={{ top: 1 }}>
         * To create your own font art review the documentation in public/art
         directory.
       </Text>

@@ -1,4 +1,15 @@
-import { Art, Line, Column, Row, Text, Button, State } from './index.js';
+import {
+  Art,
+  Line,
+  Column,
+  Row,
+  Text,
+  Button,
+  State,
+  ProgressBarSlider,
+  DotSlider,
+  GaugeSlider,
+} from './index.js';
 import { BaseStyle } from './constants.js';
 
 /**
@@ -11,22 +22,22 @@ export const NavigationBasics = () => {
 
   return (
     <Column style={BaseStyle} label="Navigation Basics">
-      <Art gap={{ top: 1, bottom: 1 }} src="nav-basics" align="center" />
+      <Art gap={{ top: 1, bottom: 1 }} src="nav-basics" />
 
-      <Text width="90%" align="center" gap={{ bottom: 2 }}>
+      <Text width="90%" gap={{ bottom: 2 }}>
         Asciitorium uses [Tab] + [Tab+Shift] for moving between focusable
         components. Some components can be focused on directly via hotkeys, such
         as Buttons. Focused components use a {'>'} key to indicate they have
         focus.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Navigation Keys
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
       {/* prettier-ignore */}
-      <Text width="90%" align="left" gap={{ left: 6 }}>
+      <Text width="90%" gap={{ left: 6 }}>
         • Tab — Move focus to next focusable component ¶
         • Shift+Tab — Move focus to previous component ¶
         • F1 or ` — Toggle hotkey visibility ¶
@@ -35,24 +46,57 @@ export const NavigationBasics = () => {
         • Arrow keys — Component-specific navigation (e.g., Select, Tabs) ¶
       </Text>
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
+      <Text width="90%" gap={{ bottom: 1 }}>
         Try navigating between these buttons using [Tab], [Shift+Tab] or press
         [F1] to see their hotkeys:{' '}
       </Text>
 
-      <Column width="90%" align="center" border gap={{ bottom: 1 }}>
-        <Text align="center" gap={{ top: 1, bottom: 1 }}>
-          Counter: {counter}
-        </Text>
+      <Column width="90%" align="center" gap={{ bottom: 1 }}>
+        <ProgressBarSlider
+          width={50}
+          align="center"
+          gap={{ bottom: 1 }}
+          value={counter}
+          min={0}
+          max={20}
+        />
+        <DotSlider
+          width={50}
+          align="center"
+          gap={{ bottom: 1 }}
+          value={counter}
+          min={0}
+          max={20}
+        />
+
+        <GaugeSlider
+          width={50}
+          align="center"
+          gap={{ bottom: 1 }}
+          value={counter}
+          min={0}
+          max={20}
+        />
       </Column>
 
-      <Row width="80%" align="center" gap={{ bottom: 2 }}>
-        <Button height={6} hotkey="a" onClick={() => counter.value++}>
-          Increment
-        </Button>
-
-        <Button height={6} hotkey="s" onClick={() => counter.value--}>
+      <Row width="fill" align="center" gap={{ bottom: 2 }}>
+        <Button
+          height={6}
+          hotkey="a"
+          onClick={() => {
+            if (counter.value > 0) counter.value--;
+          }}
+        >
           Decrement
+        </Button>
+        <Button
+          height={6}
+          hotkey="s"
+          onClick={() => {
+            if (counter.value < 20) counter.value++;
+          }}
+        >
+          Increment
         </Button>
       </Row>
     </Column>

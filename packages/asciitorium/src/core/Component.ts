@@ -41,7 +41,7 @@ export interface ComponentProps {
   /** Character used for component background */
   background?: string;
 
-  /** Component alignment within its parent (used by layout system) */
+  /** Groups and aligns all children within this component (Row/Column containers only) */
   align?: Alignment;
 
   /** Exact coordinate placement - overrides layout positioning */
@@ -160,7 +160,7 @@ export abstract class Component {
   /** Character used to fill the component background */
   public fill: string;
 
-  /** Component alignment within its parent (used by layout system) */
+  /** Groups and aligns all children within this component (Row/Column containers only) */
   public align?: Alignment;
 
   /** Whether the component uses fixed positioning */

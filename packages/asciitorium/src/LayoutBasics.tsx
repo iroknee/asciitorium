@@ -9,20 +9,20 @@ import { BaseStyle } from './constants.js';
 export const LayoutBasics = () => {
   return (
     <Column style={BaseStyle} label="Layout Basics">
-      <Text width="90%" align="center" gap={{ bottom: 2, top: 1 }}>
+      <Text width="90%" gap={{ bottom: 2, top: 1 }}>
         Asciitorium provides Column and Row layout containers for organizing
         components. Layouts automatically calculate child positions and sizes
         based on the layout type and available space.
       </Text>
 
-      <Text width="90%" align="center">
+      <Text width="90%">
         Available Layout Types
       </Text>
-      <Line width="90%" align="center" />
+      <Line width="90%" />
 
       {/* prettier-ignore */}
-      <Text width="90%" align="left" gap={{ left: 6 }}>
-        • Row Layout — arranges children horizontally ¶ 
+      <Text width="90%" gap={{ left: 6 }}>
+        • Row Layout — arranges children horizontally ¶
         • Column Layout — arranges children vertically ¶
       </Text>
       <Column
@@ -32,7 +32,7 @@ export const LayoutBasics = () => {
         label="Layout Example"
         height={15}
       >
-        <Text border width="fill" align="center">
+        <Text border width="fill">
           Header
         </Text>
         <Row height="fill">
@@ -45,12 +45,12 @@ export const LayoutBasics = () => {
             <Text>Main Content Area</Text>
           </Column>
         </Row>
-        <Text border width="fill" align="center">
+        <Text border width="fill">
           Footer
         </Text>
       </Column>
 
-      <Text width="90%" align="center" gap={{ bottom: 1 }}>
+      <Text width="90%" gap={{ bottom: 1 }}>
         * For absolute positioning you can use the position prop. Positioned
         components are skipped by layout systems and placed at exact
         coordinates.

@@ -100,16 +100,16 @@ describe('Text', () => {
 
   describe('alignment', () => {
     test('should support center alignment', () => {
-      const text = new Text({ 
+      const text = new Text({
         content: 'Centered',
         width: 20,
         align: 'center'
       });
       const buffer = renderer.render(text);
-      
+
       // Text should be centered in the available space
       expectBuffer(buffer).toContainText('Centered');
-      
+
       // Check that the text appears to be centered
       // (This would need more specific positioning checks in a real implementation)
       const bufferString = buffer.map(row => row.join('')).join('\n');
@@ -117,24 +117,24 @@ describe('Text', () => {
     });
 
     test('should support left alignment', () => {
-      const text = new Text({ 
+      const text = new Text({
         content: 'Left Aligned',
         width: 20,
         align: 'left'
       });
       const buffer = renderer.render(text);
-      
+
       expectBuffer(buffer).toContainText('Left Aligned');
     });
 
     test('should support right alignment', () => {
-      const text = new Text({ 
+      const text = new Text({
         content: 'Right Aligned',
         width: 20,
         align: 'right'
       });
       const buffer = renderer.render(text);
-      
+
       expectBuffer(buffer).toContainText('Right Aligned');
     });
   });
