@@ -1,6 +1,6 @@
 # create-asciitorium
 
-`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](https://github.com/iroknee/asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building CLUI applications with minimal setup.
+`create-asciitorium` is a command-line tool that helps you quickly scaffold a new [asciitorium](https://github.com/iroknee/asciitorium) project. It sets up all the necessary files, folders, and dependencies so you can start building a Command-Line User Interface (CLUI) application with minimal setup.
 
 ## Features
 
@@ -41,7 +41,7 @@ npm run build
 
 ### Other Scripts
 
-Asciitorium supports viewing ascii art files. There are a few easy ways to create some specific ascii art, including FIGlet fonts and maps.
+`create-asciitorium` contains a few scripts that helps get building asciitorium `.art` files.
 
 To generate FIGlet ASCII art assets (automatically placed in public/art):
 
@@ -54,48 +54,27 @@ npm run figlet font "a phrase"
 Here are some practical examples for generating ASCII art:
 
 ```bash
-# Generate a game title
-npm run figlet big "DUNGEON QUEST"
-
-# Create a welcome message
-npm run figlet standard "Welcome"
-
 # Generate stylized text for menus
 npm run figlet small "Main Menu"
-
-# Create decorative headers
-npm run figlet banner "Level 1"
 
 # Generate large title text
 npm run figlet block "GAME OVER"
 ```
 
-#### Popular FIGlet Fonts
-
-Some commonly used fonts include:
-
-- `big` - Large, bold letters
-- `standard` - Default FIGlet font
-- `small` - Compact text
-- `banner` - Wide banner-style text
-- `block` - Solid block letters
-- `slant` - Italicized appearance
-- `shadow` - Text with shadow effect
-
-You may also list all available FIGlet fonts supported:
+You may list all available FIGlet fonts supported:
 
 ```bash
 npm run figlet:fonts
 ```
 
-To generate ASCII maze files (placed in public/art/mazes):
+To generate asciitorium map files (placed in public/art/maps):
 
 ```bash
-node scripts/maze-builder.js <width> <height> <filename> [--smooth]
+node scripts/map-builder.js <width> <height> <filename> [--smooth]
 
 # Examples:
-node scripts/maze-builder.js 10 10 dungeon-level-1.art
-node scripts/maze-builder.js 15 20 castle-maze.art --smooth
+node scripts/map-builder.js 10 10 dungeon-level-1.art
+node scripts/map-builder.js 15 20 castle-maze.art --smooth
 ```
 
 The `--smooth` flag uses Unicode box drawing characters for improved visual appearance.
@@ -105,14 +84,16 @@ The `--smooth` flag uses Unicode box drawing characters for improved visual appe
 A typical generated project will look like:
 
 ```bash
-my-asciitorium-app/
+my-app/
   ├── public/
   │   ├── art/
-  │   │   └── mazes/        # Generated maze files
-  │   └── fonts/            # Custom fonts
+  │   │   └── maps/         # asciitorium map/legend files.
+  │   │   └── materials/    # asciitorium 3D & 2D scenery files
+  │   │   └── fonts/        # asciitorium font files
+  │   │   └── sprites/      # asciitorium sprite files
   ├── scripts/
   │   ├── gen-figlet-art.js # FIGlet art generator
-  │   └── maze-builder.js   # ASCII maze generator
+  │   └── map-builder.js   # asciitorium map generator
   ├── src/
   │   ├── main.tsx          # Main application entry
   │   └── vite-env.d.ts     # TypeScript definitions
