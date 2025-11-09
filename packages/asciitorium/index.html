@@ -2,12 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>asciitorium</title>
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
     <pre id="screen">Loading...</pre>
+    <div id="mobile-controls" class="mobile-controls">
+      <div class="dpad">
+        <button id="btn-up" class="control-btn btn-up">▲</button>
+        <div class="dpad-middle">
+          <button id="btn-left" class="control-btn btn-left">◄</button>
+          <button id="btn-enter" class="control-btn btn-center">⏎</button>
+          <button id="btn-right" class="control-btn btn-right">►</button>
+        </div>
+        <button id="btn-down" class="control-btn btn-down">▼</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
-</html>
+</html>.    
