@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.42] - 2025-11-10
+
+### Fixed
+
+- **Cross-Platform Compatibility:**
+  - Fixed `Text` component typewriter effect to work in both browser and Node.js environments
+  - Replaced `window.setInterval` and `window.clearInterval` with `globalThis` equivalents for CLI compatibility
+  - Resolved `ReferenceError: window is not defined` crash when using typewriter effect in terminal mode
+
+### Technical Details
+
+- **Key Files Modified:** Text.ts
+- **Impact:** Typewriter effect now works correctly in both web and CLI modes
+- **Architecture:** Improved environment-agnostic timer management
+
 ## [0.1.35] - 2025-11-02
 
 ### Added
