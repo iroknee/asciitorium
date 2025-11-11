@@ -6,12 +6,14 @@ export interface KeybindOptions extends ComponentProps {
   action: () => void;    // Function to execute
   description?: string;  // Optional description for help
   disabled?: State<boolean> | boolean; // Reactive or static disable
+  priority?: number;     // Priority for conflict resolution (default: 0, higher = more priority)
 }
 
 export class Keybind extends Component {
   public readonly keyBinding: string;
   public readonly action: () => void;
   public readonly description?: string;
+  public readonly priority: number;
   private disabledState?: State<boolean>;
   private staticDisabled: boolean;
   private registrationAttempted = false;
@@ -21,15 +23,16 @@ export class Keybind extends Component {
   constructor(options: KeybindOptions) {
     super({
       ...options,
-      width: 0,  // Invisible component
+      width: 0,  // Non-visual component
       height: 0,
       border: false,
-      visible: new State(true) // Always visible to track component tree status
+      visible: new State(false) // Explicitly invisible - not a visual component
     });
 
     this.keyBinding = options.keyBinding;
     this.action = options.action;
     this.description = options.description;
+    this.priority = options.priority ?? 0;
 
     // Handle disabled state (reactive or static)
     if (options.disabled instanceof State) {

@@ -6,10 +6,12 @@ import {
   OptionGroup,
   Switch,
   Row,
+  Column,
   PerfMonitor,
   PersistentState,
   State,
   Keybind,
+  MobileController,
 } from './index.js';
 
 import { GettingStarted } from './GettingStarted.js';
@@ -46,7 +48,7 @@ const docMap: Record<string, any> = {
 // Main state for component selection with persistence
 const selectedKey = new PersistentState<string>(
   'start',
-  'asciitorium.getting.started.selected'
+  'asciitorium.document.tutorial.selected'
 );
 const selected = new State<any>(docMap[selectedKey.value]);
 
@@ -63,37 +65,65 @@ const togglePerfMonitor = () => {
   showPerfMonitor.value = !showPerfMonitor.value;
 };
 
+// Create Select instance so we can reference it in keybindings
+const docSelect = (
+  <Select
+    label="Documentation"
+    width={28}
+    height="fill"
+    hotkey="d"
+    selected={selectedKey}
+  >
+    <Option value="start">Getting Started</Option>
+    <OptionGroup label="Component Framework">
+      <Option value="components">Component Basics</Option>
+      <Option value="text">Text</Option>
+      <Option value="layout">Layouts</Option>
+      <Option value="align">Align & Gaps</Option>
+      <Option value="navigation">Component Navigation</Option>
+      <Option value="keybindings">Keybindings</Option>
+      <Option value="state">State Management</Option>
+    </OptionGroup>
+    <OptionGroup label="ASCII Art & Game Engine">
+      <Option value="sprites">Sprites</Option>
+      <Option value="fonts">Fonts</Option>
+      <Option value="materials">Materials</Option>
+      <Option value="maps">Maps</Option>
+      <Option value="fpv">First Person View</Option>
+    </OptionGroup>
+  </Select>
+);
+
 const app = (
   <App align="top-center">
     <Keybind keyBinding="F12" action={togglePerfMonitor} />
 
     <Art src="asciitorium" gap={{ bottom: 1 }} />
     <Row height="fill">
-      <Select
-        label="Documentation"
-        width={28}
-        height="fill"
-        hotkey="d"
-        selected={selectedKey}
-      >
-        <Option value="start">Getting Started</Option>
-        <OptionGroup label="Component Framework">
-          <Option value="components">Component Basics</Option>
-          <Option value="text">Text</Option>
-          <Option value="layout">Layouts</Option>
-          <Option value="align">Align & Gaps</Option>
-          <Option value="navigation">Component Navigation</Option>
-          <Option value="keybindings">Keybindings</Option>
-          <Option value="state">State Management</Option>
-        </OptionGroup>
-        <OptionGroup label="ASCII Art & Game Engine">
-          <Option value="sprites">Sprites</Option>
-          <Option value="fonts">Fonts</Option>
-          <Option value="materials">Materials</Option>
-          <Option value="maps">Maps</Option>
-          <Option value="fpv">First Person View</Option>
-        </OptionGroup>
-      </Select>
+      <Column width={28} height="fill">
+        {/* Explicit keybindings for Select navigation */}
+        <Keybind keyBinding="ArrowDown" action={() => docSelect.moveNext()} />
+        <Keybind keyBinding="ArrowUp" action={() => docSelect.movePrevious()} />
+        <Keybind keyBinding="Enter" action={() => docSelect.select()} />
+        <Keybind keyBinding=" " action={() => docSelect.select()} />
+        <Keybind keyBinding="PageDown" action={() => docSelect.pageDown()} />
+        <Keybind keyBinding="PageUp" action={() => docSelect.pageUp()} />
+        <Keybind keyBinding="Home" action={() => docSelect.moveToStart()} />
+        <Keybind keyBinding="End" action={() => docSelect.moveToEnd()} />
+
+        {/* Mobile controls for Select */}
+        <MobileController
+          dpad={{
+            up: () => docSelect.movePrevious(),
+            down: () => docSelect.moveNext(),
+          }}
+          buttons={{
+            a: () => docSelect.select(),
+          }}
+        />
+
+        {docSelect}
+      </Column>
       <Switch width="fill" height="fill" component={selected} />
     </Row>
     <PerfMonitor visible={showPerfMonitor} />

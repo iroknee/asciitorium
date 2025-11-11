@@ -1,4 +1,5 @@
 import { Component, ComponentProps } from '../core/Component.js';
+import { State } from '../core/State.js';
 
 export interface OptionProps<T = any> extends Omit<ComponentProps, 'children'> {
   value: T;
@@ -11,7 +12,12 @@ export class Option<T = any> extends Component {
 
   constructor(props: OptionProps<T>) {
     const { children: childrenString, ...componentProps } = props;
-    super({ ...componentProps, width: 0, height: 0 });
+    super({
+      ...componentProps,
+      width: 0,
+      height: 0,
+      visible: new State(false), // Data-only component, not visual
+    });
     this.value = props.value;
     this.label = childrenString || String(props.value);
   }

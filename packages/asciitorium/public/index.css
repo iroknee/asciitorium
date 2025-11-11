@@ -45,11 +45,8 @@ body {
   display: none; /* Hidden by default */
   position: fixed;
   bottom: 5%;
-  left: 2%;
+  left: 5%;
   z-index: 1000;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
   padding: 15px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 10px;
@@ -57,9 +54,10 @@ body {
 }
 
 .mobile-controls.visible {
-  display: flex;
+  display: block;
 }
 
+/* D-Pad (Left Side) */
 .dpad {
   display: flex;
   flex-direction: column;
@@ -73,9 +71,14 @@ body {
   gap: 5px;
 }
 
+.dpad-center {
+  width: 50px;
+  height: 50px;
+}
+
 .control-btn {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   font-size: 20px;
   font-weight: bold;
   border: 2px solid #2cd03a;
@@ -91,5 +94,82 @@ body {
 
 .control-btn:active {
   background: rgba(44, 208, 58, 0.5);
+  transform: scale(0.95);
+}
+
+/* Action Buttons (Right Side) */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+}
+
+.action-middle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-center {
+  width: 50px;
+  height: 50px;
+}
+
+.action-btn {
+  width: 50px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid #2cd03a;
+  background: rgba(44, 208, 58, 0.2);
+  color: #2cd03a;
+  border-radius: 50%; /* Circular buttons for action buttons */
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.action-btn:active {
+  background: rgba(44, 208, 58, 0.5);
+  transform: scale(0.95);
+}
+
+/* Menu Button (Top Right) */
+.menu-btn {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 5%;
+  right: 5%;
+  width: 45px;
+  height: 45px;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #2cd03a;
+  background: rgba(0, 0, 0, 0.7);
+  color: #2cd03a;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 1001;
+}
+
+.menu-btn.visible {
+  display: block;
+}
+
+.menu-btn:active {
+  background: rgba(44, 208, 58, 0.4);
   transform: scale(0.95);
 }

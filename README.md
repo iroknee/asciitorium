@@ -91,6 +91,8 @@ Alternative CDN providers:
 - **Switch** - Conditional rendering component for dynamic content switching
 - **Tab** - Individual tab component for tabbed interfaces
 - **TabContainer** - Container managing multiple tabs with keyboard navigation
+- **Keybind** - Declarative keyboard shortcut registration with scene-scoped lifecycle
+- **MobileController** - Declarative mobile touch control mapping with scene-scoped lifecycle
 
 ### Display Components
 
@@ -258,9 +260,176 @@ const showDebugPanel = new State(false);
 - `action` - Function to execute when key is pressed
 - `global` - If true, overrides focused component handling (default: false)
 - `disabled` - Static boolean or reactive `State<boolean>` to conditionally disable
+- `priority` - Number for conflict resolution when multiple keybinds exist (default: 0, higher = more priority)
 - `description` - Optional description for documentation
 
-**Precedence:** Component focus takes priority over keybinds unless `global={true}` is specified.
+**Precedence:** Component focus takes priority over keybinds unless `global={true}` is specified. When multiple keybinds exist for the same key, the highest priority wins.
+
+#### Scene-Scoped Keybindings
+
+Keybindings should be declared within scene components for automatic cleanup when scenes change:
+
+```tsx
+const DungeonScene = () => (
+  <Column>
+    {/* Scene-specific keybindings - auto-cleanup when scene unmounts */}
+    <Keybind keyBinding="w" action={() => moveForward()} />
+    <Keybind keyBinding="a" action={() => turnLeft()} />
+    <Keybind keyBinding="s" action={() => moveBackward()} />
+    <Keybind keyBinding="d" action={() => turnRight()} />
+
+    <MapView />
+  </Column>
+);
+
+const TownScene = () => (
+  <Column>
+    {/* Different keybindings for town - same keys, different actions! */}
+    <Keybind keyBinding="w" action={() => selectPreviousShop()} />
+    <Keybind keyBinding="s" action={() => selectNextShop()} />
+    <Keybind keyBinding="Enter" action={() => enterShop()} />
+
+    <ShopMenu />
+  </Column>
+);
+
+// Scene switching automatically swaps keybindings
+<Switch component={currentScene}>
+  <Option value="dungeon">
+    <DungeonScene />
+  </Option>
+  <Option value="town">
+    <TownScene />
+  </Option>
+</Switch>;
+```
+
+**Benefits:**
+
+- Automatic registration/cleanup with component lifecycle
+- No key conflicts between scenes
+- Keybindings co-located with scene code
+- Priority system for overlays (modals, menus)
+
+#### Mobile Touch Controls
+
+asciitorium includes built-in mobile touch controls that automatically appear on mobile devices. Use the `MobileController` component to map touch buttons to actions:
+
+```tsx
+import { MobileController, GridMovement } from 'asciitorium';
+
+const DungeonScene = () => {
+  const gridMovement = new GridMovement({ ... });
+
+  return (
+    <Column>
+      {/* Keyboard bindings */}
+      <Keybind keyBinding="w" action={() => gridMovement.moveForward()} />
+      <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
+
+      {/* Mobile bindings - same actions, different input! */}
+      <MobileController
+        dpad={{
+          up: () => gridMovement.moveForward(),
+          down: () => gridMovement.moveBackward(),
+          left: () => gridMovement.turnLeft(),
+          right: () => gridMovement.turnRight(),
+        }}
+        buttons={{
+          a: () => interact(),      // Bottom button (primary action)
+          b: () => attack(),         // Right button (secondary action)
+          x: () => useItem(),        // Left button
+          y: () => openMap(),        // Top button
+        }}
+        menu: () => pauseGame()      // Top-right menu button (ESC equivalent)
+      />
+
+      <FirstPersonView />
+    </Column>
+  );
+};
+```
+
+**MobileController Props:**
+
+- `dpad` - D-pad button mappings (up, down, left, right)
+- `buttons` - Action button mappings (a, b, x, y) in diamond pattern
+- `menu` - Menu button action (top-right corner)
+- `enabled` - Static boolean or reactive `State<boolean>` to conditionally enable
+- `priority` - Number for conflict resolution (default: 0, higher = more priority)
+
+**Mobile Layout:**
+
+```txt
+Top-Right: [≡] Menu Button
+
+Bottom:
+  Left Side:           Right Side:
+      ▲                    (Y)
+    ◄   ►               (X)   (B)
+      ▼                    (A)
+
+Gestures:
+  - Swipe Right: Tab (next component)
+  - Swipe Left: Shift+Tab (previous component)
+```
+
+**Scene-Scoped Mobile Controls:**
+
+Like `Keybind`, `MobileController` should be declared within scene components for automatic remapping:
+
+```tsx
+// Dungeon scene - movement controls
+const DungeonScene = () => (
+  <Column>
+    <MobileController
+      dpad={{ up: () => moveForward(), down: () => moveBackward() }}
+      buttons={{ a: () => attack(), b: () => useItem() }}
+    />
+    <MapView />
+  </Column>
+);
+
+// Town scene - menu navigation
+const TownScene = () => (
+  <Column>
+    <MobileController
+      dpad={{ up: () => selectPrevious(), down: () => selectNext() }}
+      buttons={{ a: () => confirm(), b: () => back() }}
+    />
+    <ShopMenu />
+  </Column>
+);
+```
+
+**Priority for Overlays:**
+
+```tsx
+const GameWithMenu = () => {
+  const menuOpen = new State(false);
+
+  return (
+    <Column>
+      {/* Base game controls (priority: 0) */}
+      <MobileController
+        dpad={{ up: () => moveForward() }}
+        buttons={{ a: () => attack() }}
+      />
+
+      {/* Menu overlay (priority: 10) - overrides game controls */}
+      {menuOpen.value && (
+        <Column>
+          <MobileController
+            dpad={{ up: () => menuUp(), down: () => menuDown() }}
+            buttons={{ a: () => menuSelect(), b: () => closeMenu() }}
+            priority={10}
+          />
+        </Column>
+      )}
+    </Column>
+  );
+};
+```
 
 #### Component-Specific Controls
 

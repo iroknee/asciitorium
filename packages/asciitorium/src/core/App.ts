@@ -4,7 +4,10 @@ import type { Renderer } from './renderers/Renderer.js';
 import { DOMRenderer } from './renderers/DOMRenderer.js';
 import { TTYRenderer } from './renderers/TTYRenderer.js';
 import { setRenderCallback } from './RenderScheduler.js';
-import { setupKeyboardHandling, validateWebEnvironment } from './environment.js';
+import {
+  setupKeyboardHandling,
+  validateWebEnvironment,
+} from './environment.js';
 import { createSizeContext } from './utils/sizeUtils.js';
 
 export interface AppProps extends ComponentProps {
@@ -23,6 +26,7 @@ export class App extends Component {
   private currentMemory: number = 0;
   private lastCPUUsage?: any;
   private keybindRegistry = new Map<string, any>();
+  private mobileControllerRegistry: any[] = [];
   private readonly fixedWidth: boolean;
   private readonly fixedHeight: boolean;
 
@@ -42,7 +46,8 @@ export class App extends Component {
 
     // Determine if dimensions are fixed (numeric values were explicitly provided)
     const hasFixedWidth = typeof (props.width ?? widthFromStyle) === 'number';
-    const hasFixedHeight = typeof (props.height ?? heightFromStyle) === 'number';
+    const hasFixedHeight =
+      typeof (props.height ?? heightFromStyle) === 'number';
 
     // Set column layout as default for Asciitorium
     // Use screen size if width/height not explicitly provided
@@ -203,17 +208,46 @@ export class App extends Component {
     }
   }
 
-
   // Add keybind registration methods
   registerKeybind(keybind: any) {
     if (this.keybindRegistry.has(keybind.keyBinding)) {
-      console.warn(`Warning: Duplicate keybinding for "${keybind.keyBinding}". The previous binding will be overwritten.`);
+      console.warn(
+        `Warning: Duplicate keybinding for "${keybind.keyBinding}". The previous binding will be overwritten.`
+      );
     }
     this.keybindRegistry.set(keybind.keyBinding, keybind);
   }
 
   unregisterKeybind(keybind: any) {
     this.keybindRegistry.delete(keybind.keyBinding);
+  }
+
+  // Add mobile controller registration methods
+  registerMobileController(controller: any) {
+    this.mobileControllerRegistry.push(controller);
+  }
+
+  unregisterMobileController(controller: any) {
+    const index = this.mobileControllerRegistry.indexOf(controller);
+    if (index !== -1) {
+      this.mobileControllerRegistry.splice(index, 1);
+    }
+  }
+
+  // Handle mobile button press
+  handleMobileButton(buttonId: string): void {
+    // Find all enabled controllers in the component tree, sorted by priority (highest first)
+    const activeControllers = this.mobileControllerRegistry
+      .filter((c) => !c.disabled && this.isComponentInTree(c))
+      .sort((a, b) => b.priority - a.priority);
+
+    // Execute first controller that handles this button
+    for (const controller of activeControllers) {
+      if (controller.handleButton(buttonId)) {
+        this.render();
+        return;
+      }
+    }
   }
 
   handleKey(key: string, event?: KeyboardEvent): void {
@@ -248,7 +282,7 @@ export class App extends Component {
   }
 
   private getFocusedComponent(): Component | undefined {
-    return this.getAllDescendants().find(c => c.hasFocus);
+    return this.getAllDescendants().find((c) => c.hasFocus);
   }
 
   private isKeybindActive(keybind: any): boolean {
@@ -268,7 +302,7 @@ export class App extends Component {
 
   private hasComponentWithFocus(): boolean {
     // Check if any component currently has focus
-    return this.getAllDescendants().some(c => c.hasFocus);
+    return this.getAllDescendants().some((c) => c.hasFocus);
   }
 
   private setupResizeHandling(): void {
@@ -310,30 +344,97 @@ export class App extends Component {
 
   async start(): Promise<void> {
     validateWebEnvironment();
-    await setupKeyboardHandling((key, event) => this.handleKey(key, event));
+    await setupKeyboardHandling(
+      (key, event) => this.handleKey(key, event),
+      (buttonId) => this.handleMobileButton(buttonId)
+    );
     setRenderCallback(() => this.render());
     // Trigger initial render to ensure all components are displayed
     this.render();
   }
 
   private resolveSizesRecursively(): void {
-    // Create size context for the app (root component)
-    const sizeContext = createSizeContext(this.width, this.height, 0);
+    // Recursively resolve sizes and layouts top-down
+    // This ensures parents calculate their children's dimensions before those children draw
+    console.log('=== PASS 1: Size Resolution Starting ===');
+    this.resolveSizesForComponent(this);
+    console.log('=== PASS 1: Size Resolution Complete ===');
 
-    // Resolve sizes for all components in the tree
+    // Validate that all sizes are resolved
+    this.validateSizesResolved();
+  }
+
+  private validateSizesResolved(): void {
+    console.log('=== Validating All Sizes Are Resolved ===');
     const allComponents = this.getAllDescendants().concat([this]);
+    let invalidCount = 0;
+
     for (const component of allComponents) {
-      // Create appropriate size context based on parent
-      let componentContext = sizeContext;
-      if (component.parent) {
-        const borderPad = component.parent.border ? 1 : 0;
-        componentContext = createSizeContext(
-          component.parent.width,
-          component.parent.height,
-          borderPad
+      const name = component.constructor.name;
+      const isInvalid =
+        typeof component.width !== 'number' ||
+        component.width < 1 ||
+        typeof component.height !== 'number' ||
+        component.height < 1;
+
+      if (isInvalid && component.visible) {
+        console.error(
+          `❌ ${name} has invalid dimensions: ${component.width}x${component.height}, ` +
+            `originalWidth=${(component as any).originalWidth}, ` +
+            `originalHeight=${(component as any).originalHeight}, ` +
+            `visible=${component.visible}`
         );
+        invalidCount++;
       }
-      component.resolveSize(componentContext);
+    }
+
+    if (invalidCount === 0) {
+      console.log('✅ All visible components have valid numeric dimensions');
+    } else {
+      console.error(
+        `❌ ${invalidCount} visible components have invalid dimensions!`
+      );
+    }
+  }
+
+  private resolveSizesForComponent(component: Component): void {
+    const name = component.constructor.name;
+    const beforeWidth = component.width;
+    const beforeHeight = component.height;
+
+    // Step 1: Resolve this component's size based on parent context
+    if (component.parent) {
+      const borderPad = component.parent.border ? 1 : 0;
+      const context = createSizeContext(
+        component.parent.width,
+        component.parent.height,
+        borderPad
+      );
+      component.resolveSize(context);
+    } else {
+      // Root component (App) uses screen size
+      const context = createSizeContext(this.width, this.height, 0);
+      component.resolveSize(context);
+    }
+
+
+    // Step 2: Calculate layout ONLY for components with VISIBLE children
+    // This will set the dimensions (width/height) of child components with "fill" sizing
+    // Data-only children (Option, OptionGroup) have visible=false and are skipped
+    // This prevents recursive layout calls on components like Select that have
+    // data children but handle their own rendering
+    const children = (component as any).children || [];
+    const visibleChildren = children.filter((c: any) => c.visible);
+
+    if (visibleChildren.length > 0) {
+      const beforeLayoutHeight = component.height;
+      (component as any).recalculateLayout();
+    }
+
+    // Step 3: Recursively resolve children
+    // Now that parent has calculated their sizes via layout, children can proceed
+    for (const child of children) {
+      this.resolveSizesForComponent(child);
     }
   }
 }

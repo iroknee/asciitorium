@@ -44,7 +44,8 @@ export function isMemorySupported(): boolean {
 }
 
 export async function setupKeyboardHandling(
-  handleKey: (key: string, event?: KeyboardEvent) => void
+  handleKey: (key: string, event?: KeyboardEvent) => void,
+  handleMobileButton?: (buttonId: string) => void
 ): Promise<void> {
   if (isWebEnvironment()) {
     // Web environment
@@ -63,8 +64,8 @@ export async function setupKeyboardHandling(
     });
 
     // Setup mobile controls if on mobile device
-    if (isMobileDevice()) {
-      setupMobileControls(handleKey);
+    if (isMobileDevice() && handleMobileButton) {
+      setupMobileControls(handleMobileButton);
       setupSwipeDetection(handleKey);
     }
   } else {
@@ -83,37 +84,46 @@ export async function setupKeyboardHandling(
   }
 }
 
-function setupMobileControls(handleKey: (key: string) => void): void {
+function setupMobileControls(handleMobileButton: (buttonId: string) => void): void {
   const mobileControls = document.getElementById('mobile-controls');
+  const menuButton = document.getElementById('btn-menu');
+
   if (!mobileControls) return;
 
-  // Show mobile controls
+  // Show mobile controls and menu button
   mobileControls.classList.add('visible');
+  if (menuButton) {
+    menuButton.classList.add('visible');
+  }
 
-  // Map button IDs to key codes
-  const buttonMap: Record<string, string> = {
-    'btn-up': 'ArrowUp',
-    'btn-down': 'ArrowDown',
-    'btn-left': 'ArrowLeft',
-    'btn-right': 'ArrowRight',
-    'btn-enter': 'Enter',
-  };
+  // All button IDs - no hardcoded key mappings!
+  const buttonIds = [
+    'btn-up',
+    'btn-down',
+    'btn-left',
+    'btn-right',
+    'btn-a',
+    'btn-b',
+    'btn-x',
+    'btn-y',
+    'btn-menu',
+  ];
 
   // Add touch event listeners to each button
-  Object.entries(buttonMap).forEach(([buttonId, key]) => {
+  buttonIds.forEach((buttonId) => {
     const button = document.getElementById(buttonId);
     if (!button) return;
 
     // Use touchstart for immediate response
     button.addEventListener('touchstart', (event) => {
       event.preventDefault(); // Prevent default touch behavior
-      handleKey(key);
+      handleMobileButton(buttonId);
     });
 
     // Also support click for testing in desktop browsers
     button.addEventListener('click', (event) => {
       event.preventDefault();
-      handleKey(key);
+      handleMobileButton(buttonId);
     });
   });
 }

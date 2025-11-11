@@ -110,48 +110,123 @@ export class Select<T = any> extends Component {
     });
   }
 
-  override handleEvent(event: string): boolean {
-    const prevFocusedIndex = this.focusedIndex;
-    const prevSelectedIndex = this.selectedIndex;
+  /**
+   * Move focus to the next item (skipping group headers)
+   */
+  public moveNext(): void {
+    let newIndex = this.focusedIndex + 1;
 
-    // Use ScrollableViewport for navigation
-    let newFocusedIndex = this.scrollableViewport.handleScrollEvent(
-      event,
-      this.focusedIndex,
-      this.items.length
-    );
-
-    // Skip group headers during navigation
-    if (newFocusedIndex !== this.focusedIndex) {
-      const direction = newFocusedIndex > this.focusedIndex ? 1 : -1;
-      while (
-        newFocusedIndex >= 0 &&
-        newFocusedIndex < this.items.length &&
-        this.items[newFocusedIndex].isGroupHeader
-      ) {
-        newFocusedIndex += direction;
-      }
-      // Clamp to valid range
-      newFocusedIndex = Math.max(0, Math.min(this.items.length - 1, newFocusedIndex));
+    // Skip group headers
+    while (
+      newIndex < this.items.length &&
+      this.items[newIndex].isGroupHeader
+    ) {
+      newIndex++;
     }
 
-    this.focusedIndex = newFocusedIndex;
+    // Clamp to valid range
+    if (newIndex < this.items.length) {
+      this.focusedIndex = newIndex;
+    }
+  }
 
-    // Selection (space/enter selects the focused item, but not if it's a group header)
-    if ((event === ' ' || event === 'Enter') && !this.items[this.focusedIndex].isGroupHeader) {
+  /**
+   * Move focus to the previous item (skipping group headers)
+   */
+  public movePrevious(): void {
+    let newIndex = this.focusedIndex - 1;
+
+    // Skip group headers
+    while (
+      newIndex >= 0 &&
+      this.items[newIndex].isGroupHeader
+    ) {
+      newIndex--;
+    }
+
+    // Clamp to valid range
+    if (newIndex >= 0) {
+      this.focusedIndex = newIndex;
+    }
+  }
+
+  /**
+   * Select the currently focused item (if not a group header)
+   */
+  public select(): void {
+    if (this.focusedIndex >= 0 &&
+        this.focusedIndex < this.items.length &&
+        !this.items[this.focusedIndex].isGroupHeader) {
       this.selectedIndex = this.focusedIndex;
       this.selectedState.value = this.items[this.selectedIndex].value;
     }
+  }
 
-    // Return true if any state changed
-    return (
-      this.focusedIndex !== prevFocusedIndex ||
-      this.selectedIndex !== prevSelectedIndex
-    );
+  /**
+   * Jump to the first item
+   */
+  public moveToStart(): void {
+    this.focusedIndex = 0;
+    // Skip if first item is a group header
+    if (this.items[0]?.isGroupHeader) {
+      this.moveNext();
+    }
+  }
+
+  /**
+   * Jump to the last item
+   */
+  public moveToEnd(): void {
+    this.focusedIndex = this.items.length - 1;
+    // Skip if last item is a group header
+    if (this.items[this.focusedIndex]?.isGroupHeader) {
+      this.movePrevious();
+    }
+  }
+
+  /**
+   * Page down (move down by roughly a page of items)
+   */
+  public pageDown(): void {
+    const innerHeight = this.height - (this.border ? 2 : 0) - (this.height < 5 ? 0 : 1);
+    const lineHeight = 2;
+    const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
+
+    let newIndex = Math.min(this.items.length - 1, this.focusedIndex + maxVisible);
+
+    // Skip group headers
+    while (newIndex < this.items.length && this.items[newIndex].isGroupHeader) {
+      newIndex++;
+    }
+
+    if (newIndex < this.items.length) {
+      this.focusedIndex = newIndex;
+    }
+  }
+
+  /**
+   * Page up (move up by roughly a page of items)
+   */
+  public pageUp(): void {
+    const innerHeight = this.height - (this.border ? 2 : 0) - (this.height < 5 ? 0 : 1);
+    const lineHeight = 2;
+    const maxVisible = Math.max(1, Math.floor(innerHeight / lineHeight));
+
+    let newIndex = Math.max(0, this.focusedIndex - maxVisible);
+
+    // Skip group headers
+    while (newIndex >= 0 && this.items[newIndex].isGroupHeader) {
+      newIndex--;
+    }
+
+    if (newIndex >= 0) {
+      this.focusedIndex = newIndex;
+    }
   }
 
   override draw(): string[][] {
     const buffer = super.draw();
+
     const borderPad = this.border ? 1 : 0;
     const paddingTop = this.height < 5 ? 0 : 1;
     const lineHeight = 2;
@@ -175,6 +250,13 @@ export class Select<T = any> extends Component {
     focusedVisibleItems.forEach((itemLabel, i) => {
       const y = borderPad + paddingTop + i * lineHeight;
       const x = borderPad;
+
+      if (y >= buffer.length) {
+        console.error(
+          `❌ BUFFER OVERFLOW: Trying to draw at y=${y} but buffer.length=${buffer.length}!`
+        );
+        return;
+      }
       const itemIndex = focusedStartIdx + i;
       const item = this.items[itemIndex];
 

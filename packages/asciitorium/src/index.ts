@@ -14,6 +14,7 @@ export * from './components/CelticBorder.js';
 export * from './components/Switch.js';
 export * from './components/Fragment.js';
 export * from './components/Keybind.js';
+export * from './components/MobileController.js';
 export * from './components/PerfMonitor.js';
 export * from './components/Line.js';
 export * from './components/Select.js';
