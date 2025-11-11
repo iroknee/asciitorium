@@ -9,12 +9,11 @@ import { BaseStyle } from './constants.js';
 export const TextBasics = () => {
   return (
     <Column style={BaseStyle} label="Text Component Basics">
-      <Text width="90%" gap={{ bottom: 2, top: 1 }}>
-        The Text component has a few extra properties than other components that supports text alignment, wrapping, and scrolling.
+      <Text width="90%" gap={{ bottom: 1, top: 1 }}>
+        The Text component has a few extra properties than other components that
+        supports text alignment, wrapping, and scrolling.
       </Text>
-      <Text width="90%">
-        Common Properties
-      </Text>
+      <Text width="90%">Common Properties</Text>
       <Line width="90%" />
 
       {/* prettier-ignore */}
@@ -28,8 +27,29 @@ export const TextBasics = () => {
       </Text>
 
       <Text width="90%">
-        Text Alignment
+        Typewriter Effect
       </Text>
+      <Line width="90%" />
+
+      <Text width="90%" gap={{ left: 4 }}>
+        Use typewriter=true to create a typewriter effect. Control the speed
+        with typewriterSpeed (characters per second).
+      </Text>
+
+      <Text
+        width={48}
+        align="center"
+        border
+        typewriter
+        typewriterSpeed={30}
+        label="Typewriter Effect (30 chars/sec)"
+      >
+        This text appears with a classic typewriter effect. Each character is
+        revealed one at a time, creating a dynamic typing animation that draws
+        attention to your content.
+      </Text>
+
+      <Text width="90%">Text Alignment</Text>
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 4 }}>
@@ -73,30 +93,6 @@ export const TextBasics = () => {
           I
         </Text>
       </Row>
-
-      <Text width="90%" gap={{ top: 2 }}>
-        Typewriter Effect
-      </Text>
-      <Line width="90%" />
-
-      <Text width="90%" gap={{ left: 4 }}>
-        Use typewriter=true to create a typewriter effect. Control the speed
-        with typewriterSpeed (characters per second).
-      </Text>
-
-      <Text
-        width={48}
-        align="center"
-        border
-        typewriter
-        typewriterSpeed={30}
-        label="Typewriter Effect (30 chars/sec)"
-      >
-        This text appears with a classic typewriter effect. Each character is
-        revealed one at a time, creating a dynamic typing animation that draws
-        attention to your content.
-      </Text>
-
     </Column>
   );
 };

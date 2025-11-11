@@ -1,4 +1,12 @@
-import { Art, Line, Column, Row, Text, Button, Keybind, State } from './index.js';
+import {
+  Art,
+  Line,
+  Column,
+  Text,
+  Keybind,
+  State,
+  MobileController,
+} from './index.js';
 import { BaseStyle } from './constants.js';
 
 /**
@@ -7,12 +15,12 @@ import { BaseStyle } from './constants.js';
  * Guide to using global keybindings and component hotkeys in asciitorium.
  */
 export const KeybindingsBasics = () => {
-  const message = new State<string>('Press J, K, or L to trigger keybindings');
+  const message = new State<string>('Press X or Y on either the keyboard or mobile controller');
 
   const setMessage = (msg: string) => {
     message.value = msg;
     setTimeout(() => {
-      message.value = 'Press J, K, or L to trigger keybindings';
+      message.value = 'Press X or Y on either the keyboard or mobile controller';
     }, 2000);
   };
 
@@ -34,17 +42,25 @@ export const KeybindingsBasics = () => {
     }, 800);
   };
 
+  const handleXButton = () => {
+    setMessage('X pressed - Firework launched!');
+    spawnFirework();
+  };
+
+  const handleYButton = () => {
+    setMessage('Y pressed - Firework launched!');
+    spawnFirework();
+  };
+
   const container = (
-    <Column style={BaseStyle} label="Keybindings Basics">
+    <Column style={BaseStyle} label="Keybindings & Mobile Basics">
       <Text width="90%" gap={{ bottom: 2, top: 1 }}>
         Asciitorium provides global Keybindings for app-level shortcuts in
-        addition to Hotkeys. Use keybindings when you just want an action to
-        occur, but want to maintain focus on the given component.
+        addition to Hotkeys. A virtual Mobile Controller
+        component will show if being displayed on a touch devices
       </Text>
 
-      <Text width="90%">
-        Keybindings
-      </Text>
+      <Text width="90%">Keybindings</Text>
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 4, bottom: 1 }}>
@@ -53,28 +69,20 @@ export const KeybindingsBasics = () => {
       </Text>
 
       <Keybind
-        keyBinding="j"
-        action={() => {
-          setMessage('J key pressed - Firework launched!');
-          spawnFirework();
-        }}
-        description="Launch firework with J"
+        keyBinding="x"
+        action={handleXButton}
+        description="Launch firework with X"
       />
       <Keybind
-        keyBinding="k"
-        action={() => {
-          setMessage('K key pressed - Firework launched!');
-          spawnFirework();
-        }}
-        description="Launch firework with K"
+        keyBinding="y"
+        action={handleYButton}
+        description="Launch firework with Y"
       />
-      <Keybind
-        keyBinding="l"
-        action={() => {
-          setMessage('L key pressed - Firework launched!');
-          spawnFirework();
+      <MobileController
+        buttons={{
+          x: handleXButton,
+          y: handleYButton,
         }}
-        description="Launch firework with L"
       />
 
       <Column width="90%" align="center" border gap={{ bottom: 2 }}>
@@ -88,9 +96,7 @@ export const KeybindingsBasics = () => {
         </Text>
       </Column>
 
-      <Text width="90%">
-        Keybind Properties
-      </Text>
+      <Text width="90%">Keybind Properties</Text>
       <Line width="90%" />
 
       {/* prettier-ignore */}
@@ -102,21 +108,29 @@ export const KeybindingsBasics = () => {
       </Text>
 
       <Text width="90%">
-        Reserved Keys
-      </Text>
-      <Line width="90%" />
-
-      <Text width="90%" gap={{ left: 4, bottom: 1 }}>
-        Arrow keys, Tab, Enter, Space, Delete, Home, End, PageUp, and PageDown
-        are reserved for component navigation and should not be used for
-        hotkeys.
-      </Text>
-
-      <Text width="90%" gap={{ top: 1 }}>
         Tip: Keybindings are always global and work as long as the Keybind
         component is part of the app tree and not disabled. They automatically
         deactivate when their parent component is removed from the tree or when
         visibility is turned off.
+      </Text>
+
+      <Text width="90%" align="center" gap={{ top: 1 }}>
+        Mobile Controller
+      </Text>
+      <Line width="90%" />
+      <Text width="90%" gap={{ left: 4, bottom: 1 }}>
+        The MobileController component lets you handle virtual D-pad and button
+        events, making it possible to support touch devices. You
+        can map D-pad directions and buttons (A/B/X/Y/Menu) to any actions in
+        your app, just like with keybindings.
+      </Text>
+      
+      <Text width="90%" gap={{ left: 6 }}>
+        • dpad — up/down/left/right handlers ¶
+        • action buttons — a/b/x/y handlers ¶
+        • menu — Handler for the menu button ¶
+        • enabled — Enable/disable the controller (can be reactive) ¶
+        • priority — which input takes priority if multiple are present
       </Text>
     </Column>
   );
