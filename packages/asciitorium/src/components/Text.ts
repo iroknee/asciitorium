@@ -101,7 +101,7 @@ export class Text extends Component {
     // Calculate interval in milliseconds from characters per second
     const intervalMs = 1000 / this.typewriterSpeed;
 
-    this.typewriterIntervalId = window.setInterval(() => {
+    this.typewriterIntervalId = globalThis.setInterval(() => {
       // Get full content length (we'll cache it in getContentAsString)
       const fullLength = this.fullContent.length;
 
@@ -112,12 +112,12 @@ export class Text extends Component {
         // Typewriter complete, stop the interval
         this.stopTypewriter();
       }
-    }, intervalMs);
+    }, intervalMs) as unknown as number;
   }
 
   private stopTypewriter(): void {
     if (this.typewriterIntervalId !== undefined) {
-      window.clearInterval(this.typewriterIntervalId);
+      globalThis.clearInterval(this.typewriterIntervalId);
       this.typewriterIntervalId = undefined;
     }
   }
