@@ -1,6 +1,6 @@
 {
   "name": "asciitorium",
-  "version": "0.1.41",
+  "version": "0.1.42",
   "private": false,
   "description": "an ASCII ui framework for web + cli",
   "type": "module",

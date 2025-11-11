@@ -1,6 +1,6 @@
 {
   "name": "create-asciitorium",
-  "version": "0.1.41",
+  "version": "0.1.42",
   "private": false,
   "description": "Scaffold a Vite + TypeScript project prewired for asciitorium (web + cli).",
   "bin": {
