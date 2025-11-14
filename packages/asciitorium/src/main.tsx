@@ -27,6 +27,7 @@ import { FontsBasics } from './FontsBasics.js';
 import { MaterialsBasics } from './MaterialsBasics.js';
 import { MapsBasics } from './MapsBasics.js';
 import { FPVBasics } from './FPVBasics.js';
+import { ArtRaceConditionTest } from './ArtRaceConditionTest.js';
 
 // Doc component mapping
 const docMap: Record<string, any> = {
@@ -43,6 +44,7 @@ const docMap: Record<string, any> = {
   materials: MaterialsBasics,
   maps: MapsBasics,
   fpv: FPVBasics,
+  racetest: ArtRaceConditionTest,
 };
 
 // Main state for component selection with persistence
@@ -90,6 +92,9 @@ const docSelect = (
       <Option value="materials">Materials</Option>
       <Option value="maps">Maps</Option>
       <Option value="fpv">First Person View</Option>
+    </OptionGroup>
+    <OptionGroup label="Tests">
+      <Option value="racetest">Art Race Condition</Option>
     </OptionGroup>
   </Select>
 );

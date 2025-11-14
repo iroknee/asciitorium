@@ -188,7 +188,11 @@ export class Art extends Component {
         .catch((error: Error) => {
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load font';
-          this.updateContent(`Error: ${this.loadError}`);
+          // Don't call updateContent with error text - just set simple error frame
+          this.frames = [{
+            lines: [[...'Error loading font']],
+            meta: { duration: 0 }
+          }];
           requestRender();
           this.forceRenderIfNeeded();
         });
@@ -218,7 +222,18 @@ export class Art extends Component {
         .catch((error: Error) => {
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load ASCII art';
-          this.updateContent(`Error: ${this.loadError}`);
+          // Don't call updateContent with error text - just set simple error frame
+          const errorText = `Error: ${this.loadError}`;
+          this.frames = [{
+            lines: [[...errorText]],
+            meta: { duration: 0 }
+          }];
+          // Update dimensions to fit error text
+          const borderPadding = this.border ? 2 : 0;
+          this.originalWidth = errorText.length + borderPadding;
+          this.originalHeight = 1 + borderPadding;
+          this.width = errorText.length + borderPadding;
+          this.height = 1 + borderPadding;
           requestRender();
           this.forceRenderIfNeeded();
         });
@@ -461,55 +476,83 @@ export class Art extends Component {
   }
 
   override draw(): string[][] {
-    const buffer = super.draw();
-    const xOffset = this.border ? 1 : 0;
-    const yOffset = this.border ? 1 : 0;
-    const innerWidth = this.width - (this.border ? 2 : 0);
-    const innerHeight = this.height - (this.border ? 2 : 0);
+    try {
+      const buffer = super.draw();
 
-    // Use sprite-specific transparent char if defined, otherwise use component's default
-    const transparentChar = this.spriteTransparentChar ?? this.transparentChar;
+      // Defensive check: ensure buffer was created successfully
+      if (!buffer || buffer.length === 0) {
+        return buffer;
+      }
 
-    // Font rendering mode
-    if (this.fontAsset && this.text !== undefined) {
-      const lines = this.renderTextWithFont(this.text, this.fontAsset);
+      const xOffset = this.border ? 1 : 0;
+      const yOffset = this.border ? 1 : 0;
+      const innerWidth = this.width - (this.border ? 2 : 0);
+      const innerHeight = this.height - (this.border ? 2 : 0);
+
+      // Use sprite-specific transparent char if defined, otherwise use component's default
+      const transparentChar = this.spriteTransparentChar ?? this.transparentChar;
+
+      // Font rendering mode
+      if (this.fontAsset && this.text !== undefined) {
+        const lines = this.renderTextWithFont(this.text, this.fontAsset);
+        for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
+          const line = lines[y];
+          const bufferY = y + yOffset;
+          // Defensive check: ensure buffer row exists (race condition protection)
+          if (bufferY >= buffer.length) break;
+
+          for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
+            const bufferX = x + xOffset;
+            // Defensive check: ensure buffer column exists (race condition protection)
+            if (!buffer[bufferY] || bufferX >= buffer[bufferY].length) break;
+
+            const char = line[x];
+            // If character matches transparent char, use framework's transparent char
+            // Otherwise, render the actual character
+            if (char === transparentChar) {
+              buffer[bufferY][bufferX] = this.transparentChar;
+            } else {
+              buffer[bufferY][bufferX] = char;
+            }
+          }
+        }
+        this.buffer = buffer;
+        return buffer;
+      }
+
+      // Sprite/content rendering mode
+      const frame = this.frames[this.frameIndex];
+      if (!frame) return buffer;
+
+      const lines = frame.lines;
       for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
         const line = lines[y];
+        const bufferY = y + yOffset;
+        // Defensive check: ensure buffer row exists (race condition protection)
+        if (bufferY >= buffer.length) break;
+
         for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
+          const bufferX = x + xOffset;
+          // Defensive check: ensure buffer column exists (race condition protection)
+          if (!buffer[bufferY] || bufferX >= buffer[bufferY].length) break;
+
           const char = line[x];
           // If character matches transparent char, use framework's transparent char
           // Otherwise, render the actual character
           if (char === transparentChar) {
-            buffer[y + yOffset][x + xOffset] = this.transparentChar;
+            buffer[bufferY][bufferX] = this.transparentChar;
           } else {
-            buffer[y + yOffset][x + xOffset] = char;
+            buffer[bufferY][bufferX] = char;
           }
         }
       }
       this.buffer = buffer;
       return buffer;
+    } catch (error) {
+      // If any error occurs during draw, return empty buffer to prevent crash
+      console.error('Art component draw() error:', error);
+      return super.draw(); // Return basic empty buffer
     }
-
-    // Sprite/content rendering mode
-    const frame = this.frames[this.frameIndex];
-    if (!frame) return buffer;
-
-    const lines = frame.lines;
-    for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
-      const line = lines[y];
-      for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
-        const char = line[x];
-        // If character matches transparent char, use framework's transparent char
-        // Otherwise, render the actual character
-        if (char === transparentChar) {
-          buffer[y + yOffset][x + xOffset] = this.transparentChar;
-        } else {
-          buffer[y + yOffset][x + xOffset] = char;
-        }
-      }
-    }
-    this.buffer = buffer;
-    return buffer;
   }
 }
 

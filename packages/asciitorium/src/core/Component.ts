@@ -599,6 +599,9 @@ export abstract class Component {
         const py = child.y + j;
 
         if (px >= 0 && px < this.width && py >= 0 && py < this.height) {
+          // Defensive check: ensure buffer row exists (race condition protection)
+          if (!this.buffer[py]) continue;
+
           const char = childBuffer[j][i];
           if (char !== child.transparentChar) {
             // Prevent children from overwriting border positions
@@ -607,7 +610,10 @@ export abstract class Component {
               px === 0 || px === this.width - 1
             );
             if (!isBorderPosition) {
-              this.buffer[py][px] = char;
+              // Defensive check: ensure buffer column exists (race condition protection)
+              if (px < this.buffer[py].length) {
+                this.buffer[py][px] = char;
+              }
             }
           }
         }

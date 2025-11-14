@@ -1,6 +1,7 @@
 class RenderScheduler {
   private static instance: RenderScheduler;
   private renderCallback: (() => void) | null = null;
+  private renderPending = false;
 
   private constructor() {}
 
@@ -16,6 +17,18 @@ class RenderScheduler {
   }
 
   public requestRender() {
+    // If a render is already queued, don't queue another
+    if (this.renderPending) return;
+
+    this.renderPending = true;
+
+    // Queue render as a microtask to batch multiple render requests
+    // This ensures all synchronous state updates complete before rendering
+    queueMicrotask(() => this.executeRender());
+  }
+
+  private executeRender() {
+    this.renderPending = false;
     this.renderCallback?.();
   }
 }
