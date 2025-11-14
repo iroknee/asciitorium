@@ -1,4 +1,4 @@
-import { Line, Column, Row, Text } from "../index.js";
+import { Line, Column, Row, Text } from '../index.js';
 import { BaseStyle } from './constants.js';
 
 /**
@@ -10,14 +10,12 @@ export const AlignmentBasics = () => {
   return (
     <Column style={BaseStyle} label="Align & Gap Basics">
       <Text width="90%" gap={{ bottom: 2, top: 1 }}>
-        Asciitorium uses the 'align' property to group and position
-        all children together within their parent container. It uses
-        gap to add spacing around individual children.
+        Asciitorium uses the 'align' property to group and position all children
+        together within their parent container. It uses gap to add spacing
+        around individual children.
       </Text>
 
-      <Text width="90%">
-        Align Property
-      </Text>
+      <Text width="90%">Align Property</Text>
       <Line width="90%" />
 
       {/* prettier-ignore */}
@@ -27,9 +25,7 @@ export const AlignmentBasics = () => {
           center-right, bottom-left, bottom, bottom-right ¶
       </Text>
 
-      <Text width="90%">
-        Align Examples
-      </Text>
+      <Text width="90%">Align Examples</Text>
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 6, bottom: 1 }}>
@@ -68,9 +64,7 @@ export const AlignmentBasics = () => {
         </Row>
       </Row>
 
-      <Text width="90%">
-        Gap Property
-      </Text>
+      <Text width="90%">Gap Property</Text>
       <Line width="90%" />
 
       {/* prettier-ignore */}
@@ -86,16 +80,23 @@ export const AlignmentBasics = () => {
       </Text>
 
       <Row width="90%" align="center" gap={{ bottom: 2 }}>
-
         <Row width={28} height={5} border label="gap: 2">
-          <Text border gap={{ right: 2 }}>A</Text>
-          <Text border gap={{ right: 2 }}>B</Text>
+          <Text border gap={{ right: 2 }}>
+            A
+          </Text>
+          <Text border gap={{ right: 2 }}>
+            B
+          </Text>
           <Text border>C</Text>
         </Row>
 
         <Row width={28} height={5} border label="mixed gaps">
-          <Text border gap={{ left: 2 }}>A</Text>
-          <Text border gap={{ bottom: 1, left: 4 }}>B</Text>
+          <Text border gap={{ left: 2 }}>
+            A
+          </Text>
+          <Text border gap={{ bottom: 1, left: 4 }}>
+            B
+          </Text>
           <Text border>C</Text>
         </Row>
       </Row>
