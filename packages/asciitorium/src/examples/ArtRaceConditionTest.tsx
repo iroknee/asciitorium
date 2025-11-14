@@ -1,8 +1,8 @@
-import { Art, State, Text, Switch, Column } from './index.js';
+import { Art, State, Text, Switch, Column } from "../index.js";
 
 // Component with first sprite
 const Part1 = () => {
-  return <Text>Hello There</Text>;
+  return <Text width={30} typewriter>Testing 1... 2... 3...</Text>;
 };
 
 // Component with second sprite - this should fail when switched to
@@ -21,7 +21,7 @@ export const ArtRaceConditionTest = () => {
   setTimeout(() => {
     console.log('Switching to Part2 (pyramid sprite)...');
     currentPart.value = Part2;
-  }, 500);
+  }, 2000);
 
   return <Switch component={currentPart} />;
 };

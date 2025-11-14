@@ -5,7 +5,7 @@ import {
   State,
   PersistentState,
   TextInput,
-} from './index.js';
+} from "../index.js";
 import { BaseStyle } from './constants.js';
 
 /**

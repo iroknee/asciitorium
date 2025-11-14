@@ -1,4 +1,4 @@
-import { Line, Column, Row, Text } from './index.js';
+import { Line, Column, Row, Text } from "../index.js";
 import { BaseStyle } from './constants.js';
 
 /**

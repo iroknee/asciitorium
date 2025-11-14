@@ -3,6 +3,7 @@ import {
   Column,
   Row,
   Text,
+  FirstPersonView,
   MapView,
   State,
   Keybind,
@@ -10,7 +11,7 @@ import {
   AssetManager,
   type MapAsset,
   type Player,
-} from './index.js';
+} from "../index.js";
 import { BaseStyle } from './constants.js';
 
 // Initialize state containers
@@ -40,25 +41,25 @@ const gridMovement = new GridMovement({
 const exploredTiles = new State(new Set<string>());
 
 /**
- * Maps Basics
+ * First Person View Basics
  *
- * Guide to creating and using maps in asciitorium games.
+ * Guide to using first-person perspective rendering in asciitorium games.
  */
-export const MapsBasics = () => {
+export const FPVBasics = () => {
   return (
-    <Column style={BaseStyle} label="Maps Basics">
+    <Column style={BaseStyle} label="First Person View Basics">
       <Keybind keyBinding="w" action={() => gridMovement.moveForward()} />
       <Keybind keyBinding="s" action={() => gridMovement.moveBackward()} />
       <Keybind keyBinding="a" action={() => gridMovement.turnLeft()} />
       <Keybind keyBinding="d" action={() => gridMovement.turnRight()} />
 
       <Text width="90%" gap={{ bottom: 2, top: 1 }}>
-        Maps are ASCII layouts that define game environments, combining visual
-        representation with legend files that specify gameplay properties.
+        First Person View (FPV) provides immersive ASCII-based 3D perspective
+        rendering for dungeon crawlers and exploration games.
       </Text>
 
       <Text width="90%">
-        Interactive Map Example
+        Interactive First Person Example
       </Text>
       <Line width="90%" />
 
@@ -66,57 +67,39 @@ export const MapsBasics = () => {
         Controls: [W] forward • [S] backward • [A] turn left • [D] turn right
       </Text>
 
-      <Row width={32} align="center" gap={{ bottom: 2 }}>
-        <MapView
-          mapAsset={map}
-          player={player}
-          fogOfWar={false}
-          exploredTiles={exploredTiles}
-          width={30}
-          height={15}
-          border
-        />
-      </Row>
+      <FirstPersonView
+        align="center"
+        gap={{ bottom: 2 }}
+        mapAsset={map}
+        player={player}
+      />
 
       <Text width="90%">
-        Map File Format
+        Raycasting System
       </Text>
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 4 }}>
-        Maps use ASCII text files where each character represents a different
-        terrain type, object, or game element. Common characters include:
-      </Text>
-
-      <Text width="90%" gap={{ top: 2 }}>
-        Legend Files
-      </Text>
-      <Line width="90%" />
-
-      <Text width="90%" gap={{ left: 4 }}>
-        Each map has an accompanying legend.json file that defines what each
-        character represents, including:
+        FirstPersonView uses raycasting with predefined offset cubes to
+        determine what the player can see in each direction:
       </Text>
 
       <Text width="90%" gap={{ left: 6 }}>
-        • kind - Type of asset (material or sprite) ¶
-        • solid - Whether it blocks player movement ¶
-        • asset - Reference to visual asset file ¶
-        • entity - Gameplay type (door, enemy, treasure, trap) ¶
-        • variant - Specific subtype (wooden, iron, wolf, etc.)
+        • Casts rays at multiple depths (here, near, middle, far) ¶ • Uses
+        GameWorld.isSolid() for wall detection ¶ • Composites materials based on
+        distance and position
       </Text>
 
       <Text width="90%" gap={{ top: 2 }}>
-        Map Generation
+        Scene Switching
       </Text>
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 4, bottom: 2 }}>
-        Use the map-builder.js script to quickly generate maze-like dungeon
-        layouts that you can customize. Maps are stored in art/maps/ with each
-        map in its own directory containing map.art and legend.json files.
+        FirstPersonView supports different visual styles through the scene
+        property, allowing you to switch between wireframe, brick-wall, and
+        other material sets for varied aesthetics.
       </Text>
-
     </Column>
   );
 };

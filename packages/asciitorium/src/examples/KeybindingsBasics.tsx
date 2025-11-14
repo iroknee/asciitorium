@@ -6,7 +6,7 @@ import {
   Keybind,
   State,
   MobileController,
-} from './index.js';
+} from "../index.js";
 import { BaseStyle } from './constants.js';
 
 /**

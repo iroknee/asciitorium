@@ -14,20 +14,22 @@ import {
   MobileController,
 } from './index.js';
 
-import { GettingStarted } from './GettingStarted.js';
-import { ComponentBasics } from './ComponentBasics.js';
-import { LayoutBasics } from './LayoutBasics.js';
-import { NavigationBasics } from './NavigationBasics.js';
-import { StateBasics } from './StateBasics.js';
-import { AlignmentBasics } from './AlignmentBasics.js';
-import { TextBasics } from './TextBasics.js';
-import { KeybindingsBasics } from './KeybindingsBasics.js';
-import { SpritesBasics } from './SpritesBasics.js';
-import { FontsBasics } from './FontsBasics.js';
-import { MaterialsBasics } from './MaterialsBasics.js';
-import { MapsBasics } from './MapsBasics.js';
-import { FPVBasics } from './FPVBasics.js';
-import { ArtRaceConditionTest } from './ArtRaceConditionTest.js';
+import {
+  GettingStarted,
+  ComponentBasics,
+  LayoutBasics,
+  NavigationBasics,
+  StateBasics,
+  AlignmentBasics,
+  TextBasics,
+  KeybindingsBasics,
+  SpritesBasics,
+  FontsBasics,
+  MaterialsBasics,
+  MapsBasics,
+  FPVBasics,
+  ArtRaceConditionTest,
+} from './examples/index.js';
 
 // Doc component mapping
 const docMap: Record<string, any> = {

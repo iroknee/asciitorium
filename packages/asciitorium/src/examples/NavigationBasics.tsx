@@ -9,7 +9,7 @@ import {
   ProgressBarSlider,
   DotSlider,
   GaugeSlider,
-} from './index.js';
+} from "../index.js";
 import { BaseStyle } from './constants.js';
 
 /**
