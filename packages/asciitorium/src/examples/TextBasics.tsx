@@ -23,6 +23,7 @@ export const TextBasics = () => {
         • scrollable — Enable scrolling for long content (default: false) ¶
         • typewriter — Enable typewriter effect (default: false) ¶
         • typewriterSpeed — Speed of typewriter effect (chars per second) ¶
+        • typewriterPauseFactor — Pause multiplier after periods (default: 10) ¶
         • \¶ — use \¶ to insert a line break within text ¶
       </Text>
 
@@ -33,7 +34,8 @@ export const TextBasics = () => {
 
       <Text width="90%" gap={{ left: 4 }}>
         Use typewriter=true to create a typewriter effect. Control the speed
-        with typewriterSpeed (characters per second).
+        with typewriterSpeed (characters per second) and the pause after
+        periods with typewriterPauseFactor (multiplier, default 10).
       </Text>
 
       <Text
@@ -42,11 +44,10 @@ export const TextBasics = () => {
         border
         typewriter
         typewriterSpeed={30}
+        typewriterPauseFactor={10}
         label="Typewriter Effect (30 chars/sec)"
       >
-        This text appears with a classic typewriter effect. Each character is
-        revealed one at a time, creating a dynamic typing animation that draws
-        attention to your content.
+        This text appears with a classic typewriter effect. Each character is revealed one at a time. Notice the natural pause after sentences. This can be configured.
       </Text>
 
       <Text width="90%">Text Alignment</Text>

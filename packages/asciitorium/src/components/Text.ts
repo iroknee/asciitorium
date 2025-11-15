@@ -21,6 +21,7 @@ export interface TextOptions
   wrap?: boolean;
   typewriter?: boolean;
   typewriterSpeed?: number;
+  typewriterPauseFactor?: number;
 }
 
 export class Text extends Component {
@@ -36,9 +37,12 @@ export class Text extends Component {
   // Typewriter effect properties
   private isTypewriter: boolean = false;
   private typewriterSpeed: number = 20; // characters per second
+  private typewriterPauseFactor: number = 10; // multiplier for pause after periods
   private visibleCharCount: number = 0;
   private typewriterIntervalId?: number;
   private fullContent: string = '';
+  private isPaused: boolean = false;
+  private pauseTimeoutId?: number;
 
   focusable = false;
   hasFocus = false;
@@ -69,7 +73,7 @@ export class Text extends Component {
       actualContent = '';
     }
 
-    const { children, content, scrollable, wrap, textAlign, typewriter, typewriterSpeed, ...componentProps } = options;
+    const { children, content, scrollable, wrap, textAlign, typewriter, typewriterSpeed, typewriterPauseFactor, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width, // Don't default to fill - let resolveSize handle it
@@ -85,6 +89,7 @@ export class Text extends Component {
     // Initialize typewriter settings
     this.isTypewriter = typewriter ?? false;
     this.typewriterSpeed = typewriterSpeed ?? 20;
+    this.typewriterPauseFactor = typewriterPauseFactor ?? 10;
 
     // Subscribe to any State objects in the source
     this.subscribeToStates();
@@ -97,16 +102,36 @@ export class Text extends Component {
 
   private startTypewriter(): void {
     this.visibleCharCount = 0;
+    this.isPaused = false;
 
     // Calculate interval in milliseconds from characters per second
     const intervalMs = 1000 / this.typewriterSpeed;
 
     this.typewriterIntervalId = globalThis.setInterval(() => {
+      // Skip if we're currently paused
+      if (this.isPaused) {
+        return;
+      }
+
       // Get full content length (we'll cache it in getContentAsString)
       const fullLength = this.fullContent.length;
 
       if (this.visibleCharCount < fullLength) {
         this.visibleCharCount++;
+
+        // Check if we just typed a period followed by a space or end of content
+        const currentChar = this.fullContent[this.visibleCharCount - 1];
+        const nextChar = this.visibleCharCount < fullLength ? this.fullContent[this.visibleCharCount] : null;
+
+        if (currentChar === '.' && (nextChar === ' ' || nextChar === null)) {
+          // Pause after periods for more natural reading pace
+          this.isPaused = true;
+          this.pauseTimeoutId = globalThis.setTimeout(() => {
+            this.isPaused = false;
+            this.pauseTimeoutId = undefined;
+          }, intervalMs * this.typewriterPauseFactor) as unknown as number;
+        }
+
         requestRender();
       } else {
         // Typewriter complete, stop the interval
@@ -120,6 +145,11 @@ export class Text extends Component {
       globalThis.clearInterval(this.typewriterIntervalId);
       this.typewriterIntervalId = undefined;
     }
+    if (this.pauseTimeoutId !== undefined) {
+      globalThis.clearTimeout(this.pauseTimeoutId);
+      this.pauseTimeoutId = undefined;
+    }
+    this.isPaused = false;
   }
 
   private subscribeToStates(): void {
