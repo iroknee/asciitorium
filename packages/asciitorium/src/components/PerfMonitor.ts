@@ -79,9 +79,9 @@ export class PerfMonitor extends Component {
     }
 
     // Render Time
-    const renderTime = root.getRenderTime();
-    const rtStr = renderTime.toFixed(0).padStart(5, '0'); // "009.5"
-    parts.push(`REN: ${rtStr}ms |`);
+    const frameRenderTime = root.getRenderTime();
+    const rtStr = frameRenderTime.toFixed(0).padStart(5, '0'); // "009.5"
+    parts.push(`FRT: ${rtStr}ms |`);
 
     // FPS
     const fps = root.getFPS();

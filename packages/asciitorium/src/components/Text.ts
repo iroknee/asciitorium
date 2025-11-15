@@ -118,6 +118,7 @@ export class Text extends Component {
 
       if (this.visibleCharCount < fullLength) {
         this.visibleCharCount++;
+        requestRender();
 
         // Check if we just typed a period followed by a space or end of content
         const currentChar = this.fullContent[this.visibleCharCount - 1];
@@ -131,8 +132,6 @@ export class Text extends Component {
             this.pauseTimeoutId = undefined;
           }, intervalMs * this.typewriterPauseFactor) as unknown as number;
         }
-
-        requestRender();
       } else {
         // Typewriter complete, stop the interval
         this.stopTypewriter();
