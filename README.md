@@ -12,7 +12,7 @@
 - **TypeScript**: Full TypeScript support with custom JSX runtime
 - **Component-based**: Supports JSX and React-like component architecture
 
-You can see a demo of it running [here](https://iroknee.github.io/asciitorium/).
+You can see the tutorial of use [here](https://iroknee.github.io/asciitorium/).
 
 ## Getting Started
 
