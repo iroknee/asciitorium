@@ -3,6 +3,8 @@ export { ComponentBasics } from './ComponentBasics.js';
 export { LayoutBasics } from './LayoutBasics.js';
 export { NavigationBasics } from './NavigationBasics.js';
 export { StateBasics } from './StateBasics.js';
+export { LifecycleBasics } from './LifecycleBasics.js';
+// export { SwitchBasics } from './SwitchBasics.js';
 export { AlignmentBasics } from './AlignmentBasics.js';
 export { TextBasics } from './TextBasics.js';
 export { KeybindingsBasics } from './KeybindingsBasics.js';

@@ -20,6 +20,7 @@ import {
   LayoutBasics,
   NavigationBasics,
   StateBasics,
+  LifecycleBasics,
   AlignmentBasics,
   TextBasics,
   KeybindingsBasics,
@@ -41,6 +42,7 @@ const docMap: Record<string, any> = {
   navigation: NavigationBasics,
   keybindings: KeybindingsBasics,
   state: StateBasics,
+  lifecycle: LifecycleBasics,
   sprites: SpritesBasics,
   fonts: FontsBasics,
   materials: MaterialsBasics,
@@ -87,6 +89,7 @@ const docSelect = (
       <Option value="navigation">Component Navigation</Option>
       <Option value="keybindings">Keybindings</Option>
       <Option value="state">State Management</Option>
+      <Option value="lifecycle">Lifecycle & Cleanup</Option>
     </OptionGroup>
     <OptionGroup label="ASCII Art & Game Engine">
       <Option value="sprites">Sprites</Option>

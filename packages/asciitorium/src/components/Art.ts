@@ -51,6 +51,7 @@ export class Art extends Component {
   private text?: string;
   private letterSpacing: number = 0;
   private spriteTransparentChar?: string; // sprite-specific transparency character
+  private isDestroyed = false; // Track if component has been destroyed
 
   constructor(options: ArtOptions) {
     let actualContent = options.content;
@@ -160,6 +161,8 @@ export class Art extends Component {
       // Start async loading using AssetManager
       AssetManager.getFont(options.font)
         .then((fontAsset) => {
+          if (this.isDestroyed) return;
+
           this.isLoading = false;
           this.loadError = undefined;
           this.fontAsset = fontAsset;
@@ -186,6 +189,8 @@ export class Art extends Component {
           this.forceRenderIfNeeded();
         })
         .catch((error: Error) => {
+          if (this.isDestroyed) return;
+
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load font';
           // Don't call updateContent with error text - just set simple error frame
@@ -204,6 +209,8 @@ export class Art extends Component {
       // Start async loading using AssetManager
       AssetManager.getSprite(options.src)
         .then((spriteAsset) => {
+          if (this.isDestroyed) return;
+
           this.isLoading = false;
           this.loadError = undefined;
           // Calculate dimensions from sprite frames
@@ -220,6 +227,8 @@ export class Art extends Component {
           this.forceRenderIfNeeded();
         })
         .catch((error: Error) => {
+          if (this.isDestroyed) return;
+
           this.isLoading = false;
           this.loadError = error.message || 'Failed to load ASCII art';
           // Don't call updateContent with error text - just set simple error frame
@@ -260,6 +269,9 @@ export class Art extends Component {
   }
 
   private scheduleNext() {
+    // Stop scheduling if component has been destroyed
+    if (this.isDestroyed) return;
+
     const current = this.frames[this.frameIndex];
     const dur = Math.max(0, current?.meta.duration ?? 0);
 
@@ -273,6 +285,9 @@ export class Art extends Component {
   }
 
   private advanceFrame() {
+    // Stop animation if component has been destroyed
+    if (this.isDestroyed) return;
+
     if (this.frames.length <= 1) return;
 
     this.frameIndex++;
@@ -307,6 +322,8 @@ export class Art extends Component {
   }
 
   private updateContent(newContent: string): void {
+    if (this.isDestroyed) return;
+
     // Stop current animation
     this.clearTimer();
 
@@ -337,6 +354,8 @@ export class Art extends Component {
   }
 
   private updateContentFromAsset(asset: Asset): void {
+    if (this.isDestroyed) return;
+
     // Stop current animation
     this.clearTimer();
 
@@ -452,6 +471,7 @@ export class Art extends Component {
   }
 
   private updateFontText(): void {
+    if (this.isDestroyed) return;
     if (!this.fontAsset || !this.text) return;
 
     // Recalculate dimensions based on new text
@@ -470,8 +490,9 @@ export class Art extends Component {
   }
 
   override destroy(): void {
-    super.destroy();
+    this.isDestroyed = true;
     this.clearTimer();
+    super.destroy();
     // Note: Component.destroy() automatically handles state unsubscriptions
   }
 

@@ -219,6 +219,9 @@ export abstract class Component {
   /** Cleanup functions for state subscriptions */
   private unbindFns: (() => void)[] = [];
 
+  /** Cleanup functions registered via registerCleanup() */
+  private cleanupFns: (() => void)[] = [];
+
   /** Child components managed by this component */
   protected children: Component[] = [];
 
@@ -422,6 +425,25 @@ export abstract class Component {
     this.unbindFns.push(() => state.unsubscribe(listener));
   }
 
+  /**
+   * Registers a cleanup function to be called when the component is destroyed.
+   * Use this for cleaning up timers, intervals, event listeners, and other resources.
+   *
+   * Example:
+   * ```typescript
+   * const intervalId = setInterval(() => {...}, 1000);
+   * component.registerCleanup(() => clearInterval(intervalId));
+   * ```
+   *
+   * Note: State subscriptions created via bind() are automatically cleaned up
+   * and do not need to be registered with registerCleanup().
+   *
+   * @param fn Cleanup function to execute on destroy
+   */
+  public registerCleanup(fn: () => void): void {
+    this.cleanupFns.push(fn);
+  }
+
   destroy(): void {
     // Recursively destroy all children first
     const childrenToDestroy = [...this.children];
@@ -429,7 +451,17 @@ export abstract class Component {
       child.destroy();
     }
 
-    // Then clean up own state
+    // Run registered cleanup functions
+    for (const cleanup of this.cleanupFns) {
+      try {
+        cleanup();
+      } catch (error) {
+        console.error('Error during cleanup:', error);
+      }
+    }
+    this.cleanupFns = [];
+
+    // Then clean up state subscriptions
     for (const unbind of this.unbindFns) unbind();
     this.unbindFns = [];
   }

@@ -12,6 +12,8 @@ export * from './components/Art.js';
 export * from './components/Button.js';
 export * from './components/CelticBorder.js';
 export * from './components/Switch.js';
+export * from './components/Case.js';
+export * from './components/Default.js';
 export * from './components/Fragment.js';
 export * from './components/Keybind.js';
 export * from './components/MobileController.js';

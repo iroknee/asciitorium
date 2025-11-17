@@ -82,12 +82,15 @@ export class App extends Component {
     this.updatePerformanceMetrics();
 
     // Start FPS and render time reporting
-    setInterval(() => {
+    const fpsIntervalId = setInterval(() => {
       this.currentFPS = this.fpsCounter;
       this.fpsCounter = 0;
       this.totalRenderTime = 0;
       this.updatePerformanceMetrics();
     }, 1000);
+
+    // Register cleanup for the FPS monitoring interval
+    this.registerCleanup(() => clearInterval(fpsIntervalId));
   }
 
   render(): void {
