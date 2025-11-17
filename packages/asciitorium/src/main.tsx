@@ -21,6 +21,7 @@ import {
   NavigationBasics,
   StateBasics,
   LifecycleBasics,
+  SwitchBasics,
   AlignmentBasics,
   TextBasics,
   KeybindingsBasics,
@@ -43,6 +44,7 @@ const docMap: Record<string, any> = {
   keybindings: KeybindingsBasics,
   state: StateBasics,
   lifecycle: LifecycleBasics,
+  switch: SwitchBasics,
   sprites: SpritesBasics,
   fonts: FontsBasics,
   materials: MaterialsBasics,
@@ -64,7 +66,7 @@ selectedKey.subscribe((key) => {
 });
 
 // State for PerfMonitor visibility (F12 toggle)
-const showPerfMonitor = new State(false);
+const showPerfMonitor = new State(true);
 
 // toggle PerfMonitor with "F12" key
 const togglePerfMonitor = () => {
@@ -90,6 +92,7 @@ const docSelect = (
       <Option value="keybindings">Keybindings</Option>
       <Option value="state">State Management</Option>
       <Option value="lifecycle">Lifecycle & Cleanup</Option>
+      <Option value="switch">Switch Component</Option>
     </OptionGroup>
     <OptionGroup label="ASCII Art & Game Engine">
       <Option value="sprites">Sprites</Option>

@@ -1,12 +1,16 @@
 import { Component, ComponentProps } from '../core/Component.js';
 import type { State } from '../core/State.js';
+import { Case } from './Case.js';
+import { Default } from './Default.js';
 
 /**
  * Properties for Switch component
  */
 export interface SwitchProps extends ComponentProps {
   /** State that holds the component to display (instance, class, or factory) */
-  component: State<Component | (() => Component) | (new (...args: any[]) => Component)>;
+  component?: State<Component | (() => Component) | (new (...args: any[]) => Component)>;
+  /** State that holds the condition string to match against Case components */
+  condition?: State<string> | State<number>;
 }
 
 /**
@@ -62,24 +66,90 @@ function makeComponent(entry: any): Component | undefined {
  * Inspired by React's conditional rendering patterns, this component provides
  * a clean way to dynamically switch between different components based on state.
  *
- * Example usage:
+ * Two usage modes:
+ *
+ * 1. Direct component mode (legacy):
  * ```tsx
  * const currentView = new State<any>(DashboardComponent);
- *
  * <Switch component={currentView} />
+ * ```
+ *
+ * 2. Condition-based mode with Case/Default children:
+ * ```tsx
+ * const userRole = new State<string>("admin");
+ * <Switch condition={userRole}>
+ *   <Case when="admin"><AdminPanel /></Case>
+ *   <Case when="user"><UserPanel /></Case>
+ *   <Default><GuestPanel /></Default>
+ * </Switch>
  * ```
  */
 export class Switch extends Component {
-  private componentState: State<any>;
+  private componentState?: State<any>;
+  private conditionState?: State<string> | State<number>;
+  private cases: Case[] = [];
+  private defaultCase?: Default;
 
   constructor(props: SwitchProps) {
-    super(props);
+    // Validation
+    if (props.component && props.condition) {
+      throw new Error('Switch cannot have both component and condition props');
+    }
 
-    this.componentState = props.component;
-    this.bind(this.componentState, () => this.updateContent());
+    if (!props.component && !props.condition) {
+      throw new Error('Switch must have either component or condition prop');
+    }
+
+    // Prepare props: if condition mode, extract and remove children
+    let processedProps = props;
+    let extractedCases: Case[] = [];
+    let extractedDefault: Default | undefined;
+
+    if (props.condition) {
+      // Extract Case and Default components from props.children
+      const children = props.children ? (Array.isArray(props.children) ? props.children : [props.children]) : [];
+      extractedCases = children.filter((c): c is Case => c instanceof Case);
+      extractedDefault = children.find((c): c is Default => c instanceof Default);
+
+      // Remove children from props so super() doesn't add them
+      processedProps = { ...props, children: undefined };
+    }
+
+    // Call super with processed props
+    super(processedProps);
+
+    // Set up based on mode
+    if (props.condition) {
+      // Condition mode
+      this.cases = extractedCases;
+      this.defaultCase = extractedDefault;
+      this.conditionState = props.condition;
+      this.bind(this.conditionState as State<any>, () => this.updateContent());
+    } else {
+      // Legacy component mode
+      this.componentState = props.component!;
+      this.bind(this.componentState, () => this.updateContent());
+    }
 
     // Set initial content
     this.updateContent();
+  }
+
+  /**
+   * Override setChildren to capture Case and Default components in condition mode
+   */
+  setChildren(children: Component[]): void {
+    if (this.conditionState) {
+      // Extract Case and Default components
+      this.cases = children.filter((c): c is Case => c instanceof Case);
+      this.defaultCase = children.find((c): c is Default => c instanceof Default);
+
+      // Update content based on current condition
+      this.updateContent();
+    } else {
+      // Legacy component mode: just set children normally
+      super.setChildren(children);
+    }
   }
 
   /**
@@ -94,12 +164,32 @@ export class Switch extends Component {
       this.removeChild(child);
     }
 
-    const entry = this.componentState.value;
+    // Condition mode: find matching Case or Default
+    if (this.conditionState) {
+      const currentCondition = this.conditionState.value;
+      const matchingCase = this.cases.find(c => c.when === currentCondition);
 
-    if (entry) {
-      const component = makeComponent(entry);
-      if (component) {
-        this.addChild(component);
+      if (matchingCase) {
+        // Add children of the matching Case
+        for (const child of matchingCase.getChildren()) {
+          this.addChild(child);
+        }
+      } else if (this.defaultCase) {
+        // Add children of Default
+        for (const child of this.defaultCase.getChildren()) {
+          this.addChild(child);
+        }
+      }
+    }
+    // Legacy component mode
+    else if (this.componentState) {
+      const entry = this.componentState.value;
+
+      if (entry) {
+        const component = makeComponent(entry);
+        if (component) {
+          this.addChild(component);
+        }
       }
     }
 

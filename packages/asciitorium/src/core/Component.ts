@@ -357,6 +357,17 @@ export abstract class Component {
     return this.children;
   }
 
+  public setChildren(children: Component[]): void {
+    for (const child of children) {
+      if (this.isValidChild(child)) {
+        child.setParent(this);
+        this.children.push(child);
+      }
+    }
+    this.recalculateLayout();
+    requestRender();
+  }
+
   public getAllDescendants(): Component[] {
     const result: Component[] = [];
 
