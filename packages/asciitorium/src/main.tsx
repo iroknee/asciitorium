@@ -118,7 +118,6 @@ const app = (
         <Keybind keyBinding="ArrowDown" action={() => docSelect.moveNext()} />
         <Keybind keyBinding="ArrowUp" action={() => docSelect.movePrevious()} />
         <Keybind keyBinding="Enter" action={() => docSelect.select()} />
-        <Keybind keyBinding=" " action={() => docSelect.select()} />
         <Keybind keyBinding="PageDown" action={() => docSelect.pageDown()} />
         <Keybind keyBinding="PageUp" action={() => docSelect.pageUp()} />
         <Keybind keyBinding="Home" action={() => docSelect.moveToStart()} />
