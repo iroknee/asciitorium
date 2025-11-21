@@ -5,6 +5,7 @@ import {
   Option,
   OptionGroup,
   Switch,
+  Case,
   Row,
   Column,
   PerfMonitor,
@@ -33,37 +34,11 @@ import {
   ArtRaceConditionTest,
 } from './examples/index.js';
 
-// Doc component mapping
-const docMap: Record<string, any> = {
-  start: GettingStarted,
-  components: ComponentBasics,
-  text: TextBasics,
-  layout: LayoutBasics,
-  align: AlignmentBasics,
-  navigation: NavigationBasics,
-  keybindings: KeybindingsBasics,
-  state: StateBasics,
-  lifecycle: LifecycleBasics,
-  switch: SwitchBasics,
-  sprites: SpritesBasics,
-  fonts: FontsBasics,
-  materials: MaterialsBasics,
-  maps: MapsBasics,
-  fpv: FPVBasics,
-  racetest: ArtRaceConditionTest,
-};
-
 // Main state for component selection with persistence
 const selectedKey = new PersistentState<string>(
   'start',
   'asciitorium.document.tutorial.selected'
 );
-const selected = new State<any>(docMap[selectedKey.value]);
-
-// Sync selected component with persisted key
-selectedKey.subscribe((key) => {
-  selected.value = docMap[key];
-});
 
 // State for PerfMonitor visibility (F12 toggle)
 const showPerfMonitor = new State(true);
@@ -136,7 +111,24 @@ const app = (
 
         {docSelect}
       </Column>
-      <Switch width="fill" height="fill" component={selected} />
+      <Switch width="fill" height="fill" condition={selectedKey}>
+        <Case when="start"><GettingStarted /></Case>
+        <Case when="components"><ComponentBasics /></Case>
+        <Case when="text"><TextBasics /></Case>
+        <Case when="layout"><LayoutBasics /></Case>
+        <Case when="align"><AlignmentBasics /></Case>
+        <Case when="navigation"><NavigationBasics /></Case>
+        <Case when="keybindings"><KeybindingsBasics /></Case>
+        <Case when="state"><StateBasics /></Case>
+        <Case when="lifecycle"><LifecycleBasics /></Case>
+        <Case when="switch"><SwitchBasics /></Case>
+        <Case when="sprites"><SpritesBasics /></Case>
+        <Case when="fonts"><FontsBasics /></Case>
+        <Case when="materials"><MaterialsBasics /></Case>
+        <Case when="maps"><MapsBasics /></Case>
+        <Case when="fpv"><FPVBasics /></Case>
+        <Case when="racetest"><ArtRaceConditionTest /></Case>
+      </Switch>
     </Row>
     <PerfMonitor visible={showPerfMonitor} />
   </App>

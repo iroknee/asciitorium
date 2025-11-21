@@ -8,26 +8,30 @@ import {
   Case,
   Default,
   Button,
+  Art,
 } from '../index.js';
 import { BaseStyle } from './constants.js';
 
 // Simple demo components
 const AdminPanel = () => (
-  <Column width="fill" height="fill" border label="Admin Panel" align="center">
+  <Column width="fill" height="fill" border label="Admin Panel" align="top">
+    <Art font="pencil" text="Admin Mode" />
     <Text>Welcome, Administrator!</Text>
     <Text>You have full access to the system.</Text>
   </Column>
 );
 
 const UserPanel = () => (
-  <Column width="fill" height="fill" border label="User Panel" align="center">
+  <Column width="fill" height="fill" border label="User Panel" align="top">
+    <Art font="pencil" text="User Mode" />
     <Text>Welcome, User!</Text>
     <Text>You have limited access.</Text>
   </Column>
 );
 
 const GuestPanel = () => (
-  <Column width="fill" height="fill" border label="Guest Panel" align="center">
+  <Column width="fill" height="fill" border label="Guest Panel" align="top">
+    <Art font="pencil" text="Guest Mode" />
     <Text>Welcome, Guest!</Text>
     <Text>Please log in to access more features.</Text>
   </Column>
@@ -40,7 +44,7 @@ const GuestPanel = () => (
  */
 export const SwitchBasics = () => {
   // State to control which panel is shown
-  const userRole = new State<string>('guest');
+  const userRole = new State<string>('admin');
 
   return (
     <Column style={BaseStyle} label="Switch Basics">
@@ -68,7 +72,7 @@ export const SwitchBasics = () => {
         </Button>
       </Row>
 
-      <Column width="90%" height={6} gap={{ left: 4 }}>
+      <Column width="90%" height={12} gap={{ left: 4 }}>
         <Switch width="100%" height="100%" condition={userRole}>
           <Case when="admin">
             <AdminPanel />
@@ -76,9 +80,9 @@ export const SwitchBasics = () => {
           <Case when="user">
             <UserPanel />
           </Case>
-          <Default>
+          <Case when="guest">
             <GuestPanel />
-          </Default>
+          </Case>
         </Switch>
       </Column>
 

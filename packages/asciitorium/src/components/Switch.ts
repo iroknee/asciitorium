@@ -7,54 +7,27 @@ import { Default } from './Default.js';
  * Properties for Switch component
  */
 export interface SwitchProps extends ComponentProps {
-  /** State that holds the component to display (instance, class, or factory) */
-  component?: State<Component | (() => Component) | (new (...args: any[]) => Component)>;
+  /** State that holds a factory function returning the component to display */
+  component?: State<() => Component>;
   /** State that holds the condition string to match against Case components */
   condition?: State<string> | State<number>;
 }
 
 /**
- * Type guard to check if a value is a Component constructor.
- */
-function isComponentCtor(v: any): v is new (...args: any[]) => Component {
-  return (
-    typeof v === 'function' && v.prototype && v.prototype instanceof Component
-  );
-}
-
-/**
- * Type guard to check if an object implements the Component interface
- * using duck typing for cross-bundle compatibility.
- */
-function isComponentLike(obj: any): obj is Component {
-  return obj &&
-         typeof obj === 'object' &&
-         typeof obj.draw === 'function' &&
-         typeof obj.setParent === 'function' &&
-         typeof obj.handleEvent === 'function';
-}
-
-/**
- * Creates a Component instance from various input types:
- * - Component instance (returned as-is)
- * - Component-like object (duck-typed compatibility)
- * - Component constructor (instantiated with empty props)
- * - Factory function (called and result validated)
+ * Creates a Component instance from a factory function.
  *
- * @param entry The component source (instance, constructor, or factory)
+ * @param factory The factory function that returns a Component instance
  * @returns Component instance or undefined if creation fails
  */
-function makeComponent(entry: any): Component | undefined {
-  if (entry instanceof Component) return entry;
+function makeComponent(factory: () => Component): Component | undefined {
+  if (typeof factory !== 'function') {
+    return undefined;
+  }
 
-  if (isComponentLike(entry)) return entry;
+  const result = factory();
 
-  if (isComponentCtor(entry)) return new entry({});
-
-  if (typeof entry === 'function') {
-    const result = entry();
-    if (result instanceof Component) return result;
-    if (isComponentLike(result)) return result;
+  if (result instanceof Component) {
+    return result;
   }
 
   return undefined;
@@ -68,13 +41,13 @@ function makeComponent(entry: any): Component | undefined {
  *
  * Two usage modes:
  *
- * 1. Direct component mode (legacy):
+ * 1. Factory function mode:
  * ```tsx
- * const currentView = new State<any>(DashboardComponent);
+ * const currentView = new State(() => new DashboardView({ width: 100 }));
  * <Switch component={currentView} />
  * ```
  *
- * 2. Condition-based mode with Case/Default children:
+ * 2. Condition-based mode with Case/Default children (recommended):
  * ```tsx
  * const userRole = new State<string>("admin");
  * <Switch condition={userRole}>
@@ -160,6 +133,7 @@ export class Switch extends Component {
     // Remove all existing children
     const childrenToRemove = [...this.children];
     for (const child of childrenToRemove) {
+      // if this is an art child we need to skip
       child.destroy();
       this.removeChild(child);
     }

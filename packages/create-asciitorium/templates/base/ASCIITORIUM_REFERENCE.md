@@ -562,28 +562,28 @@ const selected = new State("option1");
 ```tsx
 import { State, Switch } from 'asciitorium';
 
-// State holding the component to display
-const currentView = new State<any>(DashboardComponent);
+// State holding a factory function that returns the component to display
+const currentView = new State(() => new DashboardComponent({ width: 100 }));
 
 <Switch component={currentView} />;
 ```
 
 ### Props
 
-| Prop        | Type                                                             | Default | Description                                               |
-| ----------- | ---------------------------------------------------------------- | ------- | --------------------------------------------------------- |
-| `component` | `State<Component \| (() => Component) \| (new () => Component)>` | -       | State holding component instance, constructor, or factory |
-| `width`     | `number \| 'fill'`                                               | -       | Component width                                           |
-| `height`    | `number \| 'fill'`                                               | -       | Component height                                          |
+| Prop        | Type                    | Default | Description                                                     |
+| ----------- | ----------------------- | ------- | --------------------------------------------------------------- |
+| `component` | `State<() => Component>` | -       | State holding a factory function that returns a Component       |
+| `width`     | `number \| 'fill'`      | -       | Component width                                                 |
+| `height`    | `number \| 'fill'`      | -       | Component height                                                |
 
 ### Common Patterns
 
-**Pattern 1: View Switching**
+**Pattern 1: View Switching with Factory Functions**
 
 ```tsx
 import { State, Switch, Button, Column } from 'asciitorium';
 
-// Component classes/constructors
+// Component classes
 class DashboardView extends Component {
   /* ... */
 }
@@ -594,12 +594,12 @@ class ProfileView extends Component {
   /* ... */
 }
 
-const currentView = new State<any>(DashboardView);
+const currentView = new State<any>(() => new DashboardView());
 
 <Column>
-  <Button onClick={() => (currentView.value = DashboardView)}>Dashboard</Button>
-  <Button onClick={() => (currentView.value = SettingsView)}>Settings</Button>
-  <Button onClick={() => (currentView.value = ProfileView)}>Profile</Button>
+  <Button onClick={() => (currentView.value = () => new DashboardView())}>Dashboard</Button>
+  <Button onClick={() => (currentView.value = () => new SettingsView())}>Settings</Button>
+  <Button onClick={() => (currentView.value = () => new ProfileView())}>Profile</Button>
 
   <Switch component={currentView} width="fill" height="fill" />
 </Column>;
@@ -610,11 +610,11 @@ const currentView = new State<any>(DashboardView);
 ```tsx
 import { State, Select, Option, Switch } from 'asciitorium';
 
-// Component map
-const pageMap: Record<string, any> = {
-  home: HomeComponent,
-  about: AboutComponent,
-  contact: ContactComponent,
+// Component factory map
+const pageMap: Record<string, () => Component> = {
+  home: () => new HomeComponent(),
+  about: () => new AboutComponent(),
+  contact: () => new ContactComponent(),
 };
 
 const selectedKey = new State<string>('home');
@@ -636,55 +636,47 @@ selectedKey.subscribe((key) => {
 </Column>;
 ```
 
-**Pattern 3: Factory Functions**
+**Pattern 3: Factory Functions with Custom Props**
 
 ```tsx
-// Using factory functions instead of constructors
-const viewFactory = () => new CustomView({ customProp: 'value' });
+// Factory functions allow passing custom props on each instantiation
+const viewFactory = () => new CustomView({
+  customProp: 'value',
+  timestamp: Date.now() // Fresh data each time
+});
 const currentView = new State<any>(viewFactory);
 
 <Switch component={currentView} />;
 ```
 
-**Pattern 4: Component Instances**
-
-```tsx
-// Using pre-instantiated components
-const dashboard = new DashboardView({ width: 80 });
-const settings = new SettingsView({ width: 80 });
-
-const currentView = new State<Component>(dashboard);
-
-<Button onClick={() => currentView.value = settings}>Switch to Settings</Button>
-<Switch component={currentView} />
-```
-
 ### Common Mistakes
 
-❌ **WRONG** - Not using State
+❌ **WRONG** - Not using a factory function
 
 ```tsx
-<Switch component={MyComponent} /> // NO! component must be a State
-```
-
-✅ **CORRECT** - Using State
-
-```tsx
-const view = new State(MyComponent);
+const view = new State(MyComponent); // NO! Must be a factory function
 <Switch component={view} />;
 ```
 
-❌ **WRONG** - Trying to pass component as string
+✅ **CORRECT** - Using a factory function
 
 ```tsx
-const view = new State<string>('DashboardComponent'); // NO! Must be actual component
+const view = new State(() => new MyComponent());
 <Switch component={view} />;
 ```
 
-✅ **CORRECT** - Using actual component reference
+❌ **WRONG** - Passing component instance directly
 
 ```tsx
-const view = new State<any>(DashboardComponent); // Component constructor
+const instance = new DashboardComponent({ width: 80 });
+const view = new State(instance); // NO! Must be a factory function
+<Switch component={view} />;
+```
+
+✅ **CORRECT** - Using a factory that creates fresh instances
+
+```tsx
+const view = new State(() => new DashboardComponent({ width: 80 }));
 <Switch component={view} />;
 ```
 
