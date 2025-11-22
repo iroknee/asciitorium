@@ -1,6 +1,8 @@
 # ASCIITORIUM Quick Reference
 
-> **For LLMs**: This document provides correct usage patterns for ASCIITORIUM components. Always refer to the examples here rather than assuming React-like conventions.
+> **For LLMs**: This document provides correct usage patterns for ASCIITORIUM
+> components. Always refer to the examples here rather than assuming React-like
+> conventions.
 
 ## Quick Index
 
@@ -35,7 +37,7 @@
 - [Keybind](#keybind)
 - [PerfMonitor](#perfmonitor)
 
----
+
 
 ## State Management
 
@@ -118,7 +120,7 @@ count++; // NO! count is a State object
 count.value++;
 ```
 
----
+
 
 ## JSX & Props
 
@@ -172,7 +174,7 @@ align="center"                 // Alignment (layout-specific)
 </Text>
 ```
 
----
+
 
 ## Row
 
@@ -215,7 +217,7 @@ align="center"                 // Alignment (layout-specific)
 </Row>
 ```
 
----
+
 
 ## Column
 
@@ -262,7 +264,7 @@ align="center"                 // Alignment (layout-specific)
 </Column>
 ```
 
----
+
 
 ## Text
 
@@ -361,7 +363,7 @@ const playerName = new State('Hero');
 <Text>{count.value}</Text>     // Explicit .value also works
 ```
 
----
+
 
 ## Button
 
@@ -439,7 +441,7 @@ const count = new State(0);
 <Button>Very Long Text</Button> // Auto-sizes
 ```
 
----
+
 
 ## Select
 
@@ -553,134 +555,170 @@ const selected = new State("option1");
 </Select>
 ```
 
----
+
 
 ## Switch
 
 ### Basic Usage
 
 ```tsx
-import { State, Switch } from 'asciitorium';
+import { State, Switch, Case, Default } from 'asciitorium';
 
-// State holding a factory function that returns the component to display
-const currentView = new State(() => new DashboardComponent({ width: 100 }));
+const userRole = new State<string>('guest');
 
-<Switch component={currentView} />;
+<Switch condition={userRole}>
+  <Case when="admin" create={AdminPanel} />
+  <Case when="user" create={UserPanel} />
+  <Case when="guest" create={GuestPanel} />
+  <Default create={GuestPanel} />
+</Switch>;
 ```
 
-### Props
+### Props (Switch)
 
-| Prop        | Type                    | Default | Description                                                     |
-| ----------- | ----------------------- | ------- | --------------------------------------------------------------- |
-| `component` | `State<() => Component>` | -       | State holding a factory function that returns a Component       |
-| `width`     | `number \| 'fill'`      | -       | Component width                                                 |
-| `height`    | `number \| 'fill'`      | -       | Component height                                                |
+| Prop        | Type                             | Default | Description                        |
+| ----------- | -------------------------------- | ------- | ---------------------------------- |
+| `condition` | `State<string> \| State<number>` | -       | State to match against Case values |
+| `width`     | `number \| 'fill'`               | -       | Component width                    |
+| `height`    | `number \| 'fill'`               | -       | Component height                   |
+
+### Props (Case)
+
+| Prop     | Type               | Description                         |
+| -------- | ------------------ | ----------------------------------- |
+| `when`   | `string \| number` | Value to match against condition    |
+| `create` | `any`              | Component class/function to create  |
+| `with`   | `any`              | Optional props to pass to component |
+
+### Props (Default)
+
+| Prop     | Type  | Description                         |
+| -------- | ----- | ----------------------------------- |
+| `create` | `any` | Component class/function to create  |
+| `with`   | `any` | Optional props to pass to component |
 
 ### Common Patterns
 
-**Pattern 1: View Switching with Factory Functions**
+**Pattern 1: Simple Conditional Rendering**
 
 ```tsx
-import { State, Switch, Button, Column } from 'asciitorium';
+import { State, Switch, Case, Default } from 'asciitorium';
 
-// Component classes
-class DashboardView extends Component {
-  /* ... */
-}
-class SettingsView extends Component {
-  /* ... */
-}
-class ProfileView extends Component {
-  /* ... */
-}
+// Function components
+const AdminPanel = () => <Column>Admin View</Column>;
+const UserPanel = () => <Column>User View</Column>;
+const GuestPanel = () => <Column>Guest View</Column>;
 
-const currentView = new State<any>(() => new DashboardView());
+const userRole = new State<string>('guest');
 
 <Column>
-  <Button onClick={() => (currentView.value = () => new DashboardView())}>Dashboard</Button>
-  <Button onClick={() => (currentView.value = () => new SettingsView())}>Settings</Button>
-  <Button onClick={() => (currentView.value = () => new ProfileView())}>Profile</Button>
+  <Button onClick={() => (userRole.value = 'admin')}>Admin</Button>
+  <Button onClick={() => (userRole.value = 'user')}>User</Button>
+  <Button onClick={() => (userRole.value = 'guest')}>Guest</Button>
 
-  <Switch component={currentView} width="fill" height="fill" />
+  <Switch condition={userRole} width="fill" height="fill">
+    <Case when="admin" create={AdminPanel} />
+    <Case when="user" create={UserPanel} />
+    <Case when="guest" create={GuestPanel} />
+    <Default create={GuestPanel} />
+  </Switch>
 </Column>;
 ```
 
-**Pattern 2: Dynamic Content with Select**
+**Pattern 2: Class Components with Props**
 
 ```tsx
-import { State, Select, Option, Switch } from 'asciitorium';
+import { State, Switch, Case, Component } from 'asciitorium';
 
-// Component factory map
-const pageMap: Record<string, () => Component> = {
-  home: () => new HomeComponent(),
-  about: () => new AboutComponent(),
-  contact: () => new ContactComponent(),
-};
+class SettingsPanel extends Component {
+  constructor(props: { theme: string }) {
+    super(props);
+    // Use props.theme
+  }
+}
 
-const selectedKey = new State<string>('home');
-const selectedComponent = new State<any>(pageMap['home']);
+const currentView = new State<string>('settings');
 
-// Sync selected component with key
-selectedKey.subscribe((key) => {
-  selectedComponent.value = pageMap[key];
-});
+<Switch condition={currentView}>
+  <Case when="settings" create={SettingsPanel} with={{ theme: 'dark' }} />
+  <Case when="profile" create={ProfilePanel} />
+</Switch>;
+```
+
+**Pattern 3: Navigation with Select**
+
+```tsx
+import { State, Select, Option, Switch, Case } from 'asciitorium';
+
+const selectedPage = new State<string>('home');
 
 <Column>
-  <Select selected={selectedKey}>
+  <Select selected={selectedPage}>
     <Option value="home" label="Home" />
     <Option value="about" label="About" />
     <Option value="contact" label="Contact" />
   </Select>
 
-  <Switch component={selectedComponent} width="fill" height="fill" />
+  <Switch condition={selectedPage} width="fill" height="fill">
+    <Case when="home" create={HomePage} />
+    <Case when="about" create={AboutPage} />
+    <Case when="contact" create={ContactPage} />
+  </Switch>
 </Column>;
 ```
 
-**Pattern 3: Factory Functions with Custom Props**
+**Pattern 4: Numeric Conditions**
 
 ```tsx
-// Factory functions allow passing custom props on each instantiation
-const viewFactory = () => new CustomView({
-  customProp: 'value',
-  timestamp: Date.now() // Fresh data each time
-});
-const currentView = new State<any>(viewFactory);
+const level = new State<number>(1);
 
-<Switch component={currentView} />;
+<Switch condition={level}>
+  <Case when={1} create={Level1} />
+  <Case when={2} create={Level2} />
+  <Case when={3} create={Level3} />
+  <Default create={CompletionScreen} />
+</Switch>;
 ```
 
 ### Common Mistakes
 
-❌ **WRONG** - Not using a factory function
+❌ **WRONG** - Using JSX children
 
 ```tsx
-const view = new State(MyComponent); // NO! Must be a factory function
-<Switch component={view} />;
+<Switch condition={role}>
+  <Case when="admin">
+    <AdminPanel /> {/* Components persist in memory! */}
+  </Case>
+</Switch>
 ```
 
-✅ **CORRECT** - Using a factory function
+✅ **CORRECT** - Using create prop
 
 ```tsx
-const view = new State(() => new MyComponent());
-<Switch component={view} />;
+<Switch condition={role}>
+  <Case when="admin" create={AdminPanel} />
+</Switch>
 ```
 
-❌ **WRONG** - Passing component instance directly
+❌ **WRONG** - Missing Default fallback
 
 ```tsx
-const instance = new DashboardComponent({ width: 80 });
-const view = new State(instance); // NO! Must be a factory function
-<Switch component={view} />;
+<Switch condition={status}>
+  <Case when="loading" create={Spinner} />
+  {/* No fallback - nothing shows if status is unknown */}
+</Switch>
 ```
 
-✅ **CORRECT** - Using a factory that creates fresh instances
+✅ **CORRECT** - Including Default
 
 ```tsx
-const view = new State(() => new DashboardComponent({ width: 80 }));
-<Switch component={view} />;
+<Switch condition={status}>
+  <Case when="loading" create={Spinner} />
+  <Default create={ErrorMessage} />
+</Switch>
 ```
 
----
+
 
 ## TextInput
 
@@ -763,7 +801,7 @@ const text = new State('initial');
 <Button onClick={() => console.log(inputValue.value)}>Submit</Button>
 ```
 
----
+
 
 ## Art
 
@@ -829,7 +867,7 @@ const text = new State('initial');
 <Art font="standard" text="Title" />  // Generated
 ```
 
----
+
 
 ## Keybind
 
@@ -918,7 +956,7 @@ const gameStarted = new State(false);
 <Keybind keyBinding="ArrowUp" action={() => moveUp()} />
 ```
 
----
+
 
 ## GameWorld
 
@@ -1047,7 +1085,7 @@ gameWorld.player.value.x += 1; // Bypasses collision detection
 gameWorld.moveForward(); // Handles collision
 ```
 
----
+
 
 ## MapView
 
@@ -1130,7 +1168,7 @@ gameWorld.player.subscribe((p) => {
 <MapView mapAsset={gameWorld.mapAsset} player={gameWorld.player} />
 ```
 
----
+
 
 ## FirstPersonView
 
@@ -1208,7 +1246,7 @@ gameWorld.player.subscribe((p) => {
 <FirstPersonView mapAsset={gameWorld.mapAsset} player={gameWorld.player} />
 ```
 
----
+
 
 ## PerfMonitor
 
@@ -1259,7 +1297,7 @@ const showPerf = new State(false);
 <PerfMonitor visible={showPerf} />
 ```
 
----
+
 
 ## Component Lifecycle
 
@@ -1299,7 +1337,7 @@ count.subscribe((newValue) => {
 // No manual cleanup needed in most cases
 ```
 
----
+
 
 ## Legend System (Game Maps)
 
@@ -1360,7 +1398,7 @@ if (tile?.tag === 'door') {
 }
 ```
 
----
+
 
 ## Directory Structure
 
@@ -1401,7 +1439,7 @@ Example:
 ╚══════════════════╝
 ```
 
----
+
 
 ## Type Annotations
 
@@ -1443,7 +1481,7 @@ const entry: LegendEntry = {
 };
 ```
 
----
+
 
 ## Complete Example: Simple Game
 
@@ -1514,28 +1552,32 @@ const app = (
 await app.start();
 ```
 
----
+
 
 ## Understanding "auto" vs Omitting Props
 
-**Key Concept:** In ASCIITORIUM, omitting `width` or `height` props is the same as setting them to `undefined` or `"auto"`.
+**Key Concept:** In ASCIITORIUM, omitting `width` or `height` props is the same
+as setting them to `undefined` or `"auto"`.
 
 - `width={40}` → Fixed width of 40 characters
 - `width="fill"` → Fill available parent space
 - `width="auto"` → Auto-size to content (same as omitting the prop)
 - _Omitting width prop_ → Auto-size to content (recommended approach)
 
-**Recommendation:** Omit props instead of using `"auto"` for clarity. The type system allows `"auto"` but it's unnecessary.
+**Recommendation:** Omit props instead of using `"auto"` for clarity. The type
+system allows `"auto"` but it's unnecessary.
 
 **Component-specific auto-sizing:**
 
-- **Text**: Auto-sizes to content length (width) and wrapped lines (height) when props omitted
-- **Button**: Always calculates size based on content (`buttonText.length + 7` for width, `4` for height)
+- **Text**: Auto-sizes to content length (width) and wrapped lines (height) when
+  props omitted
+- **Button**: Always calculates size based on content (`buttonText.length + 7`
+  for width, `4` for height)
 - **Art**: Auto-sizes to loaded art dimensions when props omitted
 - **Column**: Auto-sizes to fit children when width omitted
 - **Row**: Defaults to `width="fill"`
 
----
+
 
 ## Tips for LLMs
 
@@ -1544,12 +1586,16 @@ await app.start();
 3. **Text newlines use `¶` (pilcrow)** - Not `\n`
 4. **Components accept children via JSX or explicit props** - Both patterns work
 5. **GameWorld must be awaited** - `await gameWorld.ready` before rendering
-6. **Keybinds are invisible components** - They never render, just register handlers
-7. **MapView and FirstPersonView are display-only** - Movement logic goes in GameWorld or Keybinds
+6. **Keybinds are invisible components** - They never render, just register
+   handlers
+7. **MapView and FirstPersonView are display-only** - Movement logic goes in
+   GameWorld or Keybinds
 8. **Legend system drives collision** - Use `isSolid()` for movement validation
 9. **No CSS or className** - ASCIITORIUM uses ASCII rendering, not DOM styling
-10. **Omit width/height props for auto-sizing** - Components have smart defaults (Text/Art/Column size to content, Button calculates from label, Row fills width)
+10. **Omit width/height props for auto-sizing** - Components have smart defaults
+    (Text/Art/Column size to content, Button calculates from label, Row fills
+    width)
 
----
+
 
 _End of Reference_

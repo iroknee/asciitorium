@@ -130,10 +130,9 @@ export class Switch extends Component {
    * Clears existing children and creates the appropriate component.
    */
   private updateContent(): void {
-    // Remove all existing children
+    // Remove all existing children from Switch
     const childrenToRemove = [...this.children];
     for (const child of childrenToRemove) {
-      // if this is an art child we need to skip
       child.destroy();
       this.removeChild(child);
     }
@@ -144,14 +143,37 @@ export class Switch extends Component {
       const matchingCase = this.cases.find(c => c.when === currentCondition);
 
       if (matchingCase) {
-        // Add children of the matching Case
-        for (const child of matchingCase.getChildren()) {
-          this.addChild(child);
+        // Check if Case has a component factory
+        const factory = matchingCase.getComponentFactory();
+        if (factory) {
+          // Create new instance from factory
+          const component = makeComponent(factory);
+          if (component) {
+            this.addChild(component);
+          }
+        } else {
+          // Fallback: reuse existing children (NOT RECOMMENDED - components stay alive)
+          for (const child of matchingCase.getChildren()) {
+
+          console.warn('Switch: Case component missing create prop. Components will persist in memory and continue running. Use: <Case when="' + matchingCase.when + '" create={' + child.constructor.name + '} />');
+            this.addChild(child);
+          }
         }
       } else if (this.defaultCase) {
-        // Add children of Default
-        for (const child of this.defaultCase.getChildren()) {
-          this.addChild(child);
+        // Check if Default has a component factory
+        const factory = this.defaultCase.getComponentFactory();
+        if (factory) {
+          // Create new instance from factory
+          const component = makeComponent(factory);
+          if (component) {
+            this.addChild(component);
+          }
+        } else {
+          // Fallback: reuse existing children (NOT RECOMMENDED - components stay alive)
+          console.error('Switch: Default component missing create prop. Components will persist in memory and continue running. Use: <Default create={YourComponent} />');
+          for (const child of this.defaultCase.getChildren()) {
+            this.addChild(child);
+          }
         }
       }
     }

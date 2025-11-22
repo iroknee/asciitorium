@@ -112,22 +112,22 @@ const app = (
         {docSelect}
       </Column>
       <Switch width="fill" height="fill" condition={selectedKey}>
-        <Case when="start"><GettingStarted /></Case>
-        <Case when="components"><ComponentBasics /></Case>
-        <Case when="text"><TextBasics /></Case>
-        <Case when="layout"><LayoutBasics /></Case>
-        <Case when="align"><AlignmentBasics /></Case>
-        <Case when="navigation"><NavigationBasics /></Case>
-        <Case when="keybindings"><KeybindingsBasics /></Case>
-        <Case when="state"><StateBasics /></Case>
-        <Case when="lifecycle"><LifecycleBasics /></Case>
-        <Case when="switch"><SwitchBasics /></Case>
-        <Case when="sprites"><SpritesBasics /></Case>
-        <Case when="fonts"><FontsBasics /></Case>
-        <Case when="materials"><MaterialsBasics /></Case>
-        <Case when="maps"><MapsBasics /></Case>
-        <Case when="fpv"><FPVBasics /></Case>
-        <Case when="racetest"><ArtRaceConditionTest /></Case>
+        <Case when="start" create={GettingStarted} />
+        <Case when="components" create={ComponentBasics} />
+        <Case when="text" create={TextBasics} />
+        <Case when="layout" create={LayoutBasics} />
+        <Case when="align" create={AlignmentBasics} />
+        <Case when="navigation" create={NavigationBasics} />
+        <Case when="keybindings" create={KeybindingsBasics} />
+        <Case when="state" create={StateBasics} />
+        <Case when="lifecycle" create={LifecycleBasics} />
+        <Case when="switch" create={SwitchBasics} />
+        <Case when="sprites" create={SpritesBasics} />
+        <Case when="fonts" create={FontsBasics} />
+        <Case when="materials" create={MaterialsBasics} />
+        <Case when="maps" create={MapsBasics} />
+        <Case when="fpv" create={FPVBasics} />
+        <Case when="racetest" create={ArtRaceConditionTest} />
       </Switch>
     </Row>
     <PerfMonitor visible={showPerfMonitor} />

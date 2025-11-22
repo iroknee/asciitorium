@@ -44,7 +44,7 @@ const GuestPanel = () => (
  */
 export const SwitchBasics = () => {
   // State to control which panel is shown
-  const userRole = new State<string>('admin');
+  const userRole = new State<string>('');
 
   return (
     <Column style={BaseStyle} label="Switch Basics">
@@ -57,7 +57,7 @@ export const SwitchBasics = () => {
       <Line width="90%" />
 
       <Text width="90%" gap={{ left: 4, bottom: 1 }}>
-        Use Case and Default components for declarative conditional rendering:
+        Use Case and Default with create prop for fresh component instances:
       </Text>
 
       <Row width="100%" align="center" gap={{ left: 4, bottom: 1 }}>
@@ -74,15 +74,10 @@ export const SwitchBasics = () => {
 
       <Column width="90%" height={12} gap={{ left: 4 }}>
         <Switch width="100%" height="100%" condition={userRole}>
-          <Case when="admin">
-            <AdminPanel />
-          </Case>
-          <Case when="user">
-            <UserPanel />
-          </Case>
-          <Case when="guest">
-            <GuestPanel />
-          </Case>
+          <Case when="admin" create={AdminPanel} />
+          <Case when="user" create={UserPanel} />
+          <Case when="guest" create={GuestPanel} />
+          <Default create={GuestPanel} />
         </Switch>
       </Column>
 
@@ -94,9 +89,10 @@ export const SwitchBasics = () => {
       {/* prettier-ignore */}
       <Text width="90%" gap={{ left: 6 }}>
         • condition — State&lt;string&gt; to match against ¶
-        • component — State&lt;Component&gt; for direct switching ¶
         • Case when — value to match condition against ¶
-        • Default — fallback when no Case matches ¶
+        • Case create — component to instantiate (new instance each switch) ¶
+        • Case with — optional props to pass to component ¶
+        • Default create — fallback component when no Case matches ¶
       </Text>
     </Column>
   );
