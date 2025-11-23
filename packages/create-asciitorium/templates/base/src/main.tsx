@@ -26,7 +26,7 @@ const app = (
 
     <Column style={{ align: 'center', gap: 1, width: '100%' }}>
       <Art font="pencil" text="Welcome to" align="center" />
-      <Art src="asciitorium" align="center" />
+      <Art font="shadows" text="asciitorium" align="center" />
 
       <Text style={{ align: 'center', gap: 1 }}>
         Edit src/main.tsx and save to reload.

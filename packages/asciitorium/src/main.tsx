@@ -86,7 +86,7 @@ const app = (
   <App align="top-center">
     <Keybind keyBinding="F12" action={togglePerfMonitor} />
 
-    <Art src="asciitorium" gap={{ bottom: 1 }} />
+    <Art font="shadows" text="asciitorium" gap={{ bottom: 1 }} />
     <Row height="fill">
       <Column width={28} height="fill">
         {/* Explicit keybindings for Select navigation */}

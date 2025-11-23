@@ -8,10 +8,27 @@ export const FontsBasics = () => {
   return (
     <Column style={BaseStyle} label="Fonts Basics">
       <Art
-        gap={{ top: 2 }}
+        font="pencil"
+        text="asciitorium"
+        letterSpacing={0}
+        align="center"
+      />
+      <Art
         font="marker"
         text="asciitorium"
         letterSpacing={1}
+        align="center"
+      />
+      <Art
+        font="pixel"
+        text="asciitorium"
+        letterSpacing={1}
+        align="center"
+      />
+      <Art
+        font="shadows"
+        text="asciitorium"
+        letterSpacing={0}
         align="center"
       />
 
@@ -24,35 +41,6 @@ export const FontsBasics = () => {
       </Text>
 
       <Text width="90%">
-        Using Fonts
-      </Text>
-      <Line width="90%" />
-
-      <Text width="90%" gap={{ left: 4 }}>
-        Display font art using the Art component with the text property:
-      </Text>
-      <Art font="pencil" text="Hello World" />
-      <Text
-        width={48}
-        align="center"
-        textAlign="center"
-        gap={{ left: 4, top: 1 }}
-        border
-      >
-        {`<Art font="pencil" text="Hello World" />`}
-      </Text>
-
-      <Text width="90%" gap={{ top: 2 }}>
-        Common Use Cases
-      </Text>
-      <Line width="90%" />
-
-      <Text width="90%" gap={{ left: 6 }}>
-        • Title screens and splash pages ¶ • Section headers and banners ¶ •
-        Game titles and credits ¶
-      </Text>
-
-      <Text width="90%" gap={{ top: 1 }}>
         * To create your own font art review the documentation in public/art
         directory.
       </Text>
