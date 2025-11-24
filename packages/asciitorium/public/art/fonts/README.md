@@ -10,7 +10,7 @@ separators:
 
 ### File Structure
 
-``` json
+``` txt
 § {"kind":"font"}
 ¶ {"character":"A"}
 ╭─╮

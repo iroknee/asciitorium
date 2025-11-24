@@ -13,7 +13,7 @@ metadata separators:
 
 #### Wall Material
 
-```json
+```txt
 § {"kind":"material","usage":"first-person"}
 ¶ {"layer":"here","position":"left","x":-1}
 |╲

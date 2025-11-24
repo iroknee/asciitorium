@@ -22,7 +22,7 @@ metadata separators:
 
 #### Animated Sprite with Metadata
 
-``` json
+``` txt
 § {"kind":"sprite","loop":true,"default-frame-rate":100}
 ¶ {"duration":1000}
  ▄█▀█▄  ▄███▄
