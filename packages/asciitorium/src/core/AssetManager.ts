@@ -2,25 +2,23 @@ import { loadArt } from './environment.js';
 
 // Asset type definitions
 export interface LegendEntry {
-  kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
-  visible?: boolean;
+  showOnMap?: boolean;
   entity?: string;
   variant?: string;
-  asset: string;
+  material: string;
 }
 
 // New legend format with character arrays
 export interface LegendArrayEntry {
   chars: string[];
-  kind: 'material' | 'sprite';
   name?: string;
   solid: boolean;
-  visible?: boolean;
+  showOnMap?: boolean;
   entity?: string;
   variant?: string;
-  asset: string;
+  material: string;
 }
 
 export interface MaterialLayer {
@@ -203,16 +201,15 @@ export class AssetManager {
   }
 
   /**
-   * Expands legend format to support both old and new formats
-   * - New format: { "legend": [ { "chars": [...], ...props } ] }
-   * - Old format: { "char": { ...props } }
+   * Expands legend format from array format to character map
+   * - Format: { "legend": [ { "chars": [...], ...props } ] }
    */
   private static expandLegendFormat(data: any): Record<string, LegendEntry> {
     const result: Record<string, LegendEntry> = {};
 
-    // Check for new array format
+    // Check for array format
     if (data.legend && Array.isArray(data.legend)) {
-      // New format: expand each entry's chars array
+      // Expand each entry's chars array
       for (const entry of data.legend) {
         if (!entry.chars || !Array.isArray(entry.chars)) {
           console.warn('Legend entry missing chars array:', entry);
@@ -221,11 +218,10 @@ export class AssetManager {
 
         // Create a LegendEntry without the chars property
         const legendEntry: LegendEntry = {
-          kind: entry.kind,
           solid: entry.solid,
-          asset: entry.asset,
+          material: entry.material,
           ...(entry.name && { name: entry.name }),
-          ...(entry.visible !== undefined && { visible: entry.visible }),
+          ...(entry.showOnMap !== undefined && { showOnMap: entry.showOnMap }),
           ...(entry.entity && { entity: entry.entity }),
           ...(entry.variant && { variant: entry.variant }),
         };
@@ -236,8 +232,7 @@ export class AssetManager {
         }
       }
     } else {
-      // Old format: data is already a Record<string, LegendEntry>
-      return data;
+      console.warn('Invalid legend format: expected { "legend": [...] }');
     }
 
     return result;

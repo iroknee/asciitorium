@@ -194,12 +194,12 @@ export class GridMovement {
     if (!char) return;
 
     const legendEntry = this.getLegendEntry(char);
-    if (!legendEntry || legendEntry.kind !== 'material') return;
+    if (!legendEntry) return;
 
     try {
       // Load the material asset to check for sound metadata
       const materialAsset: MaterialAsset = await AssetManager.getMaterial(
-        legendEntry.asset.replace('material/', '')
+        legendEntry.material
       );
 
       // Check for onEnterSound in the material asset
@@ -217,12 +217,12 @@ export class GridMovement {
     if (!char) return;
 
     const legendEntry = this.getLegendEntry(char);
-    if (!legendEntry || legendEntry.kind !== 'material') return;
+    if (!legendEntry) return;
 
     try {
       // Load the material asset to check for sound metadata
       const materialAsset: MaterialAsset = await AssetManager.getMaterial(
-        legendEntry.asset.replace('material/', '')
+        legendEntry.material
       );
 
       // Check for onExitSound in the material asset

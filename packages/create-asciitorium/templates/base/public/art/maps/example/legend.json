@@ -2,28 +2,25 @@
   "legend": [
     {
       "chars": ["╭", "╮", "╯", "╰", "│", "─", "├", "┤", "┬", "┴", "╷", "╵", "╶", "╴"],
-      "kind": "material",
       "name": "wall",
       "solid": true,
-      "asset": "material/wall-brick"
+      "material": "wall-brick"
     },
     {
       "chars": ["o"],
-      "kind": "material",
       "name": "door",
       "solid": false,
       "entity": "door",
-      "asset": "material/door-wooden"
+      "material": "door-wooden"
     },
     {
       "chars": ["b"],
-      "kind": "material",
       "name": "bone",
       "solid": false,
-      "visible": false,
+      "showOnMap": false,
       "entity": "item",
       "variant": "bone",
-      "asset": "material/bone"
+      "material": "bone"
     }
   ]
 }

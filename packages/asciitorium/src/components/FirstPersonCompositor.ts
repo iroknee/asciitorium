@@ -45,15 +45,12 @@ export class FirstPersonCompositor {
   }
 
   // Load a material asset by name using AssetManager's State cache
-  private async loadMaterial(assetName: string): Promise<MaterialAsset | null> {
+  private async loadMaterial(materialName: string): Promise<MaterialAsset | null> {
     try {
-      // Extract material name from asset path (e.g., "material/brick-wall" -> "brick-wall")
-      const materialName = assetName.replace(/^material\//, '');
-
       // Get material from AssetManager (cached automatically, returns Promise)
       return AssetManager.getMaterial(materialName);
     } catch (error) {
-      console.error(`Failed to load material "${assetName}":`, error);
+      console.error(`Failed to load material "${materialName}":`, error);
       return null;
     }
   }
@@ -102,13 +99,8 @@ export class FirstPersonCompositor {
         continue; // No legend entry for this character
       }
 
-      // Only render materials (sprites are for 2D Art component, not 3D first-person view)
-      if (legendEntry.kind !== 'material') {
-        continue;
-      }
-
       // Load the material asset
-      const materialAsset = await this.loadMaterial(legendEntry.asset);
+      const materialAsset = await this.loadMaterial(legendEntry.material);
       if (!materialAsset) {
         continue; // Failed to load material
       }

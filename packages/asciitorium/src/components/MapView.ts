@@ -224,8 +224,8 @@ export class MapView extends Component {
           let displayChar = char;
           if (legend && legend[char]) {
             const legendEntry = legend[char];
-            // If visible is explicitly set to false, render as space
-            if (legendEntry.visible === false) {
+            // If showOnMap is explicitly set to false, render as space
+            if (legendEntry.showOnMap === false) {
               displayChar = ' ';
             }
           }
