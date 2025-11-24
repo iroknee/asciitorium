@@ -9,6 +9,7 @@ export * from './core/AssetManager.js';
 export * from './core/GridMovement.js';
 export * from './core/SoundManager.js';
 export * from './components/Art.js';
+export * from './components/Banner.js';
 export * from './components/Button.js';
 export * from './components/CelticBorder.js';
 export * from './components/Switch.js';

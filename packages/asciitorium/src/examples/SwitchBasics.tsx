@@ -8,14 +8,14 @@ import {
   Case,
   Default,
   Button,
-  Art,
+  Banner,
 } from '../index.js';
 import { BaseStyle } from './constants.js';
 
 // Simple demo components
 const AdminPanel = () => (
   <Column width="fill" height="fill" border label="Admin Panel" align="top">
-    <Art font="pencil" text="Admin Mode" />
+    <Banner font="pencil" text="Admin Mode" />
     <Text>Welcome, Administrator!</Text>
     <Text>You have full access to the system.</Text>
   </Column>
@@ -23,7 +23,7 @@ const AdminPanel = () => (
 
 const UserPanel = () => (
   <Column width="fill" height="fill" border label="User Panel" align="top">
-    <Art font="pencil" text="User Mode" />
+    <Banner font="pencil" text="User Mode" />
     <Text>Welcome, User!</Text>
     <Text>You have limited access.</Text>
   </Column>
@@ -31,7 +31,7 @@ const UserPanel = () => (
 
 const GuestPanel = () => (
   <Column width="fill" height="fill" border label="Guest Panel" align="top">
-    <Art font="pencil" text="Guest Mode" />
+    <Banner font="pencil" text="Guest Mode" />
     <Text>Welcome, Guest!</Text>
     <Text>Please log in to access more features.</Text>
   </Column>

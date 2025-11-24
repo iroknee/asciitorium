@@ -1,4 +1,4 @@
-import { Art, Line, Column, Text } from "../index.js";
+import { Banner, Line, Column, Text } from "../index.js";
 import { BaseStyle } from './constants.js';
 
 /**
@@ -7,25 +7,25 @@ import { BaseStyle } from './constants.js';
 export const FontsBasics = () => {
   return (
     <Column style={BaseStyle} label="Fonts Basics">
-      <Art
+      <Banner
         font="pencil"
         text="asciitorium"
         letterSpacing={0}
         align="center"
       />
-      <Art
+      <Banner
         font="marker"
         text="asciitorium"
         letterSpacing={1}
         align="center"
       />
-      <Art
+      <Banner
         font="pixel"
         text="asciitorium"
         letterSpacing={1}
         align="center"
       />
-      <Art
+      <Banner
         font="shadows"
         text="asciitorium"
         letterSpacing={0}
@@ -35,8 +35,8 @@ export const FontsBasics = () => {
       <Text width="90%" gap={{ bottom: 2 }}>
         Asciitorium Fonts are text art sprites, allowing you to display large
         letter phrases from ASCII characters. ¶¶ Fonts are stored in the
-        art/fonts/ directory with the .art extension, like other asciitorium
-        assets. The Art component loads and displays fonts by specifying the
+        art/font/ directory with the .art extension, like other asciitorium
+        assets. The Banner component loads and displays fonts by specifying the
         font property.
       </Text>
 

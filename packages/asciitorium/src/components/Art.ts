@@ -5,15 +5,11 @@ import {
   AssetManager,
   type Asset,
   type SpriteAsset,
-  type FontAsset,
 } from '../core/AssetManager.js';
 
 export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .art (UTF-8) or reactive state
   src?: string; // URL or file path to load ASCII art from
-  font?: string; // Font asset name for styled text rendering
-  text?: string | State<string>; // Text to render using font
-  letterSpacing?: number; // Additional spacing between characters (default: 0)
   children?: string | string[];
 }
 
@@ -42,14 +38,9 @@ export class Art extends Component {
   private loop = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
   private contentState?: State<string>;
-  private textState?: State<string>;
   private isLoading = false;
   private loadError?: string;
   private src?: string;
-  private font?: string;
-  private fontAsset?: FontAsset;
-  private text?: string;
-  private letterSpacing: number = 0;
   private spriteTransparentChar?: string; // sprite-specific transparency character
   private isDestroyed = false; // Track if component has been destroyed
 
@@ -57,7 +48,6 @@ export class Art extends Component {
     let actualContent = options.content;
     const borderPadding = options.border ? 2 : 0;
     const isLoadingSrc = !!options.src;
-    const isLoadingFont = !!options.font;
 
     // Prepare content and dimensions before super() call
     let parsedFrames: SpriteFrame[] = [];
@@ -66,18 +56,7 @@ export class Art extends Component {
     let calculatedWidth: number | undefined;
     let calculatedHeight: number | undefined;
 
-    if (isLoadingFont) {
-      // For font loading, use placeholder
-      parsedFrames = [
-        {
-          lines: [['L', 'o', 'a', 'd', 'i', 'n', 'g', '.', '.', '.']],
-          meta: { duration: 0 },
-        },
-      ];
-      parsedLoop = false;
-      calculatedWidth = 12; // "Loading..." length + border
-      calculatedHeight = 1 + borderPadding;
-    } else if (!isLoadingSrc) {
+    if (!isLoadingSrc) {
       // Handle direct content/children (non-src)
       if (!actualContent && options.children) {
         const children = Array.isArray(options.children)
@@ -126,7 +105,7 @@ export class Art extends Component {
     }
 
     // Call super() with calculated or provided dimensions
-    const { children, content, src, font, text, letterSpacing, ...componentProps } = options;
+    const { children, content, src, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width ?? options.style?.width ?? calculatedWidth,
@@ -138,70 +117,11 @@ export class Art extends Component {
       this.spriteTransparentChar = spriteTransparent;
     }
 
-    // Set letter spacing (default 0 if not provided)
-    this.letterSpacing = letterSpacing ?? 0;
-
     // Set initial state
     this.frames = parsedFrames;
     this.loop = parsedLoop;
 
-    if (isLoadingFont && options.font) {
-      // Set loading state for font
-      this.font = options.font;
-      this.isLoading = true;
-
-      // Handle text prop (string or State)
-      if (options.text instanceof State) {
-        this.textState = options.text;
-        this.text = options.text.value;
-      } else {
-        this.text = options.text || '';
-      }
-
-      // Start async loading using AssetManager
-      AssetManager.getFont(options.font)
-        .then((fontAsset) => {
-          if (this.isDestroyed) return;
-
-          this.isLoading = false;
-          this.loadError = undefined;
-          this.fontAsset = fontAsset;
-
-          // Recalculate dimensions based on text and font
-          const renderedBuffer = this.renderTextWithFont(this.text || '', fontAsset);
-          const textWidth = Math.max(...renderedBuffer.map((line) => line.length), 0);
-          const textHeight = renderedBuffer.length;
-
-          this.originalHeight = textHeight + borderPadding;
-          this.originalWidth = textWidth + borderPadding;
-          this.width = textWidth + borderPadding;
-          this.height = textHeight + borderPadding;
-
-          // Set up state subscription for reactive text
-          if (this.textState) {
-            this.bind(this.textState, (newValue: string) => {
-              this.text = newValue;
-              this.updateFontText();
-            });
-          }
-
-          requestRender();
-          this.forceRenderIfNeeded();
-        })
-        .catch((error: Error) => {
-          if (this.isDestroyed) return;
-
-          this.isLoading = false;
-          this.loadError = error.message || 'Failed to load font';
-          // Don't call updateContent with error text - just set simple error frame
-          this.frames = [{
-            lines: [[...'Error loading font']],
-            meta: { duration: 0 }
-          }];
-          requestRender();
-          this.forceRenderIfNeeded();
-        });
-    } else if (isLoadingSrc && options.src) {
+    if (isLoadingSrc && options.src) {
       // Set loading state
       this.src = options.src;
       this.isLoading = true;
@@ -408,87 +328,6 @@ export class Art extends Component {
     this.notifyAppOfFocusRefresh();
   }
 
-  private renderTextWithFont(text: string, fontAsset: FontAsset): string[][] {
-    if (!text || text.length === 0) {
-      return [[]];
-    }
-
-    const height = fontAsset.height;
-    const result: string[][] = [];
-
-    // Initialize result buffer with empty strings
-    for (let y = 0; y < height; y++) {
-      result.push([]);
-    }
-
-    // Process each character
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      const glyph = fontAsset.glyphs.get(char);
-
-      if (!glyph) {
-        // Fallback: render the character itself as a single-width glyph
-        for (let y = 0; y < height; y++) {
-          if (y === 0) {
-            result[y].push(char);
-          } else {
-            result[y].push(' ');
-          }
-        }
-      } else {
-        // Render the glyph - each line must be padded to glyph.width
-        for (let y = 0; y < height; y++) {
-          if (y < glyph.lines.length) {
-            const glyphLine = glyph.lines[y];
-            // Add characters from the glyph line
-            for (let x = 0; x < glyphLine.length; x++) {
-              result[y].push(glyphLine[x]);
-            }
-            // Pad the rest with spaces to reach glyph.width
-            for (let x = glyphLine.length; x < glyph.width; x++) {
-              result[y].push(' ');
-            }
-          } else {
-            // Pad entire line with spaces if glyph is shorter than font height
-            for (let x = 0; x < glyph.width; x++) {
-              result[y].push(' ');
-            }
-          }
-        }
-      }
-
-      // Add letter spacing after each character (except the last one)
-      if (i < text.length - 1 && this.letterSpacing > 0) {
-        for (let y = 0; y < height; y++) {
-          for (let s = 0; s < this.letterSpacing; s++) {
-            result[y].push(' ');
-          }
-        }
-      }
-    }
-
-    return result;
-  }
-
-  private updateFontText(): void {
-    if (this.isDestroyed) return;
-    if (!this.fontAsset || !this.text) return;
-
-    // Recalculate dimensions based on new text
-    const renderedBuffer = this.renderTextWithFont(this.text, this.fontAsset);
-    const textWidth = Math.max(...renderedBuffer.map((line) => line.length), 0);
-    const textHeight = renderedBuffer.length;
-    const borderPadding = this.border ? 2 : 0;
-
-    this.originalHeight = textHeight + borderPadding;
-    this.originalWidth = textWidth + borderPadding;
-    this.width = textWidth + borderPadding;
-    this.height = textHeight + borderPadding;
-
-    // Request a re-render
-    requestRender();
-  }
-
   override destroy(): void {
     this.isDestroyed = true;
     this.clearTimer();
@@ -512,34 +351,6 @@ export class Art extends Component {
 
       // Use sprite-specific transparent char if defined, otherwise use component's default
       const transparentChar = this.spriteTransparentChar ?? this.transparentChar;
-
-      // Font rendering mode
-      if (this.fontAsset && this.text !== undefined) {
-        const lines = this.renderTextWithFont(this.text, this.fontAsset);
-        for (let y = 0; y < Math.min(lines.length, innerHeight); y++) {
-          const line = lines[y];
-          const bufferY = y + yOffset;
-          // Defensive check: ensure buffer row exists (race condition protection)
-          if (bufferY >= buffer.length) break;
-
-          for (let x = 0; x < Math.min(line.length, innerWidth); x++) {
-            const bufferX = x + xOffset;
-            // Defensive check: ensure buffer column exists (race condition protection)
-            if (!buffer[bufferY] || bufferX >= buffer[bufferY].length) break;
-
-            const char = line[x];
-            // If character matches transparent char, use framework's transparent char
-            // Otherwise, render the actual character
-            if (char === transparentChar) {
-              buffer[bufferY][bufferX] = this.transparentChar;
-            } else {
-              buffer[bufferY][bufferX] = char;
-            }
-          }
-        }
-        this.buffer = buffer;
-        return buffer;
-      }
 
       // Sprite/content rendering mode
       const frame = this.frames[this.frameIndex];

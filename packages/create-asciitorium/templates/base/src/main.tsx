@@ -1,6 +1,7 @@
 import {
   App,
   Art,
+  Banner,
   Button,
   Column,
   Text,
@@ -25,8 +26,8 @@ const app = (
     <Keybind keyBinding="p" action={togglePerfMonitor} />
 
     <Column style={{ align: 'center', gap: 1, width: '100%' }}>
-      <Art font="pencil" text="Welcome to" align="center" />
-      <Art font="shadows" text="asciitorium" align="center" />
+      <Banner font="pencil" text="Welcome to" align="center" />
+      <Banner font="shadows" text="asciitorium" align="center" />
 
       <Text style={{ align: 'center', gap: 1 }}>
         Edit src/main.tsx and save to reload.

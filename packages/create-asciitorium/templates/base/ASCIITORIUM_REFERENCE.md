@@ -808,11 +808,8 @@ const text = new State('initial');
 ### Basic Usage
 
 ```tsx
-// Load from file
+// Load sprite from file
 <Art src="logo" />
-
-// ASCII art from figlet font
-<Art font="standard" text="Hello" />
 
 // Align center
 <Art src="banner" align="center" />
@@ -820,51 +817,69 @@ const text = new State('initial');
 
 ### Props
 
-| Prop     | Type                            | Default  | Description                      |
-| -------- | ------------------------------- | -------- | -------------------------------- |
-| `src`    | `string`                        | -        | Art file name (from art/ folder) |
-| `font`   | `string`                        | -        | Figlet font name                 |
-| `text`   | `string`                        | -        | Text to render with font         |
-| `width`  | `number \| 'auto'`              | `'auto'` | Component width                  |
-| `height` | `number \| 'auto'`              | `'auto'` | Component height                 |
-| `align`  | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment             |
-| `border` | `boolean`                       | `false`  | Show border                      |
+| Prop     | Type                            | Default  | Description                          |
+| -------- | ------------------------------- | -------- | ------------------------------------ |
+| `src`    | `string`                        | -        | Sprite file name (from art/sprites/) |
+| `width`  | `number \| 'auto'`              | `'auto'` | Component width                      |
+| `height` | `number \| 'auto'`              | `'auto'` | Component height                     |
+| `align`  | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment                 |
+| `border` | `boolean`                       | `false`  | Show border                          |
 
 ### Common Patterns
 
-**Pattern 1: Logo from File**
+**Pattern 1: Static Sprite**
 
 ```tsx
-// Loads from art/logo.art
+// Loads from art/sprites/logo.art
 <Art src="logo" align="center" />
 ```
 
-**Pattern 2: Generated ASCII Text**
-
-```tsx
-<Art font="standard" text="Game Over" align="center" />
-```
-
-**Pattern 3: Animated Sprite**
+**Pattern 2: Animated Sprite**
 
 ```tsx
 // Loads animated art (auto-plays)
 <Art src="beating-heart" width={20} />
 ```
 
-### Common Mistakes
 
-❌ **WRONG** - Using both src and font
+
+## Banner
+
+### Basic Usage
 
 ```tsx
-<Art src="logo" font="standard" /> // Conflicting props
+// Render text with font
+<Banner font="standard" text="Hello" />
+
+// Align center
+<Banner font="shadows" text="Game Over" align="center" />
 ```
 
-✅ **CORRECT** - Use one or the other
+### Props
+
+| Prop            | Type                            | Default  | Description                      |
+| --------------- | ------------------------------- | -------- | -------------------------------- |
+| `font`          | `string`                        | -        | Font name (from art/font/)       |
+| `text`          | `string \| State<string>`       | -        | Text to render with font         |
+| `letterSpacing` | `number`                        | `0`      | Additional spacing between chars |
+| `width`         | `number \| 'auto'`              | `'auto'` | Component width                  |
+| `height`        | `number \| 'auto'`              | `'auto'` | Component height                 |
+| `align`         | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment             |
+| `border`        | `boolean`                       | `false`  | Show border                      |
+
+### Common Patterns
+
+**Pattern 1: Title Screen**
 
 ```tsx
-<Art src="logo" />        // From file
-<Art font="standard" text="Title" />  // Generated
+<Banner font="shadows" text="asciitorium" align="center" />
+```
+
+**Pattern 2: Reactive Text**
+
+```tsx
+const score = new State(0);
+<Banner font="pixel" text={score} letterSpacing={1} />
 ```
 
 

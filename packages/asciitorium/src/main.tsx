@@ -1,6 +1,6 @@
 import {
   App,
-  Art,
+  Banner,
   Select,
   Option,
   OptionGroup,
@@ -86,7 +86,7 @@ const app = (
   <App align="top-center">
     <Keybind keyBinding="F12" action={togglePerfMonitor} />
 
-    <Art font="shadows" text="asciitorium" gap={{ bottom: 1 }} />
+    <Banner font="shadows" text="asciitorium" gap={{ bottom: 1 }} />
     <Row height="fill">
       <Column width={28} height="fill">
         {/* Explicit keybindings for Select navigation */}
