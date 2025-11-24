@@ -86,6 +86,7 @@ export class Banner extends Component {
 
         this.isLoading = false;
         this.loadError = error.message || 'Failed to load font';
+        console.error(`Banner: Failed to load font "${this.font}":`, error);
         requestRender();
         this.forceRenderIfNeeded();
       });

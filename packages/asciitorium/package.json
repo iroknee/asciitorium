@@ -1,8 +1,8 @@
 {
   "name": "asciitorium",
-  "version": "0.1.46",
+  "version": "0.1.47",
   "private": false,
-  "description": "an ASCII ui framework for web + cli",
+  "description": "an ASCII CLUI framework",
   "type": "module",
   "types": "dist/index.d.ts",
   "files": [
