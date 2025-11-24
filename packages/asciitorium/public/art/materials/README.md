@@ -35,7 +35,7 @@ metadata separators:
 
 #### Ground Material
 
-```json
+```txt
 § {"kind":"material","usage":"first-person","placement":"ground"}
 ¶ {"layer":"here","position":"center"}
   ⎽       ⎽
@@ -57,7 +57,8 @@ metadata separators:
    - Defines material properties:
      - `usage`: Rendering context (`"first-person"`, `"top-down"`,
        `"side-scroller"`)
-     - `placement`: Surface type (`"scenery"` [default], `"ground"`, `"ceiling"`)
+     - `placement`: Surface type (`"scenery"` [default], `"ground"`,
+       `"ceiling"`)
      - `onEnterSound`: Sound file to play when player enters tile (e.g.,
        `"splash.mp3"`)
      - `onExitSound`: Sound file to play when player exits tile
