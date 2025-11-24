@@ -9,7 +9,7 @@ const Part1 = () => {
 const Part2 = () => {
   return (
     <Column>
-      <Art src="pyramid" />
+      <Art sprite="pyramid" />
     </Column>
   );
 };

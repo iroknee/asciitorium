@@ -1,6 +1,6 @@
-# Materials Directory
+# Asciitorium Materials
 
-This directory contains ASCII art representations of various materials and textures that can be used in asciitorium games. Materials define the visual appearance of surfaces, walls, floors, and other environmental elements.
+This directory contains ASCII art representations of various materials and textures that can be used in asciitorium games. Materials define the visual appearance of surfaces, walls, floors, and other environmental elements and are exposed via the FirstPersonView component.
 
 ## Contents
 

@@ -246,7 +246,7 @@ align="center"                 // Alignment (layout-specific)
 
 ```tsx
 <Column align="center" width="100%" gap={2}>
-  <Art src="logo" />
+  <Art sprite="logo" />
   <Text>Welcome</Text>
   <Button>Start</Button>
 </Column>
@@ -809,17 +809,17 @@ const text = new State('initial');
 
 ```tsx
 // Load sprite from file
-<Art src="logo" />
+<Art sprite="logo" />
 
 // Align center
-<Art src="banner" align="center" />
+<Art sprite="banner" align="center" />
 ```
 
 ### Props
 
 | Prop     | Type                            | Default  | Description                          |
 | -------- | ------------------------------- | -------- | ------------------------------------ |
-| `src`    | `string`                        | -        | Sprite file name (from art/sprites/) |
+| `sprite` | `string`                        | -        | Sprite file name (from art/sprites/) |
 | `width`  | `number \| 'auto'`              | `'auto'` | Component width                      |
 | `height` | `number \| 'auto'`              | `'auto'` | Component height                     |
 | `align`  | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment                 |
@@ -831,14 +831,14 @@ const text = new State('initial');
 
 ```tsx
 // Loads from art/sprites/logo.art
-<Art src="logo" align="center" />
+<Art sprite="logo" align="center" />
 ```
 
 **Pattern 2: Animated Sprite**
 
 ```tsx
 // Loads animated art (auto-plays)
-<Art src="beating-heart" width={20} />
+<Art sprite="beating-heart" width={20} />
 ```
 
 

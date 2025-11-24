@@ -30,7 +30,7 @@ export const KeybindingsBasics = () => {
     const y = Math.floor(Math.random() * 20) + 5;
 
     const firework = new Art({
-      src: 'firework',
+      sprite: 'firework',
       position: { x, y },
     });
 

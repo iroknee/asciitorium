@@ -291,7 +291,7 @@ Line 3
       <Column gap={1}>
         <Text>If art/asciitorium.art exists, it should render below:</Text>
         {/* Uncomment if you have art files:
-        <Art src="asciitorium" align="center" />
+        <Art sprite="asciitorium" align="center" />
         */}
         <Text>Art test skipped (no art files in template)</Text>
       </Column>

@@ -33,7 +33,7 @@ const app = (
         Edit src/main.tsx and save to reload.
       </Text>
 
-      <Art src="beating-heart" width={20} align="center" />
+      <Art sprite="beating-heart" width={20} align="center" />
 
       <Text style={{ align: 'center', gap: 1 }}>
         Press [P] to toggle performance monitor

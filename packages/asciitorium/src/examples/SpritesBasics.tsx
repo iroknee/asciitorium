@@ -9,7 +9,7 @@ import { BaseStyle } from './constants.js';
 export const SpritesBasics = () => {
   const container = (
     <Column style={BaseStyle} label="Sprites Basics">
-      <Art src="balloon" />
+      <Art sprite="balloon" />
 
       <Text width="90%">What are Sprites?</Text>
       <Line width="90%" />
@@ -41,7 +41,7 @@ export const SpritesBasics = () => {
         align="center"
         gap={{ left: 4, top: 1, bottom: 1 }}
       >
-        {`<Art src="firework" />`}
+        {`<Art sprite="firework" />`}
       </Text>
 
       <Text width="90%">

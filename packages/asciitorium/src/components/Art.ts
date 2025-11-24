@@ -9,7 +9,7 @@ import {
 
 export interface ArtOptions extends Omit<ComponentProps, 'children'> {
   content?: string | State<string>; // raw text loaded from .art (UTF-8) or reactive state
-  src?: string; // URL or file path to load ASCII art from
+  sprite?: string; // sprite name to load from art/sprites/ directory
   children?: string | string[];
 }
 
@@ -40,14 +40,14 @@ export class Art extends Component {
   private contentState?: State<string>;
   private isLoading = false;
   private loadError?: string;
-  private src?: string;
+  private sprite?: string;
   private spriteTransparentChar?: string; // sprite-specific transparency character
   private isDestroyed = false; // Track if component has been destroyed
 
   constructor(options: ArtOptions) {
     let actualContent = options.content;
     const borderPadding = options.border ? 2 : 0;
-    const isLoadingSrc = !!options.src;
+    const isLoadingSprite = !!options.sprite;
 
     // Prepare content and dimensions before super() call
     let parsedFrames: SpriteFrame[] = [];
@@ -56,8 +56,8 @@ export class Art extends Component {
     let calculatedWidth: number | undefined;
     let calculatedHeight: number | undefined;
 
-    if (!isLoadingSrc) {
-      // Handle direct content/children (non-src)
+    if (!isLoadingSprite) {
+      // Handle direct content/children (non-sprite)
       if (!actualContent && options.children) {
         const children = Array.isArray(options.children)
           ? options.children
@@ -69,7 +69,7 @@ export class Art extends Component {
 
       if (!actualContent) {
         throw new Error(
-          'AsciiArt component requires either src, content prop, or children'
+          'AsciiArt component requires either sprite, content prop, or children'
         );
       }
 
@@ -92,7 +92,7 @@ export class Art extends Component {
       calculatedWidth = Math.max(1, maxW + borderPadding);
       calculatedHeight = Math.max(1, maxH + borderPadding);
     } else {
-      // For src loading, use placeholder
+      // For sprite loading, use placeholder
       parsedFrames = [
         {
           lines: [['L', 'o', 'a', 'd', 'i', 'n', 'g', '.', '.', '.']],
@@ -105,7 +105,7 @@ export class Art extends Component {
     }
 
     // Call super() with calculated or provided dimensions
-    const { children, content, src, ...componentProps } = options;
+    const { children, content, sprite, ...componentProps } = options;
     super({
       ...componentProps,
       width: options.width ?? options.style?.width ?? calculatedWidth,
@@ -121,13 +121,13 @@ export class Art extends Component {
     this.frames = parsedFrames;
     this.loop = parsedLoop;
 
-    if (isLoadingSrc && options.src) {
+    if (isLoadingSprite && options.sprite) {
       // Set loading state
-      this.src = options.src;
+      this.sprite = options.sprite;
       this.isLoading = true;
 
       // Start async loading using AssetManager
-      AssetManager.getSprite(options.src)
+      AssetManager.getSprite(options.sprite)
         .then((spriteAsset) => {
           if (this.isDestroyed) return;
 

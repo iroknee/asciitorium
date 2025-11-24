@@ -9,7 +9,7 @@ import { BaseStyle } from './constants.js';
 export const ArtBasics = () => {
   return (
     <Column style={BaseStyle} label="Ascii Art - Sprites">
-      <Art gap={{ left: 2, top: 1, bottom: 2 }} src="sprites" />
+      <Art gap={{ left: 2, top: 1, bottom: 2 }} sprite="sprites" />
 
       <Text width="90%" gap={{ bottom: 3 }}>
         Sprites are animated ASCII art assets stored in art/sprites/ directory.
@@ -23,11 +23,11 @@ export const ArtBasics = () => {
       </Text>
       <Line width="90%" />
 
-      <Art gap={{ bottom: 2 }} src="balloon" />
+      <Art gap={{ bottom: 2 }} sprite="balloon" />
 
       <Text width="90%" gap={{ bottom: 4 }} wrap={false} border>
         {`
-           <Art src="balloon" />
+           <Art sprite="balloon" />
         `}
       </Text>
 

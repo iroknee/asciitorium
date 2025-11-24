@@ -22,7 +22,7 @@ export const NavigationBasics = () => {
 
   return (
     <Column style={BaseStyle} label="Navigation Basics">
-      <Art gap={{ top: 1, bottom: 1 }} src="nav-basics" />
+      <Art gap={{ top: 1, bottom: 1 }} sprite="nav-basics" />
 
       <Text width="90%" gap={{ bottom: 2 }}>
         Asciitorium uses [Tab] + [Tab+Shift] for moving between focusable

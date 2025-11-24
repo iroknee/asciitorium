@@ -13,7 +13,7 @@ export const LifecycleBasics = () => {
     const y = 1;
 
     const firework = new Art({
-      src: 'firework',
+      sprite: 'firework',
       position: { x, y },
     });
 

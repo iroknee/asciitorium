@@ -9,7 +9,7 @@ import { BaseStyle } from './constants.js';
 export const GettingStarted = () => {
   return (
     <Column style={BaseStyle} label="Getting Started">
-      <Art gap={{ top: 1, bottom: 1 }} src="welcome" />
+      <Art gap={{ top: 1, bottom: 1 }} sprite="welcome" />
 
       <Text width="80%">
         Asciitorium is an ASCII-based CLUI (Command Line User Interface)
