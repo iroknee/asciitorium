@@ -857,15 +857,15 @@ const text = new State('initial');
 
 ### Props
 
-| Prop            | Type                            | Default  | Description                      |
-| --------------- | ------------------------------- | -------- | -------------------------------- |
-| `font`          | `string`                        | -        | Font name (from art/font/)       |
-| `text`          | `string \| State<string>`       | -        | Text to render with font         |
-| `letterSpacing` | `number`                        | `0`      | Additional spacing between chars |
-| `width`         | `number \| 'auto'`              | `'auto'` | Component width                  |
-| `height`        | `number \| 'auto'`              | `'auto'` | Component height                 |
-| `align`         | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment             |
-| `border`        | `boolean`                       | `false`  | Show border                      |
+| Prop            | Type                            | Default  | Description                       |
+| --------------- | ------------------------------- | -------- | --------------------------------- |
+| `font`          | `string`                        | -        | Font name (from art/fonts/)       |
+| `text`          | `string \| State<string>`       | -        | Text to render with font          |
+| `letterSpacing` | `number`                        | `0`      | Additional spacing between chars  |
+| `width`         | `number \| 'auto'`              | `'auto'` | Component width                   |
+| `height`        | `number \| 'auto'`              | `'auto'` | Component height                  |
+| `align`         | `'left' \| 'center' \| 'right'` | `'left'` | Horizontal alignment              |
+| `border`        | `boolean`                       | `false`  | Show border                       |
 
 ### Common Patterns
 

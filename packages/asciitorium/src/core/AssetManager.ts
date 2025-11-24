@@ -265,7 +265,7 @@ export class AssetManager {
 
   private static async loadFontAsset(name: string): Promise<FontAsset> {
     try {
-      const fontData = await loadArt(`art/font/${name}.art`);
+      const fontData = await loadArt(`art/fonts/${name}.art`);
       return this.parseFontData(fontData);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
