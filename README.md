@@ -69,6 +69,18 @@ Alternative CDN providers:
 - **unpkg**: `https://unpkg.com/asciitorium/dist/asciitorium.es.js`
 - **jsDelivr**: `https://cdn.jsdelivr.net/npm/asciitorium/dist/asciitorium.es.js`
 
+**Asset Access via CDN:**
+
+The npm package includes a complete set of art assets (maps, materials, sprites, fonts, sounds) that are automatically available via CDN:
+
+```js
+// Assets are available at public/ path
+const mapData = await fetch('https://unpkg.com/asciitorium/public/art/maps/example/map.art');
+const material = await fetch('https://unpkg.com/asciitorium/public/art/materials/wall-brick.art');
+```
+
+When using `AssetManager` with CDN imports, assets load automatically from the same CDN. No configuration needed!
+
 ## Built-in Components
 
 ### Core Components
