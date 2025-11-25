@@ -212,23 +212,47 @@ export function validateWebEnvironment(): void {
 export async function loadArt(relativePath: string): Promise<string> {
   if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
     // Web mode: Try project assets first, then library assets
+    let projectError: Error | null = null;
+    let libError: Error | null = null;
+
     try {
-      const response = await fetch(`/${relativePath}`);
-      if (response.ok) return response.text();
-    } catch {
-      // Fetch failed, try fallback
+      const response = await fetch(relativePath);
+      if (response.ok) {
+        const text = await response.text();
+        // Check if we got HTML instead of the actual asset (Vite SPA fallback)
+        if (text.trim().startsWith('<!doctype') || text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+          projectError = new Error('HTML fallback (file not found)');
+        } else {
+          return text;
+        }
+      } else {
+        projectError = new Error(`${response.status} ${response.statusText}`);
+      }
+    } catch (err) {
+      projectError = err as Error;
     }
 
     // Fallback to library assets (via Vite alias)
     try {
-      const response = await fetch(`/lib-assets/${relativePath}`);
-      if (response.ok) return response.text();
-    } catch {
-      // Both failed
+      const libPath = `/lib-assets/${relativePath}`;
+      const response = await fetch(libPath);
+      if (response.ok) {
+        const text = await response.text();
+        // Double check we didn't get HTML here too
+        if (text.trim().startsWith('<!doctype') || text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+          libError = new Error('HTML fallback (file not found)');
+        } else {
+          return text;
+        }
+      } else {
+        libError = new Error(`${response.status} ${response.statusText}`);
+      }
+    } catch (err) {
+      libError = err as Error;
     }
 
     throw new Error(
-      `Failed to load ${relativePath} - not found in project or library assets`
+      `Failed to load ${relativePath} - not found in project (${projectError?.message}) or library (${libError?.message})`
     );
   } else {
     // CLI mode: Try project assets first, then library assets

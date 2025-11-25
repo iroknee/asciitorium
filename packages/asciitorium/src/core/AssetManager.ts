@@ -261,7 +261,6 @@ export class AssetManager {
   private static async loadFontAsset(name: string): Promise<FontAsset> {
     try {
       const fontData = await loadArt(`art/fonts/${name}.art`);
-      console.log(`Loaded font "${name}", data length: ${fontData.length}, first 100 chars:`, fontData.substring(0, 100));
       return this.parseFontData(fontData);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
@@ -430,9 +429,11 @@ export class AssetManager {
         defaults = {
           duration: fileMetadata['default-frame-rate'] || fileMetadata.duration,
           loop: fileMetadata.loop,
-          transparent: typeof fileMetadata.transparent === 'string' && fileMetadata.transparent.length === 1
-            ? fileMetadata.transparent
-            : undefined,
+          transparent:
+            typeof fileMetadata.transparent === 'string' &&
+            fileMetadata.transparent.length === 1
+              ? fileMetadata.transparent
+              : undefined,
         };
       }
     } catch (error) {
@@ -551,7 +552,10 @@ export class AssetManager {
       try {
         const metadata = JSON.parse(metadataLine);
         if (!metadata.character) {
-          console.warn('Glyph metadata missing character property:', metadataLine);
+          console.warn(
+            'Glyph metadata missing character property:',
+            metadataLine
+          );
           continue;
         }
 
@@ -562,7 +566,10 @@ export class AssetManager {
 
         // Validate all characters are strings
         if (!characters.every((c: any) => typeof c === 'string')) {
-          console.warn('Glyph character must be string or array of strings:', metadataLine);
+          console.warn(
+            'Glyph character must be string or array of strings:',
+            metadataLine
+          );
           continue;
         }
 
@@ -570,7 +577,10 @@ export class AssetManager {
         // Use normalizeFontBlock to preserve vertical positioning (no leading line removal)
         const glyphLines = this.normalizeFontBlock(lines.slice(1));
         const glyphHeight = glyphLines.length;
-        const glyphWidth = Math.max(...glyphLines.map((line) => line.length), 0);
+        const glyphWidth = Math.max(
+          ...glyphLines.map((line) => line.length),
+          0
+        );
 
         const glyph: FontGlyph = {
           character: characters[0], // Store first character as primary
