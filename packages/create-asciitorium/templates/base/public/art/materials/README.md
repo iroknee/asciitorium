@@ -1,5 +1,7 @@
 # Asciitorium Materials
 
+> **Note**: This directory is empty by default. The asciitorium library includes starter assets in `node_modules/asciitorium/public/art/materials/` that are automatically available without copying. See the main [art/README.md](../README.md) for details on using and customizing library assets.
+
 This directory contains ASCII art material files for the **FirstPersonView** and
 **MapView** components. Materials define the visual appearance of walls, floors,
 and other environmental surfaces with depth-based layering.

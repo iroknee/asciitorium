@@ -1,4 +1,5 @@
 import { defineConfig, Plugin } from 'vite';
+import path from 'path';
 
 // Minimal virtual shim for Node built-ins on the web build
 function nodeBuiltinsShim(): Plugin {
@@ -26,14 +27,24 @@ function nodeBuiltinsShim(): Plugin {
 }
 
 export default defineConfig({
-  esbuild: { 
+  esbuild: {
     target: 'esnext',
     jsx: 'automatic',
     jsxImportSource: 'asciitorium',
   },
   build: { target: 'esnext' },
   plugins: [nodeBuiltinsShim()],
+  resolve: {
+    alias: {
+      // Alias /lib-assets to node_modules/asciitorium/public for library asset fallback
+      '/lib-assets': path.resolve(__dirname, 'node_modules/asciitorium/public'),
+    },
+  },
   server: {
     port: 5173,
+    fs: {
+      // Allow serving files from node_modules/asciitorium
+      allow: ['..'],
+    },
   },
 });

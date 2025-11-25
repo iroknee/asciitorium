@@ -1,5 +1,7 @@
 # Asciitorium Fonts
 
+> **Note**: This directory is empty by default. The asciitorium library includes starter assets in `node_modules/asciitorium/public/art/fonts/` that are automatically available without copying. See the main [art/README.md](../README.md) for details on using and customizing library assets.
+
 This directory contains ASCII font files for the **Banner** component. Fonts
 allow you to display large, stylized text using ASCII art characters.
 

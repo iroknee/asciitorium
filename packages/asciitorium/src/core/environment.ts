@@ -211,18 +211,55 @@ export function validateWebEnvironment(): void {
 
 export async function loadArt(relativePath: string): Promise<string> {
   if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
-    // Web: use fetch from public path
-    return fetch(relativePath).then((res) => {
-      if (!res.ok) throw new Error(`Failed to load ${relativePath}`);
-      return res.text();
-    });
+    // Web mode: Try project assets first, then library assets
+    try {
+      const response = await fetch(`/${relativePath}`);
+      if (response.ok) return response.text();
+    } catch {
+      // Fetch failed, try fallback
+    }
+
+    // Fallback to library assets (via Vite alias)
+    try {
+      const response = await fetch(`/lib-assets/${relativePath}`);
+      if (response.ok) return response.text();
+    } catch {
+      // Both failed
+    }
+
+    throw new Error(
+      `Failed to load ${relativePath} - not found in project or library assets`
+    );
   } else {
-    // Node: load from file system relative to the process CWD
+    // CLI mode: Try project assets first, then library assets
     const { readFile } = await import('fs/promises');
     const { resolve } = await import('path');
 
-    const fullPath = resolve(process.cwd(), 'public', relativePath);
-    return readFile(fullPath, 'utf-8');
+    // Try project public directory first
+    const projectPath = resolve(process.cwd(), 'public', relativePath);
+    try {
+      return await readFile(projectPath, 'utf-8');
+    } catch {
+      // Project asset not found, try library assets
+    }
+
+    // Try library assets in node_modules
+    const libPath = resolve(
+      process.cwd(),
+      'node_modules',
+      'asciitorium',
+      'public',
+      relativePath
+    );
+    try {
+      return await readFile(libPath, 'utf-8');
+    } catch {
+      // Both failed
+    }
+
+    throw new Error(
+      `Failed to load ${relativePath} - not found in project (${projectPath}) or library (${libPath})`
+    );
   }
 }
 

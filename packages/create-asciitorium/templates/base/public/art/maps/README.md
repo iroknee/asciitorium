@@ -1,5 +1,7 @@
 # Asciitorium Maps
 
+> **Note**: This directory is empty by default. The asciitorium library includes starter assets in `node_modules/asciitorium/public/art/maps/` that are automatically available without copying. See the main [art/README.md](../README.md) for details on using and customizing library assets.
+
 This directory contains map layouts and legends for the **MapView** and
 **FirstPersonView** components. Maps use ASCII characters for layout, with JSON
 legends defining character properties.

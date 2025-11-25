@@ -1,5 +1,7 @@
 # Asciitorium Sprites
 
+> **Note**: This directory is empty by default. The asciitorium library includes starter assets in `node_modules/asciitorium/public/art/sprites/` that are automatically available without copying. See the main [art/README.md](../README.md) for details on using and customizing library assets.
+
 This directory contains ASCII sprite files for the **Art** component. Sprites
 allow you to display static or animated ASCII art via the Art component.
 
