@@ -9,6 +9,7 @@ export interface SelectOptions<T = any> extends ComponentProps {
   selectedItem?: State<string>;
   selected?: State<T>;
   children?: (Option<T> | OptionGroup<T>)[];
+  showSelectionBox?: boolean;
 }
 
 interface SelectItem<T = any> {
@@ -25,6 +26,7 @@ export class Select<T = any> extends Component {
   private readonly selectedState: State<T>;
   private focusedIndex: number = 0;
   private selectedIndex: number = 0;
+  private readonly showSelectionBox: boolean;
 
   focusable = true;
   hasFocus = false;
@@ -76,6 +78,8 @@ export class Select<T = any> extends Component {
       height: options.height ?? options.style?.height ?? 3,
       border: options.border ?? options.style?.border ?? true,
     });
+
+    this.showSelectionBox = options.showSelectionBox ?? true;
 
     // Support both old API (items/selectedItem) and new API (children/selected)
     if (options.children && options.children.length > 0) {
@@ -306,7 +310,7 @@ export class Select<T = any> extends Component {
       }
 
       // Draw box around selected item last (over tree characters)
-      if (isSelected && !item.isGroupHeader) {
+      if (isSelected && !item.isGroupHeader && this.showSelectionBox) {
         // Draw box border
         buffer[y - 1][x + 1] = '╭';
         buffer[y][x + 1] = '│';
